@@ -1,0 +1,12 @@
+{
+  "name": "mbs-cli-root",
+  "private": true,
+  "scripts": {
+    "build": "pnpm -r build",
+    "test": "pnpm -r test",
+    "dev": "pnpm --filter @mbs/cli dev"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.0"
+  }
+}
