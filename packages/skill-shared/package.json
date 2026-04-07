@@ -16,6 +16,7 @@
     "test:watch": "vitest"
   },
   "dependencies": {
+    "@oclif/core": "^4.10.5",
     "axios": "^1.6.0"
   },
   "optionalDependencies": {
