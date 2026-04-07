@@ -13,30 +13,36 @@ export default class Login extends Command {
     this.log(`URL: ${LOGIN_URL}`)
 
     const browser = await chromium.launch({ headless: false })
-    const context = await browser.newContext()
-    const page = await context.newPage()
 
-    const key = await new Promise<string>((resolve, reject) => {
-      const timeout = setTimeout(
-        () => reject(new Error('Login timeout — please try again')),
-        LOGIN_TIMEOUT_MS,
-      )
+    try {
+      const context = await browser.newContext()
+      const page = await context.newPage()
 
-      page.on('request', request => {
-        if (request.url().includes(ERPLOGIN_PATH)) {
-          const url = new URL(request.url())
-          const keyValue = url.searchParams.get(KEY_PARAM)
-          if (keyValue) {
-            clearTimeout(timeout)
-            resolve(keyValue)
+      const key = await new Promise<string>((resolve, reject) => {
+        const timeout = setTimeout(
+          () => reject(new Error('Login timeout — please try again')),
+          LOGIN_TIMEOUT_MS,
+        )
+
+        page.on('request', request => {
+          if (request.url().includes(ERPLOGIN_PATH)) {
+            const url = new URL(request.url())
+            const keyValue = url.searchParams.get(KEY_PARAM)
+            if (keyValue) {
+              clearTimeout(timeout)
+              resolve(keyValue)
+            }
           }
-        }
+        })
+
+        // Navigate to login page AFTER attaching listener to avoid race condition
+        void page.goto(LOGIN_URL)
       })
-    })
 
-    await browser.close()
-    await setKey(key)
-
-    this.log(JSON.stringify({ ok: true, data: { message: 'Authenticated successfully' } }))
+      await setKey(key)
+      this.log(JSON.stringify({ ok: true, data: { message: 'Authenticated successfully' } }))
+    } finally {
+      await browser.close()
+    }
   }
 }
