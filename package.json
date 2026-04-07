@@ -8,5 +8,7 @@
   },
   "devDependencies": {
     "typescript": "^5.4.0"
-  }
+  },
+  "packageManager": "pnpm@10.28.2",
+  "engines": { "node": ">=18" }
 }
