@@ -1,0 +1,30 @@
+{
+  "name": "@mbs/cli",
+  "version": "0.1.0",
+  "type": "module",
+  "bin": {
+    "mbs": "./bin/run.js"
+  },
+  "oclif": {
+    "bin": "mbs",
+    "dirname": "mbs",
+    "commands": {
+      "strategy": "pattern",
+      "glob": "dist/commands/**/*.js"
+    },
+    "plugins": []
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch"
+  },
+  "dependencies": {
+    "@oclif/core": "^4",
+    "@mbs/skill-shared": "workspace:*",
+    "playwright": "^1.44.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.4.0"
+  }
+}
