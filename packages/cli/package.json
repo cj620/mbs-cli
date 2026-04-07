@@ -10,7 +10,8 @@
     "dirname": "mbs",
     "commands": {
       "strategy": "pattern",
-      "glob": "dist/commands/**/*.js"
+      "glob": "dist/commands/**/*.js",
+      "target": "./dist/commands"
     },
     "plugins": []
   },
