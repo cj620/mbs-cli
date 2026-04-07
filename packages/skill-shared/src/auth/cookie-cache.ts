@@ -1,5 +1,5 @@
 // packages/skill-shared/src/auth/cookie-cache.ts
-import { readFileSync, writeFileSync, existsSync, unlinkSync } from 'node:fs'
+import { readFileSync, writeFileSync, mkdirSync, existsSync, unlinkSync } from 'node:fs'
 import { join } from 'node:path'
 import { getConfigDir } from '../config.js'
 import { COOKIE_TTL_MS } from './constants.js'
@@ -23,6 +23,7 @@ export function readCookie(): string | null {
 }
 
 export function writeCookie(cookie: string): void {
+  mkdirSync(getConfigDir(), { recursive: true })
   const cache: CookieCache = {
     cookie,
     cookieSavedAt: new Date().toISOString(),
