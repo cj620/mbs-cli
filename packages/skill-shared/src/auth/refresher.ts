@@ -13,24 +13,39 @@ interface ErpLoginResponse {
 export async function refreshCookieAndUserInfo(apiUrl: string, key: string | null): Promise<{ cookie: string; userInfo: UserInfo }> {
   if (!key) throw new NotAuthenticatedError()
 
-  const response = await axios.post<ErpLoginResponse>(
-    `${apiUrl}${ERPLOGIN_PATH}`,
-    null,
-    { params: { key } },
-  )
+  let url = `${apiUrl}${ERPLOGIN_PATH}`
+  const allCookies: string[] = []
 
-  const setCookieHeader = response.headers['set-cookie']
-  if (!setCookieHeader || setCookieHeader.length === 0) {
-    throw new NotAuthenticatedError()
+  for (let hop = 0; hop <= 10; hop++) {
+    const res = await axios.post<ErpLoginResponse>(url, null, {
+      params: hop === 0 ? { key } : undefined,
+      maxRedirects: 0,
+      validateStatus: s => s < 400 || (s >= 300 && s < 400),
+      headers: allCookies.length ? { Cookie: allCookies.join('; ') } : {},
+    })
+
+    // Accumulate cookies from every hop
+    const setCookieHeader: string[] = res.headers['set-cookie'] ?? []
+    for (const c of setCookieHeader) {
+      allCookies.push(c.split(';')[0].trim())
+    }
+
+    if (res.status >= 300 && res.status < 400) {
+      const location = res.headers['location'] as string | undefined
+      if (!location) throw new NotAuthenticatedError()
+      url = location.startsWith('http') ? location : `${apiUrl}${location}`
+      continue
+    }
+
+    // Final response
+    if (!res.data?.success || !res.data?.obj) throw new NotAuthenticatedError()
+    if (allCookies.length === 0) throw new NotAuthenticatedError()
+
+    return {
+      cookie: allCookies.join('; '),
+      userInfo: res.data.obj,
+    }
   }
 
-  if (!response.data.success || !response.data.obj) {
-    throw new NotAuthenticatedError()
-  }
-
-  // Return the full first Set-Cookie value (e.g. "SESSION=abc; Path=/")
-  return {
-    cookie: setCookieHeader[0],
-    userInfo: response.data.obj,
-  }
+  throw new NotAuthenticatedError()
 }
