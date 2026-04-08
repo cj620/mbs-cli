@@ -81,6 +81,16 @@ export default class OrdersList extends MBSCommand {
 
 ---
 
+## Scope Constraint — Read-Only (enforced, no exceptions)
+
+**This CLI is read-only.** It may only query and display data. Do NOT implement any command that creates, updates, or deletes resources.
+
+- Allowed HTTP methods: `GET`, `POST`（POST 仅用于查询类接口，不得用于创建资源）
+- Forbidden HTTP methods: `PUT`, `PATCH`, `DELETE` (except for `login` / `logout` auth flows)
+- If a feature requires writing data, reject it and document why.
+
+---
+
 ## Forbidden Patterns
 
 | Pattern | Why forbidden |
