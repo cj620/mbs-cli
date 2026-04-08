@@ -128,3 +128,12 @@ node packages/cli/bin/run.js orders list | jq '.data[0].id'
 node packages/cli/bin/run.js orders get 12345
 node packages/cli/bin/run.js orders export --from 2026-01-01 --to 2026-04-07 --output ./orders.json
 ```
+
+---
+
+## 响应风格
+
+- 简洁为先：不需要解释的步骤直接执行
+- 报告结果时只说"做了什么"，不说"为什么这样做"（除非被问）
+- 发现问题直接列出，不用前言铺垫
+- 代码变更只显示改动的行，不重复整个文件

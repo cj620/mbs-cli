@@ -5,11 +5,8 @@ export default class OrgLeaders extends MBSCommand {
   static description = "List leaders (总监下拉)";
 
   static flags = {
-    company: Flags.string({
-      description: "Company ID (1=胤元, 33=启元)",
-      required: true,
-    }),
-    platform: Flags.string({ description: "Platform ID", required: true }),
+    company: Flags.string({ description: "Company ID (1=胤元, 33=启元)" }),
+    platform: Flags.string({ description: "Platform ID" }),
     type: Flags.string({ description: "Employee type: 1=sales, 2=dev" }),
     keyword: Flags.string({ description: "Search keyword" }),
   };

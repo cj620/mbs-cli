@@ -5,37 +5,26 @@ export default class OrgShopManagers extends MBSCommand {
   static description = "List shop managers (店长下拉)";
 
   static flags = {
-    company: Flags.string({
-      description: "Company ID (1=胤元, 33=启元)",
-      required: true,
-    }),
-    platform: Flags.string({ description: "Platform ID", required: true }),
-    leaders: Flags.string({
-      description: "Leader IDs, comma-separated",
-      required: true,
-    }),
-    managers: Flags.string({
-      description: "Manager IDs, comma-separated",
-      required: true,
-    }),
-    littleLeaders: Flags.string({
-      description: "Little Leader IDs, comma-separated",
-      required: true,
-    }),
+    company: Flags.string({ description: "Company ID (1=胤元, 33=启元)" }),
+    platform: Flags.string({ description: "Platform ID" }),
+    leaders: Flags.string({ description: "Leader IDs, comma-separated" }),
+    managers: Flags.string({ description: "Manager IDs, comma-separated" }),
+    littleLeaders: Flags.string({ description: "Little Leader IDs, comma-separated" }),
     type: Flags.string({ description: "Employee type: 1=sales, 2=dev" }),
     keyword: Flags.string({ description: "Search keyword" }),
   };
 
   async run(): Promise<void> {
     const { flags } = await this.parse(OrgShopManagers);
+    const buildArray = (val?: string) => val?.split(",").map((v) => v.trim()) ?? [];
     const data = await this.client.post(
       "/teamDropDown/shopManagerDropDown",
       {
-        companyIds: [Number(flags.company)],
-        platformIds: [flags.platform],
-        leaders: flags.leaders.split(",").map((l) => l.trim()),
-        managers: flags.managers.split(",").map((m) => m.trim()),
-        littleLeaders: flags.littleLeaders.split(",").map((l) => l.trim()),
+        companyIds: flags.company ? [Number(flags.company)] : [],
+        platformIds: buildArray(flags.platform),
+        leaders: buildArray(flags.leaders),
+        managers: buildArray(flags.managers),
+        littleLeaders: buildArray(flags.littleLeaders),
         employeeType: flags.type,
         keyWord: flags.keyword ?? "",
       },
