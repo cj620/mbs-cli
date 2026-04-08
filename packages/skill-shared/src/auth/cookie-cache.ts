@@ -48,3 +48,10 @@ export function clearCookie(): void {
   const path = getCachePath()
   if (existsSync(path)) unlinkSync(path)
 }
+
+export function readCacheTimestamp(): string | null {
+  const path = getCachePath()
+  if (!existsSync(path)) return null
+  const cache = JSON.parse(readFileSync(path, 'utf8')) as CookieCache
+  return cache.cookieSavedAt ?? null
+}

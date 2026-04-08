@@ -17,6 +17,9 @@ importers:
       '@inquirer/prompts':
         specifier: ^8.4.1
         version: 8.4.1(@types/node@20.19.39)
+      '@mbs/skill-org':
+        specifier: workspace:*
+        version: link:../skill-org
       '@mbs/skill-shared':
         specifier: workspace:*
         version: link:../skill-shared
@@ -33,6 +36,19 @@ importers:
       typescript:
         specifier: ^5.4.0
         version: 5.9.3
+
+  packages/skill-org:
+    dependencies:
+      '@mbs/skill-shared':
+        specifier: workspace:*
+        version: link:../skill-shared
+      '@oclif/core':
+        specifier: ^4.10.5
+        version: 4.10.5
+    devDependencies:
+      '@types/node':
+        specifier: ^20.0.0
+        version: 20.19.39
 
   packages/skill-shared:
     dependencies:

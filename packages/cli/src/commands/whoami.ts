@@ -1,6 +1,6 @@
 // packages/cli/src/commands/whoami.ts
 import { Command } from '@oclif/core'
-import { getKey, readCookie, readUserInfo } from '@mbs/skill-shared'
+import { getKey, readCookie, readUserInfo, readCacheTimestamp } from '@mbs/skill-shared'
 
 export default class Whoami extends Command {
   static description = 'Show current authentication status'
@@ -34,6 +34,10 @@ export default class Whoami extends Command {
           keyPreview: `${key.slice(0, 8)}...`,
           sessionActive: cookie !== null,
           user: userInfo,
+          updatedAt: (() => {
+          const ts = readCacheTimestamp()
+          return ts ? new Date(ts).toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai' }) : null
+        })(),
         },
       }),
     )
