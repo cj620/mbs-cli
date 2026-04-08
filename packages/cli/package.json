@@ -20,8 +20,9 @@
     "dev": "tsc --watch"
   },
   "dependencies": {
-    "@oclif/core": "^4",
+    "@inquirer/prompts": "^8.4.1",
     "@mbs/skill-shared": "workspace:*",
+    "@oclif/core": "^4",
     "playwright": "^1.44.0"
   },
   "devDependencies": {
