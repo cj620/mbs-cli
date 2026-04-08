@@ -6,8 +6,8 @@ export { APIClient } from './http.js'
 export { MBSCommand } from './base-command.js'
 export { getAuthContext } from './auth/index.js'
 export { setKey, getKey, deleteKey } from './auth/key-store.js'
-export { clearCookie, readCookie, writeCookie } from './auth/cookie-cache.js'
-export type { AuthContext } from './auth/context.js'
+export { clearCookie, readCookie, readUserInfo } from './auth/cookie-cache.js'
+export type { AuthContext, UserInfo } from './auth/context.js'
 export {
   LOGIN_URL,
   ERPLOGIN_PATH,

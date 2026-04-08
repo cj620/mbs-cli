@@ -1,7 +1,7 @@
 // packages/cli/src/commands/login.ts
 import { Command } from '@oclif/core'
 import { chromium } from 'playwright'
-import { setKey, LOGIN_URL, ERPLOGIN_PATH, KEY_PARAM, LOGIN_TIMEOUT_MS } from '@mbs/skill-shared'
+import { setKey, getAuthContext, LOGIN_URL, ERPLOGIN_PATH, KEY_PARAM, LOGIN_TIMEOUT_MS } from '@mbs/skill-shared'
 
 export default class Login extends Command {
   static description = 'Authenticate with the MBS system via browser'
@@ -41,6 +41,8 @@ export default class Login extends Command {
       })
 
       await setKey(key)
+      // Immediately fetch and cache cookie + userInfo
+      await getAuthContext()
       this.log(JSON.stringify({ ok: true, data: { message: 'Authenticated successfully' } }))
     } finally {
       await browser.close()

@@ -1,24 +1,27 @@
 // packages/skill-shared/src/auth/index.ts
-import { readCookie, writeCookie } from './cookie-cache.js'
+import { readCookie, readUserInfo, writeCookieAndUserInfo } from './cookie-cache.js'
 import { getKey } from './key-store.js'
-import { refreshCookie } from './refresher.js'
+import { refreshCookieAndUserInfo } from './refresher.js'
 import { getConfig } from '../config.js'
 import { NotAuthenticatedError } from '../errors.js'
-import type { AuthContext } from './context.js'
+import type { AuthContext, UserInfo } from './context.js'
 
-export type { AuthContext }
+export type { AuthContext, UserInfo }
 export { NotAuthenticatedError }
 
 export async function getAuthContext(): Promise<AuthContext> {
-  const cached = readCookie()
-  if (cached) return { cookie: cached }
+  const cachedCookie = readCookie()
+  const cachedUserInfo = readUserInfo()
+  if (cachedCookie && cachedUserInfo) {
+    return { cookie: cachedCookie, userInfo: cachedUserInfo }
+  }
 
   const key = await getKey()
   if (!key) throw new NotAuthenticatedError()
 
   const { apiUrl } = getConfig()
-  const cookie = await refreshCookie(apiUrl, key)
-  writeCookie(cookie)
+  const { cookie, userInfo } = await refreshCookieAndUserInfo(apiUrl, key)
+  writeCookieAndUserInfo(cookie, userInfo)
 
-  return { cookie }
+  return { cookie, userInfo }
 }

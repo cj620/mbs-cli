@@ -1,6 +1,6 @@
 // packages/cli/src/commands/whoami.ts
 import { Command } from '@oclif/core'
-import { getKey, readCookie } from '@mbs/skill-shared'
+import { getKey, readCookie, readUserInfo } from '@mbs/skill-shared'
 
 export default class Whoami extends Command {
   static description = 'Show current authentication status'
@@ -11,6 +11,7 @@ export default class Whoami extends Command {
     await this.parse(Whoami)
     const key = await getKey()
     const cookie = readCookie()
+    const userInfo = readUserInfo()
 
     if (!key) {
       this.log(
@@ -32,6 +33,7 @@ export default class Whoami extends Command {
         data: {
           keyPreview: `${key.slice(0, 8)}...`,
           sessionActive: cookie !== null,
+          user: userInfo,
         },
       }),
     )
