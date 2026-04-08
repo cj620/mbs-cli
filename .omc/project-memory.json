@@ -1,0 +1,313 @@
+{
+  "version": "1.0.0",
+  "lastScanned": 1775555123226,
+  "projectRoot": "c:\\Users\\Administrator\\Desktop\\AI\\mbs-cli",
+  "techStack": {
+    "languages": [],
+    "frameworks": [],
+    "packageManager": null,
+    "runtime": null
+  },
+  "build": {
+    "buildCommand": null,
+    "testCommand": null,
+    "lintCommand": null,
+    "devCommand": null,
+    "scripts": {}
+  },
+  "conventions": {
+    "namingStyle": null,
+    "importStyle": null,
+    "testPattern": null,
+    "fileOrganization": null
+  },
+  "structure": {
+    "isMonorepo": false,
+    "workspaces": [],
+    "mainDirectories": [],
+    "gitBranches": null
+  },
+  "customNotes": [],
+  "directoryMap": {
+    "dist": {
+      "path": "dist",
+      "purpose": "Distribution/build output",
+      "fileCount": 0,
+      "lastAccessed": 1775555123212,
+      "keyFiles": []
+    }
+  },
+  "hotPaths": [
+    {
+      "path": "docs\\superpowers\\plans\\2026-04-07-mbs-cli-phase1-core.md",
+      "accessCount": 12,
+      "lastAccessed": 1775558189913,
+      "type": "file"
+    },
+    {
+      "path": "packages\\skill-shared\\src\\__tests__\\auth\\key-store.test.ts",
+      "accessCount": 7,
+      "lastAccessed": 1775560406570,
+      "type": "file"
+    },
+    {
+      "path": "packages\\skill-shared\\src\\auth\\cookie-cache.ts",
+      "accessCount": 6,
+      "lastAccessed": 1775560880329,
+      "type": "file"
+    },
+    {
+      "path": "tsconfig.base.json",
+      "accessCount": 6,
+      "lastAccessed": 1775561035258,
+      "type": "file"
+    },
+    {
+      "path": "packages\\skill-shared\\src\\errors.ts",
+      "accessCount": 6,
+      "lastAccessed": 1775561078336,
+      "type": "file"
+    },
+    {
+      "path": "packages\\cli\\src\\commands\\login.ts",
+      "accessCount": 6,
+      "lastAccessed": 1775561583772,
+      "type": "file"
+    },
+    {
+      "path": "packages\\skill-shared\\src\\types.ts",
+      "accessCount": 6,
+      "lastAccessed": 1775610056360,
+      "type": "file"
+    },
+    {
+      "path": "packages\\skill-shared\\src\\http.ts",
+      "accessCount": 6,
+      "lastAccessed": 1775610194919,
+      "type": "file"
+    },
+    {
+      "path": "package.json",
+      "accessCount": 5,
+      "lastAccessed": 1775559626110,
+      "type": "file"
+    },
+    {
+      "path": "packages\\skill-shared\\src\\auth\\constants.ts",
+      "accessCount": 5,
+      "lastAccessed": 1775561095950,
+      "type": "file"
+    },
+    {
+      "path": "packages\\skill-shared\\src\\config.ts",
+      "accessCount": 5,
+      "lastAccessed": 1775610045794,
+      "type": "file"
+    },
+    {
+      "path": "packages\\skill-shared\\src\\auth\\key-store.ts",
+      "accessCount": 4,
+      "lastAccessed": 1775561007686,
+      "type": "file"
+    },
+    {
+      "path": "packages\\skill-shared\\src\\auth\\context.ts",
+      "accessCount": 4,
+      "lastAccessed": 1775561095877,
+      "type": "file"
+    },
+    {
+      "path": "packages\\cli\\package.json",
+      "accessCount": 4,
+      "lastAccessed": 1775561402755,
+      "type": "file"
+    },
+    {
+      "path": "packages\\skill-shared\\src",
+      "accessCount": 4,
+      "lastAccessed": 1775561659791,
+      "type": "directory"
+    },
+    {
+      "path": "packages\\skill-shared\\src\\index.ts",
+      "accessCount": 4,
+      "lastAccessed": 1775610119526,
+      "type": "file"
+    },
+    {
+      "path": "packages\\skill-shared\\src\\base-command.ts",
+      "accessCount": 4,
+      "lastAccessed": 1775610182239,
+      "type": "file"
+    },
+    {
+      "path": "pnpm-workspace.yaml",
+      "accessCount": 3,
+      "lastAccessed": 1775558306907,
+      "type": "file"
+    },
+    {
+      "path": "packages\\skill-shared\\src\\auth\\refresher.ts",
+      "accessCount": 3,
+      "lastAccessed": 1775560880928,
+      "type": "file"
+    },
+    {
+      "path": "packages\\skill-shared\\src\\auth\\index.ts",
+      "accessCount": 3,
+      "lastAccessed": 1775560963741,
+      "type": "file"
+    },
+    {
+      "path": "packages\\skill-shared\\tsconfig.json",
+      "accessCount": 3,
+      "lastAccessed": 1775561007339,
+      "type": "file"
+    },
+    {
+      "path": "packages\\cli\\tsconfig.json",
+      "accessCount": 3,
+      "lastAccessed": 1775561353176,
+      "type": "file"
+    },
+    {
+      "path": "packages\\cli\\bin\\run.js",
+      "accessCount": 3,
+      "lastAccessed": 1775561353261,
+      "type": "file"
+    },
+    {
+      "path": "packages\\skill-shared",
+      "accessCount": 3,
+      "lastAccessed": 1775610041170,
+      "type": "directory"
+    },
+    {
+      "path": "packages\\cli\\src\\commands\\whoami.ts",
+      "accessCount": 3,
+      "lastAccessed": 1775610113049,
+      "type": "file"
+    },
+    {
+      "path": "packages\\skill-shared\\package.json",
+      "accessCount": 2,
+      "lastAccessed": 1775559748567,
+      "type": "file"
+    },
+    {
+      "path": "packages\\skill-shared\\vitest.config.ts",
+      "accessCount": 2,
+      "lastAccessed": 1775559749280,
+      "type": "file"
+    },
+    {
+      "path": "packages\\skill-shared\\src\\__tests__\\errors.test.ts",
+      "accessCount": 2,
+      "lastAccessed": 1775559855921,
+      "type": "file"
+    },
+    {
+      "path": "packages\\skill-shared\\src\\__tests__\\config.test.ts",
+      "accessCount": 2,
+      "lastAccessed": 1775560004302,
+      "type": "file"
+    },
+    {
+      "path": "packages\\skill-shared\\src\\__tests__\\http.test.ts",
+      "accessCount": 2,
+      "lastAccessed": 1775560142244,
+      "type": "file"
+    },
+    {
+      "path": "packages\\skill-shared\\src\\__tests__\\auth\\cookie-cache.test.ts",
+      "accessCount": 2,
+      "lastAccessed": 1775560537556,
+      "type": "file"
+    },
+    {
+      "path": "packages\\skill-shared\\src\\__tests__\\auth\\refresher.test.ts",
+      "accessCount": 2,
+      "lastAccessed": 1775560741291,
+      "type": "file"
+    },
+    {
+      "path": "packages\\skill-shared\\src\\__tests__\\auth\\index.test.ts",
+      "accessCount": 2,
+      "lastAccessed": 1775560867211,
+      "type": "file"
+    },
+    {
+      "path": "packages\\skill-shared\\src\\__tests__\\base-command.test.ts",
+      "accessCount": 2,
+      "lastAccessed": 1775561073928,
+      "type": "file"
+    },
+    {
+      "path": "packages\\cli\\src\\commands\\logout.ts",
+      "accessCount": 2,
+      "lastAccessed": 1775561638737,
+      "type": "file"
+    },
+    {
+      "path": "packages\\cli\\src\\commands\\config\\init.ts",
+      "accessCount": 2,
+      "lastAccessed": 1775610028559,
+      "type": "file"
+    },
+    {
+      "path": "packages\\cli\\src\\commands\\config\\get.ts",
+      "accessCount": 2,
+      "lastAccessed": 1775610028650,
+      "type": "file"
+    },
+    {
+      "path": "packages\\cli\\src\\commands\\raw.ts",
+      "accessCount": 2,
+      "lastAccessed": 1775610164036,
+      "type": "file"
+    },
+    {
+      "path": "packages\\cli\\src\\commands\\api\\_template.ts",
+      "accessCount": 2,
+      "lastAccessed": 1775610347168,
+      "type": "file"
+    },
+    {
+      "path": "CLAUDE.md",
+      "accessCount": 2,
+      "lastAccessed": 1775610347518,
+      "type": "file"
+    },
+    {
+      "path": "packages\\skill-shared\\src\\auth",
+      "accessCount": 1,
+      "lastAccessed": 1775560745501,
+      "type": "directory"
+    },
+    {
+      "path": "packages\\skill-shared\\src\\types\\keytar.d.ts",
+      "accessCount": 1,
+      "lastAccessed": 1775561026314,
+      "type": "file"
+    },
+    {
+      "path": "packages\\cli\\src\\commands",
+      "accessCount": 1,
+      "lastAccessed": 1775561445570,
+      "type": "directory"
+    },
+    {
+      "path": "packages\\cli\\src",
+      "accessCount": 1,
+      "lastAccessed": 1775610164688,
+      "type": "directory"
+    },
+    {
+      "path": "",
+      "accessCount": 1,
+      "lastAccessed": 1775610177632,
+      "type": "directory"
+    }
+  ],
+  "userDirectives": []
+}
