@@ -8,6 +8,7 @@ export default class Logout extends Command {
   static examples = ['mbs logout']
 
   async run(): Promise<void> {
+    await this.parse(Logout)
     await deleteKey()
     clearCookie()
     this.log(JSON.stringify({ ok: true, data: { message: 'Logged out successfully' } }))

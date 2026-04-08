@@ -9,6 +9,7 @@ export default class Login extends Command {
   static examples = ['mbs login']
 
   async run(): Promise<void> {
+    await this.parse(Login)
     this.log('Opening browser for authentication...')
     this.log(`URL: ${LOGIN_URL}`)
 

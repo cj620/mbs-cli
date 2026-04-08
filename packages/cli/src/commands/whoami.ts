@@ -8,6 +8,7 @@ export default class Whoami extends Command {
   static examples = ['mbs whoami']
 
   async run(): Promise<void> {
+    await this.parse(Whoami)
     const key = await getKey()
     const cookie = readCookie()
 

@@ -45,6 +45,12 @@
       "type": "file"
     },
     {
+      "path": "packages\\cli\\src\\commands\\login.ts",
+      "accessCount": 8,
+      "lastAccessed": 1775611219304,
+      "type": "file"
+    },
+    {
       "path": "packages\\skill-shared\\src\\__tests__\\auth\\key-store.test.ts",
       "accessCount": 7,
       "lastAccessed": 1775560406570,
@@ -69,12 +75,6 @@
       "type": "file"
     },
     {
-      "path": "packages\\cli\\src\\commands\\login.ts",
-      "accessCount": 6,
-      "lastAccessed": 1775561583772,
-      "type": "file"
-    },
-    {
       "path": "packages\\skill-shared\\src\\types.ts",
       "accessCount": 6,
       "lastAccessed": 1775610056360,
@@ -87,46 +87,58 @@
       "type": "file"
     },
     {
+      "path": "packages\\cli\\package.json",
+      "accessCount": 6,
+      "lastAccessed": 1775611036069,
+      "type": "file"
+    },
+    {
+      "path": "packages\\skill-shared\\src\\auth\\constants.ts",
+      "accessCount": 6,
+      "lastAccessed": 1775611245236,
+      "type": "file"
+    },
+    {
+      "path": "packages\\skill-shared\\src\\config.ts",
+      "accessCount": 6,
+      "lastAccessed": 1775611248413,
+      "type": "file"
+    },
+    {
+      "path": "packages\\skill-shared\\src\\auth\\key-store.ts",
+      "accessCount": 6,
+      "lastAccessed": 1775611260632,
+      "type": "file"
+    },
+    {
       "path": "package.json",
       "accessCount": 5,
       "lastAccessed": 1775559626110,
       "type": "file"
     },
     {
-      "path": "packages\\skill-shared\\src\\auth\\constants.ts",
+      "path": "packages\\cli\\bin\\run.js",
       "accessCount": 5,
-      "lastAccessed": 1775561095950,
+      "lastAccessed": 1775610942354,
       "type": "file"
     },
     {
-      "path": "packages\\skill-shared\\src\\config.ts",
+      "path": "packages\\cli\\src\\commands\\whoami.ts",
       "accessCount": 5,
-      "lastAccessed": 1775610045794,
+      "lastAccessed": 1775611228300,
       "type": "file"
     },
     {
-      "path": "packages\\skill-shared\\src\\auth\\key-store.ts",
-      "accessCount": 4,
-      "lastAccessed": 1775561007686,
-      "type": "file"
+      "path": "packages\\skill-shared\\src",
+      "accessCount": 5,
+      "lastAccessed": 1775611232843,
+      "type": "directory"
     },
     {
       "path": "packages\\skill-shared\\src\\auth\\context.ts",
       "accessCount": 4,
       "lastAccessed": 1775561095877,
       "type": "file"
-    },
-    {
-      "path": "packages\\cli\\package.json",
-      "accessCount": 4,
-      "lastAccessed": 1775561402755,
-      "type": "file"
-    },
-    {
-      "path": "packages\\skill-shared\\src",
-      "accessCount": 4,
-      "lastAccessed": 1775561659791,
-      "type": "directory"
     },
     {
       "path": "packages\\skill-shared\\src\\index.ts",
@@ -138,6 +150,24 @@
       "path": "packages\\skill-shared\\src\\base-command.ts",
       "accessCount": 4,
       "lastAccessed": 1775610182239,
+      "type": "file"
+    },
+    {
+      "path": "packages\\cli\\src\\commands\\config\\get.ts",
+      "accessCount": 4,
+      "lastAccessed": 1775611057036,
+      "type": "file"
+    },
+    {
+      "path": "packages\\cli\\src\\commands\\config\\init.ts",
+      "accessCount": 4,
+      "lastAccessed": 1775611063847,
+      "type": "file"
+    },
+    {
+      "path": "packages\\cli\\src\\commands\\logout.ts",
+      "accessCount": 4,
+      "lastAccessed": 1775611223949,
       "type": "file"
     },
     {
@@ -171,21 +201,15 @@
       "type": "file"
     },
     {
-      "path": "packages\\cli\\bin\\run.js",
-      "accessCount": 3,
-      "lastAccessed": 1775561353261,
-      "type": "file"
-    },
-    {
       "path": "packages\\skill-shared",
       "accessCount": 3,
       "lastAccessed": 1775610041170,
       "type": "directory"
     },
     {
-      "path": "packages\\cli\\src\\commands\\whoami.ts",
+      "path": "packages\\cli\\src\\commands\\raw.ts",
       "accessCount": 3,
-      "lastAccessed": 1775610113049,
+      "lastAccessed": 1775611215439,
       "type": "file"
     },
     {
@@ -240,30 +264,6 @@
       "path": "packages\\skill-shared\\src\\__tests__\\base-command.test.ts",
       "accessCount": 2,
       "lastAccessed": 1775561073928,
-      "type": "file"
-    },
-    {
-      "path": "packages\\cli\\src\\commands\\logout.ts",
-      "accessCount": 2,
-      "lastAccessed": 1775561638737,
-      "type": "file"
-    },
-    {
-      "path": "packages\\cli\\src\\commands\\config\\init.ts",
-      "accessCount": 2,
-      "lastAccessed": 1775610028559,
-      "type": "file"
-    },
-    {
-      "path": "packages\\cli\\src\\commands\\config\\get.ts",
-      "accessCount": 2,
-      "lastAccessed": 1775610028650,
-      "type": "file"
-    },
-    {
-      "path": "packages\\cli\\src\\commands\\raw.ts",
-      "accessCount": 2,
-      "lastAccessed": 1775610164036,
       "type": "file"
     },
     {

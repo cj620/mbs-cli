@@ -13,6 +13,7 @@
       "glob": "dist/commands/**/*.js",
       "target": "./dist/commands"
     },
+    "topicSeparator": " ",
     "plugins": []
   },
   "scripts": {

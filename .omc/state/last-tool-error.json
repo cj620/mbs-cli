@@ -1,0 +1,7 @@
+{
+  "tool_name": "Bash",
+  "tool_input_preview": "{\"command\":\"ls c:\\\\Users\\\\Administrator\\\\Desktop\\\\AI\\\\mbs-cli\\\\packages\\\\cli\\\\bin\\\\\"}",
+  "error": "Exit code 2\nls: cannot access 'c:UsersAdministratorDesktopAImbs-clipackagesclibin\\': No such file or directory",
+  "timestamp": "2026-04-08T01:15:03.014Z",
+  "retry_count": 1
+}

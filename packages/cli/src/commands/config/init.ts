@@ -9,6 +9,7 @@ export default class ConfigInit extends Command {
   static examples = ['mbs config init']
 
   async run(): Promise<void> {
+    await this.parse(ConfigInit)
     this.log('MBS CLI Configuration Setup')
     this.log('──────────────────────────')
 

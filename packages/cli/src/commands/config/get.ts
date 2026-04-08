@@ -8,6 +8,7 @@ export default class ConfigGet extends Command {
   static examples = ['mbs config get']
 
   async run(): Promise<void> {
+    await this.parse(ConfigGet)
     try {
       const config = getConfig()
       this.log(JSON.stringify({ ok: true, data: config }))
