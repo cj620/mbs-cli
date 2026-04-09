@@ -22,7 +22,6 @@ metadata:
 ### 首次配置
 
 ```bash
-mbs config init   # 配置 API 地址（仅需一次）
 mbs login         # 浏览器完成 SSO，token 存入系统钥匙串
 mbs whoami        # 验证认证状态
 ```

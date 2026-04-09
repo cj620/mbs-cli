@@ -10,10 +10,14 @@ export function getConfigDir(): string {
 
 const getConfigPath = () => join(getConfigDir(), 'config.json')
 
+const DEFAULT_CONFIG: MBSConfig = {
+  apiUrl: 'http://www.instudio.me:6206',
+}
+
 export function getConfig(): MBSConfig {
   const path = getConfigPath()
   if (!existsSync(path)) {
-    throw new Error('MBS CLI not configured. Run: mbs config init')
+    return DEFAULT_CONFIG
   }
   return JSON.parse(readFileSync(path, 'utf8')) as MBSConfig
 }

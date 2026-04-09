@@ -110,9 +110,7 @@ After completing each phase, run these to confirm everything works:
 
 ### Phase 1 (Core)
 ```bash
-node packages/cli/bin/run.js config get          # shows not-configured error
-node packages/cli/bin/run.js config init         # interactive prompt
-node packages/cli/bin/run.js config get          # shows apiUrl
+node packages/cli/bin/run.js config get          # shows apiUrl (default)
 node packages/cli/bin/run.js whoami              # not logged in message
 node packages/cli/bin/run.js login               # browser opens
 node packages/cli/bin/run.js whoami              # shows keyPreview + sessionActive
