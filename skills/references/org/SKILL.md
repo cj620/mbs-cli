@@ -19,14 +19,14 @@
 
 | 命令 | 说明 | 详细文档 |
 |------|------|---------|
-| `mbs org platforms` | 获取所有平台列表 | [platforms.md](../references/org/platforms.md) |
-| `mbs org sites` | 获取平台下的站点列表 | [sites.md](../references/org/sites.md) |
-| `mbs org leaders` | 获取总监列表 | [leaders.md](../references/org/leaders.md) |
-| `mbs org managers` | 获取经理列表 | [managers.md](../references/org/managers.md) |
-| `mbs org little-leaders` | 获取主管列表 | [little-leaders.md](../references/org/little-leaders.md) |
-| `mbs org shop-managers` | 获取店长列表 | [shop-managers.md](../references/org/shop-managers.md) |
-| `mbs org shops` | 获取店铺列表 | [shops.md](../references/org/shops.md) |
-| `mbs org employees` | 获取员工/团队编号列表 | [employees.md](../references/org/employees.md) |
+| `mbs org platforms` | 获取所有平台列表 | [platforms.md](./platforms.md) |
+| `mbs org sites` | 获取平台下的站点列表 | [sites.md](./sites.md) |
+| `mbs org leaders` | 获取总监列表 | [leaders.md](./leaders.md) |
+| `mbs org managers` | 获取经理列表 | [managers.md](./managers.md) |
+| `mbs org little-leaders` | 获取主管列表 | [little-leaders.md](./little-leaders.md) |
+| `mbs org shop-managers` | 获取店长列表 | [shop-managers.md](./shop-managers.md) |
+| `mbs org shops` | 获取店铺列表 | [shops.md](./shops.md) |
+| `mbs org employees` | 获取员工/团队编号列表 | [employees.md](./employees.md) |
 
 ## 层级结构
 
@@ -79,4 +79,4 @@ mbs org employees --company 1 --platform <platformId> --leaders <leaderId> --man
 
 - 公司 ID：`1`=胤元，`33`=启元，多数查询需先确认公司
 - 多个 ID 统一用逗号分隔，例如 `--leaders L001,L002`
-- 退出码说明：见 [global.md](../references/global.md#退出码)
+- 退出码说明：见 [global.md](../global.md#退出码)

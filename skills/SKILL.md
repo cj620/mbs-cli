@@ -19,7 +19,7 @@ metadata:
 
 | 模块 | 用途 | 参考 |
 |------|------|------|
-| `org` | 组织架构：平台/站点/总监/经理/主管/店长/店铺/员工 | [org/SKILL.md](org/SKILL.md) |
+| `org` | 组织架构：平台/站点/总监/经理/主管/店长/店铺/员工 | [references/org/SKILL.md](references/org/SKILL.md) |
 
 ## 意图路由
 
