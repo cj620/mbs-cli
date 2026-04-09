@@ -36,10 +36,10 @@ platforms
        └─ managers（需 + leaders）
             └─ little-leaders（需 + managers）
                  └─ shop-managers（需 + littleLeaders）
-                      ├─ shops（只需 company，其余可选）
                       └─ employees（需完整链路）
 
 sites（独立，仅依赖 platform ID）
+shops（独立，仅需 company；其余字段为可选过滤）
 ```
 
 组织层级**从上到下单向依赖**，不可跳层。`shops` 是例外：只需 `--company`，其余均为可选过滤条件。
@@ -79,4 +79,4 @@ mbs org employees --company 1 --platform <platformId> --leaders <leaderId> --man
 
 - 公司 ID：`1`=胤元，`33`=启元，多数查询需先确认公司
 - 多个 ID 统一用逗号分隔，例如 `--leaders L001,L002`
-- 退出码 `2` = 认证失败，执行 `mbs login`
+- 退出码说明：见 [global.md](../references/global.md#退出码)
