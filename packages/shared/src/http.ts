@@ -35,7 +35,7 @@ export class APIClient {
     this.instance.interceptors.response.use((response) => {
       const raw = response.data as RawApiResponse
       if (typeof raw?.code !== 'number') return response // 非标准端点，直接放行
-      if (raw.code === 0) return response // 成功，放行
+      if (raw.code === 0 || raw.code === 200) return response // 成功，放行
 
       const handler = API_CODE_HANDLERS[raw.code]
       if (handler) throw handler()

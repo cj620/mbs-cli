@@ -71,6 +71,12 @@ describe('APIClient response interceptor', () => {
     expect(interceptor(res)).toEqual(res)
   })
 
+  it('passes through when code === 200', () => {
+    const interceptor = captureInterceptor()
+    const res = { data: { code: 200, data: { id: 1 }, msg: 'ok' } }
+    expect(interceptor(res)).toEqual(res)
+  })
+
   it('throws NotAuthenticatedError when code === 601', () => {
     const interceptor = captureInterceptor()
     expect(() => interceptor({ data: { code: 601, data: null, msg: 'not login' } })).toThrow(NotAuthenticatedError)
