@@ -1,6 +1,6 @@
 // packages/cli/src/commands/whoami.ts
 import { Command } from '@oclif/core'
-import { getKey, readCookie, readUserInfo, readCacheTimestamp } from '@mbs/skill-shared'
+import { getKey, readCookie, readUserInfo, readCacheTimestamp } from '@mbs/shared'
 
 export default class Whoami extends Command {
   static description = 'Show current authentication status'

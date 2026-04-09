@@ -1,26 +1,23 @@
 import { Flags } from "@oclif/core";
-import { MBSCommand } from "@mbs/skill-shared";
+import { MBSCommand } from "@mbs/shared";
 
-export default class OrgManagers extends MBSCommand {
-  static description = "List managers (经理下拉)";
+export default class OrgLeaders extends MBSCommand {
+  static description = "List leaders (总监下拉)";
 
   static flags = {
     company: Flags.string({ description: "Company ID (1=胤元, 33=启元)" }),
     platform: Flags.string({ description: "Platform ID" }),
-    leaders: Flags.string({ description: "Leader IDs, comma-separated" }),
     type: Flags.string({ description: "Employee type: 1=sales, 2=dev" }),
     keyword: Flags.string({ description: "Search keyword" }),
   };
 
   async run(): Promise<void> {
-    const { flags } = await this.parse(OrgManagers);
-    const buildArray = (val?: string) => val?.split(",").map((v) => v.trim()) ?? [];
+    const { flags } = await this.parse(OrgLeaders);
     const data = await this.client.post(
-      "/teamDropDown/managerDropDown",
+      "/teamDropDown/leaderDropDown",
       {
-        companyIds: flags.company ? [Number(flags.company)] : [],
-        platformIds: buildArray(flags.platform),
-        leaders: buildArray(flags.leaders),
+        companyIds: [Number(flags.company)],
+        platformIds: [flags.platform],
         employeeType: flags.type,
         keyWord: flags.keyword ?? "",
       },

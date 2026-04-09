@@ -1,5 +1,5 @@
 {
-  "name": "@mbs/skill-org",
+  "name": "@mbs/org",
   "version": "1.0.0",
   "type": "module",
   "exports": {
@@ -21,7 +21,7 @@
     "build": "tsc"
   },
   "dependencies": {
-    "@mbs/skill-shared": "workspace:*",
+    "@mbs/shared": "workspace:*",
     "@oclif/core": "^4.10.5"
   },
   "devDependencies": {

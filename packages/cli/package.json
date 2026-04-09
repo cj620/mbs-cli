@@ -14,7 +14,7 @@
       "target": "./dist/commands"
     },
     "topicSeparator": " ",
-    "plugins": ["@mbs/skill-org"]
+    "plugins": ["@mbs/org"]
   },
   "scripts": {
     "build": "tsc",
@@ -22,8 +22,8 @@
   },
   "dependencies": {
     "@inquirer/prompts": "^8.4.1",
-    "@mbs/skill-org": "workspace:*",
-    "@mbs/skill-shared": "workspace:*",
+    "@mbs/org": "workspace:*",
+    "@mbs/shared": "workspace:*",
     "@oclif/core": "^4",
     "playwright": "^1.44.0"
   },

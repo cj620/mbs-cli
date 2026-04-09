@@ -17,12 +17,12 @@ importers:
       '@inquirer/prompts':
         specifier: ^8.4.1
         version: 8.4.1(@types/node@20.19.39)
-      '@mbs/skill-org':
+      '@mbs/org':
         specifier: workspace:*
-        version: link:../skill-org
-      '@mbs/skill-shared':
+        version: link:../org
+      '@mbs/shared':
         specifier: workspace:*
-        version: link:../skill-shared
+        version: link:../shared
       '@oclif/core':
         specifier: ^4
         version: 4.10.5
@@ -37,11 +37,11 @@ importers:
         specifier: ^5.4.0
         version: 5.9.3
 
-  packages/skill-org:
+  packages/org:
     dependencies:
-      '@mbs/skill-shared':
+      '@mbs/shared':
         specifier: workspace:*
-        version: link:../skill-shared
+        version: link:../shared
       '@oclif/core':
         specifier: ^4.10.5
         version: 4.10.5
@@ -50,7 +50,7 @@ importers:
         specifier: ^20.0.0
         version: 20.19.39
 
-  packages/skill-shared:
+  packages/shared:
     dependencies:
       '@oclif/core':
         specifier: ^4.10.5

@@ -1,4 +1,4 @@
-import { MBSCommand } from '@mbs/skill-shared'
+import { MBSCommand } from '@mbs/shared'
 
 export default class OrgPlatforms extends MBSCommand {
   static description = 'List all platforms (平台列表)'
