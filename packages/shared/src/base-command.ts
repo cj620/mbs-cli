@@ -7,7 +7,7 @@ import { Command } from "@oclif/core";
 import { getAuthContext } from "./auth/index.js";
 import { getConfig } from "./config.js";
 import { APIClient } from "./http.js";
-import { NotAuthenticatedError, MBSError } from "./errors.js";
+import { NotAuthenticatedError, MBSError, PermissionError } from "./errors.js";
 
 export abstract class MBSCommand extends Command {
   protected client!: APIClient;
@@ -39,6 +39,16 @@ export abstract class MBSCommand extends Command {
         }),
       );
       this.exit(2);
+      return;
+    }
+    if (err instanceof PermissionError) {
+      this.log(
+        JSON.stringify({
+          ok: false,
+          error: { type: err.type, message: err.message, hint: err.hint },
+        }),
+      );
+      this.exit(1);
       return;
     }
     if (err instanceof MBSError) {

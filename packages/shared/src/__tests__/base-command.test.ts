@@ -1,6 +1,6 @@
 // packages/skill-shared/src/__tests__/base-command.test.ts
 import { describe, it, expect } from 'vitest'
-import { NotAuthenticatedError, MBSError } from '../errors.js'
+import { NotAuthenticatedError, MBSError, PermissionError } from '../errors.js'
 
 // We test the error handling logic of MBSCommand by testing the catch method directly
 // Full command integration testing happens in cli package
@@ -36,6 +36,24 @@ describe('MBSCommand error formatting', () => {
     expect(output).toEqual({
       ok: false,
       error: { type: 'api', message: 'Server error', hint: 'Try again later' },
+    })
+  })
+
+  it('formats PermissionError as permission type with exit 1', () => {
+    const err = new PermissionError()
+    const isPermission = err instanceof PermissionError
+    expect(isPermission).toBe(true)
+
+    const output = JSON.parse(
+      JSON.stringify({ ok: false, error: { type: err.type, message: err.message, hint: err.hint } }),
+    )
+    expect(output).toEqual({
+      ok: false,
+      error: {
+        type: 'permission',
+        message: 'Permission denied',
+        hint: 'You do not have permission to perform this action',
+      },
     })
   })
 })
