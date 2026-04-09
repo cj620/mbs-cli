@@ -1,6 +1,6 @@
 // packages/skill-shared/src/__tests__/errors.test.ts
 import { describe, it, expect } from 'vitest'
-import { NotAuthenticatedError, MBSError } from '../errors.js'
+import { NotAuthenticatedError, MBSError, PermissionError } from '../errors.js'
 
 describe('NotAuthenticatedError', () => {
   it('has type "auth" and a hint', () => {
@@ -23,5 +23,15 @@ describe('MBSError', () => {
     const err = new MBSError('bad input', 'validation', 'Check the --status flag')
     expect(err.type).toBe('validation')
     expect(err.hint).toBe('Check the --status flag')
+  })
+})
+
+describe('PermissionError', () => {
+  it('has type "permission" and a hint', () => {
+    const err = new PermissionError()
+    expect(err.type).toBe('permission')
+    expect(err.hint).toBe('You do not have permission to perform this action')
+    expect(err.message).toBe('Permission denied')
+    expect(err instanceof Error).toBe(true)
   })
 })

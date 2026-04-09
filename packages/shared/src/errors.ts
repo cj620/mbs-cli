@@ -19,3 +19,13 @@ export class MBSError extends Error {
     this.name = 'MBSError'
   }
 }
+
+export class PermissionError extends Error {
+  readonly type = 'permission' as const
+  readonly hint = 'You do not have permission to perform this action'
+
+  constructor() {
+    super('Permission denied')
+    this.name = 'PermissionError'
+  }
+}
