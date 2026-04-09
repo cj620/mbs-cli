@@ -1,5 +1,7 @@
 // packages/skill-shared/src/http.ts
 import axios, { type AxiosInstance, type AxiosRequestConfig } from 'axios'
+import { NotAuthenticatedError, PermissionError, MBSError } from './errors.js'
+import type { RawApiResponse } from './types.js'
 
 export interface GetOptions {
   pathPrefix?: string
@@ -10,6 +12,17 @@ export interface PostOptions {
   pathPrefix?: string
 }
 
+/**
+ * 错误码映射表。新增错误码在此追加一行即可。
+ * key: 服务端 code 值
+ * value: 工厂函数，返回对应的 Error 实例
+ */
+const API_CODE_HANDLERS: Record<number, () => Error> = {
+  601: () => new NotAuthenticatedError(),
+  109: () => new PermissionError(),
+  403: () => new PermissionError(),
+}
+
 export class APIClient {
   private readonly instance: AxiosInstance
 
@@ -17,6 +30,17 @@ export class APIClient {
     this.instance = axios.create({
       baseURL,
       headers: { Cookie: cookie },
+    })
+
+    this.instance.interceptors.response.use((response) => {
+      const raw = response.data as RawApiResponse
+      if (typeof raw?.code !== 'number') return response // 非标准端点，直接放行
+      if (raw.code === 0) return response // 成功，放行
+
+      const handler = API_CODE_HANDLERS[raw.code]
+      if (handler) throw handler()
+
+      throw new MBSError(raw.msg ?? `API error (code: ${raw.code})`)
     })
   }
 
