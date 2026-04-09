@@ -21,7 +21,7 @@ describe('APIClient', () => {
     }
     mockAxios.create = vi.fn().mockReturnValue(instance)
 
-    const c = new APIClient('http://api.example.com', 'SESSION=abc123')
+    const c = new APIClient('http://api.example.com', 'SESSION=abc123', vi.fn())
     await c.get('/v1/orders')
 
     expect(mockAxios.create).toHaveBeenCalledWith({
@@ -39,7 +39,7 @@ describe('APIClient', () => {
     }
     mockAxios.create = vi.fn().mockReturnValue(instance)
 
-    const c = new APIClient('http://api.example.com', 'SESSION=abc123')
+    const c = new APIClient('http://api.example.com', 'SESSION=abc123', vi.fn())
     await c.post('/v1/export', { from: '2026-01-01' })
     expect(instance.post).toHaveBeenCalledWith('/v1/export', { from: '2026-01-01' })
   })
@@ -49,9 +49,9 @@ describe('APIClient response interceptor', () => {
   function captureInterceptor() {
     let onFulfilled!: (res: { data: unknown }) => unknown
     const instance = {
-      get: vi.fn(),
-      post: vi.fn(),
-      request: vi.fn(),
+      get: vi.fn().mockResolvedValue({}),
+      post: vi.fn().mockResolvedValue({}),
+      request: vi.fn().mockResolvedValue({}),
       interceptors: {
         response: {
           use: vi.fn().mockImplementation((fn: (res: { data: unknown }) => unknown) => {
@@ -61,7 +61,7 @@ describe('APIClient response interceptor', () => {
       },
     }
     mockAxios.create = vi.fn().mockReturnValue(instance)
-    new APIClient('http://api.example.com', 'SESSION=abc123')
+    new APIClient('http://api.example.com', 'SESSION=abc123', vi.fn())
     return onFulfilled
   }
 
@@ -87,22 +87,22 @@ describe('APIClient response interceptor', () => {
     expect(() => interceptor({ data: { code: 109, data: null, msg: 'no permission' } })).toThrow(PermissionError)
   })
 
-  it('throws PermissionError when code === 403', () => {
+  it('throws NotAuthenticatedError when code === 403', () => {
     const interceptor = captureInterceptor()
-    expect(() => interceptor({ data: { code: 403, data: null, msg: 'forbidden' } })).toThrow(PermissionError)
+    expect(() => interceptor({ data: { code: 403, data: null, msg: 'forbidden' } })).toThrow(NotAuthenticatedError)
   })
 
-  it('throws MBSError with server msg for unknown error code', () => {
+  it('throws NotAuthenticatedError for unknown error code', () => {
     const interceptor = captureInterceptor()
-    expect(() => interceptor({ data: { code: 500, data: null, msg: 'internal error' } })).toThrow(MBSError)
+    expect(() => interceptor({ data: { code: 500, data: null, msg: 'internal error' } })).toThrow(NotAuthenticatedError)
   })
 
-  it('uses fallback message when msg is missing', () => {
+  it('throws NotAuthenticatedError when msg is missing for code 500', () => {
     const interceptor = captureInterceptor()
     try {
       interceptor({ data: { code: 500, data: null } })
     } catch (e) {
-      expect((e as MBSError).message).toBe('API error (code: 500)')
+      expect((e as NotAuthenticatedError).message).toBe('Not authenticated')
     }
   })
 

@@ -4,7 +4,7 @@
  */
 // packages/skill-shared/src/base-command.ts
 import { Command } from "@oclif/core";
-import { getAuthContext } from "./auth/index.js";
+import { getAuthContext, forceRefreshAuthContext } from "./auth/index.js";
 import { getConfig } from "./config.js";
 import { APIClient } from "./http.js";
 import { NotAuthenticatedError, MBSError, PermissionError } from "./errors.js";
@@ -17,7 +17,12 @@ export abstract class MBSCommand extends Command {
     const { cookie } = await getAuthContext();
     const { apiUrl } = getConfig();
 
-    this.client = new APIClient(apiUrl, cookie);
+    const refreshAuth = async (): Promise<string> => {
+      const { cookie: newCookie } = await forceRefreshAuthContext();
+      return newCookie;
+    };
+
+    this.client = new APIClient(apiUrl, cookie, refreshAuth);
   }
 
   protected output(data: unknown, meta?: Record<string, unknown>): void {

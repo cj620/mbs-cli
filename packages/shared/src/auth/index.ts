@@ -25,3 +25,14 @@ export async function getAuthContext(): Promise<AuthContext> {
 
   return { cookie, userInfo }
 }
+
+export async function forceRefreshAuthContext(): Promise<AuthContext> {
+  const key = await getKey()
+  if (!key) throw new NotAuthenticatedError()
+
+  const { apiUrl } = getConfig()
+  const { cookie, userInfo } = await refreshCookieAndUserInfo(apiUrl, key)
+  writeCookieAndUserInfo(cookie, userInfo)
+
+  return { cookie, userInfo }
+}
