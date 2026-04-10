@@ -40,14 +40,17 @@ jobs:
 
       - name: Resolve workspace deps in deploy package.json
         working-directory: ${{ runner.temp }}/mbs-deploy
+        env:
+          DEPLOY_DIR: ${{ runner.temp }}/mbs-deploy
         run: |
           node -e "
           const fs = require('fs');
+          const path = require('path');
+          const deployDir = process.env.DEPLOY_DIR;
           const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
           for (const [name, ver] of Object.entries(pkg.dependencies || {})) {
             if (ver.startsWith('workspace:')) {
-              const dep = JSON.parse(fs.readFileSync('node_modules/' + name + '/package.json', 'utf8'));
-              pkg.dependencies[name] = dep.version;
+              pkg.dependencies[name] = 'file:' + path.join(deployDir, 'node_modules', name);
             }
           }
           fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2));
