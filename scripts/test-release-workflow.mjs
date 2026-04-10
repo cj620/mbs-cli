@@ -15,4 +15,10 @@ assert.match(
   'release workflow must dereference workspace symlinks when copying packages into .ws'
 )
 
+assert.match(
+  workflow,
+  /rewriteWorkspaceRefs\(wsPkg,\s*workspaceFileRefs\)/,
+  'release workflow must rewrite workspace:* references inside copied .ws package manifests'
+)
+
 console.log('release workflow preserves deploy bundle and dereferences workspace symlinks')
