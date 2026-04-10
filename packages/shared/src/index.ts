@@ -4,6 +4,15 @@ export { NotAuthenticatedError, MBSError } from './errors.js'
 export { getConfig, setConfig, getConfigDir } from './config.js'
 export { APIClient } from './http.js'
 export { MBSCommand } from './base-command.js'
+export {
+  detectInstalledUpdateSource,
+  fetchLatestReleaseInfo,
+  findExtractedBundleRoot,
+  replaceDirectoryWithRollback,
+  resolveReleaseTarget,
+  selectReleaseAsset,
+  validateCliBundle,
+} from './update.js'
 export { getAuthContext, forceRefreshAuthContext } from './auth/index.js'
 export { setKey, getKey, deleteKey } from './auth/key-store.js'
 export { clearCookie, readCookie, readUserInfo, readCacheTimestamp } from './auth/cookie-cache.js'

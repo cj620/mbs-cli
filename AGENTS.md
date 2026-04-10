@@ -16,6 +16,12 @@ mbs login
 
 # 验证认证状态
 mbs whoami
+
+# 检查版本
+mbs version
+
+# 更新 CLI（默认自动选择 npm 或 GitHub Release）
+mbs update
 ```
 
 `whoami` 返回示例：
@@ -48,6 +54,28 @@ mbs whoami
 ```
 
 **退出码：** `0`=成功 `1`=错误 `2`=认证失败
+
+---
+
+## 版本与更新
+
+```bash
+# 查看当前版本，并检查 GitHub Release 最新版本
+mbs version
+
+# 自动更新：
+# - 当前是 npm 全局安装时，优先走 npm
+# - 其他安装形态时，走 GitHub Release 制品
+mbs update
+
+# 强制使用 npm 更新
+mbs update --source npm
+
+# 强制使用 GitHub Release 制品更新
+mbs update --source release
+```
+
+详细说明见 [packages/cli/docs/version-and-update.md](packages/cli/docs/version-and-update.md)。
 
 ---
 
@@ -116,6 +144,9 @@ mbs raw GET /v1/products --params '{"status":"active"}'
 
 需要其他业务数据（订单/商品/财务）？
   └→ 用 mbs raw GET/POST <path>
+
+需要查看版本或更新 CLI？
+  └→ 用 mbs version / mbs update [--source auto|npm|release]
 
 不确定 API 路径？
   └→ 先用 mbs raw，再提议封装为 skill

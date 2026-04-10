@@ -1,12 +1,8 @@
 import { Command } from '@oclif/core'
+import { fetchLatestReleaseInfo } from '@mbs/shared'
 import { createRequire } from 'node:module'
 
 const require = createRequire(import.meta.url)
-
-interface GitHubRelease {
-  tag_name: string
-  html_url: string
-}
 
 interface VersionCheckResult {
   latest: string | null
@@ -14,23 +10,13 @@ interface VersionCheckResult {
 }
 
 async function fetchLatestRelease(): Promise<VersionCheckResult> {
-  const controller = new AbortController()
-  const timeout = setTimeout(() => controller.abort(), 3000)
   try {
-    const res = await fetch('https://api.github.com/repos/cj620/mbs-cli/releases/latest', {
-      signal: controller.signal,
-      headers: { 'User-Agent': 'mbs-cli' },
-    })
-    clearTimeout(timeout)
-    if (!res.ok) return { latest: null }
-    const data = (await res.json()) as GitHubRelease
-    if (!data.tag_name) return { latest: null }
+    const data = await fetchLatestReleaseInfo()
     return {
-      latest: data.tag_name.replace(/^v/, ''),
-      releaseUrl: data.html_url,
+      latest: data.version,
+      releaseUrl: data.releaseUrl,
     }
   } catch {
-    clearTimeout(timeout)
     return { latest: null }
   }
 }

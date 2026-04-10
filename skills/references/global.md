@@ -22,6 +22,24 @@ mbs raw GET /v1/orders
 mbs raw POST /v1/export --body '{"from":"2026-01-01","to":"2026-04-08"}'
 ```
 
+### 版本与更新
+
+```bash
+# 查看当前版本，并检查 GitHub Release 最新版本
+mbs version
+
+# 自动选择更新来源
+mbs update
+
+# 强制 npm 全局更新
+mbs update --source npm
+
+# 强制 GitHub Release 制品更新
+mbs update --source release
+```
+
+详细说明见 `packages/cli/docs/version-and-update.md`。
+
 ---
 
 ## 输出格式（所有命令统一）
