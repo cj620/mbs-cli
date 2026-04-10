@@ -5,7 +5,8 @@
 ### 首次配置
 
 ```bash
-mbs login         # 浏览器完成 SSO，token 存入系统钥匙串
+mbs login         # Playwright 启动 Chromium 登录页，监听登录请求提取 key
+npx -y playwright install chromium   # 若空白电脑缺少 Playwright 浏览器运行时，先补装
 mbs whoami        # 验证认证状态
 ```
 
