@@ -3,7 +3,8 @@
     "allow": [
       "Bash(pnpm install:*)",
       "WebFetch(domain:registry.npmjs.org)",
-      "Bash(npm view:*)"
+      "Bash(npm view:*)",
+      "Bash(node -e \"const p=require\\('./packages/cli/package.json'\\);const [ma,mi,pa]=p.version.split\\('.'\\).map\\(Number\\);console.log\\('current:',p.version,'next patch: '+ma+'.'+mi+'.'+\\(pa+1\\)\\)\")"
     ]
   }
 }
