@@ -1,5 +1,5 @@
 import { Flags } from "@oclif/core";
-import { MBSCommand } from "@mbs/shared";
+import { MBSCommand } from "@mb-it-org/shared";
 
 export default class OrgShopManagers extends MBSCommand {
   static description = "List shop managers (店长下拉)";

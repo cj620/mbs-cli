@@ -8,7 +8,7 @@ import {
   resolveReleaseTarget,
   selectReleaseAsset,
   validateCliBundle,
-} from '@mbs/shared'
+} from '@mb-it-org/shared'
 import { createWriteStream, mkdtempSync, mkdirSync, readFileSync, rmSync } from 'node:fs'
 import { dirname, join, resolve } from 'node:path'
 import { pipeline } from 'node:stream/promises'

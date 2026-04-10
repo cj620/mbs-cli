@@ -1,5 +1,5 @@
 import { Command } from '@oclif/core'
-import { fetchLatestReleaseInfo } from '@mbs/shared'
+import { fetchLatestReleaseInfo } from '@mb-it-org/shared'
 import { createRequire } from 'node:module'
 
 const require = createRequire(import.meta.url)

@@ -1,6 +1,6 @@
 // packages/cli/src/commands/refresh.ts
 import { Command } from '@oclif/core'
-import { getKey, forceRefreshAuthContext, NotAuthenticatedError } from '@mbs/shared'
+import { getKey, forceRefreshAuthContext, NotAuthenticatedError } from '@mb-it-org/shared'
 
 export default class Refresh extends Command {
   static description = 'Refresh the authentication cookie using the stored key'

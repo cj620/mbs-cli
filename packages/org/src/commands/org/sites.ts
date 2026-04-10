@@ -1,5 +1,5 @@
 import { Flags } from '@oclif/core'
-import { MBSCommand } from '@mbs/shared'
+import { MBSCommand } from '@mb-it-org/shared'
 
 export default class OrgSites extends MBSCommand {
   static description = 'List sites by platform (站点列表)'

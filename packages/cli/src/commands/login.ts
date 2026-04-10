@@ -1,7 +1,7 @@
 // packages/cli/src/commands/login.ts
 import { Command } from '@oclif/core'
 import { chromium } from 'playwright-core'
-import { setKey, getAuthContext, LOGIN_URL, ERPLOGIN_PATH, KEY_PARAM, LOGIN_TIMEOUT_MS } from '@mbs/shared'
+import { setKey, getAuthContext, LOGIN_URL, ERPLOGIN_PATH, KEY_PARAM, LOGIN_TIMEOUT_MS } from '@mb-it-org/shared'
 
 const MISSING_BROWSER_MESSAGE = 'Chromium runtime is not installed'
 const MISSING_BROWSER_HINT = 'Run `npx -y playwright install chromium` and try `mbs login` again'

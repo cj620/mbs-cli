@@ -4,7 +4,7 @@ const mockSetKey = vi.fn()
 const mockGetAuthContext = vi.fn()
 const mockLaunch = vi.fn()
 
-vi.mock('@mbs/shared', () => ({
+vi.mock('@mb-it-org/shared', () => ({
   LOGIN_URL: 'https://example.com/login',
   ERPLOGIN_PATH: '/yyaccount/account/user/erplogin',
   KEY_PARAM: 'key',
