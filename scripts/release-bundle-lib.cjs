@@ -86,6 +86,96 @@ function supportsPlatform(pkgJson, target) {
   return matchesConstraint(pkgJson.os, target.platform) && matchesConstraint(pkgJson.cpu, target.arch)
 }
 
+function pruneDependencyReferences(node, removedSet) {
+  if (!node || typeof node !== 'object') return
+
+  for (const field of ['dependencies', 'optionalDependencies', 'peerDependencies', 'requires']) {
+    const deps = node[field]
+    if (!deps || typeof deps !== 'object') continue
+
+    for (const packageName of removedSet) {
+      if (packageName in deps) {
+        delete deps[packageName]
+      }
+    }
+
+    if (Object.keys(deps).length === 0) {
+      delete node[field]
+    }
+  }
+}
+
+function lockfileEntryMatchesPackage(entryPath, packageName) {
+  const normalizedEntryPath = String(entryPath).replace(/\\/g, '/')
+  const normalizedPackagePath = `node_modules/${packageName}`
+  return (
+    normalizedEntryPath === normalizedPackagePath ||
+    normalizedEntryPath.endsWith(`/${normalizedPackagePath}`)
+  )
+}
+
+function pruneUnsupportedOptionalDependenciesFromLockfile(lockfilePath, removedNames) {
+  if (!existsSync(lockfilePath) || removedNames.length === 0) {
+    return false
+  }
+
+  const lockfile = readJson(lockfilePath)
+  const removedSet = new Set(removedNames)
+  let changed = false
+
+  if (lockfile.packages && typeof lockfile.packages === 'object') {
+    for (const entryPath of Object.keys(lockfile.packages)) {
+      if (Array.from(removedSet).some(packageName => lockfileEntryMatchesPackage(entryPath, packageName))) {
+        delete lockfile.packages[entryPath]
+        changed = true
+        continue
+      }
+
+      const entry = lockfile.packages[entryPath]
+      const before = JSON.stringify(entry)
+      pruneDependencyReferences(entry, removedSet)
+      if (JSON.stringify(entry) !== before) {
+        changed = true
+      }
+    }
+  }
+
+  function pruneDependencyTree(dependencies) {
+    if (!dependencies || typeof dependencies !== 'object') return false
+
+    let treeChanged = false
+    for (const packageName of Object.keys(dependencies)) {
+      if (removedSet.has(packageName)) {
+        delete dependencies[packageName]
+        treeChanged = true
+        continue
+      }
+
+      const dependency = dependencies[packageName]
+      const before = JSON.stringify(dependency)
+      pruneDependencyReferences(dependency, removedSet)
+      if (pruneDependencyTree(dependency.dependencies)) {
+        treeChanged = true
+      }
+      if (JSON.stringify(dependency) !== before) {
+        treeChanged = true
+      }
+    }
+
+    return treeChanged
+  }
+
+  if (pruneDependencyTree(lockfile.dependencies)) {
+    changed = true
+  }
+
+  if (changed) {
+    writeJson(lockfilePath, lockfile)
+  }
+
+  return changed
+}
+
 function pruneUnsupportedOptionalDependencies(rootDir, target = { platform: process.platform, arch: process.arch }) {
   const packageJsonPaths = getPackageJsonPaths(rootDir)
   const optionalDependencyNames = new Set()
@@ -135,11 +225,15 @@ function pruneUnsupportedOptionalDependencies(rootDir, target = { platform: proc
     }
   }
 
+  pruneUnsupportedOptionalDependenciesFromLockfile(path.join(rootDir, 'npm-shrinkwrap.json'), removed)
+  pruneUnsupportedOptionalDependenciesFromLockfile(path.join(rootDir, 'package-lock.json'), removed)
+
   return removed
 }
 
 module.exports = {
   getPackageJsonPaths,
   pruneUnsupportedOptionalDependencies,
+  pruneUnsupportedOptionalDependenciesFromLockfile,
   supportsPlatform,
 }

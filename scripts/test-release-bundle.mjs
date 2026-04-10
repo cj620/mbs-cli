@@ -7,6 +7,7 @@ import path from 'node:path'
 import bundleLib from './release-bundle-lib.cjs'
 
 const { pruneUnsupportedOptionalDependencies, supportsPlatform } = bundleLib
+const { pruneUnsupportedOptionalDependenciesFromLockfile } = bundleLib
 
 function writeJson(filePath, data) {
   mkdirSync(path.dirname(filePath), { recursive: true })
@@ -101,6 +102,61 @@ test('pruneUnsupportedOptionalDependencies keeps supported optional packages int
 
     const watcherPkg = JSON.parse(readFileSync(path.join(rootDir, 'node_modules', 'watcher', 'package.json'), 'utf8'))
     assert.deepEqual(watcherPkg.optionalDependencies, { 'native-addon': '1.0.0' })
+  } finally {
+    rmSync(rootDir, { recursive: true, force: true })
+  }
+})
+
+test('pruneUnsupportedOptionalDependenciesFromLockfile removes stale optional dependency entries', () => {
+  const rootDir = mkdtempSync(path.join(tmpdir(), 'mbs-release-bundle-'))
+
+  try {
+    const lockfilePath = path.join(rootDir, 'npm-shrinkwrap.json')
+    writeJson(lockfilePath, {
+      name: '@mb-it-org/cli',
+      version: '0.1.27',
+      lockfileVersion: 3,
+      packages: {
+        '': {
+          name: '@mb-it-org/cli',
+          version: '0.1.27',
+          dependencies: {
+            playwright: '1.59.1',
+          },
+        },
+        'node_modules/playwright': {
+          version: '1.59.1',
+          optionalDependencies: {
+            fsevents: '2.3.2',
+          },
+        },
+        'node_modules/fsevents': {
+          version: '2.3.2',
+          optional: true,
+        },
+      },
+      dependencies: {
+        playwright: {
+          version: '1.59.1',
+          optionalDependencies: {
+            fsevents: '2.3.2',
+          },
+        },
+        fsevents: {
+          version: '2.3.2',
+          optional: true,
+        },
+      },
+    })
+
+    const changed = pruneUnsupportedOptionalDependenciesFromLockfile(lockfilePath, ['fsevents'])
+    assert.equal(changed, true)
+
+    const lockfile = JSON.parse(readFileSync(lockfilePath, 'utf8'))
+    assert.equal(lockfile.packages['node_modules/fsevents'], undefined)
+    assert.equal(lockfile.dependencies.fsevents, undefined)
+    assert.equal('optionalDependencies' in lockfile.packages['node_modules/playwright'], false)
+    assert.equal('optionalDependencies' in lockfile.dependencies.playwright, false)
   } finally {
     rmSync(rootDir, { recursive: true, force: true })
   }
