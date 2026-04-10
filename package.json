@@ -5,9 +5,9 @@
     "build": "pnpm -r build",
     "test": "pnpm -r test",
     "dev": "pnpm --filter @mbs/cli dev",
-    "release:patch": "npm --prefix packages/cli version patch && git push origin master --tags",
-    "release:minor": "npm --prefix packages/cli version minor && git push origin master --tags",
-    "release:major": "npm --prefix packages/cli version major && git push origin master --tags"
+    "release:patch": "(cd packages/cli && npm version patch) && git push origin master --tags",
+    "release:minor": "(cd packages/cli && npm version minor) && git push origin master --tags",
+    "release:major": "(cd packages/cli && npm version major) && git push origin master --tags"
   },
   "devDependencies": {
     "typescript": "^5.4.0"
