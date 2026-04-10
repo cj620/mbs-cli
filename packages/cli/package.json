@@ -1,6 +1,6 @@
 {
   "name": "@mbs/cli",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "type": "module",
   "bin": {
     "mbs": "./bin/run.js"
@@ -22,6 +22,10 @@
       "version": "20.19.1"
     }
   },
+  "files": [
+    "bin",
+    "dist"
+  ],
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch"
