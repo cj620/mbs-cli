@@ -38,6 +38,10 @@ jobs:
           pnpm deploy --filter @mbs/cli --legacy ${{ runner.temp }}/mbs-deploy
           ln -s ${{ github.workspace }}/.git ${{ runner.temp }}/mbs-deploy/.git
 
+      - name: Generate npm shrinkwrap for oclif
+        working-directory: ${{ runner.temp }}/mbs-deploy
+        run: npm shrinkwrap --ignore-scripts
+
       - name: Generate oclif manifest
         working-directory: ${{ runner.temp }}/mbs-deploy
         run: ./node_modules/.bin/oclif manifest
