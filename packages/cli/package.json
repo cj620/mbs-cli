@@ -1,6 +1,6 @@
 {
   "name": "@mbs/cli",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "type": "module",
   "bin": {
     "mbs": "./bin/run.js"
@@ -14,7 +14,9 @@
       "target": "./dist/commands"
     },
     "topicSeparator": " ",
-    "plugins": ["@mbs/org"],
+    "plugins": [
+      "@mbs/org"
+    ],
     "additionalVersionFlags": [],
     "node": {
       "version": "20.19.1"
