@@ -95,6 +95,12 @@ assert.match(
 
 assert.match(
   workflow,
+  /node .*scripts\/materialize-bundled-workspace-deps\.cjs \.[\s\S]*rm -f npm-shrinkwrap\.json package-lock\.json[\s\S]*npm shrinkwrap --ignore-scripts/,
+  'release workflow must regenerate npm shrinkwrap after materializing bundled workspace dependencies so bundled links stop pointing at .ws'
+)
+
+assert.match(
+  workflow,
   /rm -f pnpm-lock\.yaml/,
   'release workflow must remove pnpm-lock.yaml so oclif re-installs from npm shrinkwrap instead of pnpm workspace links'
 )
@@ -115,6 +121,12 @@ assert.match(
   workflow,
   /npm-shrinkwrap\.json must not include playwright as a production dependency/,
   'release workflow must reject shrinkwraps that still contain playwright'
+)
+
+assert.match(
+  workflow,
+  /shrinkwrap still contains bundled workspace link entries/,
+  'release workflow must fail fast when npm-shrinkwrap.json still points bundled packages at .ws workspace links'
 )
 
 assert.match(
