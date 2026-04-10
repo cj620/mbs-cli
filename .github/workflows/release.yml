@@ -32,33 +32,39 @@ jobs:
         run: pnpm -r build
 
       - name: Create CLI deploy bundle
-        # pnpm deploy flattens workspace packages into a self-contained directory
-        # so oclif pack can find @mbs/org and @mbs/shared without symlink issues
-        run: |
-          pnpm deploy --filter @mbs/cli --legacy ${{ runner.temp }}/mbs-deploy
-          ln -s ${{ github.workspace }}/.git ${{ runner.temp }}/mbs-deploy/.git
+        run: pnpm deploy --filter @mbs/cli --legacy ${{ runner.temp }}/mbs-deploy
 
-      - name: Resolve workspace deps in deploy package.json
+      - name: Convert to npm-compatible layout
         working-directory: ${{ runner.temp }}/mbs-deploy
-        env:
-          DEPLOY_DIR: ${{ runner.temp }}/mbs-deploy
         run: |
-          node -e "
+          # Extract workspace packages to a stable directory with absolute file: refs
+          node << 'EOF'
           const fs = require('fs');
           const path = require('path');
-          const deployDir = process.env.DEPLOY_DIR;
+          const deployDir = process.cwd();
           const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
-          for (const [name, ver] of Object.entries(pkg.dependencies || {})) {
-            if (ver.startsWith('workspace:')) {
-              pkg.dependencies[name] = 'file:' + path.join(deployDir, 'node_modules', name);
-            }
-          }
-          fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2));
-          "
 
-      - name: Generate npm shrinkwrap for oclif
-        working-directory: ${{ runner.temp }}/mbs-deploy
-        run: npm shrinkwrap --ignore-scripts
+          fs.mkdirSync('.ws', { recursive: true });
+
+          for (const [name, ver] of Object.entries(pkg.dependencies || {})) {
+            if (!ver.startsWith('workspace:')) continue;
+            const safeName = name.replace(/^@/, '').replace('/', '__');
+            const src = path.join('node_modules', name);
+            const dest = path.join('.ws', safeName);
+            fs.cpSync(src, dest, { recursive: true });
+            pkg.dependencies[name] = 'file:' + path.join(deployDir, '.ws', safeName);
+          }
+
+          fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2));
+          EOF
+
+          # Remove pnpm's virtual store and reinstall with plain npm
+          rm -rf node_modules
+          npm install --omit=dev --ignore-scripts
+          npm shrinkwrap --ignore-scripts
+
+          # Symlink .git so oclif can resolve git HEAD
+          ln -s ${{ github.workspace }}/.git .git
 
       - name: Generate oclif manifest
         working-directory: ${{ runner.temp }}/mbs-deploy
