@@ -61,6 +61,8 @@ jobs:
           # Remove pnpm's virtual store and reinstall with plain npm
           rm -rf node_modules
           npm install --omit=dev --ignore-scripts
+          # oclif is a devDep needed to run pack/manifest — install it as a prod dep
+          npm install oclif --ignore-scripts
           npm shrinkwrap --ignore-scripts
 
           # Symlink .git so oclif can resolve git HEAD
