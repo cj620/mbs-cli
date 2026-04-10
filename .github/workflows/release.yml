@@ -33,7 +33,7 @@ jobs:
         run: pnpm -r build
 
       - name: Create CLI deploy bundle
-        run: pnpm deploy --filter @mbs/cli --legacy ${{ runner.temp }}/mbs-deploy
+        run: pnpm deploy --filter @mb-it-org/cli --legacy ${{ runner.temp }}/mbs-deploy
 
       - name: Convert to npm-compatible layout
         working-directory: ${{ runner.temp }}/mbs-deploy
@@ -118,12 +118,12 @@ jobs:
           name: installers
           path: ${{ runner.temp }}/mbs-deploy/dist/*.tar.gz
 
-      - name: Publish @mbs/cli to npm
+      - name: Publish @mb-it-org/cli to npm
         working-directory: packages/cli
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
-          PUBLISHED_VERSION=$(npm view @mbs/cli version --json 2>/dev/null || echo '')
+          PUBLISHED_VERSION=$(npm view @mb-it-org/cli version --json 2>/dev/null || echo '')
           CURRENT_VERSION=$(node -p "require('./package.json').version")
 
           if [ "$PUBLISHED_VERSION" = "\"$CURRENT_VERSION\"" ] || [ "$PUBLISHED_VERSION" = "$CURRENT_VERSION" ]; then

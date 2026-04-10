@@ -44,5 +44,5 @@ execSync(`git tag ${tag}`, { stdio: 'inherit' })
 execSync(`git push ${getReleasePushArgs().join(' ')}`, { stdio: 'inherit' })
 
 console.log(
-  `\nRelease tag ${tag} created and pushed. CI will publish @mbs/cli to npm and create the GitHub release.`,
+  `\nRelease tag ${tag} created and pushed. CI will publish @mb-it-org/cli to npm and create the GitHub release.`,
 )

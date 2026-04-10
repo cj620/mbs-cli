@@ -5,8 +5,8 @@ const workflow = readFileSync(new URL('../.github/workflows/release.yml', import
 
 assert.match(
   workflow,
-  /pnpm deploy --filter @mbs\/cli --legacy \${{\s*runner\.temp\s*}}\/mbs-deploy/,
-  'release workflow must create a pnpm deploy bundle for @mbs/cli before oclif pack tarballs'
+  /pnpm deploy --filter @mb-it-org\/cli --legacy \${{\s*runner\.temp\s*}}\/mbs-deploy/,
+  'release workflow must create a pnpm deploy bundle for @mb-it-org/cli before oclif pack tarballs'
 )
 
 assert.match(
@@ -36,7 +36,19 @@ assert.match(
 assert.match(
   workflow,
   /npm publish(?:\s+--access public)?/,
-  'release workflow must publish @mbs/cli to npm'
+  'release workflow must publish @mb-it-org/cli to npm'
+)
+
+assert.match(
+  workflow,
+  /npm view @mb-it-org\/cli version --json/,
+  'release workflow must check the published version for @mb-it-org/cli before publishing'
+)
+
+assert.doesNotMatch(
+  workflow,
+  /@mbs\/cli/,
+  'release workflow should not keep publishing or checking the deprecated @mbs/cli package name'
 )
 
 const cliPackage = readFileSync(new URL('../packages/cli/package.json', import.meta.url), 'utf8')
@@ -47,4 +59,10 @@ assert.match(
   'packages/cli/package.json must declare public npm publish access'
 )
 
-console.log('release workflow preserves deploy bundle and publishes @mbs/cli to npm')
+assert.match(
+  cliPackage,
+  /"name":\s*"@mb-it-org\/cli"/,
+  'packages/cli/package.json must publish the @mb-it-org/cli package name'
+)
+
+console.log('release workflow preserves deploy bundle and publishes @mb-it-org/cli to npm')

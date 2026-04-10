@@ -16,11 +16,13 @@ mbs update --source npm
 mbs update --source release
 ```
 
+The npm package name is `@mb-it-org/cli`, but the installed command remains `mbs`.
+
 ## Maintainer Release Flow
 
-The npm package `@mbs/cli` is published by GitHub Actions, not by a local `npm publish`.
+The npm package `@mb-it-org/cli` is published by GitHub Actions, not by a local `npm publish`.
 
-1. Create a repository secret named `NPM_TOKEN` with publish access to `@mbs/cli`.
+1. Create a repository secret named `NPM_TOKEN` with publish access to `@mb-it-org/cli`.
 2. Run one of the release scripts from a clean `master` branch:
 
 ```bash
@@ -37,7 +39,7 @@ If the workflow reports that the version already exists on npm, bump the version
 ## Source Selection
 
 - `--source auto` is the default.
-- When the current CLI is installed under `node_modules/@mbs/cli`, `auto` uses npm.
+- When the current CLI is installed under `node_modules/@mb-it-org/cli`, `auto` uses npm.
 - Other installation layouts use the GitHub release bundle path.
 
 ## npm Update
@@ -45,10 +47,10 @@ If the workflow reports that the version already exists on npm, bump the version
 `mbs update --source npm` uses:
 
 ```bash
-npm install -g @mbs/cli@latest
+npm install -g @mb-it-org/cli@latest
 ```
 
-Use this when the CLI was installed with `npm install -g @mbs/cli`.
+Use this when the CLI was installed with `npm install -g @mb-it-org/cli`.
 
 Typical failure cases:
 

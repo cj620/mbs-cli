@@ -78,7 +78,7 @@ async function extractArchive(archivePath: string, destination: string): Promise
 
 async function fetchLatestNpmVersion(): Promise<string> {
   try {
-    const { stdout } = await execFileAsync(getNpmExecutable(), ['view', '@mbs/cli', 'version', '--json'])
+    const { stdout } = await execFileAsync(getNpmExecutable(), ['view', '@mb-it-org/cli', 'version', '--json'])
     const parsed = JSON.parse(stdout.trim()) as string
     if (!parsed) {
       throw new Error('missing version')
@@ -89,21 +89,21 @@ async function fetchLatestNpmVersion(): Promise<string> {
     throw new MBSError(
       'Failed to check latest CLI version from npm',
       'api',
-      'Unable to read @mbs/cli latest version from npm registry',
+      'Unable to read @mb-it-org/cli latest version from npm registry',
     )
   }
 }
 
 async function updateViaNpm(installDir: string): Promise<string> {
   try {
-    await execFileAsync(getNpmExecutable(), ['install', '-g', '@mbs/cli@latest'])
+    await execFileAsync(getNpmExecutable(), ['install', '-g', '@mb-it-org/cli@latest'])
     return readVersionFromInstallDir(installDir)
   } catch (error) {
     const code = typeof error === 'object' && error !== null && 'code' in error ? String(error.code) : ''
     const hint =
       code === 'EPERM' || code === 'EACCES' ?
         'Run the command with permission to modify the global npm installation'
-      : 'npm install -g @mbs/cli@latest failed'
+      : 'npm install -g @mb-it-org/cli@latest failed'
 
     throw new MBSError('Failed to update CLI via npm', 'api', hint)
   }

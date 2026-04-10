@@ -1,9 +1,9 @@
 {
-  "name": "@mbs/cli",
+  "name": "@mb-it-org/cli",
   "version": "0.1.24",
   "type": "module",
   "bin": {
-    "mbs": "./bin/run.js"
+    "mbs": "bin/run.js"
   },
   "oclif": {
     "bin": "mbs",

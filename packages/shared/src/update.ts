@@ -35,7 +35,7 @@ export type ReleaseTarget = 'win32-x64' | 'darwin-x64' | 'darwin-arm64'
 
 export function detectInstalledUpdateSource(installDir: string): InstalledUpdateSource {
   const normalized = installDir.replace(/\\/g, '/').toLowerCase()
-  return normalized.includes('/node_modules/@mbs/cli') ? 'npm' : 'release'
+  return normalized.includes('/node_modules/@mb-it-org/cli') ? 'npm' : 'release'
 }
 
 export function resolveReleaseTarget(

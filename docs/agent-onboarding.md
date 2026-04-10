@@ -2,6 +2,8 @@
 
 这份文档用于把一台空白电脑快速准备成“AI agent 可以直接使用 MBS CLI 和本仓库 skill 文档”的状态。
 
+说明：npm 包名使用 `@mb-it-org/cli`，但安装完成后执行的命令仍然是 `mbs`。
+
 目标不是教人手动点来点去，而是让你把这份文档交给终端型 AI agent 后，它能尽量自动完成安装、验证和接入，并在遇到阻塞时给出清晰反馈。
 
 ## 适用对象
@@ -22,7 +24,7 @@
 
 ## 最快可用主流程
 
-默认最佳路径：仓库已经在本机，agent 通过 npm 安装 `@mbs/cli`，然后读取本仓库里的 `skills/` 文档。
+默认最佳路径：仓库已经在本机，agent 通过 npm 安装 `@mb-it-org/cli`，然后读取本仓库里的 `skills/` 文档。
 
 ### Step 1: 检查基础环境
 
@@ -45,7 +47,7 @@ npm -v
 运行：
 
 ```bash
-npm install -g @mbs/cli
+npm install -g @mb-it-org/cli
 ```
 
 这是主流程，不要求从源码构建。
@@ -202,7 +204,7 @@ mbs org platforms
 
 请按下面规则执行：
 1. 先检查是否已安装 Node.js 和 npm；如果缺失，安装 Node.js 18+，优先当前 LTS。
-2. 检查是否已安装 mbs；如果没有，执行 npm install -g @mbs/cli。
+2. 检查是否已安装 mbs；如果没有，执行 npm install -g @mb-it-org/cli。
 3. 明确检查 mbs login 是否依赖 Playwright 浏览器运行时；如果缺少 Chromium/browser executable，先执行 npx -y playwright install chromium。
 4. 运行 mbs version 和 mbs whoami，并解释返回结果。
 5. 如果 mbs whoami 显示未登录、认证失效或退出码为 2，执行或提示执行 mbs login，然后再次验证。
@@ -259,7 +261,7 @@ mbs org platforms
 
 处理：
 
-1. 确认是否执行过 `npm install -g @mbs/cli`
+1. 确认是否执行过 `npm install -g @mb-it-org/cli`
 2. 如果执行过，检查 npm 全局安装目录是否已加入 PATH
 3. 重新打开 shell 后再次执行 `mbs version`
 
@@ -293,13 +295,13 @@ mbs login
 说明：
 
 - `mbs login` 当前依赖 Playwright 拉起 Chromium 登录页
-- 空白电脑上即使 `@mbs/cli` 已安装，也可能仍缺少浏览器运行时
+- 空白电脑上即使 `@mb-it-org/cli` 已安装，也可能仍缺少浏览器运行时
 
 ### npm 全局安装无权限
 
 现象：
 
-- `npm install -g @mbs/cli` 因权限失败
+- `npm install -g @mb-it-org/cli` 因权限失败
 
 处理：
 

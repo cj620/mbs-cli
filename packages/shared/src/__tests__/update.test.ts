@@ -16,7 +16,7 @@ import {
 describe('detectInstalledUpdateSource', () => {
   it('treats node_modules installs as npm-managed', () => {
     expect(
-      detectInstalledUpdateSource('C:\\Program Files\\nodejs\\node_global\\node_modules\\@mbs\\cli'),
+      detectInstalledUpdateSource('C:\\Program Files\\nodejs\\node_global\\node_modules\\@mb-it-org\\cli'),
     ).toBe('npm')
   })
 
@@ -155,7 +155,7 @@ describe('bundle preparation', () => {
     try {
       mkdirSync(join(bundleRoot, 'bin'), { recursive: true })
       mkdirSync(join(bundleRoot, 'dist'), { recursive: true })
-      writeFileSync(join(bundleRoot, 'package.json'), '{"name":"@mbs/cli"}', 'utf8')
+      writeFileSync(join(bundleRoot, 'package.json'), '{"name":"@mb-it-org/cli"}', 'utf8')
       writeFileSync(join(bundleRoot, 'bin', 'run.js'), '#!/usr/bin/env node', 'utf8')
 
       expect(() => validateCliBundle(bundleRoot)).not.toThrow()
