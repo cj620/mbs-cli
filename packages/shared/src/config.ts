@@ -17,7 +17,7 @@ const DEFAULT_CONFIG: MBSConfig = {
 export function getConfig(): MBSConfig {
   const path = getConfigPath()
   if (!existsSync(path)) {
-    return DEFAULT_CONFIG
+    throw new Error('MBS CLI not configured')
   }
   return JSON.parse(readFileSync(path, 'utf8')) as MBSConfig
 }
