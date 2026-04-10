@@ -1,5 +1,5 @@
 import { Flags } from "@oclif/core";
-import { MBSCommand } from "@mbs/shared";
+import { MBSCommand } from "@mb-it-org/shared";
 
 export default class OrgEmployees extends MBSCommand {
   static description = "List employees / team numbers (员工/团队编号下拉)";

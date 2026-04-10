@@ -1,7 +1,7 @@
 // packages/cli/src/commands/config/init.ts
 import { Command } from '@oclif/core'
 import { input } from '@inquirer/prompts'
-import { setConfig } from '@mbs/shared'
+import { setConfig } from '@mb-it-org/shared'
 
 export default class ConfigInit extends Command {
   static description = 'Initialize MBS CLI configuration'

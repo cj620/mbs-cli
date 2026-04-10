@@ -108,10 +108,12 @@ assert.match(
 assert.doesNotMatch(
   workflow,
   /@mbs\/cli/,
-  'release workflow should not keep publishing or checking the deprecated @mbs/cli package name'
+  'release workflow should not keep publishing or checking deprecated legacy package names'
 )
 
 const cliPackage = readFileSync(new URL('../packages/cli/package.json', import.meta.url), 'utf8')
+const orgPackage = readFileSync(new URL('../packages/org/package.json', import.meta.url), 'utf8')
+const sharedPackage = readFileSync(new URL('../packages/shared/package.json', import.meta.url), 'utf8')
 
 assert.match(
   cliPackage,
@@ -135,6 +137,42 @@ assert.match(
   cliPackage,
   /"playwright-core":\s*"/,
   'packages/cli/package.json must use playwright-core as the production browser automation dependency'
+)
+
+assert.match(
+  cliPackage,
+  /"@mb-it-org\/org":\s*"workspace:\*"/,
+  'packages/cli/package.json must depend on the renamed @mb-it-org/org workspace package'
+)
+
+assert.match(
+  cliPackage,
+  /"@mb-it-org\/shared":\s*"workspace:\*"/,
+  'packages/cli/package.json must depend on the renamed @mb-it-org/shared workspace package'
+)
+
+assert.match(
+  cliPackage,
+  /"plugins":\s*\[[\s\S]*"@mb-it-org\/org"/,
+  'packages/cli/package.json must reference the renamed @mb-it-org/org oclif plugin'
+)
+
+assert.match(
+  orgPackage,
+  /"name":\s*"@mb-it-org\/org"/,
+  'packages/org/package.json must rename the workspace package to @mb-it-org/org'
+)
+
+assert.match(
+  orgPackage,
+  /"@mb-it-org\/shared":\s*"workspace:\*"/,
+  'packages/org/package.json must depend on the renamed @mb-it-org/shared workspace package'
+)
+
+assert.match(
+  sharedPackage,
+  /"name":\s*"@mb-it-org\/shared"/,
+  'packages/shared/package.json must rename the workspace package to @mb-it-org/shared'
 )
 
 console.log('release workflow preserves deploy bundle and publishes @mb-it-org/cli to npm')

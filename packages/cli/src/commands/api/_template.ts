@@ -13,7 +13,7 @@
 // Naming: class ApiOrdersList → file: commands/api/orders/list.ts → command: api:orders:list
 
 import { Args, Flags } from '@oclif/core'
-import { MBSCommand } from '@mbs/shared'
+import { MBSCommand } from '@mb-it-org/shared'
 
 export default class ApiXxxYyy extends MBSCommand {
   static description = 'TODO: describe what this API endpoint does'

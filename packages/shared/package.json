@@ -1,5 +1,5 @@
 {
-  "name": "@mbs/shared",
+  "name": "@mb-it-org/shared",
   "version": "0.1.0",
   "type": "module",
   "exports": {
@@ -19,7 +19,7 @@
     "@oclif/core": "^4.10.5",
     "axios": "^1.6.0"
   },
-"devDependencies": {
+  "devDependencies": {
     "@types/node": "^20.0.0",
     "vitest": "^1.6.0"
   }

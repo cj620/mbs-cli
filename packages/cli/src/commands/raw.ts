@@ -1,6 +1,6 @@
 // packages/cli/src/commands/raw.ts
 import { Args, Flags } from '@oclif/core'
-import { MBSCommand } from '@mbs/shared'
+import { MBSCommand } from '@mb-it-org/shared'
 
 export default class Raw extends MBSCommand {
   static description = 'Make a raw authenticated HTTP request to the API'

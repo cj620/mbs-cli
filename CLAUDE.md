@@ -25,7 +25,7 @@ cli     MAY import from skill-shared
 ## Adding an L1 Skill Command (e.g. mbs orders list)
 
 1. File goes in `packages/skill-<name>/src/commands/<name>/<action>.ts`
-2. Class extends `MBSCommand` from `@mbs/skill-shared`
+2. Class extends `MBSCommand` from `@mb-it-org/shared`
 3. Use `this.client.get(...)` / `this.client.post(...)` — already authenticated
 4. Use `this.output(data, meta)` for success output — DO NOT use `console.log` or `this.log` directly for data
 5. Throw errors — `MBSCommand.catch()` formats them automatically
@@ -34,7 +34,7 @@ cli     MAY import from skill-shared
 Minimal example:
 ```typescript
 import { Flags } from '@oclif/core'
-import { MBSCommand } from '@mbs/skill-shared'
+import { MBSCommand } from '@mb-it-org/shared'
 
 export default class OrdersList extends MBSCommand {
   static description = 'List orders'
@@ -95,7 +95,7 @@ export default class OrdersList extends MBSCommand {
 
 | Pattern | Why forbidden |
 |---------|--------------|
-| `import ... from '@mbs/cli'` in skill packages | Reverse dependency — breaks isolation |
+| `import ... from '@mb-it-org/cli'` in skill packages | Reverse dependency — breaks isolation |
 | `import keytar from ...` outside `skill-shared/src/auth/key-store.ts` | Auth must be centralized |
 | `import { chromium } from 'playwright'` outside `cli/src/commands/login.ts` | Heavy dep, login-only |
 | `readFileSync` on `credentials.json` outside `skill-shared/src/auth/` | Same reason |

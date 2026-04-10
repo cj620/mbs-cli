@@ -1,6 +1,6 @@
 // packages/cli/src/commands/logout.ts
 import { Command } from '@oclif/core'
-import { deleteKey, clearCookie } from '@mbs/shared'
+import { deleteKey, clearCookie } from '@mb-it-org/shared'
 
 export default class Logout extends Command {
   static description = 'Log out and clear stored credentials'

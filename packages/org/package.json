@@ -1,5 +1,5 @@
 {
-  "name": "@mbs/org",
+  "name": "@mb-it-org/org",
   "version": "1.0.0",
   "type": "module",
   "exports": {
@@ -21,7 +21,7 @@
     "build": "tsc"
   },
   "dependencies": {
-    "@mbs/shared": "workspace:*",
+    "@mb-it-org/shared": "workspace:*",
     "@oclif/core": "^4.10.5"
   },
   "devDependencies": {

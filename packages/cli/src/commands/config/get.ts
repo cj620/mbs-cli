@@ -1,6 +1,6 @@
 // packages/cli/src/commands/config/get.ts
 import { Command } from '@oclif/core'
-import { getConfig } from '@mbs/shared'
+import { getConfig } from '@mb-it-org/shared'
 
 export default class ConfigGet extends Command {
   static description = 'Show current configuration'
