@@ -1,6 +1,6 @@
 {
   "name": "@mbs/cli",
-  "version": "0.1.10",
+  "version": "0.1.11",
   "type": "module",
   "bin": {
     "mbs": "./bin/run.js"

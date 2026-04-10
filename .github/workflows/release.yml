@@ -38,10 +38,14 @@ jobs:
 
       - name: Generate oclif manifest
         working-directory: ${{ runner.temp }}/mbs-deploy
+        env:
+          GIT_DIR: ${{ github.workspace }}/.git
         run: ./node_modules/.bin/oclif manifest
 
       - name: Pack tarballs for Mac + Windows
         working-directory: ${{ runner.temp }}/mbs-deploy
+        env:
+          GIT_DIR: ${{ github.workspace }}/.git
         run: ./node_modules/.bin/oclif pack tarballs --targets darwin-x64,darwin-arm64,win32-x64
 
       - name: Upload packed artifacts
