@@ -15,7 +15,10 @@
     },
     "topicSeparator": " ",
     "plugins": ["@mbs/org"],
-    "additionalVersionFlags": []
+    "additionalVersionFlags": [],
+    "node": {
+      "version": "20.19.1"
+    }
   },
   "scripts": {
     "build": "tsc",
@@ -30,6 +33,7 @@
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
+    "oclif": "^4",
     "typescript": "^5.4.0"
   }
 }
