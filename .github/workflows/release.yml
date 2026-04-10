@@ -202,9 +202,21 @@ jobs:
             throw new Error('publish manifest must preserve the mbs binary entry');
           }
 
+          if (pkg.dependencies?.playwright) {
+            throw new Error('publish manifest must not keep playwright as a production dependency');
+          }
+
+          if (!pkg.dependencies?.['playwright-core']) {
+            throw new Error('publish manifest must keep playwright-core as the login runtime dependency');
+          }
+
           const shrinkwrap = fs.readFileSync(path.join(process.cwd(), 'npm-shrinkwrap.json'), 'utf8');
           if (shrinkwrap.includes('workspace:')) {
             throw new Error('npm-shrinkwrap.json still contains workspace:* references');
+          }
+
+          if (shrinkwrap.includes('"node_modules/playwright"') || shrinkwrap.includes('"playwright": {')) {
+            throw new Error('npm-shrinkwrap.json must not include playwright as a production dependency');
           }
           EOF
 

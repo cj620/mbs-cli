@@ -83,6 +83,24 @@ assert.match(
 
 assert.match(
   workflow,
+  /pkg\.dependencies\?\.playwright/,
+  'release workflow must reject publish manifests that still ship playwright as a production dependency'
+)
+
+assert.match(
+  workflow,
+  /pkg\.dependencies\?\.\['playwright-core'\]/,
+  'release workflow must require playwright-core in the publish manifest'
+)
+
+assert.match(
+  workflow,
+  /npm-shrinkwrap\.json must not include playwright as a production dependency/,
+  'release workflow must reject shrinkwraps that still contain playwright'
+)
+
+assert.match(
+  workflow,
   /npm view @mb-it-org\/cli version --json/,
   'release workflow must check the published version for @mb-it-org/cli before publishing'
 )
@@ -105,6 +123,18 @@ assert.match(
   cliPackage,
   /"name":\s*"@mb-it-org\/cli"/,
   'packages/cli/package.json must publish the @mb-it-org/cli package name'
+)
+
+assert.doesNotMatch(
+  cliPackage,
+  /"playwright":\s*"/,
+  'packages/cli/package.json must not keep playwright as a production dependency'
+)
+
+assert.match(
+  cliPackage,
+  /"playwright-core":\s*"/,
+  'packages/cli/package.json must use playwright-core as the production browser automation dependency'
 )
 
 console.log('release workflow preserves deploy bundle and publishes @mb-it-org/cli to npm')

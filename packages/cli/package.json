@@ -32,18 +32,20 @@
   },
   "scripts": {
     "build": "tsc",
-    "dev": "tsc --watch"
+    "dev": "tsc --watch",
+    "test": "pnpm exec vitest run"
   },
   "dependencies": {
     "@inquirer/prompts": "^8.4.1",
     "@mbs/org": "workspace:*",
     "@mbs/shared": "workspace:*",
     "@oclif/core": "^4",
-    "playwright": "^1.44.0"
+    "playwright-core": "^1.44.0"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
     "oclif": "^4",
-    "typescript": "^5.4.0"
+    "typescript": "^5.4.0",
+    "vitest": "^1.6.1"
   }
 }

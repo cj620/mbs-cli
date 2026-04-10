@@ -1,7 +1,21 @@
 // packages/cli/src/commands/login.ts
 import { Command } from '@oclif/core'
-import { chromium } from 'playwright'
+import { chromium } from 'playwright-core'
 import { setKey, getAuthContext, LOGIN_URL, ERPLOGIN_PATH, KEY_PARAM, LOGIN_TIMEOUT_MS } from '@mbs/shared'
+
+const MISSING_BROWSER_MESSAGE = 'Chromium runtime is not installed'
+const MISSING_BROWSER_HINT = 'Run `npx -y playwright install chromium` and try `mbs login` again'
+
+function isMissingChromiumError(error: unknown): boolean {
+  if (!(error instanceof Error)) return false
+
+  const message = error.message.toLowerCase()
+  return (
+    message.includes("executable doesn't exist") ||
+    (message.includes('browser') && message.includes('executable')) ||
+    message.includes('playwright install')
+  )
+}
 
 export default class Login extends Command {
   static description = 'Authenticate with the MBS system via browser'
@@ -13,7 +27,27 @@ export default class Login extends Command {
     this.log('Opening browser for authentication...')
     this.log(`URL: ${LOGIN_URL}`)
 
-    const browser = await chromium.launch({ headless: false })
+    let browser: Awaited<ReturnType<typeof chromium.launch>> | undefined
+
+    try {
+      browser = await chromium.launch({ headless: false })
+    } catch (error) {
+      if (isMissingChromiumError(error)) {
+        this.log(
+          JSON.stringify({
+            ok: false,
+            error: {
+              type: 'validation',
+              message: MISSING_BROWSER_MESSAGE,
+              hint: MISSING_BROWSER_HINT,
+            },
+          }),
+        )
+        this.exit(1)
+        return
+      }
+      throw error
+    }
 
     try {
       const context = await browser.newContext()
