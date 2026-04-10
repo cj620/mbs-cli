@@ -4,7 +4,10 @@
   "scripts": {
     "build": "pnpm -r build",
     "test": "pnpm -r test",
-    "dev": "pnpm --filter @mbs/cli dev"
+    "dev": "pnpm --filter @mbs/cli dev",
+    "release:patch": "npm version patch && git push origin master --tags",
+    "release:minor": "npm version minor && git push origin master --tags",
+    "release:major": "npm version major && git push origin master --tags"
   },
   "devDependencies": {
     "typescript": "^5.4.0"

@@ -1,0 +1,98 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build & Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.28.2
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: pnpm -r build
+
+      - name: Test
+        run: pnpm -r test
+
+  release-notes:
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Generate Release Notes
+        id: notes
+        run: |
+          CURRENT_TAG="${GITHUB_REF_NAME}"
+          PREV_TAG=$(git tag --sort=-version:refname | grep -v "^${CURRENT_TAG}$" | head -n 1)
+
+          if [ -z "$PREV_TAG" ]; then
+            COMMITS=$(git log --pretty=format:"%s" HEAD)
+          else
+            COMMITS=$(git log --pretty=format:"%s" "${PREV_TAG}..HEAD")
+          fi
+
+          FEATURES=""
+          FIXES=""
+          MAINTENANCE=""
+
+          while IFS= read -r msg; do
+            if [[ "$msg" =~ ^feat(\(.+\))?: ]]; then
+              FEATURES="${FEATURES}- ${msg}\n"
+            elif [[ "$msg" =~ ^fix(\(.+\))?: ]]; then
+              FIXES="${FIXES}- ${msg}\n"
+            elif [[ "$msg" =~ ^(chore|ci|docs|refactor|perf|test|build)(\(.+\))?: ]]; then
+              MAINTENANCE="${MAINTENANCE}- ${msg}\n"
+            fi
+          done <<< "$COMMITS"
+
+          BODY=""
+          if [ -n "$FEATURES" ]; then
+            BODY="${BODY}## 新功能\n${FEATURES}\n"
+          fi
+          if [ -n "$FIXES" ]; then
+            BODY="${BODY}## Bug 修复\n${FIXES}\n"
+          fi
+          if [ -n "$MAINTENANCE" ]; then
+            BODY="${BODY}## 维护\n${MAINTENANCE}\n"
+          fi
+          if [ -z "$BODY" ]; then
+            BODY="本次发布无 Conventional Commits 格式提交记录。\n"
+          fi
+
+          # Write to file to avoid quoting issues
+          printf "%b" "$BODY" > release_notes.md
+          echo "prev_tag=${PREV_TAG}" >> "$GITHUB_OUTPUT"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: ${{ github.ref_name }}
+          body_path: release_notes.md
+          draft: false
+          prerelease: false
