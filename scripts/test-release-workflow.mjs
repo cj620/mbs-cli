@@ -71,6 +71,12 @@ assert.match(
 
 assert.match(
   workflow,
+  /publish bundle must remove pnpm-lock\.yaml before oclif packaging/,
+  'release workflow must fail fast if pnpm-lock.yaml survives into the publish bundle'
+)
+
+assert.match(
+  workflow,
   /bundledDependencies/,
   'release workflow must convert internal workspace packages into bundled dependencies for npm publish'
 )
@@ -85,6 +91,12 @@ assert.match(
   workflow,
   /node .*scripts\/materialize-bundled-workspace-deps\.cjs \./,
   'release workflow must materialize bundled workspace dependencies before running oclif pack tarballs'
+)
+
+assert.match(
+  workflow,
+  /rm -f pnpm-lock\.yaml/,
+  'release workflow must remove pnpm-lock.yaml so oclif re-installs from npm shrinkwrap instead of pnpm workspace links'
 )
 
 assert.match(

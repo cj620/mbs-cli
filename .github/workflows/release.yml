@@ -175,6 +175,7 @@ jobs:
 
           node ${{ github.workspace }}/scripts/prune-optional-platform-deps.cjs .
           npm shrinkwrap --ignore-scripts
+          rm -f pnpm-lock.yaml
 
       - name: Validate npm bundle installability
         working-directory: ${{ runner.temp }}/mbs-deploy
@@ -213,6 +214,10 @@ jobs:
           const shrinkwrap = fs.readFileSync(path.join(process.cwd(), 'npm-shrinkwrap.json'), 'utf8');
           if (shrinkwrap.includes('workspace:')) {
             throw new Error('npm-shrinkwrap.json still contains workspace:* references');
+          }
+
+          if (fs.existsSync(path.join(process.cwd(), 'pnpm-lock.yaml'))) {
+            throw new Error('publish bundle must remove pnpm-lock.yaml before oclif packaging');
           }
 
           if (shrinkwrap.includes('"node_modules/playwright"') || shrinkwrap.includes('"playwright": {')) {
