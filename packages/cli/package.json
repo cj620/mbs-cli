@@ -14,7 +14,8 @@
       "target": "./dist/commands"
     },
     "topicSeparator": " ",
-    "plugins": ["@mbs/org"]
+    "plugins": ["@mbs/org"],
+    "additionalVersionFlags": []
   },
   "scripts": {
     "build": "tsc",
