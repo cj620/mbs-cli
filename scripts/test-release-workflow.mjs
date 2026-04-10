@@ -5,8 +5,14 @@ const workflow = readFileSync(new URL('../.github/workflows/release.yml', import
 
 assert.match(
   workflow,
-  /cp\s+pnpm-lock\.yaml\s+\$\{\{\s*runner\.temp\s*\}\}\/mbs-deploy\/pnpm-lock\.yaml/,
-  'release workflow must copy pnpm-lock.yaml into the deploy bundle before oclif pack tarballs'
+  /pnpm deploy --filter @mbs\/cli --legacy \${{\s*runner\.temp\s*}}\/mbs-deploy/,
+  'release workflow must create a pnpm deploy bundle for @mbs/cli before oclif pack tarballs'
 )
 
-console.log('release workflow keeps pnpm-lock.yaml in the deploy bundle')
+assert.match(
+  workflow,
+  /fs\.cpSync\(src,\s*dest,\s*\{\s*recursive:\s*true,\s*dereference:\s*true\s*\}\)/,
+  'release workflow must dereference workspace symlinks when copying packages into .ws'
+)
+
+console.log('release workflow preserves deploy bundle and dereferences workspace symlinks')

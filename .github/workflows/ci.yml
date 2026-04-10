@@ -31,3 +31,6 @@ jobs:
 
       - name: Test
         run: pnpm -r test
+
+      - name: Validate release workflow guards
+        run: node scripts/test-release-workflow.mjs

@@ -51,7 +51,7 @@ jobs:
             const safeName = name.replace(/^@/, '').replace('/', '__');
             const src = path.join('node_modules', name);
             const dest = path.join('.ws', safeName);
-            fs.cpSync(src, dest, { recursive: true });
+            fs.cpSync(src, dest, { recursive: true, dereference: true });
             pkg.dependencies[name] = 'file:' + path.join(deployDir, '.ws', safeName);
           }
 
