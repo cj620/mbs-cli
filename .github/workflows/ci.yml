@@ -37,3 +37,6 @@ jobs:
 
       - name: Validate release script guards
         run: node scripts/test-release-script.mjs
+
+      - name: Validate release bundle pruning
+        run: node --test scripts/test-release-bundle.mjs

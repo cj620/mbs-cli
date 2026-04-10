@@ -77,6 +77,12 @@ assert.match(
 
 assert.match(
   workflow,
+  /node .*scripts\/prune-optional-platform-deps\.cjs \./,
+  'release workflow must prune unsupported optional dependencies before generating npm shrinkwrap'
+)
+
+assert.match(
+  workflow,
   /npm view @mb-it-org\/cli version --json/,
   'release workflow must check the published version for @mb-it-org/cli before publishing'
 )

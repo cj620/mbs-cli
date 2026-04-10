@@ -173,6 +173,7 @@ jobs:
           }
           EOF
 
+          node ${{ github.workspace }}/scripts/prune-optional-platform-deps.cjs .
           npm shrinkwrap --ignore-scripts
 
       - name: Validate npm bundle installability
