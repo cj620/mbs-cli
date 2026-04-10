@@ -83,6 +83,12 @@ assert.match(
 
 assert.match(
   workflow,
+  /node .*scripts\/materialize-bundled-workspace-deps\.cjs \./,
+  'release workflow must materialize bundled workspace dependencies before running oclif pack tarballs'
+)
+
+assert.match(
+  workflow,
   /pkg\.dependencies\?\.playwright/,
   'release workflow must reject publish manifests that still ship playwright as a production dependency'
 )

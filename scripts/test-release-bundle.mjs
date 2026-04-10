@@ -1,12 +1,12 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync, existsSync } from 'node:fs'
+import { lstatSync, mkdtempSync, mkdirSync, readFileSync, rmSync, symlinkSync, writeFileSync, existsSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
 
 import bundleLib from './release-bundle-lib.cjs'
 
-const { pruneUnsupportedOptionalDependencies, supportsPlatform } = bundleLib
+const { materializeBundledWorkspaceDependencies, pruneUnsupportedOptionalDependencies, supportsPlatform } = bundleLib
 const { pruneUnsupportedOptionalDependenciesFromLockfile } = bundleLib
 
 function writeJson(filePath, data) {
@@ -157,6 +157,49 @@ test('pruneUnsupportedOptionalDependenciesFromLockfile removes stale optional de
     assert.equal(lockfile.dependencies.fsevents, undefined)
     assert.equal('optionalDependencies' in lockfile.packages['node_modules/playwright'], false)
     assert.equal('optionalDependencies' in lockfile.dependencies.playwright, false)
+  } finally {
+    rmSync(rootDir, { recursive: true, force: true })
+  }
+})
+
+test('materializeBundledWorkspaceDependencies replaces bundled workspace symlinks with real directories', () => {
+  const rootDir = mkdtempSync(path.join(tmpdir(), 'mbs-release-bundle-'))
+
+  try {
+    writeJson(path.join(rootDir, 'package.json'), {
+      name: '@mb-it-org/cli',
+      version: '0.1.31',
+      bundledDependencies: ['@mb-it-org/shared'],
+    })
+
+    writeJson(path.join(rootDir, '.ws', 'mb-it-org__shared', 'package.json'), {
+      name: '@mb-it-org/shared',
+      version: '0.1.0',
+    })
+    writeFileSync(path.join(rootDir, '.ws', 'mb-it-org__shared', 'index.js'), 'export {};\n', 'utf8')
+
+    const installedParentDir = path.join(rootDir, 'node_modules', '@mb-it-org')
+    mkdirSync(installedParentDir, { recursive: true })
+
+    const symlinkTarget = path.join(rootDir, 'node_modules', '.pnpm', 'fake', 'node_modules', '@mb-it-org', 'shared')
+    mkdirSync(path.dirname(symlinkTarget), { recursive: true })
+    writeJson(path.join(symlinkTarget, 'package.json'), {
+      name: '@mb-it-org/shared',
+      version: '0.1.0',
+    })
+
+    const installedDir = path.join(installedParentDir, 'shared')
+    symlinkSync(symlinkTarget, installedDir, 'junction')
+
+    assert.equal(lstatSync(installedDir).isSymbolicLink(), true)
+
+    const materialized = materializeBundledWorkspaceDependencies(rootDir)
+    assert.deepEqual(materialized, ['@mb-it-org/shared'])
+    assert.equal(lstatSync(installedDir).isSymbolicLink(), false)
+    assert.equal(existsSync(path.join(installedDir, 'index.js')), true)
+
+    const installedPkg = JSON.parse(readFileSync(path.join(installedDir, 'package.json'), 'utf8'))
+    assert.equal(installedPkg.name, '@mb-it-org/shared')
   } finally {
     rmSync(rootDir, { recursive: true, force: true })
   }

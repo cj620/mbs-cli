@@ -1,4 +1,4 @@
-const { existsSync, readdirSync, readFileSync, rmSync, writeFileSync } = require('fs')
+const { cpSync, existsSync, lstatSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } = require('fs')
 const path = require('path')
 
 function readJson(filePath) {
@@ -11,6 +11,11 @@ function writeJson(filePath, data) {
 
 function getPackageDir(rootDir, packageName) {
   return path.join(rootDir, 'node_modules', ...packageName.split('/'))
+}
+
+function getWorkspaceMirrorDir(rootDir, packageName) {
+  const safeName = packageName.replace(/^@/, '').replace('/', '__')
+  return path.join(rootDir, '.ws', safeName)
 }
 
 function getPackageJsonPaths(rootDir) {
@@ -231,8 +236,40 @@ function pruneUnsupportedOptionalDependencies(rootDir, target = { platform: proc
   return removed
 }
 
+function materializeBundledWorkspaceDependencies(rootDir) {
+  const rootPkgPath = path.join(rootDir, 'package.json')
+  if (!existsSync(rootPkgPath)) {
+    return []
+  }
+
+  const rootPkg = readJson(rootPkgPath)
+  const bundledDependencies = Array.isArray(rootPkg.bundledDependencies) ? rootPkg.bundledDependencies : []
+  const materialized = []
+
+  for (const packageName of bundledDependencies) {
+    const installDir = getPackageDir(rootDir, packageName)
+    if (!existsSync(installDir)) continue
+
+    const installDirStats = lstatSync(installDir)
+    if (!installDirStats.isSymbolicLink()) continue
+
+    const workspaceMirrorDir = getWorkspaceMirrorDir(rootDir, packageName)
+    if (!existsSync(workspaceMirrorDir)) {
+      throw new Error(`Missing workspace mirror for bundled dependency ${packageName}`)
+    }
+
+    rmSync(installDir, { recursive: true, force: true })
+    mkdirSync(path.dirname(installDir), { recursive: true })
+    cpSync(workspaceMirrorDir, installDir, { recursive: true, dereference: true })
+    materialized.push(packageName)
+  }
+
+  return materialized
+}
+
 module.exports = {
   getPackageJsonPaths,
+  materializeBundledWorkspaceDependencies,
   pruneUnsupportedOptionalDependencies,
   pruneUnsupportedOptionalDependenciesFromLockfile,
   supportsPlatform,
