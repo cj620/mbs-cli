@@ -38,6 +38,21 @@ jobs:
           pnpm deploy --filter @mbs/cli --legacy ${{ runner.temp }}/mbs-deploy
           ln -s ${{ github.workspace }}/.git ${{ runner.temp }}/mbs-deploy/.git
 
+      - name: Resolve workspace deps in deploy package.json
+        working-directory: ${{ runner.temp }}/mbs-deploy
+        run: |
+          node -e "
+          const fs = require('fs');
+          const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+          for (const [name, ver] of Object.entries(pkg.dependencies || {})) {
+            if (ver.startsWith('workspace:')) {
+              const dep = JSON.parse(fs.readFileSync('node_modules/' + name + '/package.json', 'utf8'));
+              pkg.dependencies[name] = dep.version;
+            }
+          }
+          fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2));
+          "
+
       - name: Generate npm shrinkwrap for oclif
         working-directory: ${{ runner.temp }}/mbs-deploy
         run: npm shrinkwrap --ignore-scripts
