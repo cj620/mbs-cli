@@ -41,6 +41,42 @@ assert.match(
 
 assert.match(
   workflow,
+  /- name: Validate npm bundle installability/,
+  'release workflow must validate the npm bundle before publishing'
+)
+
+assert.match(
+  workflow,
+  /working-directory:\s*\${{\s*runner\.temp\s*}}\/mbs-deploy/,
+  'release workflow must publish from the processed deploy bundle rather than packages/cli'
+)
+
+assert.doesNotMatch(
+  workflow,
+  /- name: Publish @mb-it-org\/cli to npm[\s\S]*working-directory:\s*packages\/cli/,
+  'release workflow must not publish directly from packages/cli'
+)
+
+assert.match(
+  workflow,
+  /npm pack/,
+  'release workflow must create an npm tarball from the processed bundle before publishing'
+)
+
+assert.match(
+  workflow,
+  /npm install --global .*PACK_FILE/,
+  'release workflow must simulate installing the packed tarball before publishing'
+)
+
+assert.match(
+  workflow,
+  /bundledDependencies/,
+  'release workflow must convert internal workspace packages into bundled dependencies for npm publish'
+)
+
+assert.match(
+  workflow,
   /npm view @mb-it-org\/cli version --json/,
   'release workflow must check the published version for @mb-it-org/cli before publishing'
 )

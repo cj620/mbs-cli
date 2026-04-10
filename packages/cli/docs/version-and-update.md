@@ -32,7 +32,8 @@ pnpm release:major
 ```
 
 3. The script bumps `packages/cli/package.json`, creates a `vX.Y.Z` tag, and pushes it to `origin/master`.
-4. `.github/workflows/release.yml` publishes the tagged version to npm and then creates the GitHub Release with installer bundles.
+4. `.github/workflows/release.yml` publishes a processed deploy bundle to npm, then creates the GitHub Release with installer bundles.
+5. The npm publish step runs `npm pack` and a temporary global install check before publishing, so the registry package stays directly installable.
 
 If the workflow reports that the version already exists on npm, bump the version again and re-run the release script.
 

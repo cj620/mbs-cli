@@ -104,6 +104,114 @@ jobs:
           # Symlink .git so oclif can resolve git HEAD
           ln -s ${{ github.workspace }}/.git .git
 
+      - name: Prepare npm publish metadata
+        working-directory: ${{ runner.temp }}/mbs-deploy
+        run: |
+          node << 'EOF'
+          const fs = require('fs');
+          const path = require('path');
+          const depSections = ['dependencies', 'optionalDependencies', 'peerDependencies'];
+
+          function readJson(filePath) {
+            return JSON.parse(fs.readFileSync(filePath, 'utf8'));
+          }
+
+          function writeJson(filePath, data) {
+            fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
+          }
+
+          function getWorkspacePackages(wsDir) {
+            const entries = fs.readdirSync(wsDir, { withFileTypes: true }).filter((entry) => entry.isDirectory());
+            return new Map(
+              entries.map((entry) => {
+                const pkgPath = path.join(wsDir, entry.name, 'package.json');
+                const pkg = readJson(pkgPath);
+                return [
+                  pkg.name,
+                  {
+                    version: pkg.version,
+                    wsPkgPath: pkgPath,
+                    installedPkgPath: path.join('node_modules', pkg.name, 'package.json'),
+                  },
+                ];
+              }),
+            );
+          }
+
+          function rewriteInternalRefs(pkgJson, workspacePackages) {
+            for (const section of depSections) {
+              const deps = pkgJson[section];
+              if (!deps) continue;
+              for (const [name, version] of Object.entries(deps)) {
+                const info = workspacePackages.get(name);
+                if (!info) continue;
+                if (typeof version === 'string' && (version.startsWith('workspace:') || version.startsWith('file:'))) {
+                  deps[name] = info.version;
+                }
+              }
+            }
+          }
+
+          const pkgPath = path.join(process.cwd(), 'package.json');
+          const pkg = readJson(pkgPath);
+          const workspacePackages = getWorkspacePackages(path.join(process.cwd(), '.ws'));
+
+          rewriteInternalRefs(pkg, workspacePackages);
+          pkg.bundledDependencies = Array.from(workspacePackages.keys());
+          writeJson(pkgPath, pkg);
+
+          for (const info of workspacePackages.values()) {
+            const wsPkg = readJson(info.wsPkgPath);
+            rewriteInternalRefs(wsPkg, workspacePackages);
+            writeJson(info.wsPkgPath, wsPkg);
+
+            if (fs.existsSync(info.installedPkgPath)) {
+              const installedPkg = readJson(info.installedPkgPath);
+              rewriteInternalRefs(installedPkg, workspacePackages);
+              writeJson(info.installedPkgPath, installedPkg);
+            }
+          }
+          EOF
+
+          npm shrinkwrap --ignore-scripts
+
+      - name: Validate npm bundle installability
+        working-directory: ${{ runner.temp }}/mbs-deploy
+        run: |
+          node << 'EOF'
+          const fs = require('fs');
+          const path = require('path');
+
+          const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+          const serialized = JSON.stringify(pkg);
+
+          if (serialized.includes('workspace:')) {
+            throw new Error('publish manifest still contains workspace:* references');
+          }
+
+          if (!Array.isArray(pkg.bundledDependencies) || pkg.bundledDependencies.length === 0) {
+            throw new Error('publish manifest must declare bundledDependencies for internal workspace packages');
+          }
+
+          if (pkg.name !== '@mb-it-org/cli') {
+            throw new Error('publish manifest must keep the @mb-it-org/cli package name');
+          }
+
+          if (!pkg.bin || pkg.bin.mbs !== 'bin/run.js') {
+            throw new Error('publish manifest must preserve the mbs binary entry');
+          }
+
+          const shrinkwrap = fs.readFileSync(path.join(process.cwd(), 'npm-shrinkwrap.json'), 'utf8');
+          if (shrinkwrap.includes('workspace:')) {
+            throw new Error('npm-shrinkwrap.json still contains workspace:* references');
+          }
+          EOF
+
+          PACK_FILE=$(npm pack)
+          TEST_PREFIX=$(mktemp -d)
+          npm install --global "./${PACK_FILE}" --prefix "$TEST_PREFIX"
+          "$TEST_PREFIX/bin/mbs" --help >/dev/null
+
       - name: Generate oclif manifest
         working-directory: ${{ runner.temp }}/mbs-deploy
         run: ./node_modules/.bin/oclif manifest
@@ -119,7 +227,7 @@ jobs:
           path: ${{ runner.temp }}/mbs-deploy/dist/*.tar.gz
 
       - name: Publish @mb-it-org/cli to npm
-        working-directory: packages/cli
+        working-directory: ${{ runner.temp }}/mbs-deploy
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
