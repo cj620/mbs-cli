@@ -34,7 +34,7 @@ jobs:
       - name: Create CLI deploy bundle
         # pnpm deploy flattens workspace packages into a self-contained directory
         # so oclif pack can find @mbs/org and @mbs/shared without symlink issues
-        run: pnpm deploy --filter @mbs/cli ${{ runner.temp }}/mbs-deploy
+        run: pnpm deploy --filter @mbs/cli --legacy ${{ runner.temp }}/mbs-deploy
 
       - name: Generate oclif manifest
         working-directory: ${{ runner.temp }}/mbs-deploy
