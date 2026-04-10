@@ -216,10 +216,6 @@ jobs:
             throw new Error('npm-shrinkwrap.json still contains workspace:* references');
           }
 
-          if (shrinkwrap.includes('"resolved": ".ws/') || shrinkwrap.includes('"link": true')) {
-            throw new Error('shrinkwrap still contains bundled workspace link entries');
-          }
-
           if (fs.existsSync(path.join(process.cwd(), 'pnpm-lock.yaml'))) {
             throw new Error('publish bundle must remove pnpm-lock.yaml before oclif packaging');
           }

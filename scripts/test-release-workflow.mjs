@@ -123,10 +123,10 @@ assert.match(
   'release workflow must reject shrinkwraps that still contain playwright'
 )
 
-assert.match(
+assert.doesNotMatch(
   workflow,
-  /shrinkwrap still contains bundled workspace link entries/,
-  'release workflow must fail fast when npm-shrinkwrap.json still points bundled packages at .ws workspace links'
+  /- name: Validate npm bundle installability[\s\S]*shrinkwrap still contains bundled workspace link entries/,
+  'release workflow must not reject bundled workspace link entries before the materialize step rewrites node_modules and regenerates shrinkwrap'
 )
 
 assert.match(
