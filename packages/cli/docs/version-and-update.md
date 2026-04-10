@@ -16,6 +16,24 @@ mbs update --source npm
 mbs update --source release
 ```
 
+## Maintainer Release Flow
+
+The npm package `@mbs/cli` is published by GitHub Actions, not by a local `npm publish`.
+
+1. Create a repository secret named `NPM_TOKEN` with publish access to `@mbs/cli`.
+2. Run one of the release scripts from a clean `master` branch:
+
+```bash
+pnpm release:patch
+pnpm release:minor
+pnpm release:major
+```
+
+3. The script bumps `packages/cli/package.json`, creates a `vX.Y.Z` tag, and pushes it to `origin/master`.
+4. `.github/workflows/release.yml` publishes the tagged version to npm and then creates the GitHub Release with installer bundles.
+
+If the workflow reports that the version already exists on npm, bump the version again and re-run the release script.
+
 ## Source Selection
 
 - `--source auto` is the default.

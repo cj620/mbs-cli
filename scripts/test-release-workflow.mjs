@@ -21,4 +21,30 @@ assert.match(
   'release workflow must rewrite workspace:* references inside copied .ws package manifests'
 )
 
-console.log('release workflow preserves deploy bundle and dereferences workspace symlinks')
+assert.match(
+  workflow,
+  /registry-url:\s*'https:\/\/registry\.npmjs\.org'/,
+  'release workflow must configure the npm registry before publishing'
+)
+
+assert.match(
+  workflow,
+  /NODE_AUTH_TOKEN:\s*\${{\s*secrets\.NPM_TOKEN\s*}}/,
+  'release workflow must publish with the repository NPM_TOKEN secret'
+)
+
+assert.match(
+  workflow,
+  /npm publish(?:\s+--access public)?/,
+  'release workflow must publish @mbs/cli to npm'
+)
+
+const cliPackage = readFileSync(new URL('../packages/cli/package.json', import.meta.url), 'utf8')
+
+assert.match(
+  cliPackage,
+  /"publishConfig":\s*\{[\s\S]*"access":\s*"public"/,
+  'packages/cli/package.json must declare public npm publish access'
+)
+
+console.log('release workflow preserves deploy bundle and publishes @mbs/cli to npm')

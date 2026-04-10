@@ -34,3 +34,6 @@ jobs:
 
       - name: Validate release workflow guards
         run: node scripts/test-release-workflow.mjs
+
+      - name: Validate release script guards
+        run: node scripts/test-release-script.mjs
