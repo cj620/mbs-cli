@@ -36,6 +36,7 @@ jobs:
         # so oclif pack can find @mbs/org and @mbs/shared without symlink issues
         run: |
           pnpm deploy --filter @mbs/cli --legacy ${{ runner.temp }}/mbs-deploy
+          cp pnpm-lock.yaml ${{ runner.temp }}/mbs-deploy/pnpm-lock.yaml
           ln -s ${{ github.workspace }}/.git ${{ runner.temp }}/mbs-deploy/.git
 
       - name: Generate oclif manifest
