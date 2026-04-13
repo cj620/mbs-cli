@@ -8,30 +8,107 @@ Read it before writing any code.
 ## Architecture Overview
 
 ```
-packages/cli          → oclif root. Contains login/logout/whoami/raw/config commands.
-packages/skill-shared → Shared auth, base command, config, HTTP client. NO business logic.
-packages/skill-*      → Business skill commands (orders, products, finance, customers).
+packages/cli          → oclif root. Contains login/logout/whoami/raw/config/skills commands.
+packages/shared       → Shared auth, base command, config, HTTP client. NO business logic.
+packages/org          → Business skill: org hierarchy (platforms/sites/teams).
+packages/<domain>     → Future business skills follow the same pattern as packages/org.
+packages/_template    → Scaffold for new skill packages — copy this, never edit it directly.
 ```
+
+**Real package names:**
+- `@mb-it-org/cli` → `packages/cli`
+- `@mb-it-org/shared` → `packages/shared`
+- `@mb-it-org/org` → `packages/org`
+- `@mb-it-org/<domain>` → `packages/<domain>` (future)
 
 **Dependency rule (enforced, no exceptions):**
 ```
-skill-* → skill-shared ← cli
-skill-* MUST NOT import from cli
-cli     MAY import from skill-shared
+<domain> → shared ← cli
+<domain> packages MUST NOT import from cli
+cli      MAY import from shared
 ```
 
 ---
 
-## Adding an L1 Skill Command (e.g. mbs orders list)
+## Adding a New Skill Module (e.g. mbs orders list)
 
-1. File goes in `packages/skill-<name>/src/commands/<name>/<action>.ts`
-2. Class extends `MBSCommand` from `@mb-it-org/shared`
-3. Use `this.client.get(...)` / `this.client.post(...)` — already authenticated
-4. Use `this.output(data, meta)` for success output — DO NOT use `console.log` or `this.log` directly for data
-5. Throw errors — `MBSCommand.catch()` formats them automatically
-6. Register the skill package in `packages/cli/package.json` under `oclif.plugins`
+Follow every step in order. Do not skip documentation steps — this CLI is used by AI agents
+that rely on SKILL.md files for routing.
 
-Minimal example:
+### Step 1 — Scaffold the package
+
+```bash
+cp -r packages/_template packages/<domain>
+```
+
+Edit the copied files:
+
+| File | Change |
+|------|--------|
+| `package.json` | Replace `<domain>` in `"name"` field |
+| `src/index.ts` | Set `static topic = '<domain>'` and `static description` |
+| `src/commands/domain/action.ts` | Rename file, rename class, implement logic |
+
+### Step 2 — Register in CLI
+
+In `packages/cli/package.json`, add **two** entries:
+
+```jsonc
+// under "dependencies":
+"@mb-it-org/<domain>": "workspace:*"
+
+// under "oclif.plugins":
+"@mb-it-org/<domain>"
+```
+
+### Step 3 — Write commands
+
+- Files go in `packages/<domain>/src/commands/<domain>/<action>.ts`
+- Class extends `MBSCommand` from `@mb-it-org/shared`
+- Use `this.client.get(...)` / `this.client.post(...)` — already authenticated
+- Use `this.output(data, meta?)` for all data output — never `console.log` or `this.log`
+- Throw errors — `MBSCommand.catch()` formats them automatically
+- Add each command import to `packages/<domain>/src/index.ts`
+
+### Step 4 — Write SKILL documentation (required)
+
+Agents use SKILL.md files to route user intents to the correct command.
+
+**4a.** Copy the template:
+```bash
+cp packages/cli/skills/references/_template/SKILL.md \
+   packages/cli/skills/references/<domain>/SKILL.md
+```
+
+**4b.** Fill in the template: intent matching table, command list, context passing, typical scenarios.
+
+**4c.** Append a row to the routing table in `packages/cli/skills/SKILL.md`:
+```markdown
+| <keywords in Chinese and English> | `<domain>` | [references/<domain>/SKILL.md](references/<domain>/SKILL.md) |
+```
+
+**4d.** Append an entry to `packages/cli/skills/manifest.json`:
+```json
+{
+  "name": "<domain>",
+  "description": "<one-line Chinese description>",
+  "keywords": ["keyword1", "keyword2", "en-keyword"],
+  "skill": "references/<domain>/SKILL.md",
+  "commands": ["mbs <domain> <action>"]
+}
+```
+
+### Step 5 — Build and verify
+
+```bash
+pnpm build
+node packages/cli/bin/run.js <domain> <action>
+```
+
+---
+
+## Minimal Command Example
+
 ```typescript
 import { Flags } from '@oclif/core'
 import { MBSCommand } from '@mb-it-org/shared'
@@ -83,7 +160,8 @@ export default class OrdersList extends MBSCommand {
 
 ## Scope Constraint — Read-Only (enforced, no exceptions)
 
-**This CLI is read-only.** It may only query and display data. Do NOT implement any command that creates, updates, or deletes resources.
+**This CLI is read-only.** It may only query and display data. Do NOT implement any command
+that creates, updates, or deletes resources.
 
 - Allowed HTTP methods: `GET`, `POST`（POST 仅用于查询类接口，不得用于创建资源）
 - Forbidden HTTP methods: `PUT`, `PATCH`, `DELETE` (except for `login` / `logout` auth flows)
@@ -96,35 +174,42 @@ export default class OrdersList extends MBSCommand {
 | Pattern | Why forbidden |
 |---------|--------------|
 | `import ... from '@mb-it-org/cli'` in skill packages | Reverse dependency — breaks isolation |
-| `import keytar from ...` outside `skill-shared/src/auth/key-store.ts` | Auth must be centralized |
+| `import keytar from ...` outside `shared/src/auth/key-store.ts` | Auth must be centralized |
 | `import { chromium } from 'playwright'` outside `cli/src/commands/login.ts` | Heavy dep, login-only |
-| `readFileSync` on `credentials.json` outside `skill-shared/src/auth/` | Same reason |
+| `readFileSync` on `credentials.json` outside `shared/src/auth/` | Same reason |
 | `console.log(...)` anywhere | Use `this.log()` or `this.output()` |
 | `process.exit(...)` anywhere | Use `this.exit(code)` |
 
 ---
 
-## Phase Verification Commands
+## Build System
 
-After completing each phase, run these to confirm everything works:
-
-### Phase 1 (Core)
 ```bash
-node packages/cli/bin/run.js config get          # shows apiUrl (default)
-node packages/cli/bin/run.js whoami              # not logged in message
-node packages/cli/bin/run.js login               # browser opens
-node packages/cli/bin/run.js whoami              # shows keyPreview + sessionActive
-node packages/cli/bin/run.js raw GET /v1/orders  # returns JSON
-node packages/cli/bin/run.js logout              # clears session
+pnpm build        # tsc + copies skills/ docs into cli dist
+pnpm test         # vitest
 ```
 
-### Phase 2 (skill-orders)
+`packages/cli/scripts/copy-skills.cjs` copies `packages/cli/skills/` into the built dist so
+`mbs skills show` can serve them at runtime. If you add new files under `skills/`, they are
+picked up automatically on next build.
+
+---
+
+## Verification Commands
+
+### Core (always verify after any change)
 ```bash
-node packages/cli/bin/run.js orders list
-node packages/cli/bin/run.js orders list --status pending
-node packages/cli/bin/run.js orders list | jq '.data[0].id'
-node packages/cli/bin/run.js orders get 12345
-node packages/cli/bin/run.js orders export --from 2026-01-01 --to 2026-04-07 --output ./orders.json
+node packages/cli/bin/run.js config get    # shows apiUrl
+node packages/cli/bin/run.js whoami        # auth status
+node packages/cli/bin/run.js skills show   # prints main SKILL.md (check routing table)
+```
+
+### After adding a new skill module
+```bash
+pnpm build
+node packages/cli/bin/run.js <domain> <action>              # happy path
+node packages/cli/bin/run.js <domain> <action> --help       # flags documented
+node packages/cli/bin/run.js skills show --file references/<domain>/SKILL.md  # docs served
 ```
 
 ---
