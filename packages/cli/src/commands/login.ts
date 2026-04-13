@@ -17,6 +17,28 @@ function isMissingChromiumError(error: unknown): boolean {
   )
 }
 
+type BrowserInstance = Awaited<ReturnType<typeof chromium.launch>>
+
+async function launchBrowser(): Promise<BrowserInstance> {
+  const launchOptions = [
+    { channel: 'chrome' as const, headless: false },
+    { channel: 'msedge' as const, headless: false },
+    { headless: false },
+  ]
+
+  let lastError: unknown
+
+  for (const options of launchOptions) {
+    try {
+      return await chromium.launch(options)
+    } catch (error) {
+      lastError = error
+    }
+  }
+
+  throw lastError
+}
+
 export default class Login extends Command {
   static description = 'Authenticate with the MBS system via browser'
 
@@ -27,10 +49,10 @@ export default class Login extends Command {
     this.log('Opening browser for authentication...')
     this.log(`URL: ${LOGIN_URL}`)
 
-    let browser: Awaited<ReturnType<typeof chromium.launch>> | undefined
+    let browser: BrowserInstance | undefined
 
     try {
-      browser = await chromium.launch({ headless: false })
+      browser = await launchBrowser()
     } catch (error) {
       if (isMissingChromiumError(error)) {
         this.log(

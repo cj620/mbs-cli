@@ -5,10 +5,14 @@
 ### 首次配置
 
 ```bash
-mbs login         # Playwright 启动 Chromium 登录页，监听登录请求提取 key
-npx -y playwright install chromium   # 若空白电脑缺少 Playwright 浏览器运行时，先补装
+mbs login         # Playwright 优先尝试系统 Chrome，其次 Edge，最后回退到 Playwright Chromium；监听登录请求提取 key
 mbs whoami        # 验证认证状态
 ```
+
+说明：
+- `mbs login` 打开的仍然是登录页 `LOGIN_URL`，并监听 `ERPLOGIN_PATH` 请求来提取登录 key
+- 即使使用系统 Chrome / Edge，只要仍由 Playwright 启动和控制，请求监听逻辑仍然有效
+- 默认不需要预装 Playwright Chromium；只有系统 Chrome / Edge 都无法完成登录，且提示缺少 Playwright 浏览器运行时时，才执行 `npx -y playwright install chromium`
 
 ### CI / 无交互环境
 

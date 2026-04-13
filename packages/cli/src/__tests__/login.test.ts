@@ -22,10 +22,12 @@ vi.mock('playwright-core', () => ({
 describe('login command', () => {
   beforeEach(() => {
     vi.resetModules()
-    vi.clearAllMocks()
+    mockSetKey.mockReset()
+    mockGetAuthContext.mockReset()
+    mockLaunch.mockReset()
   })
 
-  it('launches Chromium, captures the login key, and prints success JSON', async () => {
+  function createBrowser() {
     let requestHandler: ((request: { url: () => string }) => void) | undefined
 
     const page = {
@@ -46,6 +48,12 @@ describe('login command', () => {
       close: vi.fn(async () => undefined),
     }
 
+    return { browser }
+  }
+
+  it('prefers the system Chrome channel, captures the login key, and prints success JSON', async () => {
+    const { browser } = createBrowser()
+
     mockLaunch.mockResolvedValue(browser)
     mockGetAuthContext.mockResolvedValue({ userInfo: { name: '张三' } })
 
@@ -59,7 +67,37 @@ describe('login command', () => {
       exit,
     })
 
-    expect(mockLaunch).toHaveBeenCalledWith({ headless: false })
+    expect(mockLaunch).toHaveBeenCalledTimes(1)
+    expect(mockLaunch).toHaveBeenCalledWith({ channel: 'chrome', headless: false })
+    expect(mockSetKey).toHaveBeenCalledWith('test-key')
+    expect(mockGetAuthContext).toHaveBeenCalled()
+    expect(log).toHaveBeenLastCalledWith(JSON.stringify({ ok: true, data: { message: 'Authenticated successfully' } }))
+    expect(exit).not.toHaveBeenCalled()
+    expect(browser.close).toHaveBeenCalled()
+  })
+
+  it('falls back from Chrome and Edge to bundled Chromium when needed', async () => {
+    const { browser } = createBrowser()
+
+    mockLaunch
+      .mockRejectedValueOnce(new Error('chrome launch failed'))
+      .mockRejectedValueOnce(new Error('edge launch failed'))
+      .mockResolvedValueOnce(browser)
+    mockGetAuthContext.mockResolvedValue({ userInfo: { name: '张三' } })
+
+    const { default: Login } = await import('../commands/login.js')
+    const log = vi.fn()
+    const exit = vi.fn()
+
+    await Login.prototype.run.call({
+      parse: vi.fn(async () => ({})),
+      log,
+      exit,
+    })
+
+    expect(mockLaunch).toHaveBeenNthCalledWith(1, { channel: 'chrome', headless: false })
+    expect(mockLaunch).toHaveBeenNthCalledWith(2, { channel: 'msedge', headless: false })
+    expect(mockLaunch).toHaveBeenNthCalledWith(3, { headless: false })
     expect(mockSetKey).toHaveBeenCalledWith('test-key')
     expect(mockGetAuthContext).toHaveBeenCalled()
     expect(log).toHaveBeenLastCalledWith(JSON.stringify({ ok: true, data: { message: 'Authenticated successfully' } }))
