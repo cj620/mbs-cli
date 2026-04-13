@@ -1,6 +1,6 @@
 ---
 name: mbs
-description: "Use when working with MBS / 马帮 CLI for authentication, CLI version checks, CLI updates, raw API access, or org hierarchy queries such as 平台/站点/总监/经理/主管/店长/店铺/员工."
+description: "Use when working with MBS / 马帮 CLI for authentication, CLI version checks, CLI updates, raw API access, or business data queries (org hierarchy, orders, procurement, products, operations, finance)."
 metadata:
   requires:
     bins: ["mbs"]
@@ -15,19 +15,92 @@ metadata:
 - 不使用 `mbs` 以外的方式请求 MBS 数据，例如 `curl` 或手写 HTTP
 - 不编造 ID，必须从命令返回结果中提取
 - 不猜测参数值，执行前先查询确认
+- **不在意图不明确时静默执行**——先消歧，再行动
 
-## 模块总览
+---
 
-| 模块 | 用途 | 参考 |
-|------|------|------|
-| `org` | 组织架构：平台 / 站点 / 总监 / 经理 / 主管 / 店长 / 店铺 / 员工 | [references/org/SKILL.md](references/org/SKILL.md) |
+## 模块路由表
 
-## 意图路由
+**第一步**：根据用户意图关键词定位模块，**第二步**：读对应 SKILL.md 获取命令详情。
 
-- 用户提到 MBS / 马帮 业务数据：先看模块总览，再路由到对应模块 SKILL
-- 用户需要认证、输出格式、退出码、`raw` 调用：看 [references/global.md](references/global.md)
-- 用户需要查看版本、升级 CLI、切换更新来源、排查 GitHub 或 npm 更新失败：优先看 [references/global.md](references/global.md) 里的“版本与更新”
+| 用户意图关键词（中 / EN）                                                                    | 模块  | 详细文档                                            |
+|---------------------------------------------------------------------------------------------|-------|-----------------------------------------------------|
+| 组织 / 平台 / 站点 / 总监 / 经理 / 主管 / 店长 / 店铺 / 员工 / org / platform / site / shop | `org` | [references/org/SKILL.md](references/org/SKILL.md) |
+
+> 后续模块按需追加到此表，Agent 只需读本文件即可完成一级路由，无需扫描全部文档。
+
+---
+
+## 模糊意图消歧协议
+
+当用户意图不够明确时，按以下决策树处理，**禁止猜测后直接执行**。
+
+### 情况 A — 关键词命中 0 个模块
+
+用户说的内容与路由表中任何模块的关键词均不匹配。
+
+**处理方式**：列出所有已注册模块，让用户选择。
+
+```
+我不确定你想查哪个业务模块，目前支持：
+- org（组织架构：平台 / 站点 / 人员层级）
+（更多模块开发中）
+
+请问你想查哪个方向的数据？
+```
+
+### 情况 B — 关键词命中 ≥ 2 个模块
+
+用户说的内容同时匹配多个模块的关键词（例如"报表"在多个模块中都有）。
+
+**处理方式**：列出命中的候选模块，逐一描述用途，让用户确认。
+
+```
+"报表"可能对应以下模块，请确认：
+- orders（订单报表：销售额、发货量）
+- finance（财务报表：结算、回款）
+- procurement（采购报表：采购额、供应商）
+
+你想查哪个？
+```
+
+### 情况 C — 模块已定位，但必填参数缺失
+
+已确定目标模块和命令，但执行所需的必填参数未提供。
+
+**处理方式**：读该模块 SKILL.md 中的命令说明，找到缺失的必填参数，**一次只追问一个**。
+
+```
+查店铺需要知道公司：
+- 1 = 胤元
+- 33 = 启元
+
+请问是哪个公司？
+```
+
+参数确认后再执行命令，不要提前假设默认值。
+
+### 情况 D — 完全没有业务上下文
+
+用户意图极其模糊，无法判断是否与 MBS 数据相关（例如"帮我看看情况"）。
+
+**处理方式**：先确认用户是否需要查询 MBS / 马帮 数据，再进入情况 A 的流程。
+
+```
+你是否想查询马帮平台的数据？如果是，请告诉我大概想看什么方向。
+```
+
+---
 
 ## 全局参考
 
-- [references/global.md](references/global.md) — 认证配置、版本与更新、输出格式、退出码、直通命令
+认证配置 / 版本更新 / 输出格式 / 退出码 / `raw` 直通命令 → [references/global.md](references/global.md)
+
+---
+
+## 意图路由规则
+
+1. **业务数据查询**：查模块路由表 → 命中 1 个模块则读其 SKILL.md → 执行命令
+2. **命中 0 或 ≥2 个模块**：触发消歧协议（见上方）
+3. **认证 / 版本 / raw**：直接看 [references/global.md](references/global.md)
+4. **找不到对应模块**：告知用户该模块尚未封装，可用 `mbs raw GET <endpoint>` 探索原始接口

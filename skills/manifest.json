@@ -1,0 +1,13 @@
+{
+  "version": "1",
+  "description": "MBS CLI skill module registry. Used by agents to route user intents to the correct module SKILL.md.",
+  "modules": [
+    {
+      "name": "org",
+      "description": "组织架构：平台、站点、总监、经理、主管、店长、店铺、员工",
+      "keywords": ["组织", "平台", "站点", "总监", "经理", "主管", "店长", "店铺", "员工", "org", "platform", "site", "leader", "manager", "shop", "employee"],
+      "skill": "references/org/SKILL.md",
+      "commands": ["mbs org platforms", "mbs org sites", "mbs org leaders", "mbs org managers", "mbs org little-leaders", "mbs org shop-managers", "mbs org shops", "mbs org employees"]
+    }
+  ]
+}

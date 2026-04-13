@@ -76,18 +76,18 @@ Agents use SKILL.md files to route user intents to the correct command.
 
 **4a.** Copy the template:
 ```bash
-cp packages/cli/skills/references/_template/SKILL.md \
-   packages/cli/skills/references/<domain>/SKILL.md
+cp skills/references/_template/SKILL.md \
+   skills/references/<domain>/SKILL.md
 ```
 
 **4b.** Fill in the template: intent matching table, command list, context passing, typical scenarios.
 
-**4c.** Append a row to the routing table in `packages/cli/skills/SKILL.md`:
+**4c.** Append a row to the routing table in `skills/SKILL.md`:
 ```markdown
 | <keywords in Chinese and English> | `<domain>` | [references/<domain>/SKILL.md](references/<domain>/SKILL.md) |
 ```
 
-**4d.** Append an entry to `packages/cli/skills/manifest.json`:
+**4d.** Append an entry to `skills/manifest.json`:
 ```json
 {
   "name": "<domain>",
