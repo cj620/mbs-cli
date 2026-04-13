@@ -26,6 +26,7 @@
   "files": [
     "bin",
     "dist",
+    "skills",
     "oclif.manifest.json"
   ],
   "publishConfig": {

@@ -171,6 +171,12 @@ assert.match(
 
 assert.match(
   cliPackage,
+  /"files":\s*\[[\s\S]*"skills"/,
+  'packages/cli/package.json must publish the bundled skills docs directory so `mbs skills show` works after npm install'
+)
+
+assert.match(
+  cliPackage,
   /"@mb-it-org\/org":\s*"workspace:\*"/,
   'packages/cli/package.json must depend on the renamed @mb-it-org/org workspace package'
 )
