@@ -17,6 +17,10 @@
       "target": "./dist/commands"
     }
   },
+  "files": [
+    "dist",
+    "oclif.manifest.json"
+  ],
   "scripts": {
     "build": "tsc"
   },

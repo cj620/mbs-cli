@@ -200,6 +200,12 @@ assert.match(
 )
 
 assert.match(
+  orgPackage,
+  /"files":\s*\[/,
+  'packages/org/package.json must declare a files array so oclif can generate the plugin manifest during release packaging'
+)
+
+assert.match(
   sharedPackage,
   /"name":\s*"@mb-it-org\/shared"/,
   'packages/shared/package.json must rename the workspace package to @mb-it-org/shared'

@@ -10,7 +10,13 @@
       "Bash(node packages/cli/bin/run.js skills show)",
       "Bash(node packages/cli/bin/run.js skills show --file references/global.md)",
       "Bash(node packages/cli/bin/run.js skills show --file nonexistent.md)",
-      "Bash(echo \"exit: $?\")"
+      "Bash(echo \"exit: $?\")",
+      "Bash(gh run list*)",
+      "Bash(gh run view*)",
+      "Bash(gh workflow list*)",
+      "Bash(gh workflow view*)",
+      "Bash(gh auth status*)",
+      "Bash(powershell.exe -Command \"& 'C:\\Program Files\\GitHub CLI\\gh.exe'*\")"
     ]
   }
 }
