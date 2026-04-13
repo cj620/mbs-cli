@@ -25,7 +25,8 @@ metadata:
 
 | 用户意图关键词（中 / EN）                                                                    | 模块  | 详细文档                                            |
 |---------------------------------------------------------------------------------------------|-------|-----------------------------------------------------|
-| 组织 / 平台 / 站点 / 总监 / 经理 / 主管 / 店长 / 店铺 / 员工 / org / platform / site / shop | `org` | [references/org/SKILL.md](references/org/SKILL.md) |
+| 组织 / 平台 / 站点 / 总监 / 经理 / 主管 / 店长 / 员工 / org / platform / site / leader / manager | `org`   | [references/org/SKILL.md](references/org/SKILL.md)     |
+| 店铺健康 / 账号健康 / 健康评分 / 违规 / 知识产权投诉 / 政策合规 / Amazon 健康                   | `shops` | [references/shops/SKILL.md](references/shops/SKILL.md) |
 
 > 后续模块按需追加到此表，Agent 只需读本文件即可完成一级路由，无需扫描全部文档。
 

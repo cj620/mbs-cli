@@ -15,7 +15,8 @@
     },
     "topicSeparator": " ",
     "plugins": [
-      "@mb-it-org/org"
+      "@mb-it-org/org",
+      "@mb-it-org/shops"
     ],
     "additionalVersionFlags": [],
     "node": {
@@ -39,6 +40,7 @@
   "dependencies": {
     "@inquirer/prompts": "^8.4.1",
     "@mb-it-org/org": "workspace:*",
+    "@mb-it-org/shops": "workspace:*",
     "@mb-it-org/shared": "workspace:*",
     "@oclif/core": "^4",
     "playwright-core": "^1.44.0"
