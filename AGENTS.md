@@ -76,6 +76,12 @@ mbs update --source npm
 mbs update --source release
 ```
 
+安装时优先使用 npm 官方源。已知 `https://registry.npmmirror.com` 可能仍缓存旧版 `0.1.25`，该版本包含 `workspace:*` 依赖，安装会报 `EUNSUPPORTEDPROTOCOL`。遇到此问题时请改用：
+
+```bash
+npm install -g @mb-it-org/cli --registry=https://registry.npmjs.org/
+```
+
 详细说明见 [packages/cli/docs/version-and-update.md](packages/cli/docs/version-and-update.md)。
 
 ---

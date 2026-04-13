@@ -24,7 +24,7 @@ mbs version 2>/dev/null && echo "mbs 已安装" || echo "mbs 未安装"
 | 检测结果 | 操作 |
 |----------|------|
 | Node.js < 18 或不存在 | 先安装/升级 Node.js 18 LTS |
-| mbs 未安装 | `npm install -g @mb-it-org/cli --registry=https://registry.npmmirror.com` |
+| mbs 未安装 | `npm install -g @mb-it-org/cli --registry=https://registry.npmjs.org/` |
 | mbs 已安装 | `mbs update`（勿重复 global install） |
 
 ### 第三步：登录
@@ -39,6 +39,8 @@ mbs login
 > npx -y playwright install chromium
 > ```
 > 然后再重新执行 `mbs login`。
+
+> 安装时请优先使用 npm 官方源。已知 `https://registry.npmmirror.com` 可能仍缓存旧版 `0.1.25`，该版本包含 `workspace:*` 依赖，安装会报 `EUNSUPPORTEDPROTOCOL`。
 
 ### 第四步：接入 Skill 文档
 
@@ -85,7 +87,7 @@ mbs org platforms        # 返回 ok:true，含平台列表
 
 ## 标准入口
 
-- CLI 安装：`npm install -g @mb-it-org/cli --registry=https://registry.npmmirror.com`
+- CLI 安装：`npm install -g @mb-it-org/cli --registry=https://registry.npmjs.org/`
 - 登录：`mbs login`
 - Chromium 运行时补装：`npx -y playwright install chromium`
 - 验证：`mbs version`、`mbs whoami`
