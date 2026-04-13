@@ -5,7 +5,12 @@
       "WebFetch(domain:registry.npmjs.org)",
       "Bash(npm view:*)",
       "Bash(node -e \"const p=require\\('./packages/cli/package.json'\\);const [ma,mi,pa]=p.version.split\\('.'\\).map\\(Number\\);console.log\\('current:',p.version,'next patch: '+ma+'.'+mi+'.'+\\(pa+1\\)\\)\")",
-      "Bash(node -e ':*)"
+      "Bash(node -e ':*)",
+      "Bash(node packages/cli/bin/run.js skills path)",
+      "Bash(node packages/cli/bin/run.js skills show)",
+      "Bash(node packages/cli/bin/run.js skills show --file references/global.md)",
+      "Bash(node packages/cli/bin/run.js skills show --file nonexistent.md)",
+      "Bash(echo \"exit: $?\")"
     ]
   }
 }

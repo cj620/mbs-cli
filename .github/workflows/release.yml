@@ -35,6 +35,9 @@ jobs:
       - name: Create CLI deploy bundle
         run: pnpm deploy --filter @mb-it-org/cli --legacy ${{ runner.temp }}/mbs-deploy
 
+      - name: Copy skills docs into deploy bundle
+        run: cp -r skills/ ${{ runner.temp }}/mbs-deploy/skills/
+
       - name: Convert to npm-compatible layout
         working-directory: ${{ runner.temp }}/mbs-deploy
         run: |

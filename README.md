@@ -42,12 +42,12 @@ mbs login
 
 ### 第四步：接入 Skill 文档
 
-让 agent 在执行任务前读取以下文档：
+Skill 文档随 CLI 一起打包，更新 CLI 即同步更新文档。通过以下命令读取：
 
-```
-skills/SKILL.md                    ← 必读，命令约束与意图路由
-skills/references/global.md        ← 必读，认证/格式/退出码
-skills/references/org/*            ← 按需，涉及组织架构查询时再读
+```bash
+mbs skills show                                   # 读取主入口 SKILL.md（必读）
+mbs skills show --file references/global.md       # 读取全局参考（必读）
+mbs skills show --file references/org/SKILL.md   # 按需，涉及组织架构时读取
 ```
 
 ### 第五步：验收
@@ -76,6 +76,7 @@ mbs org platforms        # 返回 ok:true，含平台列表
 | CLI 已安装 | `mbs version` | JSON，含 `version` 字段 |
 | 认证完成 | `mbs whoami` | `ok: true`，含用户信息 |
 | Chromium 就绪 | （`mbs login` 无报错） | 无 browser executable 错误 |
+| Skill 文档同步 | `mbs skills show` | `ok: true`，含 SKILL.md 内容 |
 | Skill 可用 | `mbs org platforms` | `ok: true`，含平台数据 |
 
 任何一条失败，参考 [docs/agent-onboarding.md](docs/agent-onboarding.md) 故障处理章节。

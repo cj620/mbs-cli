@@ -109,7 +109,18 @@ mbs org platforms
 
 ### 通用接入方式
 
-最通用的方式不是“安装某个平台私有格式的 skill”，而是让 agent 在执行任务前主动读取本仓库文档：
+Skill 文档随 CLI 打包发布，**更新 CLI 即同步更新 skill 文档**，无需单独维护。
+
+通过 CLI 命令读取 skill 文档（推荐）：
+
+```bash
+mbs skills path                                   # 获取 skill 文档目录路径
+mbs skills show                                   # 读取主入口 SKILL.md
+mbs skills show --file references/global.md       # 读取全局参考
+mbs skills show --file references/org/SKILL.md   # 读取 org 模块文档
+```
+
+或直接读取本仓库文件（仓库在本机时）：
 
 - [`skills/SKILL.md`](../skills/SKILL.md)
 - [`skills/references/global.md`](../skills/references/global.md)

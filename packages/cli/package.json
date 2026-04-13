@@ -32,7 +32,7 @@
     "registry": "https://registry.npmjs.org/"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && node scripts/copy-skills.cjs",
     "dev": "tsc --watch",
     "test": "pnpm exec vitest run"
   },

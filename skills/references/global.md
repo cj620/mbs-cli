@@ -23,6 +23,22 @@ mbs raw GET /v1/orders
 mbs raw POST /v1/export --body '{"from":"2026-01-01","to":"2026-04-08"}'
 ```
 
+### Skill 文档
+
+Skill 文档随 CLI 一起打包发布，更新 CLI 即同步更新 skill 文档。
+
+```bash
+# 查看 skill 文档目录的绝对路径
+mbs skills path
+
+# 输出 SKILL.md 内容（主入口）
+mbs skills show
+
+# 输出指定文档内容
+mbs skills show --file references/global.md
+mbs skills show --file references/org/SKILL.md
+```
+
 ### 版本与更新
 
 ```bash
