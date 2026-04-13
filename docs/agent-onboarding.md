@@ -111,8 +111,8 @@ mbs org platforms
 
 最通用的方式不是“安装某个平台私有格式的 skill”，而是让 agent 在执行任务前主动读取本仓库文档：
 
-- [`skills/SKILL.md`](/c:/Users/Administrator/Desktop/AI/mbs-cli/skills/SKILL.md)
-- [`skills/references/global.md`](/c:/Users/Administrator/Desktop/AI/mbs-cli/skills/references/global.md)
+- [`skills/SKILL.md`](../skills/SKILL.md)
+- [`skills/references/global.md`](../skills/references/global.md)
 - 需要组织架构查询时，再读取 `skills/references/org/*`
 
 建议 agent 将这些文件视为自己的任务规约：
@@ -142,7 +142,7 @@ mbs org platforms
 建议做法：
 
 1. 在仓库根目录打开会话
-2. 让 agent 先读取 [`skills/SKILL.md`](/c:/Users/Administrator/Desktop/AI/mbs-cli/skills/SKILL.md)
+2. 让 agent 先读取 [`skills/SKILL.md`](../skills/SKILL.md)
 3. 再根据任务读取 `skills/references/global.md` 或 `skills/references/org/*`
 4. 在当前工作区直接执行 `mbs` 命令做验证和查询
 
@@ -327,7 +327,7 @@ mbs whoami
 
 先查看：
 
-- [`packages/cli/docs/version-and-update.md`](/c:/Users/Administrator/Desktop/AI/mbs-cli/packages/cli/docs/version-and-update.md)
+- [`packages/cli/docs/version-and-update.md`](../packages/cli/docs/version-and-update.md)
 
 常见原因：
 
@@ -338,8 +338,8 @@ mbs whoami
 
 ## 参考链接
 
-- [`README.md`](/c:/Users/Administrator/Desktop/AI/mbs-cli/README.md)
-- [`packages/cli/docs/version-and-update.md`](/c:/Users/Administrator/Desktop/AI/mbs-cli/packages/cli/docs/version-and-update.md)
-- [`skills/SKILL.md`](/c:/Users/Administrator/Desktop/AI/mbs-cli/skills/SKILL.md)
-- [`skills/references/global.md`](/c:/Users/Administrator/Desktop/AI/mbs-cli/skills/references/global.md)
-- [`packages/org/docs/overview.md`](/c:/Users/Administrator/Desktop/AI/mbs-cli/packages/org/docs/overview.md)
+- [`README.md`](../README.md)
+- [`packages/cli/docs/version-and-update.md`](../packages/cli/docs/version-and-update.md)
+- [`skills/SKILL.md`](../skills/SKILL.md)
+- [`skills/references/global.md`](../skills/references/global.md)
+- [`packages/org/docs/overview.md`](../packages/org/docs/overview.md)

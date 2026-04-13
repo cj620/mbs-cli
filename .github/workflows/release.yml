@@ -236,6 +236,7 @@ jobs:
           node ${{ github.workspace }}/scripts/materialize-bundled-workspace-deps.cjs .
           rm -f npm-shrinkwrap.json package-lock.json
           npm shrinkwrap --ignore-scripts
+          (cd node_modules/@mb-it-org/org && ../../../node_modules/.bin/oclif manifest)
           ./node_modules/.bin/oclif manifest
 
       - name: Pack tarballs for Mac + Windows
