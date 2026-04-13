@@ -35,12 +35,12 @@ mbs version 2>/dev/null && echo "mbs 已安装" || echo "mbs 未安装"
 mbs login
 ```
 
-> `mbs login` 通过 `playwright-core` 启动 Chromium 登录页来提取认证 key，**不是**使用系统默认浏览器。  
+> `mbs login` 通过 `playwright-core` 优先尝试系统 Chrome，其次 Edge，最后回退到 Playwright Chromium 来打开登录页并提取认证 key，**不是**直接复用系统默认浏览器会话。  
 > 若提示缺少浏览器运行时，先执行：
 > ```bash
 > npx -y playwright install chromium
 > ```
-> 然后再重新执行 `mbs login`。
+> 然后再重新执行 `mbs login`。默认不需要预装 Playwright Chromium；只有系统 Chrome / Edge 都无法完成登录，且提示缺少 Playwright 浏览器运行时时，才需要补装。
 
 > 安装时请优先使用 npm 官方源。已知 `https://registry.npmmirror.com` 可能仍缓存旧版 `0.1.25`，该版本包含 `workspace:*` 依赖，安装会报 `EUNSUPPORTEDPROTOCOL`。
 
@@ -89,7 +89,7 @@ mbs org platforms        # 返回 ok:true，含平台列表
 | CLI 已安装 | `mbs version` | JSON，含 `version` 字段 |
 | 认证完成 | `mbs whoami` | `ok: true`，含用户信息 |
 | Agent skill 已接入 | 平台内查看或会话自检 | 已挂载 `skills/`，或已读取 `skills/SKILL.md` 与 `skills/references/global.md` |
-| Chromium 就绪 | （`mbs login` 无报错） | 无 browser executable 错误 |
+| 浏览器登录能力就绪 | `mbs login` | 可正常拉起受 Playwright 控制的浏览器完成登录；若缺少运行时，再按提示补装 Chromium |
 | Skill 文档同步 | `mbs skills show` | `ok: true`，含 SKILL.md 内容 |
 | Skill 可用 | `mbs org platforms` | `ok: true`，含平台数据 |
 
@@ -126,7 +126,7 @@ mbs org platforms        # 返回 ok:true，含平台列表
 - `1`：参数或 API 错误
 - `2`：认证失效，需要执行 `mbs login`
 
-`mbs login` 的实现不是单纯打开默认浏览器做网页登录，而是使用 `playwright-core` 启动 Chromium 打开登录页，监听登录链路中的请求并提取认证 `key`，再由 CLI 用这个 `key` 换取后续 API cookie 和用户信息。CLI 本身不会在安装阶段自动准备 Chromium；只有执行 `mbs login` 时才需要该运行时。
+`mbs login` 的实现不是单纯打开默认浏览器做网页登录，而是使用 `playwright-core` 优先尝试系统 Chrome，其次 Edge，最后回退到 Playwright Chromium。只要浏览器仍由 Playwright 启动和控制，CLI 就会监听登录链路中的请求并提取认证 `key`，再用这个 `key` 换取后续 API cookie 和用户信息。CLI 本身不会在安装阶段自动准备 Playwright Chromium；只有系统 Chrome / Edge 都无法完成登录，且执行 `mbs login` 时提示缺少浏览器运行时，才需要额外安装。
 
 ## 仓库内容
 

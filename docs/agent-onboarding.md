@@ -19,7 +19,7 @@
 - 不猜 API 路径、ID、参数值；必须先查命令和返回结果
 - `mbs` 命令失败时先看结构化 JSON 的 `error.hint`
 - 退出码 `2` 表示认证失效，应提示或执行 `mbs login`
-- `mbs login` 依赖 `playwright-core` 驱动 Chromium，不要把它理解成“系统里随便有个浏览器就够了”
+- `mbs login` 由 `playwright-core` 驱动浏览器登录，优先尝试系统 Chrome，其次 Edge，最后回退到 Playwright Chromium；不要把它理解成“系统里随便有个浏览器就够了”
 - CLI 安装和 skill 接入是两件事：前者解决命令可用，后者解决 agent 如何正确使用这个命令
 
 ## 最快可用主流程
@@ -66,7 +66,7 @@ npm install -g @mb-it-org/cli
 
 ### Step 4: 准备登录所需浏览器运行时
 
-`mbs login` 当前是通过 `playwright-core` 启动 Chromium，打开登录页并监听登录请求来提取认证 `key`。空白电脑上即使已经装好了 `mbs`，也不代表登录所需的 Chromium 运行时一定已经就绪。
+`mbs login` 当前由 `playwright-core` 优先尝试系统 Chrome，其次 Edge，最后回退到 Playwright Chromium，打开登录页并监听登录请求来提取认证 `key`。空白电脑上即使已经装好了 `mbs`，也不代表回退所需的 Playwright Chromium 运行时一定已经就绪。
 
 如果后续执行 `mbs login` 时提示缺少 browser executable、Chromium 或 Playwright browser，请先执行：
 
@@ -96,7 +96,7 @@ mbs whoami
 mbs login
 ```
 
-这里的登录过程会由 Playwright 拉起 Chromium 登录页，而不是单纯复用本机默认浏览器会话。登录页内完成认证后，CLI 会从登录请求中提取 `key`，再换取 API cookie 和用户信息。
+这里的登录过程会由 Playwright 拉起受控浏览器，而不是单纯复用本机默认浏览器会话。它会优先尝试系统 Chrome，其次 Edge，最后才回退到 Playwright Chromium。登录页内完成认证后，CLI 会从登录请求中提取 `key`，再换取 API cookie 和用户信息。
 
 如果 `mbs login` 报缺少浏览器运行时，先执行：
 
@@ -346,7 +346,7 @@ mbs login
 
 说明：
 
-- `mbs login` 当前依赖 `playwright-core` 拉起 Chromium 登录页
+- `mbs login` 当前由 `playwright-core` 拉起受控浏览器，优先系统 Chrome / Edge，必要时回退到 Playwright Chromium
 - 空白电脑上即使 `@mb-it-org/cli` 已安装，也可能仍缺少浏览器运行时
 
 ### npm 全局安装无权限
