@@ -24,8 +24,8 @@ describe('setConfig / getConfig', () => {
     expect(config.apiUrl).toBe('http://api.example.com')
   })
 
-  it('throws when config does not exist', () => {
-    expect(() => getConfig()).toThrow('MBS CLI not configured')
+  it('returns the default config when config does not exist', () => {
+    expect(getConfig()).toEqual({ apiUrl: 'http://www.instudio.me:6206' })
   })
 
   it('overwrites existing config', () => {
