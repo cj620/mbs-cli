@@ -71,6 +71,24 @@ assert.match(
 
 assert.match(
   workflow,
+  /"\$TEST_PREFIX\/bin\/mbs"\s+skills path/,
+  'release workflow must verify the installed npm tarball exposes `mbs skills path`'
+)
+
+assert.match(
+  workflow,
+  /"\$TEST_PREFIX\/bin\/mbs"\s+skills show/,
+  'release workflow must verify the installed npm tarball exposes `mbs skills show`'
+)
+
+assert.doesNotMatch(
+  workflow,
+  /cp -r skills\/ \$\{\{\s*runner\.temp\s*\}\}\/mbs-deploy\/skills\//,
+  'release workflow must not recursively copy skills/ into an existing skills/ target because that creates skills/skills in the npm tarball'
+)
+
+assert.match(
+  workflow,
   /publish bundle must remove pnpm-lock\.yaml before oclif packaging/,
   'release workflow must fail fast if pnpm-lock.yaml survives into the publish bundle'
 )
@@ -142,6 +160,7 @@ assert.doesNotMatch(
 )
 
 const cliPackage = readFileSync(new URL('../packages/cli/package.json', import.meta.url), 'utf8')
+const cliGitignore = readFileSync(new URL('../packages/cli/.gitignore', import.meta.url), 'utf8')
 const orgPackage = readFileSync(new URL('../packages/org/package.json', import.meta.url), 'utf8')
 const sharedPackage = readFileSync(new URL('../packages/shared/package.json', import.meta.url), 'utf8')
 
@@ -173,6 +192,18 @@ assert.match(
   cliPackage,
   /"files":\s*\[[\s\S]*"skills"/,
   'packages/cli/package.json must publish the bundled skills docs directory so `mbs skills show` works after npm install'
+)
+
+assert.match(
+  cliGitignore,
+  /^\/skills\/$/m,
+  'packages/cli/.gitignore must ignore only the built top-level skills directory'
+)
+
+assert.doesNotMatch(
+  cliGitignore,
+  /^skills\/$/m,
+  'packages/cli/.gitignore must not ignore every nested skills/ directory because that hides src/commands/skills'
 )
 
 assert.match(
