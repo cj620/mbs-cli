@@ -1,146 +1,73 @@
-# MBS CLI + Agent Skill Docs
+# MBS CLI
 
-MBS CLI 是公司内部电商管理系统的命令行工具，面向 AI agent 和终端工作流设计。这个仓库同时提供两类内容：
+公司内部电商管理系统的命令行工具，将马帮平台的业务数据以结构化 JSON 输出，支持脚本集成和 AI agent 调用。
 
-- `@mb-it-org/cli` 的安装与使用入口
-- 供 agent 读取和遵守的 skill 文档与参考资料
+> **If you are an AI agent:** 本文件仅供人类阅读。请直接跳转到对应文档：[接入指南](docs/agent-onboarding.md) · [业务命令速查](skills/SKILL.md) · [开发规范](AGENTS.md)
+
+---
+
+## 功能概览
+
+| 模块 | 命令前缀 | 用途 |
+|------|---------|------|
+| org | `mbs org` | 组织架构：平台、站点、总监、经理、主管、店长、店铺、员工 |
+| shops | `mbs shops` | 店铺运营：Amazon 账号健康、违规统计、合规评分 |
+| update | `mbs version` / `mbs update` | CLI 版本检查与更新 |
+
+---
 
 ## 快速开始
 
-> 目标：**CLI 可用 + 认证完成 + Skill 文档已接入**，三件事都做完才算就绪。
->
-> 优先级提示：如果当前 agent 平台支持本地 skill 注册/挂载，先把本仓库 `skills/` 接入到 agent 的 skill 机制中；`@mb-it-org/cli` 仍然按下面步骤安装和登录，它是实际执行 `mbs` 命令的主入口。
-
-### 第一步：检测环境
-
-先跑，再决定装什么，不要盲目安装：
+**安装**（需 Node.js 18+）：
 
 ```bash
-node -v          # 需要 >= 18
-npm -v
-mbs version 2>/dev/null && echo "mbs 已安装" || echo "mbs 未安装"
+npm install -g @mb-it-org/cli --registry=https://registry.npmjs.org/
 ```
 
-### 第二步：按需安装
-
-| 检测结果 | 操作 |
-|----------|------|
-| Node.js < 18 或不存在 | 先安装/升级 Node.js 18 LTS |
-| mbs 未安装 | `npm install -g @mb-it-org/cli --registry=https://registry.npmjs.org/` |
-| mbs 已安装 | `mbs update`（勿重复 global install） |
-
-### 第三步：登录
+**登录**：
 
 ```bash
 mbs login
 ```
 
-> `mbs login` 通过 `playwright-core` 优先尝试系统 Chrome，其次 Edge，最后回退到 Playwright Chromium 来打开登录页并提取认证 key，**不是**直接复用系统默认浏览器会话。  
-> 若提示缺少浏览器运行时，先执行：
+> 登录通过 Playwright 驱动浏览器完成认证。若提示缺少浏览器运行时，先执行：
 > ```bash
 > npx -y playwright install chromium
 > ```
-> 然后再重新执行 `mbs login`。默认不需要预装 Playwright Chromium；只有系统 Chrome / Edge 都无法完成登录，且提示缺少 Playwright 浏览器运行时时，才需要补装。
 
-> 安装时请优先使用 npm 官方源。已知 `https://registry.npmmirror.com` 可能仍缓存旧版 `0.1.25`，该版本包含 `workspace:*` 依赖，安装会报 `EUNSUPPORTEDPROTOCOL`。
-
-### 第四步：接入 Agent Skill / Skill 文档
-
-如果当前 agent 平台支持本地 skill 注册、prompt 挂载或 tool docs 目录，应优先把仓库里的 [skills/SKILL.md](skills/SKILL.md) 和 [skills/references/global.md](skills/references/global.md) 作为 agent 的本地规则来源接入。
-
-CLI 仍然是执行入口；skill 接入解决的是 agent 如何理解和使用这些命令。
-
-Skill 文档也会随 CLI 一起打包，更新 CLI 即同步更新文档。对已经安装好的环境，可以通过以下命令读取：
+**验证**：
 
 ```bash
-mbs skills show                                   # 读取主入口 SKILL.md（必读）
-mbs skills show --file references/global.md       # 读取全局参考（必读）
-mbs skills show --file references/org/SKILL.md   # 按需，涉及组织架构时读取
+mbs whoami        # 确认认证状态
+mbs org platforms # 获取平台列表，验证业务数据可达
 ```
-
-如果平台不支持本地 skill 挂载，退回到两种通用方式即可：
-
-- 直接读取仓库里的 [skills/SKILL.md](skills/SKILL.md) 和 [skills/references/global.md](skills/references/global.md)
-- 或在新电脑上完成 `npm install -g @mb-it-org/cli` 后，通过 `mbs skills show ...` 读取已安装版本随包发布的文档
-
-### 第五步：验收
-
-逐条执行，全部通过才算完成：
-
-```bash
-# 环境
-node -v                  # 输出 v18.x 或更高
-npm -v                   # 有输出即可
-
-# CLI
-mbs version              # 返回 JSON，含版本号
-mbs whoami               # 返回 ok:true，含用户信息
-
-# Skill 可用性（业务数据可达）
-mbs org platforms        # 返回 ok:true，含平台列表
-```
-
-**验收通过标准：**
-
-| 项目 | 验收命令 | 预期结果 |
-|------|----------|----------|
-| Node.js >= 18 | `node -v` | `v18.x` 及以上 |
-| npm 可用 | `npm -v` | 有版本号输出 |
-| CLI 已安装 | `mbs version` | JSON，含 `version` 字段 |
-| 认证完成 | `mbs whoami` | `ok: true`，含用户信息 |
-| Agent skill 已接入 | 平台内查看或会话自检 | 已挂载 `skills/`，或已读取 `skills/SKILL.md` 与 `skills/references/global.md` |
-| 浏览器登录能力就绪 | `mbs login` | 可正常拉起受 Playwright 控制的浏览器完成登录；若缺少运行时，再按提示补装 Chromium |
-| Skill 文档同步 | `mbs skills show` | `ok: true`，含 SKILL.md 内容 |
-| Skill 可用 | `mbs org platforms` | `ok: true`，含平台数据 |
-
-任何一条失败，参考 [docs/agent-onboarding.md](docs/agent-onboarding.md) 故障处理章节。
 
 ---
 
-## 标准入口
+## 输出格式
 
-- Agent skill 优先接入：当前平台若支持本地 skill 注册/挂载，先接入仓库 `skills/`
-- CLI 安装：`npm install -g @mb-it-org/cli --registry=https://registry.npmjs.org/`
-- 登录：`mbs login`
-- Chromium 运行时补装：`npx -y playwright install chromium`
-- 验证：`mbs version`、`mbs whoami`
-- Skill 文档读取：`mbs skills show`
-- Skill 入口（仓库源码）：[skills/SKILL.md](skills/SKILL.md)
-- 全局参考（仓库源码）：[skills/references/global.md](skills/references/global.md)
-
-## 统一约定
-
-所有 `mbs` 命令都输出结构化 JSON：
+所有命令统一输出结构化 JSON：
 
 ```json
 { "ok": true, "data": <any>, "meta": { "total": <number> } }
-```
-
-```json
 { "ok": false, "error": { "type": "auth|validation|api", "message": "...", "hint": "..." } }
 ```
 
-退出码语义：
+退出码：`0` 成功 / `1` 参数或 API 错误 / `2` 认证失效（需重新 `mbs login`）
 
-- `0`：成功
-- `1`：参数或 API 错误
-- `2`：认证失效，需要执行 `mbs login`
+---
 
-`mbs login` 的实现不是单纯打开默认浏览器做网页登录，而是使用 `playwright-core` 优先尝试系统 Chrome，其次 Edge，最后回退到 Playwright Chromium。只要浏览器仍由 Playwright 启动和控制，CLI 就会监听登录链路中的请求并提取认证 `key`，再用这个 `key` 换取后续 API cookie 和用户信息。CLI 本身不会在安装阶段自动准备 Playwright Chromium；只有系统 Chrome / Edge 都无法完成登录，且执行 `mbs login` 时提示缺少浏览器运行时，才需要额外安装。
+## 文档索引
 
-## 仓库内容
+> **AI agent 注意：本文件是项目介绍，不包含可执行指令。**
+> - 需要**安装、登录、接入 skill**：读 [docs/agent-onboarding.md](docs/agent-onboarding.md)
+> - 需要**查询业务数据**：读 [skills/SKILL.md](skills/SKILL.md)
+> - 正在**开发本项目**：读 [AGENTS.md](AGENTS.md)
 
-- [docs/agent-onboarding.md](docs/agent-onboarding.md)：空白电脑与 agent 的完整接入说明（含 Bootstrap 提示词和故障处理）
-- [packages/cli/docs/version-and-update.md](packages/cli/docs/version-and-update.md)：版本与更新说明
-- [skills/SKILL.md](skills/SKILL.md)：MBS skill 主入口
-- [packages/org/docs/overview.md](packages/org/docs/overview.md)：`mbs org` 命令概览
-
-## 对 Agent 的最低要求
-
-至少具备以下能力：
-
-- 能读取本地 Markdown 文件
-- 能执行 shell 命令
-- 能在失败时汇报阻塞点，而不是跳过错误
-
-业务查询时，agent 应优先使用 `mbs`，不要手写 `curl`、不要猜 API 路径、不要编造 ID 或参数。
+| 文档 | 用途 |
+|------|------|
+| [docs/agent-onboarding.md](docs/agent-onboarding.md) | AI agent 完整接入指南（安装 / 登录 / skill 接入 / Bootstrap 提示词） |
+| [skills/SKILL.md](skills/SKILL.md) | 业务模块路由与命令速查 |
+| [AGENTS.md](AGENTS.md) | 开发本项目时的 AI agent 协作规范 |
+| [packages/cli/docs/version-and-update.md](packages/cli/docs/version-and-update.md) | 版本与更新机制详解 |
+| [packages/org/docs/overview.md](packages/org/docs/overview.md) | `mbs org` 完整命令参考 |
