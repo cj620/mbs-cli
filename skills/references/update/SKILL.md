@@ -92,41 +92,49 @@
 
 ---
 
-## 验收规则（更新后必须执行）
+## ⚠️ 更新后必须完成：Skill 安装协议
 
-更新完成后，按顺序执行以下命令确认成功：
+> **更新 CLI 的首要目的是让 agent 用上最新 skill。** 仅执行 `mbs update` 还不够——必须完成以下步骤，skill 才算真正安装到 agent。
+
+### 第一步：验证更新成功
 
 ```bash
-# 1. 确认版本已变更，无新版本待更新
+# 确认版本已变更
 mbs version
 # 预期：data.updateAvailable === false，data.current === data.latest
-
-# 2. 确认主路由 skill 文档可读
-mbs skills show
-# 预期：输出包含路由表内容，不为空
-
-# 3. 确认 update skill 文档可读（验证 skill 文档已同步）
-mbs skills show --file references/update/SKILL.md
-# 预期：输出本文档内容
 ```
 
----
+### 第二步：安装 skill 到 agent（核心步骤）
 
-## Agent Skill 刷新协议
+**按优先级顺序执行，不可跳过：**
 
-更新 CLI 后，agent **必须**重新加载 skill 文档，不得使用会话内缓存版本。
+```bash
+# 1. 读取最新主路由（必须）
+mbs skills show
+# → agent 用此输出刷新模块列表，替换会话内任何旧版缓存
 
-**执行顺序：**
+# 2. 读取当前任务所需模块的 SKILL.md（优先级最高）
+#    根据任务选择对应文件：
+mbs skills show --file references/org/SKILL.md      # 涉及组织架构时
+mbs skills show --file references/shops/SKILL.md    # 涉及店铺运营时
+mbs skills show --file references/update/SKILL.md   # 涉及版本更新时
 
-1. `mbs update` — 升级 CLI
-2. 执行上方验收规则（3 条）
-3. `mbs skills show` — 重读主路由，刷新模块列表
-4. 重读当前任务所需的模块 SKILL.md（**优先级最高**）
-   - 若当前任务涉及 `org`：`mbs skills show --file references/org/SKILL.md`
-   - 若当前任务涉及 `shops`：`mbs skills show --file references/shops/SKILL.md`
-   - 以此类推
+# 3. 确认 skill 安装成功
+mbs skills show --file references/update/SKILL.md
+# 预期：输出本文档内容，内容不为空
+```
 
-> skill 文档随 CLI 一起打包发布，无需单独更新。
+### 完整执行顺序
+
+```
+mbs update
+  └─ 验证版本 (mbs version)
+  └─ 安装 skill：
+       mbs skills show                          ← 刷新主路由
+       mbs skills show --file <当前模块>.md     ← 安装当前任务 skill（最优先）
+```
+
+> **禁止**：skill 安装前使用任何 skill 文档内容。更新后必须先完成安装，再继续任务。
 
 ---
 
