@@ -5,7 +5,7 @@
     {
       "name": "org",
       "description": "组织架构：平台、站点、总监、经理、主管、店长、店铺、员工",
-      "keywords": ["组织", "平台", "站点", "总监", "经理", "主管", "店长", "店铺", "员工", "org", "platform", "site", "leader", "manager", "shop", "employee"],
+      "keywords": ["组织", "平台", "站点", "总监", "经理", "主管", "店长", "员工", "org", "platform", "site", "leader", "manager", "shop-manager", "employee"],
       "skill": "references/org/SKILL.md",
       "commands": ["mbs org platforms", "mbs org sites", "mbs org leaders", "mbs org managers", "mbs org little-leaders", "mbs org shop-managers", "mbs org shops", "mbs org employees"]
     },
@@ -21,7 +21,7 @@
       "description": "CLI 版本检查与更新：检查最新版本、通过 npm 或 GitHub Release 升级 CLI 及内置 skill 文档",
       "keywords": ["更新", "升级", "版本", "有新版本", "update", "upgrade", "version", "check update"],
       "skill": "references/update/SKILL.md",
-      "commands": ["mbs version", "mbs update", "mbs update --source npm", "mbs update --source release"]
+      "commands": ["mbs version", "mbs update"]
     }
   ]
 }

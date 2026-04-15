@@ -88,46 +88,17 @@ npm install -g @mb-it-org/cli --registry=https://registry.npmjs.org/
 
 ## 可用 Skill 一览
 
-| Skill | 命令前缀 | 用途 | 详细文档 |
-|-------|---------|------|---------|
-| skill-org | `mbs org` | 组织架构（平台/站点/总监/经理/主管/店长/店铺/员工） | [packages/skill-org/docs/overview.md](packages/skill-org/docs/overview.md) |
+业务模块路由、命令详情及消歧协议统一维护在 **[skills/SKILL.md](skills/SKILL.md)**，以该文件为准。
 
-> 更多 skill（orders、products、finance、customers）开发中。
+各模块 SKILL.md 位置：
 
----
+| 模块 | 命令前缀 | 用途 | 详细文档 |
+|------|---------|------|---------|
+| org | `mbs org` | 组织架构（平台/站点/总监/经理/主管/店长/店铺/员工） | [skills/references/org/SKILL.md](skills/references/org/SKILL.md) |
+| shops | `mbs shops` | 店铺运营数据（Amazon 账号健康、违规统计、合规评分） | [skills/references/shops/SKILL.md](skills/references/shops/SKILL.md) |
+| update | `mbs version` / `mbs update` | CLI 版本检查与更新 | [skills/references/update/SKILL.md](skills/references/update/SKILL.md) |
 
-## skill-org 快速参考
-
-组织架构为**级联结构**，下级命令依赖上级返回的 ID。
-
-```
-org platforms → org leaders → org managers → org little-leaders → org shop-managers
-                                                                 └→ org shops
-                                                                 └→ org employees
-org sites（独立，依赖 platform ID）
-```
-
-### 常用查询
-
-```bash
-# 获取所有平台
-mbs org platforms
-
-# 获取平台下的站点
-mbs org sites --platform <platformId>
-
-# 获取总监列表（公司 1=胤元, 33=启元）
-mbs org leaders --company 1 --platform <platformId>
-
-# 获取运营中的店铺
-mbs org shops --company 1 --status 1
-
-# 提取 ID 列表（配合 jq）
-mbs org platforms | jq '[.data[].id]'
-mbs org shops --company 1 | jq '[.data[].id]'
-```
-
-完整参数说明见 [packages/skill-org/docs/overview.md](packages/skill-org/docs/overview.md)。
+> 新增模块后，在 `skills/SKILL.md` 路由表和 `skills/manifest.json` 中追加注册，此表自动生效。
 
 ---
 
@@ -146,14 +117,17 @@ mbs raw GET /v1/products --params '{"status":"active"}'
 ## Agent 决策树
 
 ```
-需要组织架构数据？
-  └→ 用 mbs org <command>（参考 skill-org/docs/overview.md）
+需要组织架构数据（平台/站点/人员层级）？
+  └→ 读 skills/references/org/SKILL.md → 用 mbs org <command>
 
-需要其他业务数据（订单/商品/财务）？
-  └→ 用 mbs raw GET/POST <path>
+需要店铺运营数据（Amazon 账号健康/违规/合规）？
+  └→ 读 skills/references/shops/SKILL.md → 用 mbs shops health
 
 需要查看版本或更新 CLI？
-  └→ 用 mbs version / mbs update [--source auto|npm|release]
+  └→ 读 skills/references/update/SKILL.md → 用 mbs version / mbs update
+
+需要其他业务数据（订单/商品/财务等未封装模块）？
+  └→ 用 mbs raw GET/POST <path>
 
 不确定 API 路径？
   └→ 先用 mbs raw，再提议封装为 skill

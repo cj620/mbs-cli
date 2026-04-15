@@ -6,7 +6,7 @@
 
 - 检查当前 CLI 版本及是否有新版本可用
 - 升级 CLI 到最新版本
-- 更新内置 skill 文档（skill 文档随 CLI 一起打包，更新 CLI = 更新 skills）
+- 更新内置 skill 文档（skill 文档随 CLI 打包，更新 CLI 后**文件**即同步；但 agent 会话内的旧缓存需主动刷新，见下方「Skill 安装协议」）
 
 ## 不适用场景
 
