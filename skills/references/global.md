@@ -5,12 +5,14 @@
 ### 首次配置
 
 ```bash
-mbs login         # Playwright 优先尝试系统 Chrome，其次 Edge，最后回退到 Playwright Chromium；监听登录请求提取 key
-mbs whoami        # 验证认证状态
+mbs login              # 默认扫码登录（Playwright 优先尝试 Chrome → Edge → Chromium）
+mbs login --password   # 账号密码登录，打开 loginit2.jsp（等同 -p）
+mbs whoami             # 验证认证状态
 ```
 
 说明：
-- `mbs login` 打开的仍然是登录页 `LOGIN_URL`，并监听 `ERPLOGIN_PATH` 请求来提取登录 key
+- `mbs login` 默认打开扫码登录页（`/eshop/manager/login.jsp`），并监听 `ERPLOGIN_PATH` 请求来提取登录 key
+- `--password` / `-p`：改为打开账号密码登录页（`/eshop/manager/loginit2.jsp`），其余认证流程不变
 - 即使使用系统 Chrome / Edge，只要仍由 Playwright 启动和控制，请求监听逻辑仍然有效
 - 默认不需要预装 Playwright Chromium；只有系统 Chrome / Edge 都无法完成登录，且提示缺少 Playwright 浏览器运行时时，才执行 `npx -y playwright install chromium`
 

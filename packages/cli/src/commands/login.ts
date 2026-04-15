@@ -1,7 +1,7 @@
 // packages/cli/src/commands/login.ts
-import { Command } from '@oclif/core'
+import { Command, Flags } from '@oclif/core'
 import { chromium } from 'playwright-core'
-import { setKey, getAuthContext, LOGIN_URL, ERPLOGIN_PATH, KEY_PARAM, LOGIN_TIMEOUT_MS } from '@mb-it-org/shared'
+import { setKey, getAuthContext, getConfig, LOGIN_PATH, LOGIN_PATH_PASSWORD, ERPLOGIN_PATH, KEY_PARAM, LOGIN_TIMEOUT_MS } from '@mb-it-org/shared'
 
 const MISSING_BROWSER_MESSAGE = 'Chromium runtime is not installed'
 const MISSING_BROWSER_HINT = 'Run `npx -y playwright install chromium` and try `mbs login` again'
@@ -42,12 +42,22 @@ async function launchBrowser(): Promise<BrowserInstance> {
 export default class Login extends Command {
   static description = 'Authenticate with the MBS system via browser'
 
-  static examples = ['mbs login']
+  static examples = ['mbs login', 'mbs login --password']
+
+  static flags = {
+    password: Flags.boolean({
+      char: 'p',
+      description: 'Login with username and password instead of QR code',
+      default: false,
+    }),
+  }
 
   async run(): Promise<void> {
-    await this.parse(Login)
+    const { flags } = await this.parse(Login)
+    const { apiUrl } = getConfig()
+    const loginUrl = `${apiUrl}${flags.password ? LOGIN_PATH_PASSWORD : LOGIN_PATH}`
     this.log('Opening browser for authentication...')
-    this.log(`URL: ${LOGIN_URL}`)
+    this.log(`URL: ${loginUrl}`)
 
     let browser: BrowserInstance | undefined
 
@@ -93,7 +103,7 @@ export default class Login extends Command {
         })
 
         // Navigate to login page AFTER attaching listener to avoid race condition
-        void page.goto(LOGIN_URL)
+        void page.goto(loginUrl)
       })
 
       await setKey(key)

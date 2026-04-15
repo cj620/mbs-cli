@@ -18,7 +18,8 @@ export { setKey, getKey, deleteKey } from './auth/key-store.js'
 export { clearCookie, readCookie, readUserInfo, readCacheTimestamp } from './auth/cookie-cache.js'
 export type { AuthContext, UserInfo } from './auth/context.js'
 export {
-  LOGIN_URL,
+  LOGIN_PATH,
+  LOGIN_PATH_PASSWORD,
   ERPLOGIN_PATH,
   KEY_PARAM,
   LOGIN_TIMEOUT_MS,
