@@ -22,7 +22,8 @@
       "Bash(node -e \"let d='';process.stdin.on\\('data',c=>d+=c\\).on\\('end',\\(\\)=>console.log\\(JSON.parse\\(d\\).data.content.slice\\(0,300\\)\\)\\)\")",
       "Bash(node packages/cli/bin/run.js shops health --help)",
       "Bash(node packages/cli/bin/run.js skills show --file references/shops/SKILL.md)",
-      "Bash(node -e \"let d='';process.stdin.on\\('data',c=>d+=c\\).on\\('end',\\(\\)=>console.log\\(JSON.parse\\(d\\).ok\\)\\)\")"
+      "Bash(node -e \"let d='';process.stdin.on\\('data',c=>d+=c\\).on\\('end',\\(\\)=>console.log\\(JSON.parse\\(d\\).ok\\)\\)\")",
+      "Bash(node packages/cli/bin/run.js skills show --file references/update/SKILL.md)"
     ]
   }
 }

@@ -45,21 +45,7 @@ mbs skills show --file references/org/SKILL.md
 
 ### 版本与更新
 
-```bash
-# 查看当前版本，并检查 GitHub Release 最新版本
-mbs version
-
-# 自动选择更新来源
-mbs update
-
-# 强制 npm 全局更新
-mbs update --source npm
-
-# 强制 GitHub Release 制品更新
-mbs update --source release
-```
-
-详细说明见 `packages/cli/docs/version-and-update.md`。
+详细文档（含意图匹配、输出格式、验收规则、Agent Skill 刷新协议）见 [references/update/SKILL.md](update/SKILL.md)。
 
 ---
 

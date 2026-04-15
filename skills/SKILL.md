@@ -25,8 +25,9 @@ metadata:
 
 | 用户意图关键词（中 / EN）                                                                    | 模块  | 详细文档                                            |
 |---------------------------------------------------------------------------------------------|-------|-----------------------------------------------------|
-| 组织 / 平台 / 站点 / 总监 / 经理 / 主管 / 店长 / 员工 / org / platform / site / leader / manager | `org`   | [references/org/SKILL.md](references/org/SKILL.md)     |
-| 店铺健康 / 账号健康 / 健康评分 / 违规 / 知识产权投诉 / 政策合规 / Amazon 健康                   | `shops` | [references/shops/SKILL.md](references/shops/SKILL.md) |
+| 组织 / 平台 / 站点 / 总监 / 经理 / 主管 / 店长 / 员工 / org / platform / site / leader / manager | `org`    | [references/org/SKILL.md](references/org/SKILL.md)       |
+| 店铺健康 / 账号健康 / 健康评分 / 违规 / 知识产权投诉 / 政策合规 / Amazon 健康                   | `shops`  | [references/shops/SKILL.md](references/shops/SKILL.md)   |
+| 更新 / 升级 / 版本 / 有新版本 / update / upgrade / version / check update                        | `update` | [references/update/SKILL.md](references/update/SKILL.md) |
 
 > 后续模块按需追加到此表，Agent 只需读本文件即可完成一级路由，无需扫描全部文档。
 
@@ -103,5 +104,5 @@ metadata:
 
 1. **业务数据查询**：查模块路由表 → 命中 1 个模块则读其 SKILL.md → 执行命令
 2. **命中 0 或 ≥2 个模块**：触发消歧协议（见上方）
-3. **认证 / 版本 / raw**：直接看 [references/global.md](references/global.md)
+3. **认证 / raw**：直接看 [references/global.md](references/global.md)；**版本 / 更新**：查路由表 `update` 模块 → [references/update/SKILL.md](references/update/SKILL.md)
 4. **找不到对应模块**：告知用户该模块尚未封装，可用 `mbs raw GET <endpoint>` 探索原始接口
