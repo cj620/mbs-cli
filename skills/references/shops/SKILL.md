@@ -80,6 +80,11 @@ mbs shops health | jq '[.data[] | select(.health.intellectualPropertyComplaint >
 | `customerReviewPolicyViolation` | 违反买家商品评论政策 | |
 | `otherPolicyViolation` | 其他违反政策 | |
 | `regulatoryCompliance` | 监管合规性 | |
+| `order_defect_rate` | 订单缺陷率(%) | |
+| `late_shipment_rate` | 迟发率(%) | |
+| `pre_fulfillment_cancel_rate` | 配送前取消率(%) | |
+| `valid_tracking_rate` | 有效追踪率(%) | |
+| `on_time_delivery_rate` | 准时交货率(%) | |
 
 ## 注意事项
 

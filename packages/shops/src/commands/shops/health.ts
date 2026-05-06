@@ -19,6 +19,11 @@ interface ShopHealth {
   customerReviewPolicyViolation: number
   otherPolicyViolation: number
   regulatoryCompliance: number
+  order_defect_rate: number
+  late_shipment_rate: number
+  pre_fulfillment_cancel_rate: number
+  valid_tracking_rate: number
+  on_time_delivery_rate: number
 }
 
 interface ShopHealthItem {
