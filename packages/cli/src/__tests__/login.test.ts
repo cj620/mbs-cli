@@ -5,7 +5,9 @@ const mockGetAuthContext = vi.fn()
 const mockLaunch = vi.fn()
 
 vi.mock('@mb-it-org/shared', () => ({
-  LOGIN_URL: 'https://example.com/login',
+  getConfig: () => ({ apiUrl: 'https://example.com' }),
+  LOGIN_PATH: '/login',
+  LOGIN_PATH_PASSWORD: '/loginit2',
   ERPLOGIN_PATH: '/yyaccount/account/user/erplogin',
   KEY_PARAM: 'key',
   LOGIN_TIMEOUT_MS: 5_000,
@@ -62,7 +64,7 @@ describe('login command', () => {
     const exit = vi.fn()
 
     await Login.prototype.run.call({
-      parse: vi.fn(async () => ({})),
+      parse: vi.fn(async () => ({ flags: { password: false } })),
       log,
       exit,
     })
@@ -90,7 +92,7 @@ describe('login command', () => {
     const exit = vi.fn()
 
     await Login.prototype.run.call({
-      parse: vi.fn(async () => ({})),
+      parse: vi.fn(async () => ({ flags: { password: false } })),
       log,
       exit,
     })
@@ -113,7 +115,7 @@ describe('login command', () => {
     const exit = vi.fn()
 
     await Login.prototype.run.call({
-      parse: vi.fn(async () => ({})),
+      parse: vi.fn(async () => ({ flags: { password: false } })),
       log,
       exit,
     })

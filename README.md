@@ -78,13 +78,31 @@ mbs whoami   # 确认认证状态
 
 Skill 文档随 CLI 打包发布，更新 CLI 即同步更新文档文件；但 **agent 会话内的旧缓存需主动刷新**。
 
-**优先级规则（按顺序执行第一个可用的方式）：**
+**方式 1（推荐）：安装到 agent 平台**
 
-1. 平台支持本地 skill 注册/挂载 → 优先把仓库 `skills/` 接入平台配置
-2. CLI 已安装 → 通过 `mbs skills show` 读取
-3. 以上均不适用 → 直接读取仓库 Markdown 文件
+```bash
+mbs skills install                  # 自动安装到已检测到的 Claude/Codex
+mbs skills install --target claude  # 安装到 ~/.claude/skills/mbs/
+mbs skills install --target codex   # 安装到 ~/.codex/skills/mbs/
+```
 
-**通过 CLI 读取（推荐）：**
+命令会把 npm 包内置的 `skills/` 完整复制为平台 skill 目录，例如 `~/.claude/skills/mbs/SKILL.md`，并保留 `references/` 等详细文档结构。安装后重启或刷新 agent 会话，让平台重新加载 skill。
+
+更新 CLI 后，重新运行安装命令即可覆盖本地 agent skill：
+
+```bash
+npm update -g @mb-it-org/cli
+mbs skills install
+```
+
+如只更新指定平台：
+
+```bash
+mbs skills install --target claude
+mbs skills install --target codex
+```
+
+**方式 2（备选）：读取到当前会话上下文**
 
 ```bash
 mbs skills show                                    # 读取主入口 SKILL.md（必读）
@@ -93,7 +111,7 @@ mbs skills show --file references/org/SKILL.md    # 按需，涉及组织架构�
 mbs skills show --file references/shops/SKILL.md  # 按需，涉及店铺运营时读取
 ```
 
-**直接读取仓库文件（仓库在本机时）：**
+**方式 3（仓库在本机时）：**
 
 - [`skills/SKILL.md`](skills/SKILL.md)
 - [`skills/references/global.md`](skills/references/global.md)
