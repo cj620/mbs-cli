@@ -6,11 +6,11 @@ on:
       - 'v*.*.*'
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
-  pack:
-    name: Build & Pack
+  publish:
+    name: Publish npm
     runs-on: ubuntu-latest
 
     steps:
@@ -97,7 +97,7 @@ jobs:
           # Remove pnpm's virtual store and reinstall with plain npm
           rm -rf node_modules
           npm install --omit=dev --ignore-scripts
-          # oclif is a devDep needed to run pack/manifest — install it as a prod dep
+          # oclif is a devDep needed to generate command manifests
           npm install oclif --ignore-scripts
           npm shrinkwrap --ignore-scripts
 
@@ -217,7 +217,7 @@ jobs:
           }
 
           if (fs.existsSync(path.join(process.cwd(), 'pnpm-lock.yaml'))) {
-            throw new Error('publish bundle must remove pnpm-lock.yaml before oclif packaging');
+            throw new Error('publish bundle must remove pnpm-lock.yaml before npm publish');
           }
 
           if (shrinkwrap.includes('"node_modules/playwright"') || shrinkwrap.includes('"playwright": {')) {
@@ -249,20 +249,6 @@ jobs:
           (cd node_modules/@mb-it-org/org && ../../../node_modules/.bin/oclif manifest)
           ./node_modules/.bin/oclif manifest
 
-      - name: Pack tarballs for Mac + Windows
-        working-directory: ${{ runner.temp }}/mbs-deploy
-        run: |
-          node ${{ github.workspace }}/scripts/materialize-bundled-workspace-deps.cjs .
-          rm -f npm-shrinkwrap.json package-lock.json
-          npm shrinkwrap --ignore-scripts
-          ./node_modules/.bin/oclif pack tarballs --targets darwin-x64,darwin-arm64,win32-x64
-
-      - name: Upload packed artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: installers
-          path: ${{ runner.temp }}/mbs-deploy/dist/*.tar.gz
-
       - name: Publish @mb-it-org/cli to npm
         working-directory: ${{ runner.temp }}/mbs-deploy
         env:
@@ -277,70 +263,3 @@ jobs:
           fi
 
           npm publish --access public
-
-  release:
-    name: Create GitHub Release
-    runs-on: ubuntu-latest
-    needs: pack
-
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Download artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: installers
-          path: dist/
-
-      - name: Generate Release Notes
-        run: |
-          CURRENT_TAG="${GITHUB_REF_NAME}"
-          PREV_TAG=$(git tag --sort=-version:refname | grep -v "^${CURRENT_TAG}$" | head -n 1)
-
-          if [ -z "$PREV_TAG" ]; then
-            COMMITS=$(git log --pretty=format:"%s" HEAD)
-          else
-            COMMITS=$(git log --pretty=format:"%s" "${PREV_TAG}..HEAD")
-          fi
-
-          FEATURES=""
-          FIXES=""
-          MAINTENANCE=""
-
-          while IFS= read -r msg; do
-            if [[ "$msg" =~ ^feat(\(.+\))?: ]]; then
-              FEATURES="${FEATURES}- ${msg}\n"
-            elif [[ "$msg" =~ ^fix(\(.+\))?: ]]; then
-              FIXES="${FIXES}- ${msg}\n"
-            elif [[ "$msg" =~ ^(chore|ci|docs|refactor|perf|test|build)(\(.+\))?: ]]; then
-              MAINTENANCE="${MAINTENANCE}- ${msg}\n"
-            fi
-          done <<< "$COMMITS"
-
-          BODY=""
-          if [ -n "$FEATURES" ]; then
-            BODY="${BODY}## 新功能\n${FEATURES}\n"
-          fi
-          if [ -n "$FIXES" ]; then
-            BODY="${BODY}## Bug 修复\n${FIXES}\n"
-          fi
-          if [ -n "$MAINTENANCE" ]; then
-            BODY="${BODY}## 维护\n${MAINTENANCE}\n"
-          fi
-          if [ -z "$BODY" ]; then
-            BODY="本次发布无 Conventional Commits 格式提交记录。\n"
-          fi
-
-          printf "%b" "$BODY" > release_notes.md
-
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: ${{ github.ref_name }}
-          name: ${{ github.ref_name }}
-          body_path: release_notes.md
-          files: dist/*.tar.gz
-          draft: false
-          prerelease: false

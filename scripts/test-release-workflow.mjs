@@ -6,7 +6,7 @@ const workflow = readFileSync(new URL('../.github/workflows/release.yml', import
 assert.match(
   workflow,
   /pnpm deploy --filter @mb-it-org\/cli --legacy \${{\s*runner\.temp\s*}}\/mbs-deploy/,
-  'release workflow must create a pnpm deploy bundle for @mb-it-org/cli before oclif pack tarballs'
+  'release workflow must create a pnpm deploy bundle for @mb-it-org/cli before npm publish'
 )
 
 assert.match(
@@ -89,7 +89,7 @@ assert.doesNotMatch(
 
 assert.match(
   workflow,
-  /publish bundle must remove pnpm-lock\.yaml before oclif packaging/,
+  /publish bundle must remove pnpm-lock\.yaml before npm publish/,
   'release workflow must fail fast if pnpm-lock.yaml survives into the publish bundle'
 )
 
@@ -108,13 +108,19 @@ assert.match(
 assert.match(
   workflow,
   /node .*scripts\/materialize-bundled-workspace-deps\.cjs \./,
-  'release workflow must materialize bundled workspace dependencies before running oclif pack tarballs'
+  'release workflow must materialize bundled workspace dependencies before npm publish'
 )
 
 assert.match(
   workflow,
   /node .*scripts\/materialize-bundled-workspace-deps\.cjs \.[\s\S]*rm -f npm-shrinkwrap\.json package-lock\.json[\s\S]*npm shrinkwrap --ignore-scripts/,
   'release workflow must regenerate npm shrinkwrap after materializing bundled workspace dependencies so bundled links stop pointing at .ws'
+)
+
+assert.doesNotMatch(
+  workflow,
+  /oclif pack tarballs|actions\/upload-artifact|actions\/download-artifact|softprops\/action-gh-release|files:\s*dist\/\*\.tar\.gz/,
+  'release workflow must not package or upload installer artifacts'
 )
 
 assert.match(
@@ -239,7 +245,7 @@ assert.match(
 assert.match(
   orgPackage,
   /"files":\s*\[/,
-  'packages/org/package.json must declare a files array so oclif can generate the plugin manifest during release packaging'
+  'packages/org/package.json must declare a files array so oclif can generate the plugin manifest during npm publish'
 )
 
 assert.match(
