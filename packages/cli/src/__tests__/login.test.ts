@@ -125,8 +125,8 @@ describe('login command', () => {
         ok: false,
         error: {
           type: 'validation',
-          message: 'Chromium runtime is not installed',
-          hint: 'Run `npx -y playwright install chromium` and try `mbs login` again',
+          message: 'No supported browser runtime is available',
+          hint: 'Make sure Chrome or Edge is installed and available, then try `mbs login` again. Only install an extra browser runtime if the system browsers cannot be used.',
         },
       }),
     )

@@ -3,8 +3,8 @@ import { Command, Flags } from '@oclif/core'
 import { chromium } from 'playwright-core'
 import { setKey, getAuthContext, getConfig, LOGIN_PATH, LOGIN_PATH_PASSWORD, ERPLOGIN_PATH, KEY_PARAM, LOGIN_TIMEOUT_MS } from '@mb-it-org/shared'
 
-const MISSING_BROWSER_MESSAGE = 'Chromium runtime is not installed'
-const MISSING_BROWSER_HINT = 'Run `npx -y playwright install chromium` and try `mbs login` again'
+const MISSING_BROWSER_MESSAGE = 'No supported browser runtime is available'
+const MISSING_BROWSER_HINT = 'Make sure Chrome or Edge is installed and available, then try `mbs login` again. Only install an extra browser runtime if the system browsers cannot be used.'
 
 function isMissingChromiumError(error: unknown): boolean {
   if (!(error instanceof Error)) return false

@@ -53,17 +53,11 @@ npm install -g @mb-it-org/cli --registry=https://registry.npmjs.org/
 
 如果 `mbs` 已安装，跳过此步，执行 `mbs update` 即可。
 
-### Step 4: 准备登录所需浏览器运行时
+### Step 4: 确认登录浏览器可用
 
-`mbs login` 由 `playwright-core` 驱动浏览器完成认证，优先尝试系统 Chrome，其次 Edge，最后回退到 Playwright Chromium。
+`mbs login` 会优先使用系统已有的 Chrome，其次 Edge。一般办公环境已有浏览器，不需要额外准备浏览器运行时。
 
-如果执行 `mbs login` 时提示缺少 browser executable、Chromium 或 Playwright browsers，先执行：
-
-```bash
-npx -y playwright install chromium
-```
-
-系统有 Chrome 或 Edge 时不需要预装 Chromium。
+只有在系统 Chrome / Edge 都不可用，且 `mbs login` 明确提示缺少浏览器运行时时，才按错误提示补齐运行时。不要在阅读文档或环境检查阶段主动安装。
 
 ### Step 5: 登录并验证认证
 
@@ -147,7 +141,7 @@ mbs org platforms # ok: true，含平台数据
 3. 检查是否已安装 Node.js 和 npm；如果缺失，安装 Node.js 18+，优先当前 LTS。
 4. 检查是否已安装 mbs；如果没有，执行 npm install -g @mb-it-org/cli --registry=https://registry.npmjs.org/。
 5. 如果平台不支持 skill 挂载，至少读取当前仓库中的 skills/SKILL.md 与 skills/references/global.md；如果任务涉及组织架构，再读取 skills/references/org/*。
-6. 明确检查 mbs login 是否依赖 Playwright 浏览器运行时；如果缺少，先执行 npx -y playwright install chromium。
+6. 不要主动安装浏览器运行时；默认使用系统已有 Chrome/Edge，只有 mbs login 明确报缺少浏览器运行时时才说明阻塞点。
 7. 执行 mbs login，然后运行 mbs version 和 mbs whoami，并解释返回结果。
 8. 如果 mbs whoami 显示未登录或退出码为 2，重新执行 mbs login，再次验证。
 9. 运行最终验收命令：node -v、npm -v、mbs version、mbs whoami、mbs skills show；如果认证可用，再补充 mbs org platforms。
@@ -168,14 +162,11 @@ mbs org platforms # ok: true，含平台数据
 
 npm 全局安装完成但当前 shell 找不到 `mbs`：重新打开终端，或检查 npm global bin 目录是否在 PATH 中。
 
-### Playwright 浏览器运行时缺失
+### 登录浏览器运行时缺失
 
-现象：`mbs login` 报 browser executable 不存在 / 找不到 Chromium / 需要先安装 Playwright browsers
+现象：`mbs login` 报 browser executable 不存在 / 找不到可用浏览器。
 
-```bash
-npx -y playwright install chromium
-mbs login
-```
+处理：先确认系统 Chrome 或 Edge 是否可用；如果仍不可用，再按 `mbs login` 的错误提示补齐浏览器运行时。
 
 ### npm 全局安装无权限
 
@@ -222,10 +213,7 @@ npm install -g @mb-it-org/cli --registry=https://registry.npmjs.org/
 mbs login
 ```
 
-> 登录通过 Playwright 驱动浏览器完成认证。若提示缺少浏览器运行时，先执行：
-> ```bash
-> npx -y playwright install chromium
-> ```
+> 默认使用系统已有 Chrome/Edge 完成登录；通常不需要额外安装浏览器运行时。
 
 **验证**：
 
