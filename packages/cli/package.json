@@ -33,6 +33,15 @@
     "access": "public",
     "registry": "https://registry.npmjs.org/"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cj620/mbs-cli.git",
+    "directory": "packages/cli"
+  },
+  "homepage": "https://github.com/cj620/mbs-cli#readme",
+  "bugs": {
+    "url": "https://github.com/cj620/mbs-cli/issues"
+  },
   "scripts": {
     "build": "tsc && node scripts/copy-skills.cjs",
     "dev": "tsc --watch",
