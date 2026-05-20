@@ -75,10 +75,15 @@ async function loadManifest(file, url) {
 function syncDomainPackage(mod, source, hash) {
   const domainDir = join(repoRoot, 'packages', mod.domain)
   const markerPath = join(domainDir, '.mbs-generated.json')
-  const exists = existsSync(domainDir)
+  let exists = existsSync(domainDir)
 
   if (exists && !existsSync(markerPath)) {
-    throw new Error(`Refusing to overwrite non-generated package: packages/${mod.domain}`)
+    if (isDirectoryEmptyDeep(domainDir)) {
+      removePath(domainDir)
+      exists = false
+    } else {
+      throw new Error(`Refusing to overwrite non-generated package: packages/${mod.domain}`)
+    }
   }
 
   if (!exists) {
@@ -341,6 +346,18 @@ function removeStaleFiles(dir, activeFiles, suffix) {
       removePath(join(dir, entry.name))
     }
   }
+}
+
+function isDirectoryEmptyDeep(dir) {
+  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+    const entryPath = join(dir, entry.name)
+    if (entry.isDirectory()) {
+      if (!isDirectoryEmptyDeep(entryPath)) return false
+    } else {
+      return false
+    }
+  }
+  return true
 }
 
 function sortObject(value) {

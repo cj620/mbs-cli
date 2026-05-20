@@ -33,6 +33,8 @@ metadata:
 | <!-- AUTO-GENERATED API MODULES END --> |  |  |
 | 
  |  |  |
+| 
+ |  |  |
 
 > 后续模块按需追加到此表，Agent 只需读本文件即可完成一级路由，无需扫描全部文档。
 
