@@ -5,7 +5,7 @@
     {
       "domain": "account",
       "service": "account-center-service",
-      "pathPrefix": "/account",
+      "pathPrefix": "/gateway/account-center-service/account",
       "description": "账号分页查询",
       "keywords": ["账号", "account", "分页", "列表"],
       "scenarios": "按账号编码、业务编码、状态、邮箱、手机号等条件分页查询账号列表。",
@@ -14,7 +14,7 @@
           "name": "page",
           "description": "分页获取账号列表",
           "method": "POST",
-          "path": "/page",
+          "path": "/page/noauth",
           "request": {
             "body": {
               "type": "object",

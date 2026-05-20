@@ -5,7 +5,7 @@
 ## 数据来源
 
 - Service: `account-center-service`
-- Path prefix: `/account`
+- Path prefix: `/gateway/account-center-service/account`
 
 ## 适用场景
 
