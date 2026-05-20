@@ -1,5 +1,6 @@
 // AUTO-GENERATED FROM audit manifest. DO NOT EDIT.
-// Source: fixtures/sample-audit-manifest.json @ 86039d68d81f134f663cee899251e9b43d384ddcb190570a5c2f8e3b6f0fb3b2
+// Source: fixtures/sample-audit-manifest.json
+// Manifest: 2026-05-20T13:30:00+08:00 @ de473bfb3db122622d5a6c6445e5d2e6d505d0770c52c340821bcedfc8d00032
 import { Flags } from '@oclif/core'
 import { MBSCommand } from '@mb-it-org/shared'
 

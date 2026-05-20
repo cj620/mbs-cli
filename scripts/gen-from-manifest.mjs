@@ -92,7 +92,21 @@ function syncDomainPackage(mod, source, hash) {
   }
 
   writeFile(join(domainDir, 'src', 'index.ts'), renderPluginIndex(mod))
-  writeFile(markerPath, `${JSON.stringify({ owner: generatedOwner, domain: mod.domain, source, hash }, null, 2)}\n`)
+  writeFile(
+    markerPath,
+    `${JSON.stringify(
+      {
+        owner: generatedOwner,
+        domain: mod.domain,
+        source,
+        schemaVersion: manifest.schemaVersion,
+        manifestVersion: manifest.manifestVersion,
+        hash,
+      },
+      null,
+      2,
+    )}\n`,
+  )
 
   const commandDir = join(domainDir, 'src', 'commands', mod.domain)
   const activeCommandFiles = new Set(mod.actions.map((action) => `${action.name}.ts`))
@@ -257,7 +271,7 @@ function renderCommand(mod, action, source, hash) {
       ? `const data = await this.client.get(${pathExpr}, { params: flags })`
       : `const data = await this.client.post(${pathExpr}, { ...flags })`
 
-  return `// AUTO-GENERATED FROM audit manifest. DO NOT EDIT.\n// Source: ${source} @ ${hash}\n${imports.join('\n')}\n\nexport default class ${className} extends MBSCommand {\n  static description = '${escapeTs(action.description_cn)}'\n${flags}${args}\n  async run(): Promise<void> {\n    const { ${argParams.length > 0 ? 'args, ' : ''}flags } = await this.parse(${className})\n\n    ${request}\n    this.output(data)\n  }\n}\n`
+  return `// AUTO-GENERATED FROM audit manifest. DO NOT EDIT.\n// Source: ${source}\n// Manifest: ${manifest.manifestVersion} @ ${hash}\n${imports.join('\n')}\n\nexport default class ${className} extends MBSCommand {\n  static description = '${escapeTs(action.description_cn)}'\n${flags}${args}\n  async run(): Promise<void> {\n    const { ${argParams.length > 0 ? 'args, ' : ''}flags } = await this.parse(${className})\n\n    ${request}\n    this.output(data)\n  }\n}\n`
 }
 
 function renderFlags(params) {
@@ -306,7 +320,15 @@ function renderActionSkill(mod, action, hash) {
   const paramRows = action.params
     .map((param) => `| \`${param.name}\` | ${param.type} | ${param.required ? '是' : '否'} | ${param.default ?? '-'} | ${param.desc || '-'} |`)
     .join('\n')
-  return `# mbs ${mod.domain} ${action.name}\n\n${action.description_cn}\n\n## 用法\n\n\`\`\`bash\nmbs ${mod.domain} ${action.name}${usageFlags}\n\`\`\`\n\n## API\n\n- Method: \`${action.method}\`\n- Path: \`${action.path}\`\n- Manifest hash: \`${hash}\`\n\n## 参数\n\n| 参数 | 类型 | 必填 | 默认值 | 说明 |\n|---|---|---|---|---|\n${paramRows || '| - | - | - | - | - |'}\n\n## 调用规则\n\n- 缺少必填参数时先询问用户。\n- 不要自行编造参数值。\n`
+  return `# mbs ${mod.domain} ${action.name}\n\n${action.description_cn}\n\n## 用法\n\n\`\`\`bash\nmbs ${mod.domain} ${action.name}${usageFlags}\n\`\`\`\n\n## API\n\n- Method: \`${action.method}\`\n- Path: \`${action.path}\`\n- Schema version: \`${manifest.schemaVersion}\`\n- Manifest version: \`${manifest.manifestVersion}\`\n- Manifest hash: \`${hash}\`\n\n## 参数\n\n| 参数 | 类型 | 必填 | 默认值 | 说明 |\n|---|---|---|---|---|\n${paramRows || '| - | - | - | - | - |'}\n${renderResponseSkill(action.response)}\n## 调用规则\n\n- 缺少必填参数时先询问用户。\n- 不要自行编造参数值。\n`
+}
+
+function renderResponseSkill(response) {
+  if (!response) return '\n'
+  const fieldRows = response.fields
+    .map((field) => `| \`${field.name}\` | ${field.type} | ${field.desc || '-'} | ${field.usage || '-'} |`)
+    .join('\n')
+  return `\n## 响应字段\n\n- 响应类型：\`${response.type}\`\n- 说明：${response.desc || '-'}\n\n| 字段 | 类型 | 说明 | 用途 |\n|---|---|---|---|\n${fieldRows || '| - | - | - | - |'}\n\n`
 }
 
 function requiredParams(action) {
@@ -374,6 +396,20 @@ function escapeTs(value) {
 
 function printSummary() {
   const uniqueChanges = [...new Set(changes)]
-  console.log(JSON.stringify({ ok: true, dryRun, source: manifestInput.source, hash: sourceHash, changes: uniqueChanges }, null, 2))
+  console.log(
+    JSON.stringify(
+      {
+        ok: true,
+        dryRun,
+        source: manifestInput.source,
+        schemaVersion: manifest.schemaVersion,
+        manifestVersion: manifest.manifestVersion,
+        hash: sourceHash,
+        changes: uniqueChanges,
+      },
+      null,
+      2,
+    ),
+  )
   console.log('Next: pnpm install && pnpm build && pnpm test')
 }

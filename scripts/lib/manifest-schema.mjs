@@ -11,12 +11,26 @@ export const paramSchema = z.object({
   desc: z.string().default(''),
 })
 
+export const responseFieldSchema = z.object({
+  name: z.string().min(1),
+  type: z.enum(['string', 'integer', 'number', 'boolean', 'object', 'array', 'unknown']).default('unknown'),
+  desc: z.string().default(''),
+  usage: z.string().default(''),
+})
+
+export const responseSchema = z.object({
+  type: z.enum(['object', 'array', 'unknown']).default('unknown'),
+  desc: z.string().default(''),
+  fields: z.array(responseFieldSchema).default([]),
+})
+
 export const actionSchema = z.object({
   name: z.string().regex(safeName, 'action name must be lowercase kebab-case'),
   description_cn: z.string().min(1),
   method: z.enum(['GET', 'POST']),
   path: z.string().min(1).startsWith('/'),
   params: z.array(paramSchema).default([]),
+  response: responseSchema.optional(),
   deprecated: z.boolean().default(false),
 })
 
@@ -30,7 +44,8 @@ export const moduleSchema = z.object({
 
 export const auditManifestSchema = z
   .object({
-    version: z.literal('1'),
+    schemaVersion: z.literal('1'),
+    manifestVersion: z.string().datetime({ offset: true }),
     modules: z.array(moduleSchema),
   })
   .superRefine((manifest, ctx) => {
