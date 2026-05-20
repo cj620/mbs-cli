@@ -30,79 +30,26 @@ cli      MAY import from shared
 
 ---
 
-## Adding a New Skill Module (e.g. mbs orders list)
+## Adding a New Skill Module (generated flow)
 
-Follow every step in order. Do not skip documentation steps — this CLI is used by AI agents
-that rely on SKILL.md files for routing.
-
-### Step 1 — Scaffold the package
+Business modules should be generated from an audit manifest instead of being hand-written.
+The generator writes the package, CLI registration, and root `skills/` documentation together.
 
 ```bash
-cp -r packages/_template packages/<domain>
-```
-
-Edit the copied files:
-
-| File | Change |
-|------|--------|
-| `package.json` | Replace `<domain>` in `"name"` field |
-| `src/index.ts` | Set `static topic = '<domain>'` and `static description` |
-| `src/commands/domain/action.ts` | Rename file, rename class, implement logic |
-
-### Step 2 — Register in CLI
-
-In `packages/cli/package.json`, add **two** entries:
-
-```jsonc
-// under "dependencies":
-"@mb-it-org/<domain>": "workspace:*"
-
-// under "oclif.plugins":
-"@mb-it-org/<domain>"
-```
-
-### Step 3 — Write commands
-
-- Files go in `packages/<domain>/src/commands/<domain>/<action>.ts`
-- Class extends `MBSCommand` from `@mb-it-org/shared`
-- Use `this.client.get(...)` / `this.client.post(...)` — already authenticated
-- Use `this.output(data, meta?)` for all data output — never `console.log` or `this.log`
-- Throw errors — `MBSCommand.catch()` formats them automatically
-- Add each command import to `packages/<domain>/src/index.ts`
-
-### Step 4 — Write SKILL documentation (required)
-
-Agents use SKILL.md files to route user intents to the correct command.
-
-**4a.** Copy the template:
-```bash
-cp skills/references/_template/SKILL.md \
-   skills/references/<domain>/SKILL.md
-```
-
-**4b.** Fill in the template: intent matching table, command list, context passing, typical scenarios.
-
-**4c.** Append a row to the routing table in `skills/SKILL.md`:
-```markdown
-| <keywords in Chinese and English> | `<domain>` | [references/<domain>/SKILL.md](references/<domain>/SKILL.md) |
-```
-
-**4d.** Append an entry to `skills/manifest.json`:
-```json
-{
-  "name": "<domain>",
-  "description": "<one-line Chinese description>",
-  "keywords": ["keyword1", "keyword2", "en-keyword"],
-  "skill": "references/<domain>/SKILL.md",
-  "commands": ["mbs <domain> <action>"]
-}
-```
-
-### Step 5 — Build and verify
-
-```bash
+node scripts/gen-from-manifest.mjs --file fixtures/sample-audit-manifest.json --dry-run
+node scripts/gen-from-manifest.mjs --file fixtures/sample-audit-manifest.json
+pnpm install
 pnpm build
-node packages/cli/bin/run.js <domain> <action>
+pnpm test
+```
+
+Generated files include an `AUTO-GENERATED FROM audit manifest` header. Do not edit those files by hand; update the audit manifest and regenerate.
+
+For temporary API exploration, use read-only raw commands:
+
+```bash
+mbs raw GET /v1/orders
+mbs raw POST /v1/export --body '{"from":"2026-01-01"}'
 ```
 
 ---
@@ -128,13 +75,9 @@ export default class OrdersList extends MBSCommand {
 
 ---
 
-## Adding an L2 API Command (e.g. mbs api:orders:list)
+## L2 API Commands
 
-1. Reference: `packages/cli/src/commands/api/_template.ts`
-2. File goes in `packages/cli/src/commands/api/<namespace>/<action>.ts`
-3. Class name: `Api` + PascalCase(namespace) + PascalCase(action) → `ApiOrdersList`
-4. Command ID auto-derived from path: `api:orders:list`
-5. Run `pnpm build` after creating the file
+Do not add `mbs api:*` commands. Stable business APIs should enter the CLI through the audit manifest generator. Temporary exploration should use `mbs raw GET/POST`.
 
 ---
 
@@ -189,9 +132,9 @@ pnpm build        # tsc + copies skills/ docs into cli dist
 pnpm test         # vitest
 ```
 
-`packages/cli/scripts/copy-skills.cjs` copies `packages/cli/skills/` into the built dist so
-`mbs skills show` can serve them at runtime. If you add new files under `skills/`, they are
-picked up automatically on next build.
+`packages/cli/scripts/copy-skills.cjs` copies root `skills/` into `packages/cli/skills/` so
+`mbs skills show` can serve them at runtime. If generated files change under root `skills/`,
+they are picked up automatically on next build.
 
 ---
 

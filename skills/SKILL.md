@@ -28,6 +28,11 @@ metadata:
 | 组织 / 平台 / 站点 / 总监 / 经理 / 主管 / 店长 / 员工 / org / platform / site / leader / manager | `org`    | [references/org/SKILL.md](references/org/SKILL.md)       |
 | 店铺健康 / 账号健康 / 健康评分 / 违规 / 知识产权投诉 / 政策合规 / Amazon 健康                   | `shops`  | [references/shops/SKILL.md](references/shops/SKILL.md)   |
 | 更新 / 升级 / 版本 / 有新版本 / update / upgrade / version / check update                        | `update` | [references/update/SKILL.md](references/update/SKILL.md) |
+| <!-- AUTO-GENERATED API MODULES START --> |  |  |
+| 订单 / orders / order status | `orders` | [references/orders/SKILL.md](references/orders/SKILL.md) |
+| <!-- AUTO-GENERATED API MODULES END --> |  |  |
+| 
+ |  |  |
 
 > 后续模块按需追加到此表，Agent 只需读本文件即可完成一级路由，无需扫描全部文档。
 

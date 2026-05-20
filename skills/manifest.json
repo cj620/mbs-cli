@@ -5,23 +5,87 @@
     {
       "name": "org",
       "description": "组织架构：平台、站点、总监、经理、主管、店长、店铺、员工",
-      "keywords": ["组织", "平台", "站点", "总监", "经理", "主管", "店长", "员工", "org", "platform", "site", "leader", "manager", "shop-manager", "employee"],
+      "keywords": [
+        "组织",
+        "平台",
+        "站点",
+        "总监",
+        "经理",
+        "主管",
+        "店长",
+        "员工",
+        "org",
+        "platform",
+        "site",
+        "leader",
+        "manager",
+        "shop-manager",
+        "employee"
+      ],
       "skill": "references/org/SKILL.md",
-      "commands": ["mbs org platforms", "mbs org sites", "mbs org leaders", "mbs org managers", "mbs org little-leaders", "mbs org shop-managers", "mbs org shops", "mbs org employees"]
+      "commands": [
+        "mbs org platforms",
+        "mbs org sites",
+        "mbs org leaders",
+        "mbs org managers",
+        "mbs org little-leaders",
+        "mbs org shop-managers",
+        "mbs org shops",
+        "mbs org employees"
+      ]
     },
     {
       "name": "shops",
       "description": "店铺运营数据：Amazon 账号健康、违规统计、合规评分",
-      "keywords": ["店铺健康", "账号健康", "健康评分", "违规", "知识产权投诉", "政策合规", "Amazon健康", "shop health", "account health", "amazon health"],
+      "keywords": [
+        "店铺健康",
+        "账号健康",
+        "健康评分",
+        "违规",
+        "知识产权投诉",
+        "政策合规",
+        "Amazon健康",
+        "shop health",
+        "account health",
+        "amazon health"
+      ],
       "skill": "references/shops/SKILL.md",
-      "commands": ["mbs shops health"]
+      "commands": [
+        "mbs shops health"
+      ]
     },
     {
       "name": "update",
       "description": "CLI 版本检查与更新：检查最新版本、通过 npm 或 GitHub Release 升级 CLI 及内置 skill 文档",
-      "keywords": ["更新", "升级", "版本", "有新版本", "update", "upgrade", "version", "check update"],
+      "keywords": [
+        "更新",
+        "升级",
+        "版本",
+        "有新版本",
+        "update",
+        "upgrade",
+        "version",
+        "check update"
+      ],
       "skill": "references/update/SKILL.md",
-      "commands": ["mbs version", "mbs update"]
+      "commands": [
+        "mbs version",
+        "mbs update"
+      ]
+    },
+    {
+      "name": "orders",
+      "description": "订单查询",
+      "keywords": [
+        "订单",
+        "orders",
+        "order status"
+      ],
+      "skill": "references/orders/SKILL.md",
+      "commands": [
+        "mbs orders list"
+      ],
+      "generated": true
     }
   ]
 }

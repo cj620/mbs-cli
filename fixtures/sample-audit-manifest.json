@@ -1,0 +1,24 @@
+{
+  "version": "1",
+  "modules": [
+    {
+      "domain": "orders",
+      "description_cn": "订单查询",
+      "keywords": ["订单", "orders", "order status"],
+      "scenarios_cn": "运营查询订单状态、订单列表和订单明细。",
+      "actions": [
+        {
+          "name": "list",
+          "description_cn": "查询订单列表",
+          "method": "GET",
+          "path": "/v1/orders",
+          "params": [
+            { "name": "status", "type": "string", "required": false, "desc": "订单状态" },
+            { "name": "limit", "type": "integer", "required": false, "default": 20, "desc": "返回数量" }
+          ],
+          "deprecated": false
+        }
+      ]
+    }
+  ]
+}

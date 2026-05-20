@@ -44,79 +44,21 @@ pnpm test       # vitest
 
 ---
 
-## 新增业务模块（完整流程）
+## 新增业务模块（生成流程）
 
-### 1. 脚手架
-
-```bash
-cp -r packages/_template packages/<domain>
-```
-
-修改复制后的文件：
-
-| 文件 | 改动 |
-|------|------|
-| `package.json` | `"name"` 改为 `"@mb-it-org/<domain>"` |
-| `src/index.ts` | `static topic = '<domain>'`，填写 `description` |
-| `src/commands/domain/action.ts` | 重命名文件和类，实现业务逻辑 |
-
-### 2. 注册到 CLI
-
-在 `packages/cli/package.json` 追加两处：
-
-```jsonc
-"dependencies": {
-  "@mb-it-org/<domain>": "workspace:*"
-},
-"oclif": {
-  "plugins": [
-    "@mb-it-org/<domain>"
-  ]
-}
-```
-
-### 3. 实现命令
-
-- 文件路径：`packages/<domain>/src/commands/<domain>/<action>.ts`
-- 类继承 `MBSCommand`（来自 `@mb-it-org/shared`）
-- 查询用 `this.client.get(...)` / `this.client.post(...)`
-- 输出用 `this.output(data, meta?)`——**禁止** `console.log`
-- 在 `packages/<domain>/src/index.ts` 中 export 每个命令类
-
-### 4. 写 SKILL 文档（必须）
+新增稳定业务接口应先进入 audit manifest，再用生成器生成业务包、CLI 注册和根目录 `skills/` 文档。
 
 ```bash
-cp skills/references/_template/SKILL.md skills/references/<domain>/SKILL.md
-```
-
-填写意图匹配表、命令列表、参数说明、典型场景。
-
-在 `skills/SKILL.md` 路由表追加一行：
-
-```markdown
-| <中英文关键词> | `<domain>` | [references/<domain>/SKILL.md](references/<domain>/SKILL.md) |
-```
-
-在 `skills/manifest.json` 的 `modules` 数组追加：
-
-```json
-{
-  "name": "<domain>",
-  "description": "<一行中文描述>",
-  "keywords": ["关键词1", "关键词2", "en-keyword"],
-  "skill": "references/<domain>/SKILL.md",
-  "commands": ["mbs <domain> <action>"]
-}
-```
-
-### 5. 验证
-
-```bash
+node scripts/gen-from-manifest.mjs --file fixtures/sample-audit-manifest.json --dry-run
+node scripts/gen-from-manifest.mjs --file fixtures/sample-audit-manifest.json
+pnpm install
 pnpm build
-node packages/cli/bin/run.js <domain> <action>
+pnpm test
 node packages/cli/bin/run.js <domain> <action> --help
 node packages/cli/bin/run.js skills show --file references/<domain>/SKILL.md
 ```
+
+生成文件顶部包含 `AUTO-GENERATED FROM audit manifest`，禁止手工修改；需要变更时修改 manifest 后重新生成。
 
 ---
 
@@ -187,9 +129,9 @@ node packages/cli/bin/run.js skills show    # 主路由表是否正确
 
 ---
 
-## L2 直通命令（快速探索 API）
+## raw 直通命令（快速探索 API）
 
-封装前用 `raw` 探索原始接口：
+封装前用只读 `raw` 探索原始接口：
 
 ```bash
 mbs raw GET /v1/orders
@@ -197,4 +139,4 @@ mbs raw POST /v1/export --body '{"from":"2026-01-01","to":"2026-04-08"}'
 mbs raw GET /v1/products --params '{"status":"active"}'
 ```
 
-对应实现参考：`packages/cli/src/commands/api/_template.ts`
+禁止新增 `mbs api:*` / L2 命令；正式接入统一走 audit manifest 生成器。

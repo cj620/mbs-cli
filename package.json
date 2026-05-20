@@ -5,12 +5,18 @@
     "build": "pnpm -r build",
     "test": "pnpm -r test",
     "dev": "pnpm --filter @mb-it-org/cli dev",
+    "gen:manifest": "node scripts/gen-from-manifest.mjs",
+    "gen:manifest:sample": "node scripts/gen-from-manifest.mjs --file fixtures/sample-audit-manifest.json",
+    "gen:manifest:sample:dry": "node scripts/gen-from-manifest.mjs --file fixtures/sample-audit-manifest.json --dry-run",
+    "verify:generated": "pnpm gen:manifest:sample:dry && pnpm build && pnpm test",
+    "verify:orders": "node packages/cli/bin/run.js orders list --help && node packages/cli/bin/run.js skills show --file references/orders/SKILL.md",
     "release:patch": "node scripts/release.js patch",
     "release:minor": "node scripts/release.js minor",
     "release:major": "node scripts/release.js major"
   },
   "devDependencies": {
-    "typescript": "^5.4.0"
+    "typescript": "^5.4.0",
+    "zod": "^3.25.76"
   },
   "packageManager": "pnpm@10.28.2",
   "engines": {
