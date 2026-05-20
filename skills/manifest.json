@@ -74,16 +74,17 @@
       ]
     },
     {
-      "name": "orders",
-      "description": "订单查询",
+      "name": "account",
+      "description": "账号分页查询",
       "keywords": [
-        "订单",
-        "orders",
-        "order status"
+        "账号",
+        "account",
+        "分页",
+        "列表"
       ],
-      "skill": "references/orders/SKILL.md",
+      "skill": "references/account/SKILL.md",
       "commands": [
-        "mbs orders list"
+        "mbs account page"
       ],
       "generated": true
     }

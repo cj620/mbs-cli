@@ -15,6 +15,7 @@ const dryRun = Boolean(args['dry-run'])
 const manifestInput = await loadManifest(args.file, process.env.MBS_AUDIT_MANIFEST_URL)
 const manifest = parseAuditManifest(JSON.parse(manifestInput.content))
 const sourceHash = createHash('sha256').update(manifestInput.content).digest('hex')
+const activeDomains = new Set()
 const activeModules = manifest.modules
   .map((mod) => ({
     ...mod,
@@ -23,8 +24,10 @@ const activeModules = manifest.modules
   .filter((mod) => mod.actions.length > 0)
 
 const changes = []
+const staleGeneratedDomains = findStaleGeneratedDomains(activeModules.map((mod) => mod.domain))
 
 for (const mod of activeModules) {
+  activeDomains.add(mod.domain)
   syncDomainPackage(mod, manifestInput.source, sourceHash)
   syncDomainSkills(mod, sourceHash)
 }
@@ -37,6 +40,10 @@ for (const mod of manifest.modules) {
   if (mod.actions.every((action) => action.deprecated)) {
     removeGeneratedDomain(mod.domain)
   }
+}
+for (const domain of staleGeneratedDomains) {
+  removeGeneratedDomain(domain)
+  removePath(join(repoRoot, 'skills', 'references', domain))
 }
 
 printSummary()
@@ -125,6 +132,16 @@ function removeGeneratedDomain(domain) {
   removePath(domainDir)
 }
 
+function findStaleGeneratedDomains(activeDomainNames) {
+  const active = new Set(activeDomainNames)
+  const packagesDir = join(repoRoot, 'packages')
+  if (!existsSync(packagesDir)) return []
+  return readdirSync(packagesDir, { withFileTypes: true })
+    .filter((entry) => entry.isDirectory())
+    .map((entry) => entry.name)
+    .filter((domain) => !active.has(domain) && existsSync(join(packagesDir, domain, '.mbs-generated.json')))
+}
+
 function syncDomainSkills(mod, hash) {
   const skillDir = join(repoRoot, 'skills', 'references', mod.domain)
   const activeSkillFiles = new Set(['SKILL.md', ...mod.actions.map((action) => `${action.name}.md`)])
@@ -208,7 +225,7 @@ function syncSkillManifest(modules) {
   const staticModules = (current.modules ?? []).filter((mod) => !mod.generated && !generatedNames.has(mod.name))
   const generatedModules = modules.map((mod) => ({
     name: mod.domain,
-    description: mod.description_cn,
+    description: mod.description,
     keywords: mod.keywords,
     skill: `references/${mod.domain}/SKILL.md`,
     commands: mod.actions.map((action) => `mbs ${mod.domain} ${action.name}`),
@@ -254,24 +271,30 @@ function renderPluginIndex(mod) {
   const imports = mod.actions
     .map((action) => `import './commands/${mod.domain}/${action.name}.js'`)
     .join('\n')
-  return `import { Plugin } from '@oclif/core'\n\n${imports}\n\nexport default class ${toClassName(mod.domain)}Plugin extends Plugin {\n  static readonly topic = '${mod.domain}'\n  static readonly description = '${escapeTs(mod.description_cn)}'\n\n  async loadCommands(): Promise<void> {\n    // Commands are auto-loaded via the glob pattern in package.json\n  }\n}\n`
+  return `import { Plugin } from '@oclif/core'\n\n${imports}\n\nexport default class ${toClassName(mod.domain)}Plugin extends Plugin {\n  static readonly topic = '${mod.domain}'\n  static readonly description = '${escapeTs(mod.description)}'\n\n  async loadCommands(): Promise<void> {\n    // Commands are auto-loaded via the glob pattern in package.json\n  }\n}\n`
 }
 
 function renderCommand(mod, action, source, hash) {
-  const pathParamNames = new Set(extractPathParams(action.path))
-  const argParams = action.params.filter((param) => pathParamNames.has(param.name))
-  const flagParams = action.params.filter((param) => !pathParamNames.has(param.name))
+  const actionParams = flattenActionParams(action)
+  const argParams = actionParams.filter((param) => param.in === 'path')
+  const flagParams = actionParams.filter((param) => param.in !== 'path')
   const imports = [`import { ${argParams.length > 0 ? 'Args, ' : ''}Flags } from '@oclif/core'`, "import { MBSCommand } from '@mb-it-org/shared'"]
   const className = `${toClassName(mod.domain)}${toClassName(action.name)}`
   const flags = renderFlags(flagParams)
   const args = renderArgs(argParams)
-  const pathExpr = renderPathExpression(action.path)
+  const pathExpr = renderPathExpression(action.path, argParams)
+  const pathPrefix = action.pathPrefix || mod.pathPrefix
+  const requestParams = action.method === 'GET' ? renderParamObject(flagParams.filter((param) => param.in === 'query')) : ''
+  const requestBody = renderParamObject(flagParams.filter((param) => param.in !== 'query'))
+  const arrayHelper = flagParams.some((param) => param.type === 'array')
+    ? "\n    const toArray = (value: string | undefined): string[] | undefined =>\n      value === undefined ? undefined : value.split(',').map((item) => item.trim()).filter(Boolean)\n"
+    : ''
   const request =
     action.method === 'GET'
-      ? `const data = await this.client.get(${pathExpr}, { params: flags })`
-      : `const data = await this.client.post(${pathExpr}, { ...flags })`
+      ? `const data = await this.client.get(${pathExpr}, {${pathPrefix ? ` pathPrefix: '${escapeTs(pathPrefix)}',` : ''} params: ${requestParams} })`
+      : `const data = await this.client.post(${pathExpr}, ${requestBody}, {${pathPrefix ? ` pathPrefix: '${escapeTs(pathPrefix)}' ` : ''}})`
 
-  return `// AUTO-GENERATED FROM audit manifest. DO NOT EDIT.\n// Source: ${source}\n// Manifest: ${manifest.manifestVersion} @ ${hash}\n${imports.join('\n')}\n\nexport default class ${className} extends MBSCommand {\n  static description = '${escapeTs(action.description_cn)}'\n${flags}${args}\n  async run(): Promise<void> {\n    const { ${argParams.length > 0 ? 'args, ' : ''}flags } = await this.parse(${className})\n\n    ${request}\n    this.output(data)\n  }\n}\n`
+  return `// AUTO-GENERATED FROM audit manifest. DO NOT EDIT.\n// Source: ${source}\n// Manifest: ${manifest.manifestVersion} @ ${hash}\n${imports.join('\n')}\n\nexport default class ${className} extends MBSCommand {\n  static description = '${escapeTs(action.description)}'\n${flags}${args}\n  async run(): Promise<void> {\n    const { ${argParams.length > 0 ? 'args, ' : ''}flags } = await this.parse(${className})\n${arrayHelper}\n    ${request}\n    this.output(data)\n  }\n}\n`
 }
 
 function renderFlags(params) {
@@ -283,56 +306,198 @@ function renderFlags(params) {
 function renderArgs(params) {
   if (params.length === 0) return ''
   const lines = params.map(
-    (param) => `    ${param.name}: Args.string({ required: true, description: '${escapeTs(param.desc || param.name)}' }),`,
+    (param) => `    ${param.name}: Args.string({ required: true, description: '${escapeTs(param.description || param.name)}' }),`,
   )
   return `\n  static args = {\n${lines.join('\n')}\n  }\n`
 }
 
 function flagFactory(param) {
   const factory = param.type === 'integer' ? 'integer' : param.type === 'boolean' ? 'boolean' : 'string'
-  const entries = [`description: '${escapeTs(param.desc || param.name)}'`]
+  const description = param.type === 'array' ? `${param.description || param.name} (comma-separated)` : param.description || param.name
+  const entries = [`description: '${escapeTs(description)}'`]
+  if (param.type === 'boolean') entries.push('allowNo: true')
   if (param.required) entries.push('required: true')
   if (param.default !== undefined) entries.push(`default: ${JSON.stringify(param.default)}`)
   return `Flags.${factory}({ ${entries.join(', ')} })`
 }
 
-function renderPathExpression(path) {
+function renderPathExpression(path, argParams = []) {
   if (!extractPathParams(path).length) return `'${escapeTs(path)}'`
+  const pathArgByName = new Map()
+  for (const param of argParams) {
+    pathArgByName.set(param.name, param.name)
+    if (param.apiName) pathArgByName.set(param.apiName, param.name)
+  }
   const expression = path
-    .replace(/\{([A-Za-z][A-Za-z0-9_]*)\}/g, '${args.$1}')
-    .replace(/:([A-Za-z][A-Za-z0-9_]*)/g, '${args.$1}')
+    .replace(/\{([A-Za-z][A-Za-z0-9_]*)\}/g, (_, name) => `\${args.${pathArgByName.get(name) ?? name}}`)
+    .replace(/:([A-Za-z][A-Za-z0-9_]*)/g, (_, name) => `\${args.${pathArgByName.get(name) ?? name}}`)
   return `\`${expression}\``
 }
 
 function renderModuleSkill(mod) {
   const commandRows = mod.actions
-    .map((action) => `| ${action.description_cn} | \`mbs ${mod.domain} ${action.name}\` | ${requiredParams(action).join(', ') || '-'} |`)
+    .map((action) => `| ${action.description} | \`mbs ${mod.domain} ${action.name}\` | ${requiredParams(action).join(', ') || '-'} |`)
     .join('\n')
   const detailLinks = mod.actions.map((action) => `- [${action.name}.md](${action.name}.md)`).join('\n')
-  return `# ${mod.domain} - ${mod.description_cn}\n\n通过 \`mbs ${mod.domain}\` 命令查询${mod.description_cn}数据。\n\n## 适用场景\n\n${mod.scenarios_cn}\n\n## 意图匹配\n\n关键词：${mod.keywords.join(' / ')}\n\n## 命令一览\n\n| 意图 | 命令 | 必填参数 |\n|---|---|---|\n${commandRows}\n\n## 命令详情\n\n${detailLinks}\n\n## 参数规则\n\n- 执行前必须确认必填参数。\n- 不要猜测 ID、状态、日期范围或其他筛选条件。\n- 未覆盖的临时接口探索使用 \`mbs raw GET/POST <endpoint>\`。\n`
+  return `# ${mod.domain} - ${mod.description}\n\n通过 \`mbs ${mod.domain}\` 命令查询${mod.description}数据。\n\n## 数据来源\n\n- Service: \`${mod.service || '-'}\`\n- Path prefix: \`${mod.pathPrefix || '-'}\`\n\n## 适用场景\n\n${mod.scenarios}\n\n## 意图匹配\n\n关键词：${mod.keywords.join(' / ')}\n\n## 命令一览\n\n| 意图 | 命令 | 必填参数 |\n|---|---|---|\n${commandRows}\n\n## 命令详情\n\n${detailLinks}\n\n## 参数规则\n\n- 执行前必须确认必填参数。\n- 不要猜测 ID、状态、日期范围或其他筛选条件。\n- 未覆盖的临时接口探索使用 \`mbs raw GET/POST <endpoint>\`。\n`
 }
 
 function renderActionSkill(mod, action, hash) {
-  const usageFlags = action.params
-    .filter((param) => !extractPathParams(action.path).includes(param.name))
+  const actionParams = flattenActionParams(action)
+  const usageFlags = actionParams
+    .filter((param) => param.in !== 'path')
     .map((param) => ` ${param.required ? '' : '['}--${param.name} <${param.type}>${param.required ? '' : ']'}`)
     .join('')
-  const paramRows = action.params
-    .map((param) => `| \`${param.name}\` | ${param.type} | ${param.required ? '是' : '否'} | ${param.default ?? '-'} | ${param.desc || '-'} |`)
+  const paramRows = actionParams
+    .map((param) => `| \`${param.name}\` | ${param.apiName || param.name} | ${param.in} | ${param.type} | ${param.required ? '是' : '否'} | ${param.default ?? '-'} | ${param.description || '-'} |`)
     .join('\n')
-  return `# mbs ${mod.domain} ${action.name}\n\n${action.description_cn}\n\n## 用法\n\n\`\`\`bash\nmbs ${mod.domain} ${action.name}${usageFlags}\n\`\`\`\n\n## API\n\n- Method: \`${action.method}\`\n- Path: \`${action.path}\`\n- Schema version: \`${manifest.schemaVersion}\`\n- Manifest version: \`${manifest.manifestVersion}\`\n- Manifest hash: \`${hash}\`\n\n## 参数\n\n| 参数 | 类型 | 必填 | 默认值 | 说明 |\n|---|---|---|---|---|\n${paramRows || '| - | - | - | - | - |'}\n${renderResponseSkill(action.response)}\n## 调用规则\n\n- 缺少必填参数时先询问用户。\n- 不要自行编造参数值。\n`
+  return `# mbs ${mod.domain} ${action.name}\n\n${action.description}\n\n## 用法\n\n\`\`\`bash\nmbs ${mod.domain} ${action.name}${usageFlags}\n\`\`\`\n\n## API\n\n- Service: \`${action.service || mod.service || '-'}\`\n- Method: \`${action.method}\`\n- Path prefix: \`${action.pathPrefix || mod.pathPrefix || '-'}\`\n- Path: \`${action.path}\`\n- Schema version: \`${manifest.schemaVersion}\`\n- Manifest version: \`${manifest.manifestVersion}\`\n- Manifest hash: \`${hash}\`\n\n## 参数\n\n| 参数 | API 字段 | 位置 | 类型 | 必填 | 默认值 | 说明 |\n|---|---|---|---|---|---|---|\n${paramRows || '| - | - | - | - | - | - | - |'}\n${renderResponseSkill(action.response)}\n## 调用规则\n\n- 缺少必填参数时先询问用户。\n- 不要自行编造参数值。\n`
 }
 
 function renderResponseSkill(response) {
   if (!response) return '\n'
-  const fieldRows = response.fields
-    .map((field) => `| \`${field.name}\` | ${field.type} | ${field.desc || '-'} | ${field.usage || '-'} |`)
+  const rows = flattenResponseFields(response)
+  if (rows.length === 0) return '\n'
+
+  const fieldRows = rows
+    .map((field) => `| \`${field.path}\` | ${field.type} | ${field.description || '-'} | ${field.usage || '-'} |`)
     .join('\n')
-  return `\n## 响应字段\n\n- 响应类型：\`${response.type}\`\n- 说明：${response.desc || '-'}\n\n| 字段 | 类型 | 说明 | 用途 |\n|---|---|---|---|\n${fieldRows || '| - | - | - | - |'}\n\n`
+  return `\n## 响应字段\n\n| 路径 | 类型 | 说明 | 用途 |\n|---|---|---|---|\n${fieldRows}\n\n`
+}
+
+function flattenResponseFields(schema, basePath = '') {
+  if (!schema) return []
+
+  if (schema.type === 'object') {
+    const rows = []
+    if (basePath && !basePath.endsWith('[]')) rows.push(responseRow(basePath, schema))
+    for (const [name, child] of Object.entries(schema.properties ?? {})) {
+      rows.push(...flattenResponseFields(child, basePath ? `${basePath}.${name}` : name))
+    }
+    return rows
+  }
+
+  if (schema.type === 'array') {
+    const arrayPath = basePath ? `${basePath}[]` : '$[]'
+    const rows = [responseRow(arrayPath, schema)]
+    if (schema.items) {
+      rows.push(...flattenResponseFields(schema.items, arrayPath))
+    }
+    return rows
+  }
+
+  return basePath ? [responseRow(basePath, schema)] : [responseRow('$', schema)]
+}
+
+function responseRow(path, schema) {
+  return {
+    path,
+    type: schema.type,
+    description: withEnumDescription(schema.description, schema.enum),
+    usage: schema['x-usage'],
+  }
+}
+
+function withEnumDescription(description, enumValues) {
+  if (!enumValues?.length) return description
+  const enumText = enumValues.map((value) => JSON.stringify(value)).join(', ')
+  return description ? `${description}; enum: ${enumText}` : `enum: ${enumText}`
 }
 
 function requiredParams(action) {
-  return action.params.filter((param) => param.required).map((param) => `\`${param.name}\``)
+  return flattenActionParams(action).filter((param) => param.required).map((param) => `\`${param.name}\``)
+}
+
+function renderParamObject(params) {
+  if (params.length === 0) return '{}'
+  const tree = {}
+  for (const param of params) {
+    let cursor = tree
+    const path = param.apiPath?.length ? param.apiPath : [param.apiName || param.name]
+    for (const part of path.slice(0, -1)) {
+      cursor[part] ??= {}
+      cursor = cursor[part]
+    }
+    cursor[path.at(-1)] = renderFlagValue(param)
+  }
+  return renderObjectLiteral(tree)
+}
+
+function renderFlagValue(param) {
+  if (param.type === 'array') return `toArray(flags.${param.name})`
+  return `flags.${param.name}`
+}
+
+function renderObjectLiteral(value) {
+  const entries = Object.entries(value).map(([key, child]) => {
+    const rendered = typeof child === 'string' ? child : renderObjectLiteral(child)
+    return `${JSON.stringify(key)}: ${rendered}`
+  })
+  return `{ ${entries.join(', ')} }`
+}
+
+function flattenActionParams(action) {
+  if (action.request) {
+    return [
+      ...flattenRequestSchema(action.request.path, 'path'),
+      ...flattenRequestSchema(action.request.query, 'query'),
+      ...flattenRequestSchema(action.request.body, 'body'),
+    ]
+  }
+  return action.params.map((param) => ({
+    ...param,
+    apiPath: [param.apiName || param.name],
+  }))
+}
+
+function flattenRequestSchema(schema, location, path = [], inheritedRequired = false) {
+  if (!schema) return []
+  if (schema.type === 'object') {
+    const requiredNames = new Set(schema.required ?? [])
+    return Object.entries(schema.properties ?? {}).flatMap(([name, child]) =>
+      flattenRequestSchema(child, location, [...path, name], inheritedRequired || requiredNames.has(name)),
+    )
+  }
+  const apiName = path.at(-1)
+  if (!apiName) return []
+  const cliName = schema['x-cli-name'] ?? toCamelCase(path)
+  return [
+    {
+      name: cliName,
+      apiName,
+      apiPath: path,
+      in: location,
+      type: schema.type,
+      itemsType: schema.items?.type,
+      required: inheritedRequired,
+      default: schema.default,
+      description: schema.description,
+    },
+  ]
+}
+
+function toCamelCase(parts) {
+  return parts
+    .map((part, index) => normalizeIdentifierPart(part, index > 0))
+    .join('')
+}
+
+function normalizeIdentifierPart(part, capitalize) {
+  const tokens = part.split(/[^A-Za-z0-9]+/).filter(Boolean)
+  const value =
+    tokens.length <= 1
+      ? lowerFirst(tokens[0] ?? '')
+      : tokens
+          .map((token, index) => {
+            const lower = token.toLowerCase()
+            return index === 0 ? lower : `${lower.charAt(0).toUpperCase()}${lower.slice(1)}`
+          })
+          .join('')
+  return capitalize ? `${value.charAt(0).toUpperCase()}${value.slice(1)}` : value
+}
+
+function lowerFirst(value) {
+  return value ? `${value.charAt(0).toLowerCase()}${value.slice(1)}` : value
 }
 
 function toClassName(value) {
