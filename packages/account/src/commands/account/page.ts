@@ -1,6 +1,6 @@
 // AUTO-GENERATED FROM audit manifest. DO NOT EDIT.
 // Source: fixtures/sample-audit-manifest.json
-// Manifest: 2026-05-20T00:00:00+08:00 @ ef716354dcd099e8a30adec032aa35616164f75912f0c56b113a21484a593b39
+// Manifest: 2026-05-20T00:00:00+08:00 @ b3d662d3fbc018cb27f3c1ade691de44162de8bba57d768fa96e99c18bf97bd4
 import { Flags } from '@oclif/core'
 import { MBSCommand } from '@mb-it-org/shared'
 
@@ -33,7 +33,7 @@ export default class AccountPage extends MBSCommand {
     const toArray = (value: string | undefined): string[] | undefined =>
       value === undefined ? undefined : value.split(',').map((item) => item.trim()).filter(Boolean)
 
-    const data = await this.client.post('/page/noauth', { "currentPage": flags.currentPage, "pageSize": flags.pageSize, "id": flags.id, "code": flags.code, "busCode": flags.busCode, "status": flags.status, "account": flags.account, "platform": flags.platform, "hostType": flags.hostType, "email": flags.email, "phone": flags.phone, "accountType": flags.accountType, "passwordUpdateTime": toArray(flags.passwordUpdateTime), "hasExpired": flags.hasExpired, "incorrect": flags.incorrect, "enabled": flags.enabled, "groupCompanyId": flags.groupCompanyId }, { pathPrefix: '/gateway/account-center-service/account' })
+    const data = await this.client.post('/gateway/account-center-service/account/page/noauth', { "currentPage": flags.currentPage, "pageSize": flags.pageSize, "id": flags.id, "code": flags.code, "busCode": flags.busCode, "status": flags.status, "account": flags.account, "platform": flags.platform, "hostType": flags.hostType, "email": flags.email, "phone": flags.phone, "accountType": flags.accountType, "passwordUpdateTime": toArray(flags.passwordUpdateTime), "hasExpired": flags.hasExpired, "incorrect": flags.incorrect, "enabled": flags.enabled, "groupCompanyId": flags.groupCompanyId })
     this.output(data)
   }
 }

@@ -14,7 +14,10 @@ export async function refreshCookieAndUserInfo(apiUrl: string, key: string | nul
   if (!key) throw new NotAuthenticatedError()
 
   const url = `${apiUrl}${ERPLOGIN_PATH}`
-  const res = await axios.post<ErpLoginResponse>(url, null, { params: { key } })
+  const res = await axios.post<ErpLoginResponse>(url, null, {
+    headers: { 'client-type': 'cli' },
+    params: { key },
+  })
 
   const setCookieHeader: string[] = res.headers['set-cookie'] ?? []
   if (setCookieHeader.length === 0) throw new NotAuthenticatedError()

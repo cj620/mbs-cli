@@ -12,7 +12,7 @@ beforeEach(() => {
 })
 
 describe('APIClient', () => {
-  it('sends GET with Cookie header', async () => {
+  it('sends GET with default CLI headers', async () => {
     const instance = {
       get: vi.fn().mockResolvedValue({ data: { code: 0, data: { items: [] } } }),
       post: vi.fn(),
@@ -26,7 +26,7 @@ describe('APIClient', () => {
 
     expect(mockAxios.create).toHaveBeenCalledWith({
       baseURL: 'http://api.example.com',
-      headers: { Cookie: 'SESSION=abc123' },
+      headers: { Cookie: 'SESSION=abc123', 'client-type': 'cli' },
     })
   })
 

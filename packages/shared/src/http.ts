@@ -41,7 +41,7 @@ export class APIClient {
     this.refreshAuth = refreshAuth;
     this.instance = axios.create({
       baseURL,
-      headers: { Cookie: cookie },
+      headers: { Cookie: cookie, "client-type": "cli" },
     });
 
     this.instance.interceptors.response.use((response) => {

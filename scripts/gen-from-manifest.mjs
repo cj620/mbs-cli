@@ -282,8 +282,7 @@ function renderCommand(mod, action, source, hash) {
   const className = `${toClassName(mod.domain)}${toClassName(action.name)}`
   const flags = renderFlags(flagParams)
   const args = renderArgs(argParams)
-  const pathExpr = renderPathExpression(action.path, argParams)
-  const pathPrefix = action.pathPrefix || mod.pathPrefix
+  const pathExpr = renderPathExpression(joinPaths(action.pathPrefix || mod.pathPrefix, action.path), argParams)
   const requestParams = action.method === 'GET' ? renderParamObject(flagParams.filter((param) => param.in === 'query')) : ''
   const requestBody = renderParamObject(flagParams.filter((param) => param.in !== 'query'))
   const arrayHelper = flagParams.some((param) => param.type === 'array')
@@ -291,8 +290,8 @@ function renderCommand(mod, action, source, hash) {
     : ''
   const request =
     action.method === 'GET'
-      ? `const data = await this.client.get(${pathExpr}, {${pathPrefix ? ` pathPrefix: '${escapeTs(pathPrefix)}',` : ''} params: ${requestParams} })`
-      : `const data = await this.client.post(${pathExpr}, ${requestBody}, {${pathPrefix ? ` pathPrefix: '${escapeTs(pathPrefix)}' ` : ''}})`
+      ? `const data = await this.client.get(${pathExpr}, { params: ${requestParams} })`
+      : `const data = await this.client.post(${pathExpr}, ${requestBody})`
 
   return `// AUTO-GENERATED FROM audit manifest. DO NOT EDIT.\n// Source: ${source}\n// Manifest: ${manifest.manifestVersion} @ ${hash}\n${imports.join('\n')}\n\nexport default class ${className} extends MBSCommand {\n  static description = '${escapeTs(action.description)}'\n${flags}${args}\n  async run(): Promise<void> {\n    const { ${argParams.length > 0 ? 'args, ' : ''}flags } = await this.parse(${className})\n${arrayHelper}\n    ${request}\n    this.output(data)\n  }\n}\n`
 }
@@ -339,10 +338,12 @@ function renderModuleSkill(mod) {
     .map((action) => `| ${action.description} | \`mbs ${mod.domain} ${action.name}\` | ${requiredParams(action).join(', ') || '-'} |`)
     .join('\n')
   const detailLinks = mod.actions.map((action) => `- [${action.name}.md](${action.name}.md)`).join('\n')
-  return `# ${mod.domain} - ${mod.description}\n\n通过 \`mbs ${mod.domain}\` 命令查询${mod.description}数据。\n\n## 数据来源\n\n- Service: \`${mod.service || '-'}\`\n- Path prefix: \`${mod.pathPrefix || '-'}\`\n\n## 适用场景\n\n${mod.scenarios}\n\n## 意图匹配\n\n关键词：${mod.keywords.join(' / ')}\n\n## 命令一览\n\n| 意图 | 命令 | 必填参数 |\n|---|---|---|\n${commandRows}\n\n## 命令详情\n\n${detailLinks}\n\n## 参数规则\n\n- 执行前必须确认必填参数。\n- 不要猜测 ID、状态、日期范围或其他筛选条件。\n- 未覆盖的临时接口探索使用 \`mbs raw GET/POST <endpoint>\`。\n`
+  return `# ${mod.domain} - ${mod.description}\n\n通过 \`mbs ${mod.domain}\` 命令查询${mod.description}数据。\n\n## 数据来源\n\n- Service: \`${mod.service || '-'}\`\n\n## 适用场景\n\n${mod.scenarios}\n\n## 意图匹配\n\n关键词：${mod.keywords.join(' / ')}\n\n## 命令一览\n\n| 意图 | 命令 | 必填参数 |\n|---|---|---|\n${commandRows}\n\n## 命令详情\n\n${detailLinks}\n\n## 参数规则\n\n- 执行前必须确认必填参数。\n- 不要猜测 ID、状态、日期范围或其他筛选条件。\n- 未覆盖的临时接口探索使用 \`mbs raw GET/POST <endpoint>\`。\n`
 }
 
 function renderActionSkill(mod, action, hash) {
+  return renderActionSkillV2(mod, action, hash)
+
   const actionParams = flattenActionParams(action)
   const usageFlags = actionParams
     .filter((param) => param.in !== 'path')
@@ -354,6 +355,19 @@ function renderActionSkill(mod, action, hash) {
   return `# mbs ${mod.domain} ${action.name}\n\n${action.description}\n\n## 用法\n\n\`\`\`bash\nmbs ${mod.domain} ${action.name}${usageFlags}\n\`\`\`\n\n## API\n\n- Service: \`${action.service || mod.service || '-'}\`\n- Method: \`${action.method}\`\n- Path prefix: \`${action.pathPrefix || mod.pathPrefix || '-'}\`\n- Path: \`${action.path}\`\n- Schema version: \`${manifest.schemaVersion}\`\n- Manifest version: \`${manifest.manifestVersion}\`\n- Manifest hash: \`${hash}\`\n\n## 参数\n\n| 参数 | API 字段 | 位置 | 类型 | 必填 | 默认值 | 说明 |\n|---|---|---|---|---|---|---|\n${paramRows || '| - | - | - | - | - | - | - |'}\n${renderResponseSkill(action.response)}\n## 调用规则\n\n- 缺少必填参数时先询问用户。\n- 不要自行编造参数值。\n`
 }
 
+function renderActionSkillV2(mod, action, hash) {
+  const actionParams = flattenActionParams(action)
+  const usageFlags = actionParams
+    .filter((param) => param.in !== 'path')
+    .map((param) => ` ${param.required ? '' : '['}--${param.name} <${param.type}>${param.required ? '' : ']'}`)
+    .join('')
+  const paramRows = actionParams
+    .map((param) => `| \`${param.name}\` | ${param.apiName || param.name} | ${param.in} | ${param.type} | ${param.required ? '是' : '否'} | ${param.default ?? '-'} | ${param.description || '-'} |`)
+    .join('\n')
+
+  return `# mbs ${mod.domain} ${action.name}\n\n${action.description}\n\n## 用法\n\n\`\`\`bash\nmbs ${mod.domain} ${action.name}${usageFlags}\n\`\`\`\n\n## API\n\n- Service: \`${action.service || mod.service || '-'}\`\n- Method: \`${action.method}\`\n- Path: \`${joinPaths(action.pathPrefix || mod.pathPrefix, action.path)}\`\n- Schema version: \`${manifest.schemaVersion}\`\n- Manifest version: \`${manifest.manifestVersion}\`\n- Manifest hash: \`${hash}\`\n\n## 参数\n\n| 参数 | API 字段 | 位置 | 类型 | 必填 | 默认值 | 说明 |\n|---|---|---|---|---|---|---|\n${paramRows || '| - | - | - | - | - | - | - |'}\n${renderResponseSkill(action.response)}\n## 调用规则\n\n- 缺少必填参数时先询问用户。\n- 不要自行编造参数值。\n`
+}
+
 function renderResponseSkill(response) {
   if (!response) return '\n'
   const rows = flattenResponseFields(response)
@@ -363,6 +377,12 @@ function renderResponseSkill(response) {
     .map((field) => `| \`${field.path}\` | ${field.type} | ${field.description || '-'} | ${field.usage || '-'} |`)
     .join('\n')
   return `\n## 响应字段\n\n| 路径 | 类型 | 说明 | 用途 |\n|---|---|---|---|\n${fieldRows}\n\n`
+}
+
+function joinPaths(prefix, path) {
+  if (!prefix) return path
+  if (!path) return prefix
+  return `${prefix.replace(/\/+$/, '')}/${path.replace(/^\/+/, '')}`
 }
 
 function flattenResponseFields(schema, basePath = '') {

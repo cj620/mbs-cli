@@ -57,7 +57,7 @@ describe('refreshCookieAndUserInfo', () => {
     expect(mockAxios.post).toHaveBeenCalledWith(
       'http://api.example.com/yyaccount/account/user/erplogin',
       null,
-      { params: { key: 'mykey123' } },
+      { headers: { 'client-type': 'cli' }, params: { key: 'mykey123' } },
     )
   })
 

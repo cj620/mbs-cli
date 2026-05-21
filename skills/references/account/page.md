@@ -12,11 +12,10 @@ mbs account page [--currentPage <integer>] [--pageSize <integer>] [--id <integer
 
 - Service: `account-center-service`
 - Method: `POST`
-- Path prefix: `/gateway/account-center-service/account`
-- Path: `/page/noauth`
+- Path: `/gateway/account-center-service/account/page/noauth`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `ef716354dcd099e8a30adec032aa35616164f75912f0c56b113a21484a593b39`
+- Manifest hash: `b3d662d3fbc018cb27f3c1ade691de44162de8bba57d768fa96e99c18bf97bd4`
 
 ## 参数
 
