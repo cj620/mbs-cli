@@ -196,6 +196,7 @@ mbs whoami
 | org | `mbs org` | 组织架构：平台、站点、总监、经理、主管、店长、店铺、员工 |
 | shops | `mbs shops` | 店铺运营：Amazon 账号健康、违规统计、合规评分 |
 | update | `mbs version` / `mbs update` | CLI 版本检查与更新 |
+| serve | `mbs serve` | 本地 HTTP 网关，让业务页面二次开发时复用 CLI 认证查询 manifest 中的只读接口 |
 
 ---
 
@@ -222,6 +223,14 @@ mbs whoami        # 确认认证状态
 mbs org platforms # 获取平台列表，验证业务数据可达
 ```
 
+**业务页面二次开发（可选）**：
+
+```bash
+mbs serve --manifest fixtures/sample-audit-manifest.json
+```
+
+启动后默认监听 `http://127.0.0.1:7878`，并从 audit manifest 生成 `/api/<domain>/<action>` 路由。前端页面可以直接请求这个本地网关，把已封装的业务接口组合成内部看板、辅助运营页面或临时分析页面，无需在页面里重新实现马帮登录、Cookie 刷新和 API 转发。查看 [packages/cli/docs/serve.md](packages/cli/docs/serve.md) 了解路由规则和安全边界。
+
 ---
 
 ## 输出格式
@@ -243,5 +252,6 @@ mbs org platforms # 获取平台列表，验证业务数据可达
 |------|------|
 | [skills/SKILL.md](skills/SKILL.md) | 业务模块路由与命令速查 |
 | [AGENTS.md](AGENTS.md) | 开发本项目时的 AI agent 协作规范 |
+| [packages/cli/docs/serve.md](packages/cli/docs/serve.md) | `mbs serve` 本地 HTTP 网关说明 |
 | [packages/cli/docs/version-and-update.md](packages/cli/docs/version-and-update.md) | 版本与更新机制详解 |
 | [packages/org/docs/overview.md](packages/org/docs/overview.md) | `mbs org` 完整命令参考 |

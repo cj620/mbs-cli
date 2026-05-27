@@ -8,7 +8,7 @@ Read it before writing any code.
 ## Architecture Overview
 
 ```
-packages/cli          → oclif root. Contains login/logout/whoami/raw/config/skills commands.
+packages/cli          → oclif root. Contains login/logout/whoami/raw/config/skills/serve commands.
 packages/shared       → Shared auth, base command, config, HTTP client. NO business logic.
 packages/org          → Business skill: org hierarchy (platforms/sites/teams).
 packages/<domain>     → Future business skills follow the same pattern as packages/org.
@@ -51,6 +51,14 @@ For temporary API exploration, use read-only raw commands:
 mbs raw GET /v1/orders
 mbs raw POST /v1/export --body '{"from":"2026-01-01"}'
 ```
+
+For local browser prototypes, use the manifest-backed HTTP gateway:
+
+```bash
+mbs serve --manifest fixtures/sample-audit-manifest.json
+```
+
+`serve` binds to `127.0.0.1` by default, exposes `/api/<domain>/<action>` plus `GET /__routes`, and must remain local-only because it reuses the current CLI auth without extra authentication.
 
 ---
 
@@ -145,6 +153,7 @@ they are picked up automatically on next build.
 node packages/cli/bin/run.js config get    # shows apiUrl
 node packages/cli/bin/run.js whoami        # auth status
 node packages/cli/bin/run.js skills show   # prints main SKILL.md (check routing table)
+node packages/cli/bin/run.js serve --manifest fixtures/sample-audit-manifest.json --help
 ```
 
 ### After adding a new skill module

@@ -29,6 +29,22 @@ mbs raw GET /v1/orders
 mbs raw POST /v1/export --body '{"from":"2026-01-01","to":"2026-04-08"}'
 ```
 
+### 本地 HTTP 网关（业务页面二次开发）
+
+`mbs serve` 会读取 audit manifest，并在本机启动一个 HTTP 网关，让浏览器页面复用 CLI 认证查询 MBS API。它适合基于已审计的业务接口做内部看板、运营辅助页、临时分析页等页面化二次开发，页面侧无需重新实现登录、Cookie 刷新和 API 转发。
+
+```bash
+mbs serve --manifest fixtures/sample-audit-manifest.json
+mbs serve --manifest fixtures/sample-audit-manifest.json --port 7878
+```
+
+说明：
+- 默认监听 `127.0.0.1:7878`，不要暴露到公网或局域网
+- 本地路由格式为 `/api/<domain>/<action>`；带 `{param}` 的 API path 会追加路径参数
+- `GET /__routes` 可查看当前 manifest 生成的路由
+- CORS 仅允许 `localhost`、`127.0.0.1` 和本地文件页面的 `null` origin
+- `serve` 无额外鉴权，会复用当前机器的 CLI 登录态；仅用于本地调试
+
 ### Skill 文档
 
 Skill 文档随 CLI 一起打包发布，更新 CLI 即同步更新 skill 文档。

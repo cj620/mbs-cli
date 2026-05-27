@@ -8,7 +8,7 @@
 ## 项目架构
 
 ```
-packages/cli          oclif 根包，入口命令（login/logout/whoami/raw/config/skills）
+packages/cli          oclif 根包，入口命令（login/logout/whoami/raw/config/skills/serve）
 packages/shared       共享层：认证、BaseCommand、HTTP 客户端（无业务逻辑）
 packages/org          业务模块：组织架构
 packages/shops        业务模块：店铺健康
@@ -125,6 +125,7 @@ export default class OrdersList extends MBSCommand {
 node packages/cli/bin/run.js config get     # 确认 apiUrl
 node packages/cli/bin/run.js whoami         # 认证状态
 node packages/cli/bin/run.js skills show    # 主路由表是否正确
+node packages/cli/bin/run.js serve --manifest fixtures/sample-audit-manifest.json --help
 ```
 
 ---
@@ -140,3 +141,21 @@ mbs raw GET /v1/products --params '{"status":"active"}'
 ```
 
 禁止新增 `mbs api:*` / L2 命令；正式接入统一走 audit manifest 生成器。
+
+---
+
+## serve 本地 HTTP 网关
+
+`mbs serve` 仅用于本地浏览器页面调试：读取 audit manifest，生成 `/api/<domain>/<action>` 路由，并复用当前 CLI 认证请求 MBS API。
+
+```bash
+mbs serve --manifest fixtures/sample-audit-manifest.json
+mbs serve --manifest fixtures/sample-audit-manifest.json --port 7878
+```
+
+约束：
+
+- 默认绑定 `127.0.0.1`，不要暴露到公网或局域网
+- 无额外鉴权，任何本机进程都可请求
+- 只允许 manifest 中的 `GET` 与查询类 `POST`
+- 路由发现接口为 `GET /__routes`
