@@ -53,6 +53,7 @@
     "@mb-it-org/shops": "workspace:*",
     "@mb-it-org/shared": "workspace:*",
     "@oclif/core": "^4",
+    "fastify": "^4.28.1",
     "playwright-core": "^1.44.0"
   },
   "devDependencies": {
