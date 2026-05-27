@@ -11,6 +11,7 @@ vi.mock('@mb-it-org/shared', () => ({
   ERPLOGIN_PATH: '/yyaccount/account/user/erplogin',
   KEY_PARAM: 'key',
   LOGIN_TIMEOUT_MS: 5_000,
+  withCliPathPrefix: (apiUrl: string, path = '') => `${apiUrl}/cli${path}`,
   setKey: mockSetKey,
   getAuthContext: mockGetAuthContext,
 }))
@@ -50,11 +51,11 @@ describe('login command', () => {
       close: vi.fn(async () => undefined),
     }
 
-    return { browser }
+    return { browser, page }
   }
 
   it('prefers the system Chrome channel, captures the login key, and prints success JSON', async () => {
-    const { browser } = createBrowser()
+    const { browser, page } = createBrowser()
 
     mockLaunch.mockResolvedValue(browser)
     mockGetAuthContext.mockResolvedValue({ userInfo: { name: '张三' } })
@@ -71,6 +72,7 @@ describe('login command', () => {
 
     expect(mockLaunch).toHaveBeenCalledTimes(1)
     expect(mockLaunch).toHaveBeenCalledWith({ channel: 'chrome', headless: false })
+    expect(page.goto).toHaveBeenCalledWith('https://example.com/cli/login')
     expect(mockSetKey).toHaveBeenCalledWith('test-key')
     expect(mockGetAuthContext).toHaveBeenCalled()
     expect(log).toHaveBeenLastCalledWith(JSON.stringify({ ok: true, data: { message: 'Authenticated successfully' } }))

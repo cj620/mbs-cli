@@ -55,7 +55,7 @@ describe('refreshCookieAndUserInfo', () => {
     expect(result.cookie).toBe('SESSION=newcookie123; Path=/; HttpOnly')
     expect(result.userInfo).toEqual(mockUserInfo)
     expect(mockAxios.post).toHaveBeenCalledWith(
-      'http://api.example.com/yyaccount/account/user/erplogin',
+      'http://api.example.com/cli/yyaccount/account/user/erplogin',
       null,
       { headers: { 'client-type': 'cli' }, params: { key: 'mykey123' } },
     )

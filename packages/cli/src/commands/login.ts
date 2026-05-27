@@ -1,7 +1,7 @@
 // packages/cli/src/commands/login.ts
 import { Command, Flags } from '@oclif/core'
 import { chromium } from 'playwright-core'
-import { setKey, getAuthContext, getConfig, LOGIN_PATH, LOGIN_PATH_PASSWORD, ERPLOGIN_PATH, KEY_PARAM, LOGIN_TIMEOUT_MS } from '@mb-it-org/shared'
+import { setKey, getAuthContext, getConfig, withCliPathPrefix, LOGIN_PATH, LOGIN_PATH_PASSWORD, ERPLOGIN_PATH, KEY_PARAM, LOGIN_TIMEOUT_MS } from '@mb-it-org/shared'
 
 const MISSING_BROWSER_MESSAGE = 'No supported browser runtime is available'
 const MISSING_BROWSER_HINT = 'Make sure Chrome or Edge is installed and available, then try `mbs login` again. Only install an extra browser runtime if the system browsers cannot be used.'
@@ -55,7 +55,7 @@ export default class Login extends Command {
   async run(): Promise<void> {
     const { flags } = await this.parse(Login)
     const { apiUrl } = getConfig()
-    const loginUrl = `${apiUrl}${flags.password ? LOGIN_PATH_PASSWORD : LOGIN_PATH}`
+    const loginUrl = withCliPathPrefix(apiUrl, flags.password ? LOGIN_PATH_PASSWORD : LOGIN_PATH)
     this.log('Opening browser for authentication...')
     this.log(`URL: ${loginUrl}`)
 

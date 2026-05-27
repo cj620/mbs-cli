@@ -3,6 +3,7 @@ export type { MBSConfig, ApiSuccessResponse, ApiErrorResponse, MBSResponse } fro
 export { NotAuthenticatedError, MBSError } from './errors.js'
 export { getConfig, setConfig, getConfigDir } from './config.js'
 export { APIClient } from './http.js'
+export { withCliPathPrefix } from './url.js'
 export { MBSCommand } from './base-command.js'
 export {
   detectInstalledUpdateSource,
