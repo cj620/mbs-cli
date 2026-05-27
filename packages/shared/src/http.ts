@@ -6,7 +6,6 @@
 import axios, { type AxiosInstance, type AxiosRequestConfig } from "axios";
 import { NotAuthenticatedError, PermissionError, MBSError } from "./errors.js";
 import type { RawApiResponse } from "./types.js";
-import { withCliPathPrefix } from "./url.js";
 
 export interface GetOptions {
   pathPrefix?: string;
@@ -41,7 +40,7 @@ export class APIClient {
   ) {
     this.refreshAuth = refreshAuth;
     this.instance = axios.create({
-      baseURL: withCliPathPrefix(baseURL),
+      baseURL,
       headers: { Cookie: cookie, "client-type": "cli" },
     });
 

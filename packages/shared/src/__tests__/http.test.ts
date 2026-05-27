@@ -25,7 +25,7 @@ describe('APIClient', () => {
     await c.get('/v1/orders')
 
     expect(mockAxios.create).toHaveBeenCalledWith({
-      baseURL: 'http://api.example.com/cli',
+      baseURL: 'http://api.example.com',
       headers: { Cookie: 'SESSION=abc123', 'client-type': 'cli' },
     })
   })

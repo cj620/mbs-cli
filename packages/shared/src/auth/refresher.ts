@@ -1,7 +1,6 @@
 // packages/skill-shared/src/auth/refresher.ts
 import axios from 'axios'
 import { NotAuthenticatedError } from '../errors.js'
-import { withCliPathPrefix } from '../url.js'
 import { ERPLOGIN_PATH } from './constants.js'
 import type { UserInfo } from './context.js'
 
@@ -14,7 +13,7 @@ interface ErpLoginResponse {
 export async function refreshCookieAndUserInfo(apiUrl: string, key: string | null): Promise<{ cookie: string; userInfo: UserInfo }> {
   if (!key) throw new NotAuthenticatedError()
 
-  const url = withCliPathPrefix(apiUrl, ERPLOGIN_PATH)
+  const url = `${apiUrl.replace(/\/+$/, '')}${ERPLOGIN_PATH}`
   const res = await axios.post<ErpLoginResponse>(url, null, {
     headers: { 'client-type': 'cli' },
     params: { key },
