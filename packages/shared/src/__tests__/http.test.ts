@@ -43,6 +43,24 @@ describe('APIClient', () => {
     await c.post('/v1/export', { from: '2026-01-01' })
     expect(instance.post).toHaveBeenCalledWith('/v1/export', { from: '2026-01-01' })
   })
+
+  it('sends streaming POST with NDJSON headers', async () => {
+    const stream = { on: vi.fn() }
+    const instance = {
+      get: vi.fn(),
+      post: vi.fn().mockResolvedValue({ data: stream }),
+      request: vi.fn(),
+      interceptors: { response: { use: vi.fn() } },
+    }
+    mockAxios.create = vi.fn().mockReturnValue(instance)
+
+    const c = new APIClient('http://api.example.com', 'SESSION=abc123', vi.fn())
+    await expect(c.postStream('/gateway/cli-service/cli/doris/query', { sql: 'SELECT 1' })).resolves.toBe(stream)
+    expect(instance.post).toHaveBeenCalledWith('/gateway/cli-service/cli/doris/query', { sql: 'SELECT 1' }, {
+      responseType: 'stream',
+      headers: { Accept: 'application/x-ndjson' },
+    })
+  })
 })
 
 describe('APIClient response interceptor', () => {

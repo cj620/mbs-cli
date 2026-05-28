@@ -103,13 +103,14 @@ mbs skills show                                    # 读取主入口 SKILL.md（
 mbs skills show --file references/global.md        # 读取全局参考（必读）
 mbs skills show --file references/org/SKILL.md    # 按需，涉及组织架构时读取
 mbs skills show --file references/shops/SKILL.md  # 按需，涉及店铺运营时读取
+mbs skills show --file references/doris/SKILL.md  # 按需，涉及 Doris / SQL 数据探索时读取
 ```
 
 **方式 3（仓库在本机时）：**
 
 - [`skills/SKILL.md`](skills/SKILL.md)
 - [`skills/references/global.md`](skills/references/global.md)
-- 按需：`skills/references/org/*`、`skills/references/shops/*`
+- 按需：`skills/references/org/*`、`skills/references/shops/*`、`skills/references/doris/*`
 
 ### Step 7: 验收
 
@@ -195,6 +196,7 @@ mbs whoami
 |------|---------|------|
 | org | `mbs org` | 组织架构：平台、站点、总监、经理、主管、店长、店铺、员工 |
 | shops | `mbs shops` | 店铺运营：Amazon 账号健康、违规统计、合规评分 |
+| doris | `mbs doris` | Doris 数据库探索与只读 SQL 查询：库表列表、建表语句、流式 SELECT 查询 |
 | update | `mbs version` / `mbs update` | CLI 版本检查与更新 |
 | serve | `mbs serve` | 本地 HTTP 网关，让业务页面二次开发时复用 CLI 认证查询 manifest 中的只读接口 |
 
@@ -243,6 +245,8 @@ mbs serve --manifest fixtures/sample-audit-manifest.json
 { "ok": true, "data": <any>, "meta": { "total": <number> } }
 { "ok": false, "error": { "type": "auth|validation|api", "message": "...", "hint": "..." } }
 ```
+
+例外：`mbs doris query` 会直接透传服务端 NDJSON 流，便于 agent 增量消费大结果集。
 
 退出码：`0` 成功 / `1` 参数或 API 错误 / `2` 认证失效（需重新 `mbs login`）
 

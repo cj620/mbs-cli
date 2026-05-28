@@ -4,6 +4,7 @@
  */
 // packages/skill-shared/src/http.ts
 import axios, { type AxiosInstance, type AxiosRequestConfig } from "axios";
+import type { Readable } from "node:stream";
 import { NotAuthenticatedError, PermissionError, MBSError } from "./errors.js";
 import type { RawApiResponse } from "./types.js";
 
@@ -86,6 +87,22 @@ export class APIClient {
   ): Promise<T> {
     const url = options?.pathPrefix ? options.pathPrefix + path : path;
     return await this.withRetry(() => this.instance.post<T>(url, body).then((r) => r.data));
+  }
+
+  async postStream(
+    path: string,
+    body?: unknown,
+    options?: PostOptions,
+  ): Promise<Readable> {
+    const url = options?.pathPrefix ? options.pathPrefix + path : path;
+    return await this.withRetry(() =>
+      this.instance
+        .post<Readable>(url, body, {
+          responseType: "stream",
+          headers: { Accept: "application/x-ndjson" },
+        })
+        .then((r) => r.data),
+    );
   }
 
   async request<T = unknown>(

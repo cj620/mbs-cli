@@ -1,0 +1,37 @@
+{
+  "name": "@mb-it-org/doris",
+  "version": "0.1.0",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "oclif": {
+    "commands": {
+      "strategy": "pattern",
+      "glob": "dist/commands/**/*.js",
+      "target": "./dist/commands"
+    }
+  },
+  "files": [
+    "dist",
+    "oclif.manifest.json"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "pnpm exec vitest run"
+  },
+  "dependencies": {
+    "@mb-it-org/shared": "workspace:*",
+    "@oclif/core": "^4.10.5"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.4.0",
+    "vitest": "^1.6.1"
+  }
+}
