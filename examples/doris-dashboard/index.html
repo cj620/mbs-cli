@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Doris API Test</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">MBS Local Gateway</p>
+          <h1>Doris API Test</h1>
+        </div>
+        <span id="overall-status" class="status-badge idle">Ready</span>
+      </header>
+
+      <section class="toolbar" aria-label="Gateway controls">
+        <label class="field gateway-field">
+          <span>Gateway</span>
+          <input id="gateway-url" type="url" value="http://127.0.0.1:7878" spellcheck="false" />
+        </label>
+        <button id="check-button" type="button">Check</button>
+      </section>
+
+      <section id="error-panel" class="error-panel hidden" role="alert"></section>
+
+      <section class="status-grid" aria-label="Status">
+        <article class="metric">
+          <span>Routes</span>
+          <strong id="routes-count">-</strong>
+          <small id="routes-detail">Not checked</small>
+        </article>
+        <article class="metric">
+          <span>Schemas</span>
+          <strong id="schemas-count">-</strong>
+          <small id="schemas-detail">Not loaded</small>
+        </article>
+        <article class="metric">
+          <span>Rows</span>
+          <strong id="rows-count">-</strong>
+          <small id="query-detail">No query yet</small>
+        </article>
+      </section>
+
+      <section class="workspace">
+        <aside class="panel schema-panel">
+          <div class="panel-header">
+            <h2>Schemas</h2>
+            <button id="schemas-button" type="button">Load</button>
+          </div>
+          <div id="schema-list" class="schema-list empty">No data</div>
+        </aside>
+
+        <section class="panel work-panel">
+          <div class="tabs" role="tablist" aria-label="Doris actions">
+            <button class="tab active" id="tab-ddl" type="button" data-tab="ddl">DDL</button>
+            <button class="tab" id="tab-query" type="button" data-tab="query">Query</button>
+          </div>
+
+          <section id="view-ddl" class="tab-view active" aria-labelledby="tab-ddl">
+            <div class="inline-form">
+              <label class="field">
+                <span>Table</span>
+                <input id="table-name" type="text" placeholder="database.table" spellcheck="false" />
+              </label>
+              <button id="ddl-button" type="button">Show</button>
+            </div>
+            <pre id="ddl-output" class="code-output">No DDL loaded</pre>
+          </section>
+
+          <section id="view-query" class="tab-view" aria-labelledby="tab-query">
+            <label class="field">
+              <span>SQL</span>
+              <textarea id="sql-input" spellcheck="false">select 1 as sample_value</textarea>
+            </label>
+            <div class="query-actions">
+              <button id="query-button" type="button">Run</button>
+              <button id="clear-button" class="secondary" type="button">Clear</button>
+            </div>
+            <div id="query-table-wrap" class="table-wrap hidden">
+              <table>
+                <thead id="query-head"></thead>
+                <tbody id="query-body"></tbody>
+              </table>
+            </div>
+            <pre id="query-output" class="code-output">No query result</pre>
+          </section>
+        </section>
+      </section>
+    </main>
+    <script src="./app.js"></script>
+  </body>
+</html>

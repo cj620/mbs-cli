@@ -34,8 +34,8 @@ const manifest: AuditManifest = {
   ],
 }
 
-function fakeClient(get: unknown = vi.fn(), post: unknown = vi.fn()): APIClient {
-  return { get, post } as unknown as APIClient
+function fakeClient(get: unknown = vi.fn(), post: unknown = vi.fn(), request: unknown = vi.fn()): APIClient {
+  return { get, post, request } as unknown as APIClient
 }
 
 describe('buildRoutes', () => {
@@ -142,5 +142,53 @@ describe('serve app', () => {
     const body = JSON.parse(res.body)
     expect(body.ok).toBe(true)
     expect(body.data).toHaveLength(2)
+  })
+
+  it('proxy-all GET route forwards arbitrary upstream path and query', async () => {
+    const request = vi.fn().mockResolvedValue({ items: [] })
+    const app = buildApp(undefined, async () => fakeClient(vi.fn(), vi.fn(), request), { proxyAll: true })
+
+    const res = await app.inject({
+      method: 'GET',
+      url: '/proxy/gateway/account-center-service/account/page/noauth?currentPage=1',
+    })
+
+    expect(res.statusCode).toBe(200)
+    expect(JSON.parse(res.body)).toEqual({ ok: true, data: { items: [] } })
+    expect(request).toHaveBeenCalledWith('GET', '/gateway/account-center-service/account/page/noauth', {
+      params: { currentPage: '1' },
+      body: undefined,
+    })
+  })
+
+  it('proxy-all POST route forwards arbitrary upstream path with body', async () => {
+    const request = vi.fn().mockResolvedValue({ total: 1 })
+    const app = buildApp(undefined, async () => fakeClient(vi.fn(), vi.fn(), request), { proxyAll: true })
+
+    const res = await app.inject({
+      method: 'POST',
+      url: '/proxy/gateway/account-center-service/account/page/noauth',
+      payload: { currentPage: 1, pageSize: 10 },
+    })
+
+    expect(res.statusCode).toBe(200)
+    expect(JSON.parse(res.body)).toEqual({ ok: true, data: { total: 1 } })
+    expect(request).toHaveBeenCalledWith('POST', '/gateway/account-center-service/account/page/noauth', {
+      params: {},
+      body: { currentPage: 1, pageSize: 10 },
+    })
+  })
+
+  it('proxy-all does not expose mutation methods', async () => {
+    const request = vi.fn().mockResolvedValue({})
+    const app = buildApp(undefined, async () => fakeClient(vi.fn(), vi.fn(), request), { proxyAll: true })
+
+    const res = await app.inject({
+      method: 'DELETE',
+      url: '/proxy/gateway/account-center-service/account/page/noauth',
+    })
+
+    expect(res.statusCode).toBe(404)
+    expect(request).not.toHaveBeenCalled()
   })
 })

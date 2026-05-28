@@ -100,3 +100,31 @@ node packages/cli/bin/run.js serve --manifest fixtures/sample-audit-manifest.jso
 pnpm --filter @mb-it-org/cli test
 node packages/cli/bin/run.js serve --manifest fixtures/sample-audit-manifest.json --help
 ```
+
+## 全量只读代理
+
+如需不依赖 audit manifest，直接代理任意上游只读接口，可显式开启全量代理模式：
+
+```bash
+mbs serve --proxy-all
+```
+
+调用规则：
+
+```text
+GET  /proxy/<upstream-api-path>?key=value
+POST /proxy/<upstream-api-path>
+```
+
+示例：
+
+```javascript
+const res = await fetch('http://127.0.0.1:7878/proxy/gateway/account-center-service/account/page/noauth', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ currentPage: 1, pageSize: 10 }),
+})
+const data = await res.json()
+```
+
+`--proxy-all` 仍只开放 `GET` 和查询类 `POST`，不会代理 `PUT`、`PATCH`、`DELETE`。

@@ -47,6 +47,10 @@ function attachCors(app: FastifyInstance): void {
   })
 }
 
+export interface ServeAppOptions {
+  proxyAll?: boolean
+}
+
 export function registerRoutes(app: FastifyInstance, routes: ServeRoute[], getClient: () => Promise<APIClient>): void {
   for (const route of routes) {
     app.route({
@@ -71,24 +75,67 @@ export function registerRoutes(app: FastifyInstance, routes: ServeRoute[], getCl
   }
 }
 
-export function buildApp(manifest: AuditManifest, getClient: () => Promise<APIClient>): FastifyInstance {
+function registerProxyAllRoute(app: FastifyInstance, getClient: () => Promise<APIClient>): void {
+  app.route({
+    method: ['GET', 'POST'],
+    url: '/proxy/*',
+    handler: async (request, reply) => {
+      try {
+        const params = (request.params ?? {}) as Record<string, string>
+        const upstreamPath = params['*']
+        if (!upstreamPath) throw new Error('Missing upstream API path')
+
+        const client = await getClient()
+        const data = await client.request(request.method.toUpperCase(), `/${upstreamPath}`, {
+          params: (request.query ?? {}) as Record<string, unknown>,
+          body: request.body,
+        })
+        reply.send({ ok: true, data })
+      } catch (err) {
+        const payload = errorPayload(err)
+        const status = payload.error.type === 'auth' ? 401 : 500
+        reply.code(status).send(payload)
+      }
+    },
+  })
+}
+
+export function buildApp(
+  manifest: AuditManifest | undefined,
+  getClient: () => Promise<APIClient>,
+  options: ServeAppOptions = {},
+): FastifyInstance {
   const app = Fastify({ logger: false })
   attachCors(app)
 
-  const routes = buildRoutes(manifest)
+  const routes = manifest ? buildRoutes(manifest) : []
 
   app.get('/__routes', async () => ({
     ok: true,
-    data: routes.map((route) => ({
-      method: route.method,
-      url: route.routeUrl,
-      domain: route.domain,
-      action: route.action,
-      description: route.description,
-    })),
+    data: [
+      ...routes.map((route) => ({
+        method: route.method,
+        url: route.routeUrl,
+        domain: route.domain,
+        action: route.action,
+        description: route.description,
+      })),
+      ...(options.proxyAll
+        ? [
+            {
+              method: 'GET|POST',
+              url: '/proxy/*',
+              domain: '*',
+              action: 'proxy-all',
+              description: 'Proxy any read-only upstream API path',
+            },
+          ]
+        : []),
+    ],
   }))
 
   registerRoutes(app, routes, getClient)
+  if (options.proxyAll) registerProxyAllRoute(app, getClient)
   return app
 }
 
@@ -98,12 +145,16 @@ export default class Serve extends Command {
   static examples = [
     'mbs serve --manifest fixtures/sample-audit-manifest.json',
     'mbs serve --manifest fixtures/sample-audit-manifest.json --port 7878',
+    'mbs serve --proxy-all',
   ]
 
   static flags = {
     manifest: Flags.string({
       description: 'Path to audit manifest JSON',
-      required: true,
+    }),
+    'proxy-all': Flags.boolean({
+      description: 'Expose a read-only /proxy/* gateway for arbitrary upstream GET/POST API paths',
+      default: false,
     }),
     port: Flags.integer({
       description: 'Port to listen on',
@@ -117,7 +168,12 @@ export default class Serve extends Command {
 
   async run(): Promise<void> {
     const { flags } = await this.parse(Serve)
-    const manifest = loadManifest(flags.manifest)
+    if (!flags.manifest && !flags['proxy-all']) {
+      this.log(JSON.stringify(errorPayload(new Error('Either --manifest or --proxy-all is required'))))
+      this.exit(1)
+    }
+
+    const manifest = flags.manifest ? loadManifest(flags.manifest) : undefined
 
     let client: APIClient | undefined
     const getClient = async (): Promise<APIClient> => {
@@ -129,7 +185,7 @@ export default class Serve extends Command {
       return client
     }
 
-    const app = buildApp(manifest, getClient)
+    const app = buildApp(manifest, getClient, { proxyAll: flags['proxy-all'] })
 
     try {
       const address = await app.listen({ port: flags.port, host: flags.host })
@@ -140,7 +196,8 @@ export default class Serve extends Command {
             address,
             host: flags.host,
             port: flags.port,
-            routes: buildRoutes(manifest).length,
+            routes: manifest ? buildRoutes(manifest).length : 0,
+            proxyAll: flags['proxy-all'],
             warning: 'NO AUTH — local loopback only. Anything on this machine can call these endpoints.',
           },
         }),
