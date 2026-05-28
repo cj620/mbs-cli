@@ -75,6 +75,18 @@ const res = await fetch('http://127.0.0.1:7878/api/account/page', {
 const data = await res.json()
 ```
 
+## 测试页面
+
+仓库内提供了一个零依赖静态页面，用来验证本地网关、路由发现和 `account/page` 接口是否正常接通：
+
+```bash
+node packages/cli/bin/run.js serve --manifest fixtures/sample-audit-manifest.json --port 7878
+```
+
+然后直接打开 [`examples/serve-dashboard/index.html`](../../../examples/serve-dashboard/index.html)，或用任意本地静态服务打开 `examples/serve-dashboard/` 目录。页面会默认请求 `http://127.0.0.1:7878/__routes` 和 `http://127.0.0.1:7878/api/account/page`，并基于当前页账号数据展示总量、分页、平台、状态、启用状态和密码过期统计。
+
+如果页面显示认证失败，先运行 `mbs login`，再重新启动或刷新 `mbs serve`。
+
 ## 安全边界
 
 - `serve` 没有额外鉴权，会复用当前机器上的 CLI 登录态。

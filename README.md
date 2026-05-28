@@ -231,6 +231,8 @@ mbs serve --manifest fixtures/sample-audit-manifest.json
 
 启动后默认监听 `http://127.0.0.1:7878`，并从 audit manifest 生成 `/api/<domain>/<action>` 路由。前端页面可以直接请求这个本地网关，把已封装的业务接口组合成内部看板、辅助运营页面或临时分析页面，无需在页面里重新实现马帮登录、Cookie 刷新和 API 转发。查看 [packages/cli/docs/serve.md](packages/cli/docs/serve.md) 了解路由规则和安全边界。
 
+需要快速验证本地接口服务时，可以启动网关后打开 [examples/serve-dashboard/index.html](examples/serve-dashboard/index.html)。该测试页面会检查 `/__routes` 和 `/api/account/page`，并基于 sample manifest 的账号分页接口展示统计看板。
+
 ---
 
 ## 输出格式
