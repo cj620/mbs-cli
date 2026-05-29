@@ -27,140 +27,161 @@
 
 ## Agent 执行原则
 
-- 先检查现状，再安装缺失项，不要重复安装
-- 业务查询统一通过 `mbs`，不要用 `curl` 或手写 HTTP
-- 不猜 API 路径、ID、参数值；必须先查命令和返回结果
-- `mbs` 命令失败时先看结构化 JSON 的 `error.hint`
-- 退出码 `2` 表示认证失效，应提示或执行 `mbs login`
-- CLI 安装和 skill 接入是两件事：前者解决命令可用，后者解决 agent 如何正确使用命令
+- **先检测后动作**：每步开头先跑探测命令（`node -v` / `mbs version` / `mbs whoami` / `mbs config get`），已满足直接跳过，不重复安装
+- **以结构化 JSON 为准**：所有 `mbs` 命令输出 `{ ok, data | error }`；判断成功看 `ok` 字段 + 退出码，不解析人话
+- 退出码：`0` 成功 / `1` API 或参数错 / `2` 认证失效（必须重新 `mbs login`）
+- 失败时先读 `error.hint`，再决定下一步
+- 业务查询只用 `mbs`，禁止 `curl` / 手拼 HTTP / 猜 API 路径或 ID
+- CLI 安装、配置、认证、skill 接入是四件独立的事，必须分开汇报状态
 
 ## 主流程
 
-### Step 1: 判断是否优先接入 Agent Skill
-
-先区分清楚三件事：
-
-- `CLI 已安装`：`mbs` 命令是否可执行
-- `认证已完成`：`mbs whoami` 是否正常返回
-- `agent skill 已接入`：agent 是否已挂载或读取 `skills/` 文档作为任务规约
-
-如果当前平台支持本地 skill / prompts / tool docs 注册机制，优先把仓库 `skills/` 目录接入平台配置，再继续后续步骤。
-
-### Step 2: 检查基础环境
+### Step 1: 检测基础环境
 
 ```bash
-node -v    # 需要 >= 18
+node -v    # 需 >= 18
 npm -v
 ```
 
-`node` 或 `npm` 不存在时先安装 Node.js 18 LTS，再继续。
+缺失 → 安装 Node.js 18 LTS 再继续。已具备直接进 Step 2。
 
-### Step 3: 安装 CLI
+### Step 2: 安装或更新 CLI
+
+**未安装** —— 显式锁官方源（避免本地 `npm config` 默认指向镜像拿到旧版）：
 
 ```bash
+# 主路径：必须显式 --registry，否则本机 npm 默认源可能被改成 npmmirror 拿到缓存旧版
 npm install -g @mb-it-org/cli --registry=https://registry.npmjs.org/
+
+# 官方源网络不可达时的回落（需显式锁 @latest）
+npm install -g @mb-it-org/cli@latest --registry=https://registry.npmmirror.com
 ```
 
-> 已知 `https://registry.npmmirror.com` 可能缓存旧版 `0.1.25`（含 `workspace:*` 依赖，安装报 `EUNSUPPORTEDPROTOCOL`），请使用 npm 官方源。
+> 已知 npmmirror 缓存的旧版 `0.1.25` 含 `workspace:*` 依赖，安装会报 `EUNSUPPORTEDPROTOCOL`。**不要省 `--registry`**；想确认当前默认源跑 `npm config get registry`。
 
-如果 `mbs` 已安装，跳过此步，执行 `mbs update` 即可。
-
-### Step 4: 确认登录浏览器可用
-
-`mbs login` 会优先使用系统已有的 Chrome，其次 Edge。一般办公环境已有浏览器，不需要额外准备浏览器运行时。
-
-只有在系统 Chrome / Edge 都不可用，且 `mbs login` 明确提示缺少浏览器运行时时，才按错误提示补齐运行时。不要在阅读文档或环境检查阶段主动安装。
-
-### Step 5: 登录并验证认证
+**已安装** —— 先看版本，再决定是否更新：
 
 ```bash
-mbs login    # 拉起受控浏览器，完成登录后 CLI 提取认证 key
-mbs whoami   # 确认认证状态
+mbs version    # data.updateAvailable === true 时再更新
+mbs update     # 自动选源：npm 装的走 npm，release 包走 GitHub release
 ```
 
-预期：`mbs whoami` 返回 `ok: true`，含用户信息。若返回 `ok: false` 或退出码 `2`，重新执行 `mbs login`。
+`mbs update` 内部会判等：版本一致直接返回 `updated: false`，幂等安全。
 
-### Step 6: 接入 Skill 文档
-
-Skill 文档随 CLI 打包发布，更新 CLI 即同步更新文档文件；但 **agent 会话内的旧缓存需主动刷新**。
-
-**方式 1（推荐）：安装到 agent 平台**
+### Step 3: 检测配置
 
 ```bash
-mbs skills install                  # 自动安装到已检测到的 Claude/Codex
-mbs skills install --target claude  # 安装到 ~/.claude/skills/mbs/
-mbs skills install --target codex   # 安装到 ~/.codex/skills/mbs/
+mbs config get
 ```
 
-命令会把 npm 包内置的 `skills/` 完整复制为平台 skill 目录，例如 `~/.claude/skills/mbs/SKILL.md`，并保留 `references/` 等详细文档结构。安装后重启或刷新 agent 会话，让平台重新加载 skill。
-
-更新 CLI 后，重新运行安装命令即可覆盖本地 agent skill：
+返回 `ok:false` + `hint: "Run mbs config init to configure"` → 执行：
 
 ```bash
-npm update -g @mb-it-org/cli
-mbs skills install
+mbs config init
 ```
 
-如只更新指定平台：
+返回 `ok:true` 含 `data.apiUrl` → 跳过。
+
+### Step 4: 登录并验证认证
+
+**先看是否已登录**：
 
 ```bash
-mbs skills install --target claude
-mbs skills install --target codex
+mbs whoami
 ```
 
-**方式 2（备选）：读取到当前会话上下文**
+- `ok:true` + 用户信息 → 跳过，进 Step 5
+- `ok:false` 或退出码 `2` → 执行 `mbs login`
 
 ```bash
-mbs skills show                                    # 读取主入口 SKILL.md（必读）
-mbs skills show --file references/global.md        # 读取全局参考（必读）
-mbs skills show --file references/org/SKILL.md    # 按需，涉及组织架构时读取
-mbs skills show --file references/shops/SKILL.md  # 按需，涉及店铺运营时读取
-mbs skills show --file references/doris/SKILL.md  # 按需，涉及 Doris / SQL 数据探索时读取
+mbs login    # 自动尝试系统 Chrome → Edge → 内置 Chromium，按顺序回落
+mbs whoami   # 复检
 ```
 
-**方式 3（仓库在本机时）：**
+`mbs login` 失败时会输出结构化错误：
+- `error.message: "No supported browser runtime is available"` → 按 `error.hint` 装系统 Chrome 或 Edge
+- 其他错误 → 按 `error.hint` 处理；**不要在 login 报错前主动装浏览器**
 
-- [`skills/SKILL.md`](skills/SKILL.md)
-- [`skills/references/global.md`](skills/references/global.md)
-- 按需：`skills/references/org/*`、`skills/references/shops/*`、`skills/references/doris/*`
+### Step 5: 接入 Skill 文档
 
-### Step 7: 验收
+Skill 随 npm 包打包发布，更新 CLI 后再跑安装即可同步覆盖。**agent 会话内已加载的旧 skill 需用户手动重启会话**，agent 自己无法触发。
 
-逐条执行，全部通过才算完成：
+**方式 A（推荐）：装到 agent 平台目录**
+
+先 dry-run 看检测结果，再正式安装：
 
 ```bash
-node -v           # v18.x 及以上
-npm -v            # 有版本号输出
-mbs version       # 返回 JSON，含版本号
-mbs whoami        # ok: true，含用户信息
-mbs skills show   # ok: true，含 SKILL.md 内容
-mbs org platforms # ok: true，含平台数据
+mbs skills install --dry-run    # 看 installs[] 检测到哪些平台
+mbs skills install              # 自动安装到检测到的所有平台
+mbs skills install --target claude   # 仅 ~/.claude/skills/mbs/
+mbs skills install --target codex    # 仅 ~/.codex/skills/mbs/
 ```
 
-**agent skill 接入状态**（根据平台确认）：
-- 平台已挂载 `skills/`，或
-- agent 会话中已读取 `skills/SKILL.md` 与 `skills/references/global.md`
+安装行为：force 覆盖目标目录下 `mbs/`，保留 `references/` 子结构。安装完成后**告知用户重启 agent 会话**让平台重新加载。
+
+更新流程：
+
+```bash
+mbs update
+mbs skills install    # 重跑覆盖
+```
+
+**方式 B（平台不支持挂载时）：当前会话临时读入**
+
+```bash
+mbs skills show                                   # 主入口 SKILL.md（必读）
+mbs skills show --file references/global.md       # 全局参考（必读）
+mbs skills show --file references/org/SKILL.md    # 涉及组织架构
+mbs skills show --file references/shops/SKILL.md  # 涉及店铺运营
+mbs skills show --file references/doris/SKILL.md  # 涉及 Doris/SQL
+```
+
+**方式 C（仓库在本机）**：直接读源文件 [`skills/SKILL.md`](skills/SKILL.md) / [`skills/references/global.md`](skills/references/global.md)。
+
+### Step 6: 验收（每条断言 ok 字段 + 退出码 0）
+
+```bash
+node -v             # v18+
+npm -v              # 有输出
+mbs version         # data.current 有版本号
+mbs config get      # ok:true，data.apiUrl 有值
+mbs whoami          # ok:true，含用户信息
+mbs skills show     # ok:true，含 SKILL.md 内容
+mbs org platforms   # ok:true，含平台数据（认证最终验证）
+```
+
+**Skill 接入状态需独立汇报**：
+- 平台挂载：列出 `mbs skills install` 命中的目录路径
+- 会话注入：列出已读取的 `skills/*.md` 文件清单
 
 ## Bootstrap 提示词
 
-可直接复制给 AI agent：
+复制给 AI agent：
 
 ```text
-你现在负责把这台电脑准备成可用的 MBS CLI 工作环境，并接入当前仓库里的 skill 文档。
+你负责把本机准备成可用的 MBS CLI 工作环境，并完成 agent skill 接入。严格按下列规则：
 
-请按下面规则执行：
-1. 先判断当前 agent 平台是否支持本地 skill / prompt / tool docs 注册；如果支持，优先把当前仓库的 skills/ 接入到 agent 自己的 skill 机制中。
-2. 明确区分并分别汇报三件事：CLI 已安装、认证已完成、agent skill 已接入。
-3. 检查是否已安装 Node.js 和 npm；如果缺失，安装 Node.js 18+，优先当前 LTS。
-4. 检查是否已安装 mbs；如果没有，执行 npm install -g @mb-it-org/cli --registry=https://registry.npmjs.org/。
-5. 如果平台不支持 skill 挂载，至少读取当前仓库中的 skills/SKILL.md 与 skills/references/global.md；如果任务涉及组织架构，再读取 skills/references/org/*。
-6. 不要主动安装浏览器运行时；默认使用系统已有 Chrome/Edge，只有 mbs login 明确报缺少浏览器运行时时才说明阻塞点。
-7. 执行 mbs login，然后运行 mbs version 和 mbs whoami，并解释返回结果。
-8. 如果 mbs whoami 显示未登录或退出码为 2，重新执行 mbs login，再次验证。
-9. 运行最终验收命令：node -v、npm -v、mbs version、mbs whoami、mbs skills show；如果认证可用，再补充 mbs org platforms。
-10. 如果遇到权限问题、网络问题、PATH 未生效、缺少浏览器运行时或认证失败，明确说明阻塞点和建议处理方式，不要跳过。
+执行约定：
+- 每步先跑探测命令，已满足跳过；只在缺失时执行安装/初始化
+- 判断成功以结构化 JSON 的 ok 字段 + 退出码为准；退出码 2 = 认证失效
+- 命令失败先读 error.hint
+- 分别独立汇报四件事的状态：CLI 已安装、配置已就绪、认证已完成、skill 已接入
 
-业务查询时只允许使用 mbs，不要改用 curl，也不要猜 API 路径、参数或 ID。
+步骤：
+1. node -v / npm -v；缺失则装 Node.js 18 LTS
+2. 检测 mbs：
+   - 未安装：npm install -g @mb-it-org/cli --registry=https://registry.npmjs.org/（必须显式 --registry 锁官方源；官方源失败时回落 npm install -g @mb-it-org/cli@latest --registry=https://registry.npmmirror.com）
+   - 已安装：mbs version 看 data.updateAvailable，true 时 mbs update
+3. mbs config get；ok:false 则 mbs config init
+4. mbs whoami；ok:false 或退出码 2 时 mbs login 后复检
+5. 不要主动装浏览器运行时；mbs login 明确报 "No supported browser runtime" 时再按 hint 装 Chrome/Edge
+6. 接入 skill：
+   - 平台支持：mbs skills install --dry-run 看检测结果 → mbs skills install；完成后明确告知用户重启 agent 会话
+   - 平台不支持：至少读 skills/SKILL.md 与 skills/references/global.md；按任务再读 references/org|shops|doris/SKILL.md
+7. 验收：node -v / npm -v / mbs version / mbs config get / mbs whoami / mbs skills show / mbs org platforms 全部 ok:true 且退出码 0
+8. 遇权限/网络/PATH/浏览器/认证阻塞，明确写出阻塞点 + error.hint 原文 + 建议处理；禁止跳过或谎报成功
+
+业务查询只用 mbs；禁止 curl、禁止猜 API 路径/参数/ID。
 ```
 
 ## 故障处理
