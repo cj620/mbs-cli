@@ -1,6 +1,18 @@
 # MBS CLI
 
-公司内部电商管理系统的命令行工具，将马帮平台的业务数据以结构化 JSON 输出，支持脚本集成和 AI agent 调用。
+面向 AI Agent 与内部研发的马帮（MBS）业务数据接入底座。把分散的内部业务能力沉淀为统一的结构化 JSON 命令与本地零认证 HTTP 网关 —— 一次登录、处处可用；Agent 与内部页面只关心"取什么数"，无需再处理登录态维持、Cookie 刷新、跨域代理与接口拼装。
+
+**核心能力**
+
+- **统一业务抽象**：业务模块按 `mbs <domain> <action>` 暴露，输入输出严格遵循 `{ ok, data }` / `{ ok:false, error }` 契约，退出码语义化（`2` 触发重新登录）。
+- **审计驱动的代码生成**：业务模块从 `audit manifest` 自动生成 CLI 命令、HTTP 路由与 skill 文档三件套，新增能力只需更新 manifest，杜绝手写漂移。
+- **Agent-Native Skill 体系**：随 CLI 打包发布 `skills/` 目录，一键 `mbs skills install` 注入 Claude / Codex 等平台；内置意图路由表、消歧协议、参数约束，Agent 即装即用。
+- **本地 HTTP 网关 (`mbs serve`)**：在 `127.0.0.1` 起一层只读网关，复用 CLI 当前登录态，支持三种模式 —— 项目内置 API、外部 manifest 路由、`/proxy/*` 任意上游直通，配套 `/__routes` 自描述发现端点，内部看板与运营页可秒级接入。
+- **流式数据通道**：Doris 查询透传 NDJSON，结构化 `header / data / end / error` 行，原生支持大结果集增量消费。
+- **只读安全边界**：架构层强制 `GET` 与查询型 `POST`，禁止 `PUT/PATCH/DELETE`；包间依赖单向（`<domain> → shared ← cli`），认证与浏览器登录集中收敛在 `shared/auth`。
+- **逃生通道**：未封装的接口可用 `mbs raw GET/POST` 直通探索，复用同一认证与错误契约，不必为一次性需求新建模块。
+
+定位：**一个把"内部 API + 浏览器登录态 + Agent 工作流"打包为单一命令的能力底座**，让一行 `mbs <domain> <action>` 等价于一次合规、可追溯、可被 Agent 安全消费的业务调用。
 
 > **If you are an AI agent:** 展开下方「AI Agent 接入指南」，按步骤执行完成接入，不要跳过。
 
@@ -312,6 +324,50 @@ mbs serve --proxy-all
 ```
 
 然后打开 [examples/doris-dashboard/index.html](examples/doris-dashboard/index.html)。
+
+---
+
+## 本地页面二创开发
+
+把 `mbs serve` 当作"本地零认证 BFF"，前端开发者可以在自己机器上快速搭出内部看板、运营辅助页、临时分析页或 demo，不必申请后端代理、不必处理马帮登录态、不必关心 Cookie 刷新。
+
+**适用场景**
+
+- 内部看板 / 运营辅助页：组合 `org` / `shops` / `doris` 已封装接口，做团队内只读视图。
+- 临时分析页：跑一次性的数据汇总、对账、对比，跑完就丢。
+- Agent 工作页面：给 LLM Agent 提供"页面级"工具，由页面调用 `/api/*` 拿数，Agent 负责编排与呈现。
+- 接口探活与 Demo：在封装前先用 `/proxy/*` 把上游接口接到页面验证可行性。
+
+**开发者拿到的东西**
+
+| 能力 | 说明 |
+|------|------|
+| 零认证调用 | 页面 `fetch('/api/<domain>/<action>')` 即得数据，认证全部由 CLI 本地登录态承担 |
+| 路由自描述 | `GET /__routes` 返回当前进程暴露的所有接口（method/url/domain/action/description/responseMode），可直接驱动表单或下拉 |
+| 三档接入粒度 | `--project-apis` 用稳定封装、`--manifest` 用临时 audit、`--proxy-all` 用任意上游路径 |
+| 流式消费 | Doris 类 NDJSON 路由透传，前端按行解析，无需等大查询整段返回 |
+| CORS 白名单 | 内置常见本地开发端口白名单（vite/CRA 等），异源页面也能直接调 |
+| 起手模板 | `examples/` 下三个示例页面即可作为脚手架复制改造 |
+
+**典型流程**
+
+1. 起网关：`mbs serve --project-apis`（需要任意上游再加 `--proxy-all`）。
+2. 拉路由表：页面初始化时 `fetch('http://127.0.0.1:7878/__routes')`，把 `data[]` 渲染成可选接口。
+3. 选接口取数：按 `route.method` + `route.url` 直接发请求；路径参数走 `/:name` 占位，业务参数走 query 或 body。
+4. 渲染：JSON 路由直接展开 `data`；NDJSON 路由按行流式追加。
+5. 出问题看 `{ ok:false, error.hint }`；HTTP `401` 走 `mbs login` 重新登录后页面刷新即可。
+
+**集成示例（任意框架通用）**
+
+```js
+const base = 'http://127.0.0.1:7878'
+const routes = (await (await fetch(`${base}/__routes`)).json()).data
+const platforms = await (await fetch(`${base}/api/org/platforms`)).json()
+if (!platforms.ok) throw new Error(platforms.error.hint || platforms.error.message)
+render(platforms.data)
+```
+
+**安全提醒** — `mbs serve` 默认绑 `127.0.0.1` 且**无鉴权**。仅用于开发者本机，不要改 `--host` 暴露到局域网/公网；不要把网关地址写入对外发布的页面。生产化部署需要另起带鉴权的后端代理。
 
 ---
 
