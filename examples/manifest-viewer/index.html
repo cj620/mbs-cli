@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>MBS Manifest 结构视图</title>
+    <link rel="stylesheet" href="./styles.css">
+  </head>
+  <body>
+    <main class="shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Manifest Explorer</p>
+          <h1>MBS 接口结构视图</h1>
+          <p class="subtitle">按模块、服务、接口和参数关系查看 audit manifest。</p>
+        </div>
+        <div id="manifest-version" class="version-badge">未加载</div>
+      </header>
+
+      <section class="toolbar" aria-label="Manifest controls">
+        <label>
+          <span>搜索模块 / 接口 / 路径</span>
+          <input id="search-input" type="search" placeholder="例如 org、platforms、/query">
+        </label>
+        <label>
+          <span>请求方法</span>
+          <select id="method-filter">
+            <option value="all">全部</option>
+            <option value="GET">GET</option>
+            <option value="POST">POST</option>
+          </select>
+        </label>
+        <button id="load-file-button" type="button">打开 manifest</button>
+        <input id="file-input" class="visually-hidden" type="file" accept="application/json,.json">
+      </section>
+
+      <section id="error-panel" class="error-panel hidden" aria-live="polite"></section>
+
+      <section class="metrics" aria-label="Manifest summary">
+        <article>
+          <span>模块数</span>
+          <strong id="module-count">-</strong>
+        </article>
+        <article>
+          <span>接口数</span>
+          <strong id="action-count">-</strong>
+        </article>
+        <article>
+          <span>服务数</span>
+          <strong id="service-count">-</strong>
+        </article>
+        <article>
+          <span>生成模块</span>
+          <strong id="generated-count">-</strong>
+        </article>
+      </section>
+
+      <section class="layout">
+        <aside class="module-panel" aria-label="Modules">
+          <div class="section-header compact">
+            <h2>模块</h2>
+            <span id="module-list-count">0</span>
+          </div>
+          <div id="module-list" class="module-list"></div>
+        </aside>
+
+        <section class="main-panel" aria-label="Manifest detail">
+          <section class="relationship-panel">
+            <div class="section-header">
+              <div>
+                <h2>模块关系</h2>
+                <p id="relationship-summary">选择模块查看关系</p>
+              </div>
+            </div>
+            <div id="relationship-map" class="relationship-map"></div>
+          </section>
+
+          <section class="table-section">
+            <div class="section-header">
+              <div>
+                <h2>接口清单</h2>
+                <p id="action-summary">等待加载</p>
+              </div>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>模块</th>
+                    <th>接口</th>
+                    <th>方法</th>
+                    <th>完整路径</th>
+                    <th>参数</th>
+                  </tr>
+                </thead>
+                <tbody id="action-rows">
+                  <tr>
+                    <td colspan="5" class="empty-cell">暂无数据</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <section class="detail-panel">
+            <div class="section-header">
+              <div>
+                <h2>接口详情</h2>
+                <p id="detail-title">点击接口查看详情</p>
+              </div>
+            </div>
+            <div id="detail-content" class="detail-content empty">暂无接口选中</div>
+          </section>
+        </section>
+      </section>
+    </main>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
