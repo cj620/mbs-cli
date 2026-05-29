@@ -93,18 +93,18 @@
       ]
     },
     {
-      "name": "account",
-      "description": "Account page query",
+      "name": "test",
+      "description": "Local CLI test utilities for auth status and serve project API checks.",
       "keywords": [
-        "account",
-        "account page",
-        "account list"
+        "test",
+        "whoami",
+        "auth status",
+        "authentication"
       ],
-      "skill": "references/account/SKILL.md",
+      "skill": "references/test/SKILL.md",
       "commands": [
-        "mbs account page"
-      ],
-      "generated": true
+        "mbs test whoami"
+      ]
     }
   ]
 }

@@ -10,14 +10,14 @@ const manifest: AuditManifest = {
   manifestVersion: '2026-05-20T00:00:00+08:00',
   modules: [
     {
-      domain: 'account',
+      domain: 'reports',
       pathPrefix: '',
       actions: [
         {
-          name: 'page',
-          description: '分页获取账号列表',
+          name: 'search',
+          description: '鍒嗛〉鑾峰彇璐﹀彿鍒楄〃',
           method: 'POST',
-          path: '/gateway/account-center-service/account/page/noauth',
+          path: '/gateway/report-service/reports/search',
         },
       ],
     },
@@ -26,7 +26,7 @@ const manifest: AuditManifest = {
       actions: [
         {
           name: 'site-detail',
-          description: '获取站点详情',
+          description: '鑾峰彇绔欑偣璇︽儏',
           method: 'GET',
           path: '/v1/org/sites/{siteId}',
         },
@@ -50,9 +50,9 @@ describe('buildRoutes', () => {
     expect(routes).toHaveLength(2)
     expect(routes[0]).toMatchObject({
       method: 'POST',
-      routeUrl: '/api/account/page',
-      domain: 'account',
-      action: 'page',
+      routeUrl: '/api/reports/search',
+      domain: 'reports',
+      action: 'search',
     })
     expect(routes[1]).toMatchObject({
       method: 'GET',
@@ -83,13 +83,13 @@ describe('serve app', () => {
 
     const res = await app.inject({
       method: 'POST',
-      url: '/api/account/page',
+      url: '/api/reports/search',
       payload: { currentPage: 1, pageSize: 10 },
     })
 
     expect(res.statusCode).toBe(200)
     expect(JSON.parse(res.body)).toEqual({ ok: true, data: { items: [{ id: 1 }] } })
-    expect(post).toHaveBeenCalledWith('/gateway/account-center-service/account/page/noauth', { currentPage: 1, pageSize: 10 })
+    expect(post).toHaveBeenCalledWith('/gateway/report-service/reports/search', { currentPage: 1, pageSize: 10 })
   })
 
   it('GET route forwards path params + query', async () => {
@@ -111,7 +111,7 @@ describe('serve app', () => {
     const post = vi.fn().mockRejectedValue(new MBSError('boom', 'validation', 'check input'))
     const app = buildApp(manifest, async () => fakeClient(vi.fn(), post))
 
-    const res = await app.inject({ method: 'POST', url: '/api/account/page', payload: {} })
+    const res = await app.inject({ method: 'POST', url: '/api/reports/search', payload: {} })
 
     expect(res.statusCode).toBe(500)
     expect(JSON.parse(res.body)).toEqual({
@@ -124,7 +124,7 @@ describe('serve app', () => {
     const app = buildApp(manifest, async () => fakeClient(vi.fn(), vi.fn().mockResolvedValue({})))
     const res = await app.inject({
       method: 'POST',
-      url: '/api/account/page',
+      url: '/api/reports/search',
       headers: { origin: 'http://localhost:5173' },
       payload: {},
     })
@@ -135,7 +135,7 @@ describe('serve app', () => {
     const app = buildApp(manifest, async () => fakeClient(vi.fn(), vi.fn().mockResolvedValue({})))
     const res = await app.inject({
       method: 'POST',
-      url: '/api/account/page',
+      url: '/api/reports/search',
       headers: { origin: 'http://evil.example' },
       payload: {},
     })
@@ -156,7 +156,7 @@ describe('serve app', () => {
     const body = JSON.parse(res.body)
 
     expect(body.data).toEqual(expect.arrayContaining([
-      expect.objectContaining({ method: 'POST', url: '/api/account/page' }),
+      expect.objectContaining({ method: 'GET', url: '/api/test/whoami' }),
       expect.objectContaining({ method: 'GET', url: '/api/org/platforms' }),
       expect.objectContaining({ method: 'GET', url: '/api/shops/health' }),
       expect.objectContaining({ method: 'GET', url: '/api/doris/schemas' }),
@@ -164,19 +164,36 @@ describe('serve app', () => {
     ]))
   })
 
-  it('project API route forwards account page request', async () => {
-    const post = vi.fn().mockResolvedValue({ items: [] })
-    const app = buildApp(undefined, async () => fakeClient(vi.fn(), post), { projectApis: true })
+  it('project API route forwards org platforms request', async () => {
+    const get = vi.fn().mockResolvedValue({ items: [] })
+    const app = buildApp(undefined, async () => fakeClient(get), { projectApis: true })
 
     const res = await app.inject({
-      method: 'POST',
-      url: '/api/account/page',
-      payload: { currentPage: 1, pageSize: 10 },
+      method: 'GET',
+      url: '/api/org/platforms',
     })
 
     expect(res.statusCode).toBe(200)
     expect(JSON.parse(res.body)).toEqual({ ok: true, data: { items: [] } })
-    expect(post).toHaveBeenCalledWith('/gateway/account-center-service/account/page/noauth', { currentPage: 1, pageSize: 10 })
+    expect(get).toHaveBeenCalledWith('/erpOrder/erpOrder/saleReport/getPlatformList', { params: {} })
+  })
+
+  it('project API exposes local test whoami without an upstream client call', async () => {
+    const get = vi.fn()
+    const app = buildApp(undefined, async () => fakeClient(get), { projectApis: true })
+
+    const res = await app.inject({
+      method: 'GET',
+      url: '/api/test/whoami',
+    })
+
+    expect(res.statusCode).toBe(200)
+    expect(JSON.parse(res.body)).toEqual(
+      expect.objectContaining({
+        ok: expect.any(Boolean),
+      }),
+    )
+    expect(get).not.toHaveBeenCalled()
   })
 
   it('project API ndjson route returns raw stream content', async () => {
@@ -201,12 +218,12 @@ describe('serve app', () => {
 
     const res = await app.inject({
       method: 'GET',
-      url: '/proxy/gateway/account-center-service/account/page/noauth?currentPage=1',
+      url: '/proxy/gateway/report-service/reports/search?currentPage=1',
     })
 
     expect(res.statusCode).toBe(200)
     expect(JSON.parse(res.body)).toEqual({ ok: true, data: { items: [] } })
-    expect(request).toHaveBeenCalledWith('GET', '/gateway/account-center-service/account/page/noauth', {
+    expect(request).toHaveBeenCalledWith('GET', '/gateway/report-service/reports/search', {
       params: { currentPage: '1' },
       body: undefined,
     })
@@ -218,13 +235,13 @@ describe('serve app', () => {
 
     const res = await app.inject({
       method: 'POST',
-      url: '/proxy/gateway/account-center-service/account/page/noauth',
+      url: '/proxy/gateway/report-service/reports/search',
       payload: { currentPage: 1, pageSize: 10 },
     })
 
     expect(res.statusCode).toBe(200)
     expect(JSON.parse(res.body)).toEqual({ ok: true, data: { total: 1 } })
-    expect(request).toHaveBeenCalledWith('POST', '/gateway/account-center-service/account/page/noauth', {
+    expect(request).toHaveBeenCalledWith('POST', '/gateway/report-service/reports/search', {
       params: {},
       body: { currentPage: 1, pageSize: 10 },
     })
@@ -236,10 +253,11 @@ describe('serve app', () => {
 
     const res = await app.inject({
       method: 'DELETE',
-      url: '/proxy/gateway/account-center-service/account/page/noauth',
+      url: '/proxy/gateway/report-service/reports/search',
     })
 
     expect(res.statusCode).toBe(404)
     expect(request).not.toHaveBeenCalled()
   })
 })
+

@@ -34,75 +34,59 @@
         </article>
         <article class="check-panel">
           <div>
-            <h2>Platform API</h2>
-            <p id="account-detail">Waiting for check</p>
+            <h2>Test whoami</h2>
+            <p id="test-detail">Waiting for check</p>
           </div>
-          <div id="account-status" class="status-badge neutral">Not connected</div>
+          <div id="test-status" class="status-badge neutral">Not connected</div>
         </article>
       </section>
 
       <section id="error-panel" class="error-panel hidden" aria-live="polite"></section>
 
-      <section class="metrics" aria-label="Platform metrics">
+      <section class="metrics" aria-label="Test module metrics">
         <article>
-          <span>Total platforms</span>
-          <strong id="total-count">-</strong>
+          <span>Whoami result</span>
+          <strong id="whoami-result">-</strong>
         </article>
         <article>
-          <span>First platform</span>
-          <strong id="total-pages">-</strong>
+          <span>Session active</span>
+          <strong id="session-active">-</strong>
         </article>
         <article>
-          <span>API status</span>
-          <strong id="page-current">-</strong>
+          <span>Key preview</span>
+          <strong id="key-preview">-</strong>
         </article>
         <article>
-          <span>Rows rendered</span>
-          <strong id="page-items">-</strong>
-        </article>
-      </section>
-
-      <section class="breakdowns" aria-label="Platform breakdowns">
-        <article>
-          <h2>ID range</h2>
-          <div id="platform-list" class="breakdown-list empty">No data</div>
-        </article>
-        <article>
-          <h2>Name initial</h2>
-          <div id="status-list" class="breakdown-list empty">No data</div>
-        </article>
-        <article>
-          <h2>Source shape</h2>
-          <div id="enabled-list" class="breakdown-list empty">No data</div>
-        </article>
-        <article>
-          <h2>Route mode</h2>
-          <div id="expired-list" class="breakdown-list empty">No data</div>
+          <span>Cache updated</span>
+          <strong id="cache-updated">-</strong>
         </article>
       </section>
 
-      <section class="table-section" aria-label="Platform list">
+      <section class="breakdowns" aria-label="Test route details">
+        <article>
+          <h2>Route</h2>
+          <div id="route-list" class="breakdown-list empty">No data</div>
+        </article>
+        <article>
+          <h2>Payload</h2>
+          <div id="payload-list" class="breakdown-list empty">No data</div>
+        </article>
+        <article>
+          <h2>User</h2>
+          <div id="user-list" class="breakdown-list empty">No data</div>
+        </article>
+        <article>
+          <h2>Mode</h2>
+          <div id="mode-list" class="breakdown-list empty">No data</div>
+        </article>
+      </section>
+
+      <section class="table-section" aria-label="Whoami payload">
         <div class="section-header">
-          <h2>Platforms</h2>
+          <h2>Raw whoami payload</h2>
           <span id="last-updated">Not refreshed</span>
         </div>
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Platform ID</th>
-                <th>Platform name</th>
-                <th>Raw ID</th>
-                <th>Raw name</th>
-              </tr>
-            </thead>
-            <tbody id="account-rows">
-              <tr>
-                <td colspan="4" class="empty-cell">No data</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+        <pre id="whoami-json" class="json-panel">No data</pre>
       </section>
     </main>
 

@@ -15,10 +15,10 @@
     },
     "topicSeparator": " ",
     "plugins": [
-      "@mb-it-org/account",
       "@mb-it-org/doris",
       "@mb-it-org/org",
-      "@mb-it-org/shops"
+      "@mb-it-org/shops",
+      "@mb-it-org/test"
     ],
     "additionalVersionFlags": [],
     "node": {
@@ -51,11 +51,11 @@
   },
   "dependencies": {
     "@inquirer/prompts": "^8.4.1",
-    "@mb-it-org/account": "workspace:*",
     "@mb-it-org/doris": "workspace:*",
     "@mb-it-org/org": "workspace:*",
     "@mb-it-org/shared": "workspace:*",
     "@mb-it-org/shops": "workspace:*",
+    "@mb-it-org/test": "workspace:*",
     "@oclif/core": "^4",
     "fastify": "^4.28.1",
     "playwright-core": "^1.44.0"

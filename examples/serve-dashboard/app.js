@@ -1,6 +1,5 @@
 const state = {
   routes: [],
-  platformItems: [],
 }
 
 const els = {
@@ -9,18 +8,18 @@ const els = {
   overallStatus: document.querySelector('#overall-status'),
   routesStatus: document.querySelector('#routes-status'),
   routesDetail: document.querySelector('#routes-detail'),
-  accountStatus: document.querySelector('#account-status'),
-  accountDetail: document.querySelector('#account-detail'),
+  testStatus: document.querySelector('#test-status'),
+  testDetail: document.querySelector('#test-detail'),
   errorPanel: document.querySelector('#error-panel'),
-  totalCount: document.querySelector('#total-count'),
-  totalPages: document.querySelector('#total-pages'),
-  pageCurrent: document.querySelector('#page-current'),
-  pageItems: document.querySelector('#page-items'),
-  platformList: document.querySelector('#platform-list'),
-  statusList: document.querySelector('#status-list'),
-  enabledList: document.querySelector('#enabled-list'),
-  expiredList: document.querySelector('#expired-list'),
-  accountRows: document.querySelector('#account-rows'),
+  whoamiResult: document.querySelector('#whoami-result'),
+  sessionActive: document.querySelector('#session-active'),
+  keyPreview: document.querySelector('#key-preview'),
+  cacheUpdated: document.querySelector('#cache-updated'),
+  routeList: document.querySelector('#route-list'),
+  payloadList: document.querySelector('#payload-list'),
+  userList: document.querySelector('#user-list'),
+  modeList: document.querySelector('#mode-list'),
+  whoamiJson: document.querySelector('#whoami-json'),
   lastUpdated: document.querySelector('#last-updated'),
 }
 
@@ -82,44 +81,6 @@ function assertGatewayPayload(payload, label) {
   return payload.data
 }
 
-function normalizePlatformResponse(raw) {
-  const payload = raw?.data && typeof raw.data === 'object' ? raw.data : raw
-  const rows = Array.isArray(payload?.obj)
-    ? payload.obj
-    : Array.isArray(payload?.data)
-      ? payload.data
-      : Array.isArray(payload)
-        ? payload
-        : []
-
-  return {
-    status: payload?.code ?? payload?.success ?? '-',
-    sourceShape: Array.isArray(payload?.obj) ? 'obj[]' : Array.isArray(payload?.data) ? 'data[]' : Array.isArray(payload) ? 'array' : 'unknown',
-    items: rows.map((row) => ({
-      id: row.PLATFORMID ?? row.platformId ?? row.id ?? '',
-      name: row.PLATFORMNAME ?? row.platformName ?? row.name ?? '',
-      rawId: row.PLATFORMID ?? row.platformId ?? row.id ?? '',
-      rawName: row.PLATFORMNAME ?? row.platformName ?? row.name ?? '',
-    })),
-  }
-}
-
-function labelFor(value, fallback = 'Empty') {
-  if (value === true) return 'Yes'
-  if (value === false) return 'No'
-  if (value === null || value === undefined || value === '') return fallback
-  return String(value)
-}
-
-function groupBy(items, pick) {
-  const counts = new Map()
-  for (const item of items) {
-    const key = labelFor(pick(item))
-    counts.set(key, (counts.get(key) || 0) + 1)
-  }
-  return [...counts.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
-}
-
 function renderBreakdown(element, rows) {
   if (rows.length === 0) {
     element.className = 'breakdown-list empty'
@@ -128,63 +89,72 @@ function renderBreakdown(element, rows) {
   }
   element.className = 'breakdown-list'
   element.innerHTML = rows
-    .map(([label, count]) => `
+    .map(([label, value]) => `
       <div class="breakdown-row">
         <span title="${escapeAttr(label)}">${escapeHtml(label)}</span>
-        <span>${count}</span>
+        <span title="${escapeAttr(value)}">${escapeHtml(value)}</span>
       </div>
     `)
     .join('')
 }
 
-function renderTable(items) {
-  if (items.length === 0) {
-    els.accountRows.innerHTML = '<tr><td colspan="4" class="empty-cell">No data</td></tr>'
-    return
-  }
-
-  els.accountRows.innerHTML = items
-    .map((item) => `
-      <tr>
-        <td>${escapeHtml(labelFor(item.id))}</td>
-        <td>${escapeHtml(labelFor(item.name))}</td>
-        <td>${escapeHtml(labelFor(item.rawId))}</td>
-        <td>${escapeHtml(labelFor(item.rawName))}</td>
-      </tr>
-    `)
-    .join('')
+function labelFor(value, fallback = '-') {
+  if (value === true) return 'Yes'
+  if (value === false) return 'No'
+  if (value === null || value === undefined || value === '') return fallback
+  return String(value)
 }
 
-function idBucket(value) {
-  const id = Number.parseInt(value, 10)
-  if (!Number.isFinite(id)) return 'Unknown'
-  if (id < 50) return '1-49'
-  if (id < 100) return '50-99'
-  if (id < 150) return '100-149'
-  return '150+'
-}
+function renderWhoami(payload) {
+  const data = payload.ok ? payload.data : null
+  const user = data?.user
+  els.whoamiResult.textContent = payload.ok ? 'ok:true' : 'ok:false'
+  els.sessionActive.textContent = data ? labelFor(data.sessionActive) : '-'
+  els.keyPreview.textContent = data?.keyPreview ?? '-'
+  els.cacheUpdated.textContent = data?.updatedAt ?? '-'
 
-function initial(value) {
-  const text = labelFor(value, '').trim()
-  return text ? text.charAt(0).toUpperCase() : 'Empty'
-}
+  renderBreakdown(els.payloadList, payload.ok
+    ? [
+        ['keyPreview', data.keyPreview],
+        ['sessionActive', labelFor(data.sessionActive)],
+        ['updatedAt', data.updatedAt ?? '-'],
+      ]
+    : [
+        ['type', payload.error?.type ?? '-'],
+        ['message', payload.error?.message ?? '-'],
+        ['hint', payload.error?.hint ?? '-'],
+      ])
 
-function renderPlatforms(result) {
-  state.platformItems = result.items
-  els.totalCount.textContent = result.items.length
-  els.totalPages.textContent = labelFor(result.items[0]?.name, '-')
-  els.pageCurrent.textContent = labelFor(result.status)
-  els.pageItems.textContent = result.items.length
-  renderBreakdown(els.platformList, groupBy(result.items, (item) => idBucket(item.id)))
-  renderBreakdown(els.statusList, groupBy(result.items, (item) => initial(item.name)))
-  renderBreakdown(els.enabledList, [[result.sourceShape, result.items.length]])
-  renderBreakdown(els.expiredList, [['json', result.items.length]])
-  renderTable(result.items)
+  renderBreakdown(els.userList, user
+    ? [
+        ['userName', user.userName ?? '-'],
+        ['loginName', user.loginName ?? '-'],
+        ['departmentName', user.departmentName ?? '-'],
+        ['positionName', user.positionName ?? '-'],
+      ]
+    : [['user', 'No cached user']])
+
+  renderBreakdown(els.modeList, [
+    ['module', 'test'],
+    ['command', 'mbs test whoami'],
+    ['serve route', 'GET /api/test/whoami'],
+    ['upstream API', 'not used'],
+  ])
+
+  els.whoamiJson.textContent = JSON.stringify(payload, null, 2)
   els.lastUpdated.textContent = `Last refreshed: ${new Date().toLocaleString()}`
 }
 
 function resetData() {
-  renderPlatforms({ status: '-', sourceShape: '-', items: [] })
+  els.whoamiResult.textContent = '-'
+  els.sessionActive.textContent = '-'
+  els.keyPreview.textContent = '-'
+  els.cacheUpdated.textContent = '-'
+  renderBreakdown(els.routeList, [])
+  renderBreakdown(els.payloadList, [])
+  renderBreakdown(els.userList, [])
+  renderBreakdown(els.modeList, [])
+  els.whoamiJson.textContent = 'No data'
   els.lastUpdated.textContent = 'Not refreshed'
 }
 
@@ -196,23 +166,32 @@ async function checkRoutes(baseUrl) {
   if (!Array.isArray(routes)) throw new Error('/__routes returned an unexpected shape')
 
   state.routes = routes
-  const hasPlatforms = routes.some((route) => (
-    route.method === 'GET' && route.url === '/api/org/platforms'
-  ))
-  els.routesDetail.textContent = `Found ${routes.length} routes; org/platforms ${hasPlatforms ? 'available' : 'missing'}`
-  setBadge(els.routesStatus, hasPlatforms ? 'Connected' : 'Unexpected', hasPlatforms ? 'ok' : 'error')
-  if (!hasPlatforms) throw new Error('Project manifest did not expose GET /api/org/platforms')
+  const testRoute = routes.find((route) => route.method === 'GET' && route.url === '/api/test/whoami')
+  renderBreakdown(els.routeList, [
+    ['route count', routes.length],
+    ['test route', testRoute ? 'available' : 'missing'],
+    ['method', testRoute?.method ?? '-'],
+    ['url', testRoute?.url ?? '-'],
+  ])
+  els.routesDetail.textContent = `Found ${routes.length} routes; test/whoami ${testRoute ? 'available' : 'missing'}`
+  setBadge(els.routesStatus, testRoute ? 'Connected' : 'Unexpected', testRoute ? 'ok' : 'error')
+  if (!testRoute) throw new Error('Project APIs did not expose GET /api/test/whoami')
 }
 
-async function checkPlatforms(baseUrl) {
-  setBadge(els.accountStatus, 'Checking', 'loading')
-  els.accountDetail.textContent = 'Requesting /api/org/platforms'
-  const payload = await fetchJson(`${baseUrl}/api/org/platforms`)
-  const raw = assertGatewayPayload(payload, 'Platform API')
-  const result = normalizePlatformResponse(raw)
-  renderPlatforms(result)
-  els.accountDetail.textContent = `Request succeeded; ${result.items.length} platforms returned`
-  setBadge(els.accountStatus, 'Connected', 'ok')
+async function checkWhoami(baseUrl) {
+  setBadge(els.testStatus, 'Checking', 'loading')
+  els.testDetail.textContent = 'Requesting /api/test/whoami'
+  const payload = await fetchJson(`${baseUrl}/api/test/whoami`)
+  renderWhoami(payload)
+
+  if (payload.ok) {
+    els.testDetail.textContent = 'Shared whoami status returned ok:true'
+    setBadge(els.testStatus, 'Authenticated', 'ok')
+    return
+  }
+
+  els.testDetail.textContent = payload.error?.message || 'Shared whoami status returned ok:false'
+  setBadge(els.testStatus, payload.error?.type === 'auth' ? 'Not logged in' : 'Returned error', 'error')
 }
 
 async function refresh() {
@@ -228,20 +207,20 @@ async function refresh() {
   els.refreshButton.disabled = true
   setBadge(els.overallStatus, 'Checking', 'loading')
   setBadge(els.routesStatus, 'Checking', 'loading')
-  setBadge(els.accountStatus, 'Checking', 'loading')
+  setBadge(els.testStatus, 'Checking', 'loading')
 
   try {
     await checkRoutes(baseUrl)
-    await checkPlatforms(baseUrl)
+    await checkWhoami(baseUrl)
     setBadge(els.overallStatus, 'Connected', 'ok')
   } catch (err) {
     const type = err?.type || 'api'
-    const title = type === 'auth' ? 'Auth failed' : type === 'http' ? 'Gateway unavailable' : 'API error'
+    const title = type === 'http' ? 'Gateway unavailable' : 'API error'
     const message = err instanceof Error ? err.message : String(err)
-    const hint = err?.hint || (type === 'auth' ? 'Run mbs login, then restart or refresh mbs serve.' : '')
+    const hint = err?.hint || 'Start mbs serve with --project-apis or --proxy-all.'
     setBadge(els.overallStatus, title, 'error')
     if (els.routesStatus.textContent === 'Checking') setBadge(els.routesStatus, title, 'error')
-    if (els.accountStatus.textContent === 'Checking') setBadge(els.accountStatus, title, 'error')
+    if (els.testStatus.textContent === 'Checking') setBadge(els.testStatus, title, 'error')
     showError(title, message, hint)
   } finally {
     els.refreshButton.disabled = false

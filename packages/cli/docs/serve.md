@@ -1,146 +1,137 @@
-# `mbs serve` 本地 HTTP 网关
+# `mbs serve` 閺堫剙婀?HTTP 缂冩垵鍙?
 
-`mbs serve` 启动一个本地 HTTP 服务，让浏览器页面可以复用 CLI 已有认证去查询 MBS API。它的核心用途是支持业务接口的页面化二次开发：前端可以把 manifest 中已审计的只读接口组合成内部看板、运营辅助页、临时分析页或业务原型，而不用在页面里重新实现马帮登录、Cookie 刷新和 API 转发。
+`mbs serve` 閸氼垰濮╂稉鈧稉顏呮拱閸?HTTP 閺堝秴濮熼敍宀冾唨濞村繗顫嶉崳銊┿€夐棃銏犲讲娴犮儱顦查悽?CLI 瀹稿弶婀佺拋銈堢槈閸樼粯鐓＄拠?MBS API閵嗗倸鐣犻惃鍕壋韫囧啰鏁ら柅鏃€妲搁弨顖涘瘮娑撴艾濮熼幒銉ュ經閻ㄥ嫰銆夐棃銏犲娴滃本顐煎鈧崣鎴窗閸撳秶顏崣顖欎簰閹?manifest 娑擃厼鍑＄€孤ゎ吀閻ㄥ嫬褰х拠缁樺复閸欙絿绮嶉崥鍫熷灇閸愬懘鍎撮惇瀣緲閵嗕浇绻嶉拃銉ㄧ窡閸斺晠銆夐妴浣峰閺冭泛鍨庨弸鎰般€夐幋鏍︾瑹閸斺€冲斧閸ㄥ绱濋懓灞肩瑝閻劌婀い鐢告桨闁插矂鍣搁弬鏉跨杽閻滀即鈹堢敮顔炬瑜版洏鈧竼ookie 閸掗攱鏌婇崪?API 鏉烆剙褰傞妴?
 
-业务查询逻辑仍以 audit manifest 为来源，不手写业务路由。这样页面二次开发只负责展示、筛选、交互和组合业务数据，接口边界仍跟 CLI 的只读约束保持一致。
+娑撴艾濮熼弻銉嚄闁槒绶禒宥勪簰 audit manifest 娑撶儤娼靛┃鎰剁礉娑撳秵澧滈崘娆庣瑹閸斅ょ熅閻究鈧倽绻栭弽鐑姐€夐棃顫癌濞嗏€崇磻閸欐垵褰х拹鐔荤煑鐏炴洜銇氶妴浣虹摣闁鈧椒姘︽禍鎺戞嫲缂佸嫬鎮庢稉姘閺佺増宓侀敍灞惧复閸欙綀绔熼悾灞肩矝鐠?CLI 閻ㄥ嫬褰х拠鑽ゅ閺夌喍绻氶幐浣风閼锋番鈧?
 
-## 适用场景
+## 闁倻鏁ら崷鐑樻珯
 
-- 基于已封装业务接口快速做一个内部业务页面
-- 为运营、财务、组织等业务数据制作本地只读看板
-- 在正式封装前，用页面原型验证字段、筛选条件和交互流程
-- 让 AI 或前端工具通过浏览器 fetch 调用本地网关，而不是直接处理 MBS 认证
+- 閸╄桨绨鎻掔殱鐟佸懍绗熼崝鈩冨复閸欙絽鎻╅柅鐔蜂粵娑撯偓娑擃亜鍞撮柈銊ょ瑹閸旓繝銆夐棃?
+- 娑撻缚绻嶉拃銉ｂ偓浣藉偍閸斅扳偓浣虹矋缂佸洨鐡戞稉姘閺佺増宓侀崚鏈电稊閺堫剙婀撮崣顏囶嚢閻婢?
+- 閸︺劍顒滃蹇撶殱鐟佸懎澧犻敍宀€鏁ゆい鐢告桨閸樼喎鐎锋宀冪槈鐎涙顔岄妴浣虹摣闁娼禒璺烘嫲娴溿倓绨板ù浣衡柤
+- 鐠?AI 閹存牕澧犵粩顖氫紣閸忕兘鈧俺绻冨ù蹇氼潔閸?fetch 鐠嬪啰鏁ら張顒€婀寸純鎴濆彠閿涘矁鈧奔绗夐弰顖滄纯閹恒儱顦╅悶?MBS 鐠併倛鐦?
 
-## 启动
+## 閸氼垰濮?
 
 ```bash
 mbs login
 mbs serve --manifest fixtures/sample-audit-manifest.json
 ```
 
-常用参数：
+鐢摜鏁ら崣鍌涙殶閿?
 
-| 参数 | 默认值 | 说明 |
+| 閸欏倹鏆?| 姒涙顓婚崐?| 鐠囧瓨妲?|
 |------|--------|------|
-| `--manifest <file>` | 必填 | audit manifest JSON 路径 |
-| `--port <number>` | `7878` | 本地监听端口 |
-| `--host <host>` | `127.0.0.1` | 监听地址；默认只绑定本机 |
+| `--manifest <file>` | 韫囧懎锝?| audit manifest JSON 鐠侯垰绶?|
+| `--port <number>` | `7878` | 閺堫剙婀撮惄鎴濇儔缁旑垰褰?|
+| `--host <host>` | `127.0.0.1` | 閻╂垵鎯夐崷鏉挎絻閿涙盯绮拋銈呭涧缂佹垵鐣鹃張顒佹簚 |
 
-示例：
+缁€杞扮伐閿?
 
 ```bash
 mbs serve --manifest fixtures/sample-audit-manifest.json --port 7878
 ```
 
-启动成功后会输出 JSON，包含 `address`、`host`、`port`、`routes` 和安全提示。
+閸氼垰濮╅幋鎰閸氬簼绱版潏鎾冲毉 JSON閿涘苯瀵橀崥?`address`閵嗕梗host`閵嗕梗port`閵嗕梗routes` 閸滃苯鐣ㄩ崗銊﹀絹缁€鎭掆偓?
 
-## 路由规则
+## 鐠侯垳鏁辩憴鍕灟
 
-`serve` 会从 manifest 的 `modules[].actions[]` 生成本地路由：
+`serve` 娴兼矮绮?manifest 閻?`modules[].actions[]` 閻㈢喐鍨氶張顒€婀寸捄顖滄暠閿?
 
 ```text
 /api/<domain>/<action>
 ```
 
-如果上游 API path 中包含 `{param}`，会追加为本地路径参数：
+婵″倹鐏夋稉濠冪埗 API path 娑擃厼瀵橀崥?`{param}`閿涘奔绱版潻钘夊娑撶儤婀伴崷鎷岀熅瀵板嫬寮弫甯窗
 
 ```text
-上游: /v1/org/sites/{siteId}
-本地: /api/org/site-detail/:siteId
+娑撳﹥鐖? /v1/org/sites/{siteId}
+閺堫剙婀? /api/org/site-detail/:siteId
 ```
 
-请求转发规则：
+鐠囬攱鐪版潪顒€褰傜憴鍕灟閿?
 
-| manifest method | 本地请求 | 转发到 APIClient |
+| manifest method | 閺堫剙婀寸拠閿嬬湴 | 鏉烆剙褰傞崚?APIClient |
 |-----------------|----------|------------------|
 | `GET` | query string | `client.get(path, { params: query })` |
 | `POST` | JSON body | `client.post(path, body)` |
 
-可用路由发现接口：
+閸欘垳鏁ょ捄顖滄暠閸欐垹骞囬幒銉ュ經閿?
 
 ```text
 GET /__routes
 ```
 
-返回每个路由的 `method`、`url`、`domain`、`action` 和 `description`。
+鏉╂柨娲栧В蹇庨嚋鐠侯垳鏁遍惃?`method`閵嗕梗url`閵嗕梗domain`閵嗕梗action` 閸?`description`閵?
 
-## 业务页面调用示例
+## 娑撴艾濮熸い鐢告桨鐠嬪啰鏁ょ粈杞扮伐
 
 ```javascript
-const res = await fetch('http://127.0.0.1:7878/api/account/page', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({ currentPage: 1, pageSize: 10 }),
+const res = await fetch('http://127.0.0.1:7878/api/test/whoami', {
+  method: 'GET',
 })
 const data = await res.json()
 ```
 
-## 测试页面
+## 濞村鐦い鐢告桨
 
-仓库内提供了一个零依赖静态页面，用来验证本地网关、路由发现和 `account/page` 接口是否正常接通：
+娴犳挸绨遍崘鍛絹娓氭稐绨℃稉鈧稉顏堟祩娓氭繆绂嗛棃娆愨偓渚€銆夐棃顫礉閻劍娼垫宀冪槈閺堫剙婀寸純鎴濆彠閵嗕浇鐭鹃悽鍗炲絺閻滄澘鎷?`org/platforms` 閹恒儱褰涢弰顖氭儊濮濓絽鐖堕幒銉┾偓姘剧窗
 
 ```bash
-node packages/cli/bin/run.js serve --manifest fixtures/sample-audit-manifest.json --port 7878
+node packages/cli/bin/run.js serve --project-apis --port 7878
 ```
 
-然后直接打开 [`examples/serve-dashboard/index.html`](../../../examples/serve-dashboard/index.html)，或用任意本地静态服务打开 `examples/serve-dashboard/` 目录。页面会默认请求 `http://127.0.0.1:7878/__routes` 和 `http://127.0.0.1:7878/api/account/page`，并基于当前页账号数据展示总量、分页、平台、状态、启用状态和密码过期统计。
+然后直接打开 [`examples/serve-dashboard/index.html`](../../../examples/serve-dashboard/index.html)，或用任意本地静态服务打开 `examples/serve-dashboard/` 目录。页面会默认请求 `http://127.0.0.1:7878/__routes` 和 `http://127.0.0.1:7878/api/test/whoami`，并展示 `test` 模块复用 shared whoami 状态逻辑的结果。
 
-如果页面显示认证失败，先运行 `mbs login`，再重新启动或刷新 `mbs serve`。
+婵″倹鐏夋い鐢告桨閺勫墽銇氱拋銈堢槈婢惰精瑙﹂敍灞藉帥鏉╂劘顢?`mbs login`閿涘苯鍟€闁插秵鏌婇崥顖氬З閹存牕鍩涢弬?`mbs serve`閵?
 
-## 安全边界
+## 鐎瑰鍙忔潏鍦櫕
 
-- `serve` 没有额外鉴权，会复用当前机器上的 CLI 登录态。
-- 默认只监听 `127.0.0.1`，不要改成公网或局域网地址。
-- CORS 只允许 `localhost`、`127.0.0.1` 和本地文件页面的 `null` origin。
-- 本 CLI 仍是只读工具，只允许 manifest 中的 `GET` 与查询类 `POST`。
+- `serve` 濞屸剝婀佹０婵嗩樆闁村瓨娼堥敍灞肩窗婢跺秶鏁よぐ鎾冲閺堝搫娅掓稉濠勬畱 CLI 閻ц缍嶉幀浣碘偓?
+- 姒涙顓婚崣顏嗘磧閸?`127.0.0.1`閿涘奔绗夌憰浣规暭閹存劕鍙曠純鎴炲灗鐏炩偓閸╃喓缍夐崷鏉挎絻閵?
+- CORS 閸欘亜鍘戠拋?`localhost`閵嗕梗127.0.0.1` 閸滃本婀伴崷鐗堟瀮娴犲爼銆夐棃銏㈡畱 `null` origin閵?
+- 閺?CLI 娴犲秵妲搁崣顏囶嚢瀹搞儱鍙块敍灞藉涧閸忎浇顔?manifest 娑擃厾娈?`GET` 娑撳孩鐓＄拠銏㈣ `POST`閵?
 
-## 验证
+## 妤犲矁鐦?
 
 ```bash
 pnpm --filter @mb-it-org/cli test
 node packages/cli/bin/run.js serve --manifest fixtures/sample-audit-manifest.json --help
 ```
 
-## 全量只读代理
-
-如需不依赖 audit manifest，直接代理任意上游只读接口，可显式开启全量代理模式：
+## 閸忋劑鍣洪崣顏囶嚢娴狅絿鎮?
+婵″倿娓舵稉宥勭贩鐠?audit manifest閿涘瞼娲块幒銉ゅ敩閻炲棔鎹㈤幇蹇庣瑐濞撶褰х拠缁樺复閸欙綇绱濋崣顖涙▔瀵繐绱戦崥顖氬弿闁插繋鍞悶鍡樐佸蹇ョ窗
 
 ```bash
 mbs serve --proxy-all
 ```
 
-调用规则：
-
+鐠嬪啰鏁ょ憴鍕灟閿?
 ```text
 GET  /proxy/<upstream-api-path>?key=value
 POST /proxy/<upstream-api-path>
 ```
 
-示例：
-
+缁€杞扮伐閿?
 ```javascript
-const res = await fetch('http://127.0.0.1:7878/proxy/gateway/account-center-service/account/page/noauth', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({ currentPage: 1, pageSize: 10 }),
+const res = await fetch('http://127.0.0.1:7878/proxy/erpOrder/erpOrder/saleReport/getPlatformList', {
+  method: 'GET',
 })
 const data = await res.json()
 ```
 
-`--proxy-all` 仍只开放 `GET` 和查询类 `POST`，不会代理 `PUT`、`PATCH`、`DELETE`。
-
-## 项目内接口
-
-如需把项目里已经封装的业务接口全部开放为本地 HTTP 路由：
-
+`--proxy-all` 娴犲秴褰у鈧弨?`GET` 閸滃本鐓＄拠銏㈣ `POST`閿涘奔绗夋导姘敩閻?`PUT`閵嗕梗PATCH`閵嗕梗DELETE`閵?
+## 妞ゅ湱娲伴崘鍛复閸?
+婵″倿娓堕幎濠囥€嶉惄顕€鍣峰鑼病鐏忎浇顥婇惃鍕瑹閸斺剝甯撮崣锝呭弿闁劌绱戦弨鍙ヨ礋閺堫剙婀?HTTP 鐠侯垳鏁遍敍?
 ```bash
 mbs serve --project-apis
 ```
 
-`--proxy-all` 也会自动开启这些项目内接口。当前项目接口包括：
+`--proxy-all` 娑旂喍绱伴懛顏勫З瀵偓閸氼垵绻栨禍娑€嶉惄顔煎敶閹恒儱褰涢妴鍌氱秼閸撳秹銆嶉惄顔藉复閸欙絽瀵橀幏顒婄窗
 
 ```text
-POST /api/account/page
+GET /api/org/platforms
+GET  /api/test/whoami
 GET  /api/shops/health
 GET  /api/doris/schemas
 GET  /api/doris/show-create-table?tableName=<database.table>
@@ -167,3 +158,4 @@ pnpm build
 
 The generated runtime manifest is bundled at `packages/cli/src/serve/generated-manifest.ts`.
 `fixtures/*` is only for samples or incremental validation.
+

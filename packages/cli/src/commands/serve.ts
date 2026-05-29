@@ -6,6 +6,7 @@ import {
   forceRefreshAuthContext,
   getAuthContext,
   getConfig,
+  getWhoamiStatus,
 } from '@mb-it-org/shared'
 import Fastify, { type FastifyInstance, type FastifyReply, type FastifyRequest } from 'fastify'
 import { readFileSync } from 'node:fs'
@@ -53,6 +54,17 @@ export interface ServeAppOptions {
   proxyAll?: boolean
 }
 
+const localProjectRoutes = [
+  {
+    method: 'GET',
+    url: '/api/test/whoami',
+    domain: 'test',
+    action: 'whoami',
+    description: 'Show current authentication status through the test module',
+    responseMode: 'json',
+  },
+] as const
+
 export function registerRoutes(app: FastifyInstance, routes: ServeRoute[], getClient: () => Promise<APIClient>): void {
   for (const route of routes) {
     app.route({
@@ -79,6 +91,10 @@ export function registerRoutes(app: FastifyInstance, routes: ServeRoute[], getCl
       },
     })
   }
+}
+
+function registerLocalProjectRoutes(app: FastifyInstance): void {
+  app.get('/api/test/whoami', async () => getWhoamiStatus())
 }
 
 function registerProxyAllRoute(app: FastifyInstance, getClient: () => Promise<APIClient>): void {
@@ -135,6 +151,7 @@ export function buildApp(
         description: route.description,
         responseMode: route.responseMode,
       })),
+      ...(options.projectApis ? localProjectRoutes : []),
       ...(options.proxyAll
         ? [
             {
@@ -150,6 +167,7 @@ export function buildApp(
   }))
 
   registerRoutes(app, routes, getClient)
+  if (options.projectApis) registerLocalProjectRoutes(app)
   if (options.proxyAll) registerProxyAllRoute(app, getClient)
   return app
 }
@@ -217,7 +235,9 @@ export default class Serve extends Command {
             address,
             host: flags.host,
             port: flags.port,
-            routes: (projectApis ? buildRoutes(projectManifest).length : 0) + (manifest ? buildRoutes(manifest).length : 0),
+            routes:
+              (projectApis ? buildRoutes(projectManifest).length + localProjectRoutes.length : 0) +
+              (manifest ? buildRoutes(manifest).length : 0),
             projectApis,
             proxyAll: flags['proxy-all'],
             warning: 'NO AUTH — local loopback only. Anything on this machine can call these endpoints.',

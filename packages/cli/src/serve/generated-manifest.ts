@@ -1,26 +1,12 @@
 // AUTO-GENERATED FROM audit manifest. DO NOT EDIT.
 // Source: manifests/mbs-api-manifest.json
-// Manifest: 2026-05-28T00:00:00+08:00 @ 0288660e19ac6780f7e17ea7cf6dbba582d931f13fc7926fe3ff6f26ae1e4148
+// Manifest: 2026-05-28T00:00:00+08:00 @ 4cdfc264c904437c4ece4cbcb8087543b8c5ed7422248ec68bdeffb511b9d001
 import type { AuditManifest } from './router.js'
 
 export const projectManifest = {
   "schemaVersion": "1",
   "manifestVersion": "2026-05-28T00:00:00+08:00",
   "modules": [
-    {
-      "domain": "account",
-      "pathPrefix": "",
-      "actions": [
-        {
-          "name": "page",
-          "description": "Page account list",
-          "method": "POST",
-          "path": "/gateway/account-center-service/account/page/noauth",
-          "pathPrefix": "",
-          "responseMode": "json"
-        }
-      ]
-    },
     {
       "domain": "shops",
       "pathPrefix": "",

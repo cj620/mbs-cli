@@ -298,6 +298,21 @@ button:disabled {
   overflow-x: auto;
 }
 
+.json-panel {
+  min-height: 220px;
+  max-height: 520px;
+  margin: 0;
+  padding: 16px;
+  overflow: auto;
+  background: #0f172a;
+  color: #e5e7eb;
+  font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+  font-size: 13px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
 table {
   width: 100%;
   min-width: 820px;

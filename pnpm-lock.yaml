@@ -15,30 +15,11 @@ importers:
         specifier: ^3.25.76
         version: 3.25.76
 
-  packages/account:
-    dependencies:
-      '@mb-it-org/shared':
-        specifier: workspace:*
-        version: link:../shared
-      '@oclif/core':
-        specifier: ^4.10.5
-        version: 4.10.5
-    devDependencies:
-      '@types/node':
-        specifier: ^20.0.0
-        version: 20.19.39
-      typescript:
-        specifier: ^5.4.0
-        version: 5.9.3
-
   packages/cli:
     dependencies:
       '@inquirer/prompts':
         specifier: ^8.4.1
         version: 8.4.1(@types/node@20.19.39)
-      '@mb-it-org/account':
-        specifier: workspace:*
-        version: link:../account
       '@mb-it-org/doris':
         specifier: workspace:*
         version: link:../doris
@@ -51,6 +32,9 @@ importers:
       '@mb-it-org/shops':
         specifier: workspace:*
         version: link:../shops
+      '@mb-it-org/test':
+        specifier: workspace:*
+        version: link:../test
       '@oclif/core':
         specifier: ^4
         version: 4.10.5
@@ -129,6 +113,22 @@ importers:
         version: 1.6.1(@types/node@20.19.39)
 
   packages/shops:
+    dependencies:
+      '@mb-it-org/shared':
+        specifier: workspace:*
+        version: link:../shared
+      '@oclif/core':
+        specifier: ^4.10.5
+        version: 4.10.5
+    devDependencies:
+      '@types/node':
+        specifier: ^20.0.0
+        version: 20.19.39
+      typescript:
+        specifier: ^5.4.0
+        version: 5.9.3
+
+  packages/test:
     dependencies:
       '@mb-it-org/shared':
         specifier: workspace:*

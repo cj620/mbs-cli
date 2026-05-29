@@ -4,6 +4,8 @@ export { NotAuthenticatedError, MBSError } from './errors.js'
 export { getConfig, setConfig, getConfigDir } from './config.js'
 export { APIClient } from './http.js'
 export { withCliPathPrefix } from './url.js'
+export { getWhoamiStatus } from './whoami.js'
+export type { WhoamiStatus } from './whoami.js'
 export { MBSCommand } from './base-command.js'
 export {
   detectInstalledUpdateSource,
