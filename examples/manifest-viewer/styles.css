@@ -378,6 +378,11 @@ td {
   vertical-align: top;
 }
 
+.muted {
+  color: var(--muted);
+  font-size: 13px;
+}
+
 .action-row {
   cursor: pointer;
 }

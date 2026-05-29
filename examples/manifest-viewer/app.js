@@ -110,6 +110,26 @@ const DEFAULT_MANIFEST = {
   ],
 }
 
+const LOCAL_PROJECT_MODULES = [
+  {
+    domain: 'test',
+    service: 'local-project-api',
+    description: '本地测试模块：复用 mbs whoami 的认证状态读取逻辑。',
+    keywords: ['test', 'whoami', 'auth status', 'project api'],
+    scenarios: '验证 CLI 登录状态，以及 serve 的本地 project API 是否可用。',
+    generate: false,
+    source: 'local',
+    actions: [
+      {
+        name: 'whoami',
+        description: '读取当前认证状态',
+        method: 'GET',
+        path: '/api/test/whoami',
+      },
+    ],
+  },
+]
+
 const state = {
   manifest: DEFAULT_MANIFEST,
   selectedDomain: DEFAULT_MANIFEST.modules[0]?.domain ?? '',
@@ -137,6 +157,20 @@ const els = {
   detailContent: document.querySelector('#detail-content'),
 }
 
+function manifestModules() {
+  const modules = Array.isArray(state.manifest.modules) ? state.manifest.modules : []
+  const hasLocalTest = modules.some((module) => module.domain === 'test')
+  return hasLocalTest ? modules : [...modules, ...LOCAL_PROJECT_MODULES]
+}
+
+function ensureSelectedDomain() {
+  const modules = manifestModules()
+  if (!modules.some((module) => module.domain === state.selectedDomain)) {
+    state.selectedDomain = modules[0]?.domain ?? ''
+    state.selectedActionKey = ''
+  }
+}
+
 function joinPaths(prefix, path) {
   if (!prefix) return path
   if (!path) return prefix
@@ -159,21 +193,23 @@ function methodClass(method) {
   return String(method).toLowerCase()
 }
 
-function flattenParams(schema, location, required = new Set(), path = []) {
+function flattenParams(schema, location, path = [], required = false) {
   if (!schema) return []
+
   if (schema.type === 'object') {
-    const ownRequired = new Set(schema.required ?? [])
+    const requiredNames = new Set(schema.required ?? [])
     return Object.entries(schema.properties ?? {}).flatMap(([name, child]) =>
-      flattenParams(child, location, ownRequired, [...path, name]),
+      flattenParams(child, location, [...path, name], requiredNames.has(name)),
     )
   }
+
   const name = path.join('.')
   return name
     ? [{
         name,
         location,
         type: schema.type ?? 'unknown',
-        required: required.has(path.at(-1)),
+        required,
         description: schema.description ?? '',
       }]
     : []
@@ -188,7 +224,7 @@ function paramsFor(action) {
 }
 
 function allActionRecords() {
-  return state.manifest.modules.flatMap((module) =>
+  return manifestModules().flatMap((module) =>
     actionsFor(module).map((action) => ({ module, action, key: actionKey(module, action) })),
   )
 }
@@ -196,9 +232,13 @@ function allActionRecords() {
 function filteredRecords() {
   const query = els.search.value.trim().toLowerCase()
   const method = els.method.value
+
   return allActionRecords().filter(({ module, action }) => {
+    if (module.domain !== state.selectedDomain) return false
     if (method !== 'all' && action.method !== method) return false
     if (!query) return true
+
+    const params = paramsFor(action).map((param) => `${param.name} ${param.location} ${param.type} ${param.description}`)
     const haystack = [
       module.domain,
       module.service,
@@ -209,17 +249,15 @@ function filteredRecords() {
       action.description,
       action.method,
       fullPath(module, action),
+      ...params,
     ].filter(Boolean).join(' ').toLowerCase()
+
     return haystack.includes(query)
   })
 }
 
 function selectedModule() {
-  return state.manifest.modules.find((module) => module.domain === state.selectedDomain) ?? state.manifest.modules[0]
-}
-
-function selectedActionRecord() {
-  return allActionRecords().find((record) => record.key === state.selectedActionKey)
+  return manifestModules().find((module) => module.domain === state.selectedDomain) ?? manifestModules()[0]
 }
 
 function showError(message) {
@@ -233,17 +271,17 @@ function clearError() {
 }
 
 function renderMetrics() {
-  const modules = state.manifest.modules
+  const modules = manifestModules()
   const records = allActionRecords()
   els.version.textContent = `v${state.manifest.schemaVersion} / ${state.manifest.manifestVersion}`
   els.moduleCount.textContent = modules.length
   els.actionCount.textContent = records.length
   els.serviceCount.textContent = new Set(modules.map((module) => module.service || '-')).size
-  els.generatedCount.textContent = modules.filter((module) => module.generate !== false).length
+  els.generatedCount.textContent = modules.filter((module) => module.generate !== false && module.source !== 'local').length
 }
 
 function renderModuleList() {
-  const modules = state.manifest.modules
+  const modules = manifestModules()
   els.moduleListCount.textContent = modules.length
   if (!modules.length) {
     els.moduleList.innerHTML = '<div class="empty-cell">暂无模块</div>'
@@ -276,7 +314,8 @@ function renderRelationship() {
   }
 
   const actions = actionsFor(module)
-  els.relationshipSummary.textContent = `${module.domain} -> ${module.service || '-'} -> ${actions.length} 个接口`
+  const sourceLabel = module.source === 'local' ? '本地 project API' : 'audit manifest'
+  els.relationshipSummary.textContent = `${module.domain} -> ${module.service || '-'} -> ${actions.length} 个接口 · ${sourceLabel}`
   els.relationshipMap.innerHTML = `
     <div class="relation-row">
       <div class="relation-node">${escapeHtml(module.domain)}</div>
@@ -301,7 +340,7 @@ function renderRelationship() {
 
 function renderActionRows() {
   const records = filteredRecords()
-  els.actionSummary.textContent = `当前筛选 ${records.length} 个接口`
+  els.actionSummary.textContent = `当前模块匹配 ${records.length} 个接口`
   if (!records.length) {
     els.actionRows.innerHTML = '<tr><td colspan="5" class="empty-cell">没有匹配的接口</td></tr>'
     return
@@ -341,13 +380,17 @@ function renderDetail() {
 
   const { module, action } = record
   const params = paramsFor(action)
+  const command = module.domain === 'test' && action.name === 'whoami'
+    ? 'mbs test whoami'
+    : `mbs ${module.domain} ${action.name}`
+
   els.detailTitle.textContent = `${module.domain} / ${action.name}`
   els.detailContent.className = 'detail-content'
   els.detailContent.innerHTML = `
     <div class="detail-grid">
       <div class="detail-card">
         <span>CLI 命令</span>
-        <code>mbs ${escapeHtml(module.domain)} ${escapeHtml(action.name)}</code>
+        <code>${escapeHtml(command)}</code>
       </div>
       <div class="detail-card">
         <span>请求方法</span>
@@ -388,6 +431,7 @@ function renderDetail() {
 
 function render() {
   clearError()
+  ensureSelectedDomain()
   renderMetrics()
   renderModuleList()
   renderRelationship()
@@ -400,11 +444,12 @@ async function loadDefaultManifest() {
     const response = await fetch('../../manifests/mbs-api-manifest.json', { cache: 'no-store' })
     if (!response.ok) throw new Error(`HTTP ${response.status}`)
     state.manifest = await response.json()
-    state.selectedDomain = state.manifest.modules[0]?.domain ?? ''
+    state.selectedDomain = manifestModules()[0]?.domain ?? ''
   } catch {
     state.manifest = DEFAULT_MANIFEST
-    state.selectedDomain = DEFAULT_MANIFEST.modules[0]?.domain ?? ''
+    state.selectedDomain = manifestModules()[0]?.domain ?? ''
   }
+  state.selectedActionKey = ''
   render()
 }
 
@@ -415,7 +460,7 @@ function loadManifestFromFile(file) {
       const manifest = JSON.parse(String(reader.result))
       if (!Array.isArray(manifest.modules)) throw new Error('manifest.modules must be an array')
       state.manifest = manifest
-      state.selectedDomain = manifest.modules[0]?.domain ?? ''
+      state.selectedDomain = manifestModules()[0]?.domain ?? ''
       state.selectedActionKey = ''
       render()
     } catch (err) {
