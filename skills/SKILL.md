@@ -30,38 +30,9 @@ metadata:
 | Doris / SQL / 数据库 / 表结构 / 数据分析 / agent query | `doris`  | [references/doris/SKILL.md](references/doris/SKILL.md) |
 | 更新 / 升级 / 版本 / 有新版本 / update / upgrade / version / check update                        | `update` | [references/update/SKILL.md](references/update/SKILL.md) |
 | <!-- AUTO-GENERATED API MODULES START --> |  |  |
-| 账号 / account / 分页 / 列表 | `account` | [references/account/SKILL.md](references/account/SKILL.md) |
+| account / account page / account list | `account` | [references/account/SKILL.md](references/account/SKILL.md) |
 | <!-- AUTO-GENERATED API MODULES END --> |  |  |
 | 
- |  |  |
-| 
- |  |  |
-| 
- |  |  |
-| 
- |  |  |
-| 
- |  |  |
-| 
- |  |  |
-| 
- |  |  |
-| 
- |  |  |
-| 
- |  |  |
-| 
- |  |  |
-| 
- |  |  |
-| 
- |  |  |
-| 
- |  |  |
-| 
- |  |  |
-| 
- |  |  |
 
 > 后续模块按需追加到此表，Agent 只需读本文件即可完成一级路由，无需扫描全部文档。
 

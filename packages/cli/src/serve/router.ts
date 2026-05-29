@@ -1,6 +1,7 @@
 import type { APIClient } from '@mb-it-org/shared'
 
 export type HttpMethod = 'GET' | 'POST'
+export type ResponseMode = 'json' | 'ndjson'
 
 export interface ManifestAction {
   name: string
@@ -8,6 +9,7 @@ export interface ManifestAction {
   method: HttpMethod
   path: string
   pathPrefix?: string
+  responseMode?: ResponseMode
 }
 
 export interface ManifestModule {
@@ -29,6 +31,7 @@ export interface ServeRoute {
   action: string
   description: string
   apiPath: string
+  responseMode: ResponseMode
   call: (
     client: APIClient,
     input: { params: Record<string, string>; query: Record<string, unknown>; body: unknown },
@@ -57,6 +60,14 @@ function substitutePath(apiPath: string, params: Record<string, string>): string
   })
 }
 
+async function readStream(stream: NodeJS.ReadableStream): Promise<string> {
+  const chunks: Buffer[] = []
+  for await (const chunk of stream) {
+    chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(String(chunk)))
+  }
+  return Buffer.concat(chunks).toString('utf8')
+}
+
 export function buildRoutes(manifest: AuditManifest): ServeRoute[] {
   const routes: ServeRoute[] = []
   for (const mod of manifest.modules) {
@@ -73,8 +84,15 @@ export function buildRoutes(manifest: AuditManifest): ServeRoute[] {
         action: action.name,
         description: action.description,
         apiPath,
+        responseMode: action.responseMode ?? 'json',
         call: async (client, { params, query, body }) => {
           const concretePath = substitutePath(apiPath, params)
+          if (action.responseMode === 'ndjson') {
+            if (action.method === 'GET') {
+              return client.get(concretePath, { params: query })
+            }
+            return readStream(await client.postStream(concretePath, body))
+          }
           if (action.method === 'GET') {
             return client.get(concretePath, { params: query })
           }

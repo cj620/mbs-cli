@@ -94,12 +94,11 @@
     },
     {
       "name": "account",
-      "description": "账号分页查询",
+      "description": "Account page query",
       "keywords": [
-        "账号",
         "account",
-        "分页",
-        "列表"
+        "account page",
+        "account list"
       ],
       "skill": "references/account/SKILL.md",
       "commands": [

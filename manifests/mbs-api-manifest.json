@@ -1,0 +1,180 @@
+{
+  "schemaVersion": "1",
+  "manifestVersion": "2026-05-28T00:00:00+08:00",
+  "modules": [
+    {
+      "domain": "account",
+      "service": "account-center-service",
+      "description": "Account page query",
+      "keywords": ["account", "account page", "account list"],
+      "scenarios": "Query account list by page and optional filters.",
+      "actions": [
+        {
+          "name": "page",
+          "description": "Page account list",
+          "method": "POST",
+          "path": "/gateway/account-center-service/account/page/noauth",
+          "request": {
+            "body": {
+              "type": "object",
+              "properties": {
+                "currentPage": { "type": "integer", "description": "Current page" },
+                "pageSize": { "type": "integer", "description": "Page size" },
+                "id": { "type": "integer", "description": "Account ID" },
+                "code": { "type": "string", "description": "Account code" },
+                "busCode": { "type": "string", "description": "Business code" },
+                "status": { "type": "integer", "description": "Account status" },
+                "account": { "type": "string", "description": "Account name" },
+                "platform": { "type": "string", "description": "Platform" },
+                "hostType": { "type": "integer", "description": "Host type" },
+                "email": { "type": "string", "description": "Email" },
+                "phone": { "type": "string", "description": "Phone" },
+                "accountType": { "type": "string", "description": "Account type" },
+                "passwordUpdateTime": {
+                  "type": "array",
+                  "description": "Password update time range",
+                  "items": { "type": "string" }
+                },
+                "hasExpired": { "type": "boolean", "description": "Password expired" },
+                "incorrect": { "type": "integer", "description": "Incorrect flag" },
+                "enabled": { "type": "boolean", "description": "Enabled" },
+                "groupCompanyId": { "type": "integer", "description": "Company ID" }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "domain": "shops",
+      "service": "crm-web-service",
+      "description": "Shop operations data",
+      "keywords": ["shops", "shop health", "account health", "amazon health"],
+      "scenarios": "Query Amazon shop account health information.",
+      "generate": false,
+      "actions": [
+        {
+          "name": "health",
+          "description": "Get Amazon shop account health info",
+          "method": "GET",
+          "path": "/gateway/crm-web-service/rpa/getAmazonAccHealthInfo"
+        }
+      ]
+    },
+    {
+      "domain": "doris",
+      "service": "cli-service",
+      "description": "Doris schema and read-only query APIs",
+      "keywords": ["doris", "sql", "schema", "table", "query"],
+      "scenarios": "Explore Doris schemas, inspect table DDL, and run server-validated SELECT queries.",
+      "generate": false,
+      "pathPrefix": "/gateway/cli-service/cli/doris",
+      "actions": [
+        {
+          "name": "schemas",
+          "description": "List Doris databases and tables",
+          "method": "GET",
+          "path": "/schemas"
+        },
+        {
+          "name": "show-create-table",
+          "description": "Show Doris CREATE TABLE DDL",
+          "method": "GET",
+          "path": "/show-create-table",
+          "request": {
+            "query": {
+              "type": "object",
+              "required": ["tableName"],
+              "properties": {
+                "tableName": { "type": "string", "description": "Fully qualified table name" }
+              }
+            }
+          }
+        },
+        {
+          "name": "query",
+          "description": "Execute Doris SELECT query",
+          "method": "POST",
+          "path": "/query",
+          "responseMode": "ndjson",
+          "request": {
+            "body": {
+              "type": "object",
+              "required": ["sql"],
+              "properties": {
+                "sql": { "type": "string", "description": "SELECT SQL" }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "domain": "org",
+      "service": "erpOrder",
+      "description": "Organization hierarchy APIs",
+      "keywords": ["org", "platform", "site", "leader", "manager", "shop-manager", "employee", "shop"],
+      "scenarios": "Query organization dropdown data for platforms, sites, leaders, managers, shops, and employees.",
+      "generate": false,
+      "pathPrefix": "/erpOrder/erpOrder",
+      "actions": [
+        {
+          "name": "platforms",
+          "description": "List all platforms",
+          "method": "GET",
+          "path": "/saleReport/getPlatformList"
+        },
+        {
+          "name": "sites",
+          "description": "List sites by platform",
+          "method": "GET",
+          "path": "/saleReport/getSiteList",
+          "request": {
+            "query": {
+              "type": "object",
+              "properties": {
+                "platformids": { "type": "string", "description": "Platform IDs, comma-separated" }
+              }
+            }
+          }
+        },
+        {
+          "name": "leaders",
+          "description": "List leaders",
+          "method": "POST",
+          "path": "/teamDropDown/leaderDropDown"
+        },
+        {
+          "name": "managers",
+          "description": "List managers",
+          "method": "POST",
+          "path": "/teamDropDown/managerDropDown"
+        },
+        {
+          "name": "little-leaders",
+          "description": "List little leaders",
+          "method": "POST",
+          "path": "/teamDropDown/littleManagerDropDown"
+        },
+        {
+          "name": "shop-managers",
+          "description": "List shop managers",
+          "method": "POST",
+          "path": "/teamDropDown/shopManagerDropDown"
+        },
+        {
+          "name": "employees",
+          "description": "List employees",
+          "method": "POST",
+          "path": "/teamDropDown/teamNumberDropDown"
+        },
+        {
+          "name": "shops",
+          "description": "List shops",
+          "method": "POST",
+          "path": "/teamDropDown/shopDropDown"
+        }
+      ]
+    }
+  ]
+}

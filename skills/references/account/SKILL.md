@@ -1,6 +1,6 @@
-# account - 账号分页查询
+# account - Account page query
 
-通过 `mbs account` 命令查询账号分页查询数据。
+通过 `mbs account` 命令查询Account page query数据。
 
 ## 数据来源
 
@@ -8,17 +8,17 @@
 
 ## 适用场景
 
-按账号编码、业务编码、状态、邮箱、手机号等条件分页查询账号列表。
+Query account list by page and optional filters.
 
 ## 意图匹配
 
-关键词：账号 / account / 分页 / 列表
+关键词：account / account page / account list
 
 ## 命令一览
 
 | 意图 | 命令 | 必填参数 |
 |---|---|---|
-| 分页获取账号列表 | `mbs account page` | - |
+| Page account list | `mbs account page` | - |
 
 ## 命令详情
 

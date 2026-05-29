@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
+import { Readable } from 'node:stream'
 import type { APIClient } from '@mb-it-org/shared'
 import { buildApp } from '../commands/serve.js'
 import { buildRoutes, type AuditManifest } from '../serve/router.js'
@@ -34,8 +35,13 @@ const manifest: AuditManifest = {
   ],
 }
 
-function fakeClient(get: unknown = vi.fn(), post: unknown = vi.fn(), request: unknown = vi.fn()): APIClient {
-  return { get, post, request } as unknown as APIClient
+function fakeClient(
+  get: unknown = vi.fn(),
+  post: unknown = vi.fn(),
+  request: unknown = vi.fn(),
+  postStream: unknown = vi.fn(),
+): APIClient {
+  return { get, post, request, postStream } as unknown as APIClient
 }
 
 describe('buildRoutes', () => {
@@ -142,6 +148,51 @@ describe('serve app', () => {
     const body = JSON.parse(res.body)
     expect(body.ok).toBe(true)
     expect(body.data).toHaveLength(2)
+  })
+
+  it('exposes project APIs as /api routes', async () => {
+    const app = buildApp(undefined, async () => fakeClient(), { projectApis: true })
+    const res = await app.inject({ method: 'GET', url: '/__routes' })
+    const body = JSON.parse(res.body)
+
+    expect(body.data).toEqual(expect.arrayContaining([
+      expect.objectContaining({ method: 'POST', url: '/api/account/page' }),
+      expect.objectContaining({ method: 'GET', url: '/api/org/platforms' }),
+      expect.objectContaining({ method: 'GET', url: '/api/shops/health' }),
+      expect.objectContaining({ method: 'GET', url: '/api/doris/schemas' }),
+      expect.objectContaining({ method: 'POST', url: '/api/doris/query' }),
+    ]))
+  })
+
+  it('project API route forwards account page request', async () => {
+    const post = vi.fn().mockResolvedValue({ items: [] })
+    const app = buildApp(undefined, async () => fakeClient(vi.fn(), post), { projectApis: true })
+
+    const res = await app.inject({
+      method: 'POST',
+      url: '/api/account/page',
+      payload: { currentPage: 1, pageSize: 10 },
+    })
+
+    expect(res.statusCode).toBe(200)
+    expect(JSON.parse(res.body)).toEqual({ ok: true, data: { items: [] } })
+    expect(post).toHaveBeenCalledWith('/gateway/account-center-service/account/page/noauth', { currentPage: 1, pageSize: 10 })
+  })
+
+  it('project API ndjson route returns raw stream content', async () => {
+    const postStream = vi.fn().mockResolvedValue(Readable.from(['{"type":"row","value":1}\n']))
+    const app = buildApp(undefined, async () => fakeClient(vi.fn(), vi.fn(), vi.fn(), postStream), { projectApis: true })
+
+    const res = await app.inject({
+      method: 'POST',
+      url: '/api/doris/query',
+      payload: { sql: 'select 1' },
+    })
+
+    expect(res.statusCode).toBe(200)
+    expect(res.headers['content-type']).toContain('application/x-ndjson')
+    expect(res.body).toBe('{"type":"row","value":1}\n')
+    expect(postStream).toHaveBeenCalledWith('/gateway/cli-service/cli/doris/query', { sql: 'select 1' })
   })
 
   it('proxy-all GET route forwards arbitrary upstream path and query', async () => {

@@ -11,6 +11,7 @@ import Fastify, { type FastifyInstance, type FastifyReply, type FastifyRequest }
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { isAllowedOrigin } from '../serve/cors.js'
+import { projectManifest } from '../serve/generated-manifest.js'
 import { buildRoutes, type AuditManifest, type ServeRoute } from '../serve/router.js'
 
 function loadManifest(file: string): AuditManifest {
@@ -48,6 +49,7 @@ function attachCors(app: FastifyInstance): void {
 }
 
 export interface ServeAppOptions {
+  projectApis?: boolean
   proxyAll?: boolean
 }
 
@@ -64,6 +66,10 @@ export function registerRoutes(app: FastifyInstance, routes: ServeRoute[], getCl
             query: (request.query ?? {}) as Record<string, unknown>,
             body: request.body,
           })
+          if (route.responseMode === 'ndjson') {
+            reply.type('application/x-ndjson').send(data)
+            return
+          }
           reply.send({ ok: true, data })
         } catch (err) {
           const payload = errorPayload(err)
@@ -108,7 +114,15 @@ export function buildApp(
   const app = Fastify({ logger: false })
   attachCors(app)
 
-  const routes = manifest ? buildRoutes(manifest) : []
+  const manifestRoutes = manifest ? buildRoutes(manifest) : []
+  const projectRoutes = options.projectApis ? buildRoutes(projectManifest) : []
+  const seenRoutes = new Set<string>()
+  const routes = [...projectRoutes, ...manifestRoutes].filter((route) => {
+    const key = `${route.method} ${route.routeUrl}`
+    if (seenRoutes.has(key)) return false
+    seenRoutes.add(key)
+    return true
+  })
 
   app.get('/__routes', async () => ({
     ok: true,
@@ -119,6 +133,7 @@ export function buildApp(
         domain: route.domain,
         action: route.action,
         description: route.description,
+        responseMode: route.responseMode,
       })),
       ...(options.proxyAll
         ? [
@@ -145,6 +160,7 @@ export default class Serve extends Command {
   static examples = [
     'mbs serve --manifest fixtures/sample-audit-manifest.json',
     'mbs serve --manifest fixtures/sample-audit-manifest.json --port 7878',
+    'mbs serve --project-apis',
     'mbs serve --proxy-all',
   ]
 
@@ -154,6 +170,10 @@ export default class Serve extends Command {
     }),
     'proxy-all': Flags.boolean({
       description: 'Expose a read-only /proxy/* gateway for arbitrary upstream GET/POST API paths',
+      default: false,
+    }),
+    'project-apis': Flags.boolean({
+      description: 'Expose all APIs implemented by this project as /api/<domain>/<action> routes',
       default: false,
     }),
     port: Flags.integer({
@@ -168,8 +188,9 @@ export default class Serve extends Command {
 
   async run(): Promise<void> {
     const { flags } = await this.parse(Serve)
-    if (!flags.manifest && !flags['proxy-all']) {
-      this.log(JSON.stringify(errorPayload(new Error('Either --manifest or --proxy-all is required'))))
+    const projectApis = flags['project-apis'] || flags['proxy-all']
+    if (!flags.manifest && !flags['proxy-all'] && !flags['project-apis']) {
+      this.log(JSON.stringify(errorPayload(new Error('Either --manifest, --project-apis, or --proxy-all is required'))))
       this.exit(1)
     }
 
@@ -185,7 +206,7 @@ export default class Serve extends Command {
       return client
     }
 
-    const app = buildApp(manifest, getClient, { proxyAll: flags['proxy-all'] })
+    const app = buildApp(manifest, getClient, { projectApis, proxyAll: flags['proxy-all'] })
 
     try {
       const address = await app.listen({ port: flags.port, host: flags.host })
@@ -196,7 +217,8 @@ export default class Serve extends Command {
             address,
             host: flags.host,
             port: flags.port,
-            routes: manifest ? buildRoutes(manifest).length : 0,
+            routes: (projectApis ? buildRoutes(projectManifest).length : 0) + (manifest ? buildRoutes(manifest).length : 0),
+            projectApis,
             proxyAll: flags['proxy-all'],
             warning: 'NO AUTH — local loopback only. Anything on this machine can call these endpoints.',
           },

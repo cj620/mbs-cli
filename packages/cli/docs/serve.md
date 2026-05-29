@@ -128,3 +128,42 @@ const data = await res.json()
 ```
 
 `--proxy-all` 仍只开放 `GET` 和查询类 `POST`，不会代理 `PUT`、`PATCH`、`DELETE`。
+
+## 项目内接口
+
+如需把项目里已经封装的业务接口全部开放为本地 HTTP 路由：
+
+```bash
+mbs serve --project-apis
+```
+
+`--proxy-all` 也会自动开启这些项目内接口。当前项目接口包括：
+
+```text
+POST /api/account/page
+GET  /api/shops/health
+GET  /api/doris/schemas
+GET  /api/doris/show-create-table?tableName=<database.table>
+POST /api/doris/query
+GET  /api/org/platforms
+GET  /api/org/sites?platform=<ids>
+POST /api/org/leaders
+POST /api/org/managers
+POST /api/org/little-leaders
+POST /api/org/shop-managers
+POST /api/org/employees
+POST /api/org/shops
+```
+
+## Manifest-driven project APIs
+
+`--project-apis` reads the generated project manifest built from `manifests/mbs-api-manifest.json`.
+Do not add project APIs by hand in `serve`; add or update actions in the manifest, then run:
+
+```bash
+pnpm gen:manifest
+pnpm build
+```
+
+The generated runtime manifest is bundled at `packages/cli/src/serve/generated-manifest.ts`.
+`fixtures/*` is only for samples or incremental validation.

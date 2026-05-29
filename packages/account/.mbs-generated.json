@@ -1,8 +1,8 @@
 {
   "owner": "mbs-audit-manifest",
   "domain": "account",
-  "source": "fixtures/sample-audit-manifest.json",
+  "source": "manifests/mbs-api-manifest.json",
   "schemaVersion": "1",
-  "manifestVersion": "2026-05-20T00:00:00+08:00",
-  "hash": "b3d662d3fbc018cb27f3c1ade691de44162de8bba57d768fa96e99c18bf97bd4"
+  "manifestVersion": "2026-05-28T00:00:00+08:00",
+  "hash": "0288660e19ac6780f7e17ea7cf6dbba582d931f13fc7926fe3ff6f26ae1e4148"
 }

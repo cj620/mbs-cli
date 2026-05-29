@@ -22,19 +22,21 @@ const activeModules = manifest.modules
     actions: mod.actions.filter((action) => !action.deprecated),
   }))
   .filter((mod) => mod.actions.length > 0)
+const generatedModules = activeModules.filter((mod) => mod.generate)
 
 const changes = []
-const staleGeneratedDomains = findStaleGeneratedDomains(activeModules.map((mod) => mod.domain))
+const staleGeneratedDomains = findStaleGeneratedDomains(generatedModules.map((mod) => mod.domain))
 
-for (const mod of activeModules) {
+for (const mod of generatedModules) {
   activeDomains.add(mod.domain)
   syncDomainPackage(mod, manifestInput.source, sourceHash)
   syncDomainSkills(mod, sourceHash)
 }
 
-syncCliPackageJson(activeModules.map((mod) => mod.domain))
-syncSkillIndex(activeModules)
-syncSkillManifest(activeModules)
+syncCliPackageJson(generatedModules.map((mod) => mod.domain))
+syncSkillIndex(generatedModules)
+syncSkillManifest(generatedModules)
+syncServeManifest(activeModules, manifestInput.source, sourceHash)
 
 for (const mod of manifest.modules) {
   if (mod.actions.every((action) => action.deprecated)) {
@@ -76,7 +78,9 @@ async function loadManifest(file, url) {
     }
     return { source: url, content: await response.text() }
   }
-  throw new Error('Provide --file <path> or MBS_AUDIT_MANIFEST_URL')
+  const defaultFile = 'manifests/mbs-api-manifest.json'
+  const path = join(repoRoot, defaultFile)
+  return { source: defaultFile, content: readFileSync(path, 'utf8') }
 }
 
 function syncDomainPackage(mod, source, hash) {
@@ -199,7 +203,13 @@ function syncSkillIndex(modules) {
   const block = `| ${generatedBlockStart} |  |  |\n${generatedRows}\n| ${generatedBlockEnd} |  |  |`
 
   const withoutBlock = current
-    .replace(new RegExp(`\\n?${escapeRegExp(generatedBlockStart)}[\\s\\S]*?${escapeRegExp(generatedBlockEnd)}\\n?`), '\n')
+    .replace(
+      new RegExp(`\\n?\\|\\s*${escapeRegExp(generatedBlockStart)}\\s*\\|[\\s\\S]*?\\|\\s*${escapeRegExp(generatedBlockEnd)}\\s*\\|\\s*\\|\\s*\\|\\n?`),
+      '\n',
+    )
+    .replace(/\r?\n\|\s*\r?\n\s*\|\s*\|\s*\|\s*/g, '\n')
+    .replace(/\r?\n\|\s*(?=\r?\n> )/g, '\n')
+    .replace(/\r?\n\s*\|\s*\|\s*\|\s*(?=\r?\n> )/g, '\n')
     .replace(/\n{3,}/g, '\n\n')
   const lines = withoutBlock.split('\n')
   const routeRowIndex = lines.findLastIndex((line) => /^\| .+ \| `.+` \| \[references\/.+\/SKILL\.md\]/.test(line))
@@ -233,6 +243,31 @@ function syncSkillManifest(modules) {
   }))
   current.modules = [...staticModules, ...generatedModules]
   writeFile(manifestPath, `${JSON.stringify(current, null, 2)}\n`)
+}
+
+function syncServeManifest(modules, source, hash) {
+  const manifestPath = join(repoRoot, 'packages', 'cli', 'src', 'serve', 'generated-manifest.ts')
+  const serveManifest = {
+    schemaVersion: manifest.schemaVersion,
+    manifestVersion: manifest.manifestVersion,
+    modules: modules.map((mod) => ({
+      domain: mod.domain,
+      pathPrefix: mod.pathPrefix,
+      actions: mod.actions.map((action) => ({
+        name: action.name,
+        description: action.description,
+        method: action.method,
+        path: action.path,
+        pathPrefix: action.pathPrefix,
+        responseMode: action.responseMode,
+      })),
+    })),
+  }
+
+  writeFile(
+    manifestPath,
+    `// AUTO-GENERATED FROM audit manifest. DO NOT EDIT.\n// Source: ${source}\n// Manifest: ${manifest.manifestVersion} @ ${hash}\nimport type { AuditManifest } from './router.js'\n\nexport const projectManifest = ${JSON.stringify(serveManifest, null, 2)} satisfies AuditManifest\n`,
+  )
 }
 
 function renderPackageJson(domain) {
@@ -280,20 +315,23 @@ function renderCommand(mod, action, source, hash) {
   const flagParams = actionParams.filter((param) => param.in !== 'path')
   const imports = [`import { ${argParams.length > 0 ? 'Args, ' : ''}Flags } from '@oclif/core'`, "import { MBSCommand } from '@mb-it-org/shared'"]
   const className = `${toClassName(mod.domain)}${toClassName(action.name)}`
-  const flags = renderFlags(flagParams)
+  const flags = renderFlags(flagParams.filter((param) => param.constValue === undefined))
   const args = renderArgs(argParams)
   const pathExpr = renderPathExpression(joinPaths(action.pathPrefix || mod.pathPrefix, action.path), argParams)
   const requestParams = action.method === 'GET' ? renderParamObject(flagParams.filter((param) => param.in === 'query')) : ''
   const requestBody = renderParamObject(flagParams.filter((param) => param.in !== 'query'))
-  const arrayHelper = flagParams.some((param) => param.type === 'array')
-    ? "\n    const toArray = (value: string | undefined): string[] | undefined =>\n      value === undefined ? undefined : value.split(',').map((item) => item.trim()).filter(Boolean)\n"
+  const arrayHelper = flagParams.some((param) => param.type === 'array' && param.constValue === undefined)
+    ? "\n    const toArray = (value: string | undefined, itemType = 'string'): unknown[] | undefined => {\n      if (value === undefined) return undefined\n      const items = value.split(',').map((item) => item.trim()).filter(Boolean)\n      if (itemType === 'integer' || itemType === 'number') return items.map((item) => Number(item))\n      return items\n    }\n"
     : ''
   const request =
-    action.method === 'GET'
-      ? `const data = await this.client.get(${pathExpr}, { params: ${requestParams} })`
-      : `const data = await this.client.post(${pathExpr}, ${requestBody})`
+    action.responseMode === 'ndjson'
+      ? `const stream = await this.client.postStream(${pathExpr}, ${requestBody})\n    for await (const chunk of stream) process.stdout.write(Buffer.isBuffer(chunk) ? chunk : String(chunk))`
+      : action.method === 'GET'
+        ? `const data = await this.client.get(${pathExpr}, { params: ${requestParams} })`
+        : `const data = await this.client.post(${pathExpr}, ${requestBody})`
+  const output = action.responseMode === 'ndjson' ? '' : '\n    this.output(data)'
 
-  return `// AUTO-GENERATED FROM audit manifest. DO NOT EDIT.\n// Source: ${source}\n// Manifest: ${manifest.manifestVersion} @ ${hash}\n${imports.join('\n')}\n\nexport default class ${className} extends MBSCommand {\n  static description = '${escapeTs(action.description)}'\n${flags}${args}\n  async run(): Promise<void> {\n    const { ${argParams.length > 0 ? 'args, ' : ''}flags } = await this.parse(${className})\n${arrayHelper}\n    ${request}\n    this.output(data)\n  }\n}\n`
+  return `// AUTO-GENERATED FROM audit manifest. DO NOT EDIT.\n// Source: ${source}\n// Manifest: ${manifest.manifestVersion} @ ${hash}\n${imports.join('\n')}\n\nexport default class ${className} extends MBSCommand {\n  static description = '${escapeTs(action.description)}'\n${flags}${args}\n  async run(): Promise<void> {\n    const { ${argParams.length > 0 ? 'args, ' : ''}flags } = await this.parse(${className})\n${arrayHelper}\n    ${request}${output}\n  }\n}\n`
 }
 
 function renderFlags(params) {
@@ -425,7 +463,7 @@ function withEnumDescription(description, enumValues) {
 }
 
 function requiredParams(action) {
-  return flattenActionParams(action).filter((param) => param.required).map((param) => `\`${param.name}\``)
+  return flattenActionParams(action).filter((param) => param.required && param.constValue === undefined).map((param) => `\`${param.name}\``)
 }
 
 function renderParamObject(params) {
@@ -444,7 +482,8 @@ function renderParamObject(params) {
 }
 
 function renderFlagValue(param) {
-  if (param.type === 'array') return `toArray(flags.${param.name})`
+  if (param.constValue !== undefined) return JSON.stringify(param.constValue)
+  if (param.type === 'array') return `toArray(flags.${param.name}, '${param.itemsType || 'string'}')`
   return `flags.${param.name}`
 }
 
@@ -472,6 +511,25 @@ function flattenActionParams(action) {
 
 function flattenRequestSchema(schema, location, path = [], inheritedRequired = false) {
   if (!schema) return []
+  if (schema.const !== undefined) {
+    const apiName = path.at(-1)
+    if (!apiName) return []
+    const cliName = schema['x-cli-name'] ?? toCamelCase(path)
+    return [
+      {
+        name: cliName,
+        apiName,
+        apiPath: path,
+        in: location,
+        type: schema.type,
+        itemsType: schema.items?.type,
+        required: false,
+        default: schema.default,
+        constValue: schema.const,
+        description: schema.description,
+      },
+    ]
+  }
   if (schema.type === 'object') {
     const requiredNames = new Set(schema.required ?? [])
     return Object.entries(schema.properties ?? {}).flatMap(([name, child]) =>

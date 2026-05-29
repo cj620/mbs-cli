@@ -1,6 +1,6 @@
 # mbs account page
 
-分页获取账号列表
+Page account list
 
 ## 用法
 
@@ -14,67 +14,30 @@ mbs account page [--currentPage <integer>] [--pageSize <integer>] [--id <integer
 - Method: `POST`
 - Path: `/gateway/account-center-service/account/page/noauth`
 - Schema version: `1`
-- Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `b3d662d3fbc018cb27f3c1ade691de44162de8bba57d768fa96e99c18bf97bd4`
+- Manifest version: `2026-05-28T00:00:00+08:00`
+- Manifest hash: `0288660e19ac6780f7e17ea7cf6dbba582d931f13fc7926fe3ff6f26ae1e4148`
 
 ## 参数
 
 | 参数 | API 字段 | 位置 | 类型 | 必填 | 默认值 | 说明 |
 |---|---|---|---|---|---|---|
-| `currentPage` | currentPage | body | integer | 否 | - | 当前页 |
-| `pageSize` | pageSize | body | integer | 否 | - | 每页大小 |
-| `id` | id | body | integer | 否 | - | 账号ID |
-| `code` | code | body | string | 否 | - | 账号编码 |
-| `busCode` | busCode | body | string | 否 | - | 业务编码 |
-| `status` | status | body | integer | 否 | - | 账号状态 |
-| `account` | account | body | string | 否 | - | 账号 |
-| `platform` | platform | body | string | 否 | - | 平台 |
-| `hostType` | hostType | body | integer | 否 | - | 托管方式 |
-| `email` | email | body | string | 否 | - | 邮箱 |
-| `phone` | phone | body | string | 否 | - | 手机号 |
-| `accountType` | accountType | body | string | 否 | - | 账号类型 |
-| `passwordUpdateTime` | passwordUpdateTime | body | array | 否 | - | 密码修改时间区间 |
-| `hasExpired` | hasExpired | body | boolean | 否 | - | 密码是否过期 |
-| `incorrect` | incorrect | body | integer | 否 | - | 是否错误 |
-| `enabled` | enabled | body | boolean | 否 | - | 是否启用 |
-| `groupCompanyId` | groupCompanyId | body | integer | 否 | - | 公司ID |
-
-## 响应字段
-
-| 路径 | 类型 | 说明 | 用途 |
-|---|---|---|---|
-| `code` | integer | 响应状态码 | - |
-| `message` | string | 响应消息 | - |
-| `data` | object | 分页结果 | - |
-| `data.total` | integer | 总条数 | - |
-| `data.totalPage` | integer | 总页数 | - |
-| `data.currentPage` | integer | 当前页 | - |
-| `data.pageSize` | integer | 每页大小 | - |
-| `data.items[]` | array | 账号列表 | - |
-| `data.items[].id` | integer | 账号ID | - |
-| `data.items[].code` | string | 账号编码 | - |
-| `data.items[].busCode` | string | 业务编码 | - |
-| `data.items[].status` | integer | 账号状态 | - |
-| `data.items[].statusStr` | string | 账号状态文案 | - |
-| `data.items[].account` | string | 账号 | - |
-| `data.items[].platform` | string | 平台 | - |
-| `data.items[].hostType` | integer | 托管方式 | - |
-| `data.items[].hostTypeStr` | string | 托管方式文案 | - |
-| `data.items[].email` | string | 邮箱 | - |
-| `data.items[].phone` | string | 手机号 | - |
-| `data.items[].accountType` | string | 账号类型 | - |
-| `data.items[].accountTypeStr` | string | 账号类型文案 | - |
-| `data.items[].platformLoginUrl` | string | 平台登录地址 | - |
-| `data.items[].passwordChangeUrl` | string | 修改密码地址 | - |
-| `data.items[].customField` | string | 自定义字段 | - |
-| `data.items[].passwordUpdateTime` | string | 密码修改时间 | - |
-| `data.items[].hasExpired` | boolean | 密码是否过期 | - |
-| `data.items[].incorrect` | integer | 是否错误 | - |
-| `data.items[].createBy` | string | 创建人 | - |
-| `data.items[].createTime` | string | 创建时间 | - |
-| `data.items[].updateBy` | string | 修改人 | - |
-| `data.items[].updateTime` | string | 修改时间 | - |
-| `data.items[].enabled` | boolean | 是否启用 | - |
+| `currentPage` | currentPage | body | integer | 否 | - | Current page |
+| `pageSize` | pageSize | body | integer | 否 | - | Page size |
+| `id` | id | body | integer | 否 | - | Account ID |
+| `code` | code | body | string | 否 | - | Account code |
+| `busCode` | busCode | body | string | 否 | - | Business code |
+| `status` | status | body | integer | 否 | - | Account status |
+| `account` | account | body | string | 否 | - | Account name |
+| `platform` | platform | body | string | 否 | - | Platform |
+| `hostType` | hostType | body | integer | 否 | - | Host type |
+| `email` | email | body | string | 否 | - | Email |
+| `phone` | phone | body | string | 否 | - | Phone |
+| `accountType` | accountType | body | string | 否 | - | Account type |
+| `passwordUpdateTime` | passwordUpdateTime | body | array | 否 | - | Password update time range |
+| `hasExpired` | hasExpired | body | boolean | 否 | - | Password expired |
+| `incorrect` | incorrect | body | integer | 否 | - | Incorrect flag |
+| `enabled` | enabled | body | boolean | 否 | - | Enabled |
+| `groupCompanyId` | groupCompanyId | body | integer | 否 | - | Company ID |
 
 
 ## 调用规则

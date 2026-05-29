@@ -68,7 +68,7 @@ p {
 
 h1 {
   margin-bottom: 0;
-  font-size: clamp(28px, 4vw, 42px);
+  font-size: 34px;
   line-height: 1.12;
 }
 
@@ -380,5 +380,9 @@ td {
   .metrics,
   .breakdowns {
     grid-template-columns: 1fr;
+  }
+
+  h1 {
+    font-size: 28px;
   }
 }

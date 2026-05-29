@@ -1,4 +1,4 @@
-const DORIS_PREFIX = '/proxy/gateway/cli-service/cli/doris'
+const DORIS_PREFIX = '/api/doris'
 
 const els = {
   gatewayUrl: document.querySelector('#gateway-url'),

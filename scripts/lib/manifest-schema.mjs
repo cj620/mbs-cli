@@ -24,6 +24,7 @@ export const jsonSchema = z.lazy(() =>
       items: jsonSchema.optional(),
       required: z.array(z.string()).default([]),
       default: z.union([z.string(), z.number(), z.boolean()]).optional(),
+      const: z.unknown().optional(),
       enum: z.array(enumValueSchema).optional(),
       'x-cli-name': z.string().regex(safeParamName, 'x-cli-name must be a safe JS identifier').optional(),
       'x-usage': z.string().default(''),
@@ -44,6 +45,7 @@ export const actionSchema = z.object({
   pathPrefix: z.string().default(''),
   method: z.enum(['GET', 'POST']),
   path: z.string().min(1).startsWith('/'),
+  responseMode: z.enum(['json', 'ndjson']).default('json'),
   params: z.array(paramSchema).default([]),
   request: requestSchema.optional(),
   response: jsonSchema.optional(),
@@ -57,6 +59,7 @@ export const moduleSchema = z.object({
   description: z.string().min(1),
   keywords: z.array(z.string().min(1)).min(1),
   scenarios: z.string().min(1),
+  generate: z.boolean().default(true),
   actions: z.array(actionSchema).min(1),
 })
 
