@@ -213,7 +213,7 @@ mbs whoami
 |------|---------|------|
 | org | `mbs org` | 组织架构：平台、站点、总监、经理、主管、店长、店铺、员工 |
 | shops | `mbs shops` | 店铺运营：Amazon 账号健康、违规统计、合规评分 |
-| doris | `mbs doris` | Doris 数据库探索与只读 SQL 查询：库表列表、建表语句、流式 SELECT 查询 |
+| doris | `mbs doris` | Doris 数据库：日销报表查询（按日 GMV / 订单 / 退款 / 利润等聚合）、库表与 DDL 探索、流式只读 SELECT |
 
 ---
 
@@ -270,9 +270,13 @@ mbs serve --project-apis
 
 ---
 
-## Doris 数据探索
+## Doris 数据探索与日销报表
 
-`doris` 模块用于 agent 或内部分析场景，服务端会校验只读 SQL，CLI 侧不绕过限制。
+`doris` 模块覆盖两类任务，服务端校验只读 SQL，CLI 侧不绕过限制。
+
+**任务 A — 日销报表**：按日聚合销售额 / 订单量 / 退款 / 利润等指标。标准流程是先 `schemas` 找候选日销表（名称含 `sales` / `daily` / `dws` / `report` / `日销` 等），再 `show-create-table` 看日期列与分区键，最后写 `GROUP BY` 日期的 SELECT。完整范式见 [skills/references/doris/SKILL.md](skills/references/doris/SKILL.md)。
+
+**任务 B — 数据探索**：自由 SELECT，先发现库表，再按需取数。
 
 ```bash
 mbs doris schemas
