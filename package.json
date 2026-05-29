@@ -8,6 +8,8 @@
     "serve:restart": "node scripts/restart-serve.mjs",
     "gen:manifest": "node scripts/gen-from-manifest.mjs",
     "gen:manifest:dry": "node scripts/gen-from-manifest.mjs --dry-run",
+    "update:manifest": "node scripts/update-manifest.mjs",
+    "update:manifest:dry": "node scripts/update-manifest.mjs --dry-run",
     "gen:manifest:sample": "node scripts/gen-from-manifest.mjs --file fixtures/sample-audit-manifest.json",
     "gen:manifest:sample:dry": "node scripts/gen-from-manifest.mjs --file fixtures/sample-audit-manifest.json --dry-run",
     "verify:manifest": "pnpm gen:manifest:dry && pnpm build && pnpm test",

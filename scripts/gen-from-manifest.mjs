@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { createHash } from 'node:crypto'
 import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
-import { dirname, join, relative } from 'node:path'
+import { dirname, isAbsolute, join, relative } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { extractPathParams, parseAuditManifest } from './lib/manifest-schema.mjs'
 
@@ -68,7 +68,7 @@ function parseArgs(argv) {
 
 async function loadManifest(file, url) {
   if (file) {
-    const path = join(repoRoot, file)
+    const path = isAbsolute(file) ? file : join(repoRoot, file)
     return { source: file, content: readFileSync(path, 'utf8') }
   }
   if (url) {
