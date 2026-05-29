@@ -192,17 +192,28 @@ mbs whoami
 
 ## 功能概览
 
+### CLI 基础功能
+
+与具体业务无关的通用能力：认证、配置、版本、原始请求、本地网关、skill 文档。
+
+| 模块 | 命令前缀 | 用途 |
+|------|---------|------|
+| config | `mbs config` | 查看或初始化 CLI API Base URL |
+| update | `mbs version` / `mbs update` | CLI 版本检查与更新 |
+| raw | `mbs raw` | 已认证直通请求：只允许 `GET` 和查询类 `POST`，用于封装前探索接口 |
+| skills | `mbs skills` | 查看、定位、安装随 CLI 打包的 agent skill 文档 |
+| serve | `mbs serve` | 本地 HTTP 网关，让业务页面二次开发时复用 CLI 认证查询 manifest 中的只读接口 |
+| test | `mbs test` | 本地测试工具：复用 shared whoami 状态逻辑，便于验证 serve project API |
+
+### 业务功能
+
+封装马帮平台的具体业务领域。新增业务模块（如未来的 `orders`、`finance`）按此分类追加到下表。
+
 | 模块 | 命令前缀 | 用途 |
 |------|---------|------|
 | org | `mbs org` | 组织架构：平台、站点、总监、经理、主管、店长、店铺、员工 |
 | shops | `mbs shops` | 店铺运营：Amazon 账号健康、违规统计、合规评分 |
 | doris | `mbs doris` | Doris 数据库探索与只读 SQL 查询：库表列表、建表语句、流式 SELECT 查询 |
-| test | `mbs test` | 本地测试工具：复用 shared whoami 状态逻辑，便于验证 serve project API |
-| raw | `mbs raw` | 已认证直通请求：只允许 `GET` 和查询类 `POST`，用于封装前探索接口 |
-| skills | `mbs skills` | 查看、定位、安装随 CLI 打包的 agent skill 文档 |
-| config | `mbs config` | 查看或初始化 CLI API Base URL |
-| update | `mbs version` / `mbs update` | CLI 版本检查与更新 |
-| serve | `mbs serve` | 本地 HTTP 网关，让业务页面二次开发时复用 CLI 认证查询 manifest 中的只读接口 |
 
 ---
 
