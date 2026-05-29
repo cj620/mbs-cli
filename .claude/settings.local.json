@@ -30,7 +30,8 @@
       "Bash(python -c ' *)",
       "Bash(python)",
       "Bash(node e:/AI项目/mbs-cli/packages/cli/scripts/copy-skills.cjs)",
-      "Bash(node e:/AI项目/mbs-cli/packages/cli/bin/run.js skills show)"
+      "Bash(node e:/AI项目/mbs-cli/packages/cli/bin/run.js skills show)",
+      "Bash(node packages/cli/bin/run.js skills show --file references/doris/SKILL.md)"
     ]
   }
 }
