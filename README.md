@@ -15,6 +15,8 @@
 定位：**一个把"内部 API + 浏览器登录态 + Agent 工作流"打包为单一命令的能力底座**，让一行 `mbs <domain> <action>` 等价于一次合规、可追溯、可被 Agent 安全消费的业务调用。
 
 > **If you are an AI agent:** 展开下方「AI Agent 接入指南」，按步骤执行完成接入，不要跳过。
+>
+> **强制刷新 CLI**：只要 agent 读到本 README，必须先跑 `mbs version` 看 `data.updateAvailable`；为 `true` 立刻执行 `mbs update`，再继续后续步骤。未安装 CLI 时按 Step 2 装最新版。**禁止用本机现有旧版直接干活**。
 
 <details>
 <summary><strong>AI Agent 接入指南（点击展开）</strong></summary>
@@ -27,6 +29,7 @@
 
 ## Agent 执行原则
 
+- **强制刷新 CLI**：读到本 README 必须立即 `mbs version`，`data.updateAvailable === true` 时立刻 `mbs update`；旧版 CLI 直接干活 = 失败
 - **先检测后动作**：每步开头先跑探测命令（`node -v` / `mbs version` / `mbs whoami` / `mbs config get`），已满足直接跳过，不重复安装
 - **以结构化 JSON 为准**：所有 `mbs` 命令输出 `{ ok, data | error }`；判断成功看 `ok` 字段 + 退出码，不解析人话
 - 退出码：`0` 成功 / `1` API 或参数错 / `2` 认证失效（必须重新 `mbs login`）
@@ -94,12 +97,12 @@ mbs whoami
 - `ok:false` 或退出码 `2` → 执行 `mbs login`
 
 ```bash
-mbs login    # 自动尝试系统 Chrome → Edge → 内置 Chromium，按顺序回落
+mbs login    # 仅调用系统已安装的 Chrome / Edge，按顺序探测
 mbs whoami   # 复检
 ```
 
 `mbs login` 失败时会输出结构化错误：
-- `error.message: "No supported browser runtime is available"` → 按 `error.hint` 装系统 Chrome 或 Edge
+- `error.message: "No supported browser runtime is available"` → 按 `error.hint` 装系统 Chrome 或 Edge；**禁止安装 Playwright/Chromium 等额外浏览器运行时**
 - 其他错误 → 按 `error.hint` 处理；**不要在 login 报错前主动装浏览器**
 
 ### Step 5: 接入 Skill 文档
@@ -174,7 +177,7 @@ mbs org platforms   # ok:true，含平台数据（认证最终验证）
    - 已安装：mbs version 看 data.updateAvailable，true 时 mbs update
 3. mbs config get；ok:false 则 mbs config init
 4. mbs whoami；ok:false 或退出码 2 时 mbs login 后复检
-5. 不要主动装浏览器运行时；mbs login 明确报 "No supported browser runtime" 时再按 hint 装 Chrome/Edge
+5. 只调用系统已装 Chrome/Edge；**禁止安装 Playwright/Chromium 等浏览器运行时**。mbs login 报 "No supported browser runtime" 时按 hint 让用户装系统 Chrome/Edge，不要 agent 自行下载内核
 6. 接入 skill：
    - 平台支持：mbs skills install --dry-run 看检测结果 → mbs skills install；完成后明确告知用户重启 agent 会话
    - 平台不支持：至少读 skills/SKILL.md 与 skills/references/global.md；按任务再读 references/org|shops|doris/SKILL.md
@@ -200,7 +203,7 @@ npm 全局安装完成但当前 shell 找不到 `mbs`：重新打开终端，或
 
 现象：`mbs login` 报 browser executable 不存在 / 找不到可用浏览器。
 
-处理：先确认系统 Chrome 或 Edge 是否可用；如果仍不可用，再按 `mbs login` 的错误提示补齐浏览器运行时。
+处理：让用户安装系统 Chrome 或 Edge（官网下载安装包）。**禁止 agent 安装 Playwright、`npx playwright install`、Chromium 等额外浏览器内核** —— CLI 只支持系统已装的 Chrome/Edge。
 
 ### npm 全局安装无权限
 
