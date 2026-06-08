@@ -250,6 +250,7 @@ mbs whoami
 | org | `mbs org` | 组织架构：平台、站点、总监、经理、主管、店长、店铺、员工 |
 | shops | `mbs shops` | 店铺运营：Amazon 账号健康、违规统计、合规评分 |
 | doris | `mbs doris` | Doris 数据库：日销报表查询（按日 GMV / 订单 / 退款 / 利润等聚合）、库表与 DDL 探索、流式只读 SELECT |
+| export | `mbs export` | 数据导出 xlsx：`plan` 预览 + `run` 执行两阶段流程，支持 doris SELECT 与 API 分页 |
 
 ---
 
@@ -303,6 +304,8 @@ mbs serve --project-apis
 | 直通只读 API | `mbs raw GET /path --params '{"key":"value"}'` |
 | 本地 project API 网关 | `mbs serve --project-apis` |
 | 任意只读上游代理 | `mbs serve --proxy-all` |
+| 导出 xlsx（预览） | `mbs export plan --source doris\|api ...` |
+| 导出 xlsx（执行） | `mbs export run --plan <id>` |
 
 ---
 

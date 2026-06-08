@@ -16,6 +16,7 @@
     "topicSeparator": " ",
     "plugins": [
       "@mb-it-org/doris",
+      "@mb-it-org/export",
       "@mb-it-org/org",
       "@mb-it-org/shops",
       "@mb-it-org/test"
@@ -52,6 +53,7 @@
   "dependencies": {
     "@inquirer/prompts": "^8.4.1",
     "@mb-it-org/doris": "workspace:*",
+    "@mb-it-org/export": "workspace:*",
     "@mb-it-org/org": "workspace:*",
     "@mb-it-org/shared": "workspace:*",
     "@mb-it-org/shops": "workspace:*",
