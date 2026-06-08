@@ -33,6 +33,57 @@ interface DirectoryOps {
 
 export type ReleaseTarget = 'win32-x64' | 'darwin-x64' | 'darwin-arm64'
 
+export async function fetchLatestNpmVersion({
+  fetchImpl = fetch,
+  packageName = '@mb-it-org/cli',
+  registry = 'https://registry.npmjs.org',
+  timeoutMs = 3000,
+}: {
+  fetchImpl?: typeof fetch
+  packageName?: string
+  registry?: string
+  timeoutMs?: number
+} = {}): Promise<string> {
+  const controller = new AbortController()
+  const timeout = setTimeout(() => controller.abort(), timeoutMs)
+  const url = `${registry.replace(/\/$/, '')}/${packageName}/latest`
+
+  try {
+    const response = await fetchImpl(url, {
+      signal: controller.signal,
+      headers: { 'User-Agent': 'mbs-cli', Accept: 'application/json' },
+    })
+
+    if (!response.ok) {
+      throw new MBSError(
+        'Failed to check latest CLI version from npm',
+        'api',
+        `npm registry returned status ${response.status}`,
+      )
+    }
+
+    const data = (await response.json()) as { version?: string }
+    if (!data.version) {
+      throw new MBSError(
+        'Latest CLI version data is invalid',
+        'api',
+        'npm registry response is missing the version field',
+      )
+    }
+
+    return data.version
+  } catch (error) {
+    if (error instanceof MBSError) throw error
+    throw new MBSError(
+      'Failed to check latest CLI version from npm',
+      'api',
+      'Unable to reach npm registry',
+    )
+  } finally {
+    clearTimeout(timeout)
+  }
+}
+
 export function detectInstalledUpdateSource(installDir: string): InstalledUpdateSource {
   const normalized = installDir.replace(/\\/g, '/').toLowerCase()
   return normalized.includes('/node_modules/@mb-it-org/cli') ? 'npm' : 'release'

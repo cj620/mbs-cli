@@ -9,6 +9,7 @@ export type { WhoamiStatus } from './whoami.js'
 export { MBSCommand } from './base-command.js'
 export {
   detectInstalledUpdateSource,
+  fetchLatestNpmVersion,
   fetchLatestReleaseInfo,
   findExtractedBundleRoot,
   replaceDirectoryWithRollback,

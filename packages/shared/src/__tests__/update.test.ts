@@ -5,6 +5,7 @@ import { join } from 'node:path'
 import { MBSError } from '../errors.js'
 import {
   detectInstalledUpdateSource,
+  fetchLatestNpmVersion,
   fetchLatestReleaseInfo,
   findExtractedBundleRoot,
   replaceDirectoryWithRollback,
@@ -109,6 +110,48 @@ describe('fetchLatestReleaseInfo', () => {
     })
 
     await expect(fetchLatestReleaseInfo({ fetchImpl })).rejects.toThrow('Failed to check latest CLI release')
+  })
+})
+
+describe('fetchLatestNpmVersion', () => {
+  it('returns the version from the npm registry response', async () => {
+    const fetchImpl = vi.fn().mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: async () => ({ version: '0.1.47' }),
+    })
+
+    await expect(fetchLatestNpmVersion({ fetchImpl })).resolves.toBe('0.1.47')
+    expect(fetchImpl).toHaveBeenCalledWith(
+      'https://registry.npmjs.org/@mb-it-org/cli/latest',
+      expect.objectContaining({
+        headers: expect.objectContaining({ 'User-Agent': 'mbs-cli' }),
+      }),
+    )
+  })
+
+  it('throws when the npm registry returns a non-ok status', async () => {
+    const fetchImpl = vi.fn().mockResolvedValue({
+      ok: false,
+      status: 503,
+      json: async () => ({}),
+    })
+
+    await expect(fetchLatestNpmVersion({ fetchImpl })).rejects.toThrow(
+      'Failed to check latest CLI version from npm',
+    )
+  })
+
+  it('throws when the response is missing the version field', async () => {
+    const fetchImpl = vi.fn().mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: async () => ({}),
+    })
+
+    await expect(fetchLatestNpmVersion({ fetchImpl })).rejects.toThrow(
+      'Latest CLI version data is invalid',
+    )
   })
 })
 

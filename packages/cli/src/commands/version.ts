@@ -1,23 +1,14 @@
 import { Command } from '@oclif/core'
-import { fetchLatestReleaseInfo } from '@mb-it-org/shared'
+import { fetchLatestNpmVersion } from '@mb-it-org/shared'
 import { createRequire } from 'node:module'
 
 const require = createRequire(import.meta.url)
 
-interface VersionCheckResult {
-  latest: string | null
-  releaseUrl?: string
-}
-
-async function fetchLatestRelease(): Promise<VersionCheckResult> {
+async function fetchLatestVersion(): Promise<string | null> {
   try {
-    const data = await fetchLatestReleaseInfo()
-    return {
-      latest: data.version,
-      releaseUrl: data.releaseUrl,
-    }
+    return await fetchLatestNpmVersion()
   } catch {
-    return { latest: null }
+    return null
   }
 }
 
@@ -33,7 +24,7 @@ export default class Version extends Command {
     const pkg = require('../../package.json') as { version?: string }
     const current = pkg.version ?? 'unknown'
 
-    const { latest, releaseUrl } = await fetchLatestRelease()
+    const latest = await fetchLatestVersion()
 
     if (latest === null) {
       this.log(
@@ -59,8 +50,7 @@ export default class Version extends Command {
             current,
             latest,
             updateAvailable: true,
-            releaseUrl,
-            hint: `新版本可用: v${latest}，访问 releaseUrl 下载更新`,
+            hint: `新版本可用: v${latest}，运行 mbs update 升级`,
           },
         }),
       )

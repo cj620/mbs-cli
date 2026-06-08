@@ -22,8 +22,7 @@
 |--------|--------|
 | "更新 CLI" / "有新版本吗" / "upgrade" / "check update" | 先 `mbs version` 检查，再 `mbs update` |
 | "当前版本是多少" / "version" / "我的版本" | `mbs version` |
-| "强制 npm 更新" / "用 npm 装" | `mbs update --source npm` |
-| "用 release 包更新" / "用 GitHub release 更新" | `mbs update --source release` |
+| "强制 npm 更新" / "用 npm 装" | `mbs update`（统一走 npm） |
 | "更新 skill 文档" / "刷新 skill" | `mbs update`（CLI 更新后 skill 文档自动同步） |
 
 ---
@@ -32,16 +31,11 @@
 
 | 命令 | 说明 | 参数 |
 |------|------|------|
-| `mbs version` | 查当前版本，检查 GitHub Release 最新版 | 无 |
-| `mbs update` | 自动选择来源升级 CLI（含 skill 文档） | `--source auto\|npm\|release` |
+| `mbs version` | 查当前版本，检查 npm registry 最新版 | 无 |
+| `mbs update` | 通过 npm 升级 CLI（含 skill 文档） | 无 |
 
-### `--source` 决策逻辑
-
-| 值 | 行为 |
-|----|------|
-| `auto`（默认） | 检测安装方式：npm 全局安装 → 走 npm；release bundle → 走 GitHub |
-| `npm` | 强制 `npm install -g @mb-it-org/cli@latest` |
-| `release` | 从 GitHub Release 下载对应平台 tarball，原子替换安装目录 |
+> 版本来源已统一为 npm registry（`https://registry.npmjs.org/@mb-it-org/cli/latest`）。
+> 旧的 GitHub release 制品分发已停止维护，`--source` 参数已移除。
 
 ---
 
@@ -62,13 +56,12 @@
     "current": "0.1.40",
     "latest": "0.1.42",
     "updateAvailable": true,
-    "releaseUrl": "https://github.com/...",
-    "hint": "新版本可用: v0.1.42，访问 releaseUrl 下载更新"
+    "hint": "新版本可用: v0.1.42，运行 mbs update 升级"
   }
 }
 ```
 
-**无法连接 GitHub（离线）：**
+**无法连接 npm registry（离线）：**
 ```json
 { "ok": true, "data": { "current": "0.1.42", "latest": null, "updateAvailable": null } }
 ```
@@ -82,7 +75,7 @@
 
 **更新成功：**
 ```json
-{ "ok": true, "data": { "previousVersion": "0.1.40", "currentVersion": "0.1.42", "updated": true, "source": "release" } }
+{ "ok": true, "data": { "previousVersion": "0.1.40", "currentVersion": "0.1.42", "updated": true, "source": "npm" } }
 ```
 
 **更新失败：**
@@ -140,7 +133,6 @@ mbs update
 
 ## 注意事项
 
-- release 更新需要 `tar` 命令可用（Linux/macOS 默认有；Windows 需 Git Bash 或 WSL）
 - npm 更新需要写入全局 npm 目录的权限；权限不足时提示以管理员身份运行
-- 更新过程中若失败，CLI 会自动回滚到原版本（release 来源）
+- 公网 registry 不通时改用镜像：`npm install -g @mb-it-org/cli@latest --registry=https://registry.npmmirror.com`
 - 退出码：`0` 成功，`1` 更新失败（见 `error.hint`）

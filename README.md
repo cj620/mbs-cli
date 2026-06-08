@@ -66,7 +66,7 @@ npm install -g @mb-it-org/cli@latest --registry=https://registry.npmmirror.com
 
 ```bash
 mbs version    # data.updateAvailable === true 时再更新
-mbs update     # 自动选源：npm 装的走 npm，release 包走 GitHub release
+mbs update     # 统一走 npm install -g @mb-it-org/cli@latest
 ```
 
 `mbs update` 内部会判等：版本一致直接返回 `updated: false`，幂等安全。
