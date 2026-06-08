@@ -13,6 +13,7 @@
 
 | 意图 | 命令 | 必填参数 |
 |---|---|---|
+| **查数据字典（首选）** | `mbs doris query --sql "SELECT ... FROM eshop.DB_DATA_DICTIONARY WHERE ..."` | `sql` |
 | 查看 Doris 数据库和表列表 | `mbs doris schemas` | - |
 | 查看表 DDL 建表语句 | `mbs doris show-create-table --tableName <数据库.表名>` | `tableName` |
 | 流式执行 SELECT 查询 | `mbs doris query --sql <select>` | `sql` 或 stdin |
@@ -25,14 +26,66 @@
 
 ---
 
+## 数据字典优先（强制 Step 0）
+
+`eshop.DB_DATA_DICTIONARY` 是 `doris schemas` 的语义补充：集中存储所有库 / 表 / 字段的**业务含义、字段说明、枚举值、口径、关联关系、维护人**等元信息。**任何 doris 业务任务，先查数据字典，再决定走哪张表**。
+
+### 为什么先查字典而不是 schemas
+
+| 入口 | 给什么 | 不足 |
+|---|---|---|
+| `doris schemas` | 库 / 表清单 + 表注释 | 字段、枚举值、口径、关联关系全无 |
+| `show-create-table` | 字段名 + 类型 + 分区 | 业务含义、口径、枚举值常常空 |
+| **`DB_DATA_DICTIONARY`** | **表/字段业务含义 + 口径 + 枚举 + 关联** | 是上面两者的语义层补充，避免猜口径 |
+
+跳过字典直接 schemas → 极易选错表（如 `mv_sell_*` vs `mv_order_*` vs `DB_DAILY_SALES_REPORT_SELLER`），口径与用户预期不一致，结果不可用。
+
+### 标准用法
+
+1. **按业务关键词搜表**：
+   ```sql
+   SELECT table_schema, table_name, table_comment
+   FROM   eshop.DB_DATA_DICTIONARY
+   WHERE  table_comment LIKE '%日销%' OR table_name LIKE '%daily_sales%'
+   LIMIT  50
+   ```
+2. **按字段语义搜字段**：
+   ```sql
+   SELECT table_name, column_name, column_comment, data_type
+   FROM   eshop.DB_DATA_DICTIONARY
+   WHERE  column_comment LIKE '%毛利%' OR column_name LIKE '%profit%'
+   LIMIT  100
+   ```
+3. **看候选表所有字段及口径**：
+   ```sql
+   SELECT column_name, column_comment, data_type, enum_values
+   FROM   eshop.DB_DATA_DICTIONARY
+   WHERE  table_schema = 'eshop' AND table_name = '<候选表>'
+   ORDER  BY ordinal_position
+   ```
+
+> 字段名以实际 `show-create-table eshop.DB_DATA_DICTIONARY` 为准（常见列：`table_schema` / `table_name` / `table_comment` / `column_name` / `column_comment` / `data_type` / `enum_values` / `is_partition_key` / `owner` 等）。**第一次使用必须先看一遍 DDL**。
+
+### 触发时机
+
+- 用户提需求含业务名词（日销、订单、退款、广告、库存、补货 …）→ 先查字典
+- 用户给出未在记忆中的表名 → 先查字典确认表用途、字段口径
+- 准备写 `WHERE 状态 = ?` / `WHERE 平台 = ?` 这类枚举过滤 → 先查 `enum_values` 列
+
+### 找不到怎么办
+
+字典里查不到 → 才回退到 `doris schemas` + `show-create-table` 探索，并在最终答复中**显式声明字段口径来源**（DDL 推断 vs 字典权威）。
+
+---
+
 ## 任务 A：日销报表查询
 
 **触发关键词**：日销 / 日报 / 每日销售 / 销售报表 / daily sales / GMV by day / 每天的销售额。
 
 ### 标准流程
 
-1. **定位日销表**：先 `mbs doris schemas`，从库表清单中匹配名称含 `sales`、`order`、`daily`、`dws`、`report`、`日销` 等关键字的候选表。**不要猜表名**。
-2. **看 DDL**：`mbs doris show-create-table --tableName <候选>`，确认：
+1. **数据字典定位**（首选）：先查 `eshop.DB_DATA_DICTIONARY`，按 `table_comment LIKE '%日销%'` 或字段语义匹配候选表。字典缺失再回退 `mbs doris schemas` 关键字匹配。**不要猜表名**。
+2. **看 DDL + 字典字段**：`mbs doris show-create-table --tableName <候选>` 拿物理 schema，再查 `DB_DATA_DICTIONARY.column_comment` / `enum_values` 拿业务口径，确认：
    - 日期列（常见 `stat_date` / `dt` / `order_date` / `pay_date`，以 DDL 为准）
    - 金额 / 数量列（`gmv` / `sales_amount` / `order_cnt` / `refund_amount` 等）
    - 维度列（站点 / 店铺 / 平台 / SKU / 公司编号）
@@ -83,10 +136,11 @@ LIMIT  1000;
 
 ### 标准流程
 
-1. `mbs doris schemas` 找候选库表
-2. `mbs doris show-create-table` 看字段含义与分区
-3. 起始查询保守：少量列 + 强 WHERE + `LIMIT 20`
-4. 根据返回结果，再迭代收窄或聚合
+1. **先查 `eshop.DB_DATA_DICTIONARY`** 找候选库表（按 `table_comment` / `column_comment` 模糊匹配业务关键词）
+2. 字典查不到再用 `mbs doris schemas` 兜底
+3. `mbs doris show-create-table` 看字段类型与分区，同时回字典看字段口径 / 枚举值
+4. 起始查询保守：少量列 + 强 WHERE + `LIMIT 20`
+5. 根据返回结果，再迭代收窄或聚合
 
 样本探查：
 ```sql
@@ -100,7 +154,7 @@ LIMIT  20;
 
 ## 查询规则（两类任务通用）
 
-- 不猜数据库名、表名、字段名、ID、状态枚举、业务含义 —— 先 `schemas` + `show-create-table`
+- 不猜数据库名、表名、字段名、ID、状态枚举、业务含义 —— 先 `DB_DATA_DICTIONARY`，再 `schemas` + `show-create-table`
 - 只允许 `SELECT`；`INSERT/UPDATE/DELETE/DROP/ALTER` 服务端会拒
 - 明确列名，禁止裸 `SELECT *`
 - 必须加 `LIMIT`，除非用户明确要求"全量聚合"且结果行数可控
