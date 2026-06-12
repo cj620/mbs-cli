@@ -6,3 +6,4 @@ dist/
 .omc/
 .pnpm-store/
 .worktrees/
+graphify-out/

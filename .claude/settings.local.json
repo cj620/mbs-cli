@@ -36,7 +36,13 @@
       "Bash(node packages/cli/bin/run.js update --help)",
       "Bash(dws --version)",
       "Bash(dws update *)",
-      "Bash(dws --help)"
+      "Bash(dws --help)",
+      "Bash(pip --version)",
+      "Bash(pip install *)",
+      "Bash(graphify --version)",
+      "Bash(graphify install *)",
+      "Bash(mkdir -p graphify-out)",
+      "Bash(python -c \"import graphify; import sys; print\\(sys.executable\\)\")"
     ]
   }
 }
