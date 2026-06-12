@@ -28,17 +28,27 @@
 
 ## 数据字典优先（强制 Step 0）
 
-`eshop.DB_DATA_DICTIONARY` 是 `doris schemas` 的语义补充：集中存储所有库 / 表 / 字段的**业务含义、字段说明、枚举值、口径、关联关系、维护人**等元信息。**任何 doris 业务任务，先查数据字典，再决定走哪张表**。
+`eshop.DB_DATA_DICTIONARY` 是 doris 元数据的语义层入口：集中存储所有库 / 表 / 字段的**业务含义、字段说明、枚举值、口径、关联关系、维护人**等元信息。
 
-### 为什么先查字典而不是 schemas
+**强制流程**：
 
-| 入口 | 给什么 | 不足 |
+```
+DB_DATA_DICTIONARY  ─┬─ 命中 ──► 直接写 SQL ──► query
+                     │
+                     └─ 缺失 ──► schemas / show-create-table 兜底 ──► query
+```
+
+> **schemas 不是必经环节**。字典已含表清单 + 表注释 + 字段口径 + 枚举值时，直接进 query；不要再多绕一步 `doris schemas`。
+
+### 三个入口的角色
+
+| 入口 | 给什么 | 何时用 |
 |---|---|---|
-| `doris schemas` | 库 / 表清单 + 表注释 | 字段、枚举值、口径、关联关系全无 |
-| `show-create-table` | 字段名 + 类型 + 分区 | 业务含义、口径、枚举值常常空 |
-| **`DB_DATA_DICTIONARY`** | **表/字段业务含义 + 口径 + 枚举 + 关联** | 是上面两者的语义层补充，避免猜口径 |
+| **`DB_DATA_DICTIONARY`** | **表/字段业务含义 + 口径 + 枚举 + 关联** | **每次任务起点（强制）** |
+| `doris schemas` | 库 / 表清单 + 表注释 | 字典查不到目标表时兜底 |
+| `show-create-table` | 字段名 + 类型 + 分区 | 字典没覆盖该表字段、需要确认物理 schema（分区键 / 类型）时 |
 
-跳过字典直接 schemas → 极易选错表（如 `mv_sell_*` vs `mv_order_*` vs `DB_DAILY_SALES_REPORT_SELLER`），口径与用户预期不一致，结果不可用。
+跳过字典直接 schemas → 只能拿到表注释，看不到字段口径/枚举，极易选错表（如 `mv_sell_*` vs `mv_order_*` vs `DB_DAILY_SALES_REPORT_SELLER`）。
 
 ### 标准用法
 
@@ -84,8 +94,8 @@
 
 ### 标准流程
 
-1. **数据字典定位**（首选）：先查 `eshop.DB_DATA_DICTIONARY`，按 `table_comment LIKE '%日销%'` 或字段语义匹配候选表。字典缺失再回退 `mbs doris schemas` 关键字匹配。**不要猜表名**。
-2. **看 DDL + 字典字段**：`mbs doris show-create-table --tableName <候选>` 拿物理 schema，再查 `DB_DATA_DICTIONARY.column_comment` / `enum_values` 拿业务口径，确认：
+1. **数据字典定位**（强制 Step 0）：查 `eshop.DB_DATA_DICTIONARY`，按 `table_comment LIKE '%日销%'` + 字段语义匹配候选表 & 字段口径。**字典命中就跳过 schemas 直接进 step 3**。字典查不到再回退 `mbs doris schemas` 关键字匹配。**不要猜表名**。
+2. **（可选）DDL 兜底**：字典未覆盖物理细节（分区键、字段类型）时才跑 `mbs doris show-create-table --tableName <候选>`，确认：
    - 日期列（常见 `stat_date` / `dt` / `order_date` / `pay_date`，以 DDL 为准）
    - 金额 / 数量列（`gmv` / `sales_amount` / `order_cnt` / `refund_amount` 等）
    - 维度列（站点 / 店铺 / 平台 / SKU / 公司编号）
@@ -136,9 +146,9 @@ LIMIT  1000;
 
 ### 标准流程
 
-1. **先查 `eshop.DB_DATA_DICTIONARY`** 找候选库表（按 `table_comment` / `column_comment` 模糊匹配业务关键词）
-2. 字典查不到再用 `mbs doris schemas` 兜底
-3. `mbs doris show-create-table` 看字段类型与分区，同时回字典看字段口径 / 枚举值
+1. **强制先查 `eshop.DB_DATA_DICTIONARY`** 找候选库表 + 字段口径（按 `table_comment` / `column_comment` 模糊匹配业务关键词）
+2. 字典命中 → 跳过 schemas，直达 step 4
+3. 字典查不到 → 回退 `mbs doris schemas` 找表清单，必要时 `show-create-table` 看字段类型 / 分区
 4. 起始查询保守：少量列 + 强 WHERE + `LIMIT 20`
 5. 根据返回结果，再迭代收窄或聚合
 
@@ -154,7 +164,7 @@ LIMIT  20;
 
 ## 查询规则（两类任务通用）
 
-- 不猜数据库名、表名、字段名、ID、状态枚举、业务含义 —— 先 `DB_DATA_DICTIONARY`，再 `schemas` + `show-create-table`
+- 不猜数据库名、表名、字段名、ID、状态枚举、业务含义 —— **强制先查 `DB_DATA_DICTIONARY`**；字典查得到就直接进 `query`，查不到再回退 `schemas` / `show-create-table`
 - 只允许 `SELECT`；`INSERT/UPDATE/DELETE/DROP/ALTER` 服务端会拒
 - 明确列名，禁止裸 `SELECT *`
 - 必须加 `LIMIT`，除非用户明确要求"全量聚合"且结果行数可控
