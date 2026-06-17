@@ -42,7 +42,8 @@
       "Bash(graphify --version)",
       "Bash(graphify install *)",
       "Bash(mkdir -p graphify-out)",
-      "Bash(python -c \"import graphify; import sys; print\\(sys.executable\\)\")"
+      "Bash(python -c \"import graphify; import sys; print\\(sys.executable\\)\")",
+      "Read(//c/Users/Administrator/.codex/**)"
     ]
   }
 }

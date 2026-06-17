@@ -45,6 +45,19 @@ pnpm test
 
 Generated files include an `AUTO-GENERATED FROM audit manifest` header. Do not edit those files by hand; update the audit manifest and regenerate.
 
+### Fetching the manifest from a remote endpoint
+
+The audit manifest can be pulled from a server instead of hand-edited. Fetch first, review the diff, then generate — never generate straight from a live URL.
+
+```bash
+pnpm fetch:manifest --url <manifest-endpoint>   # or set MBS_AUDIT_MANIFEST_URL
+git diff manifests/                              # review what the server returned
+pnpm gen:manifest:dry                            # preview the file changes
+pnpm gen:manifest                                # generate
+```
+
+`scripts/fetch-manifest.mjs` validates the response against `auditManifestSchema` before writing, snapshots the server's raw data to `manifests/mbs-api-manifest.json` (the generator's default path), accepts both a bare manifest and an `{ok,data}` envelope, and aborts without writing if `modules` is empty (so a failed fetch cannot wipe generated domains). A `schemaVersion` other than `'1'` fails validation by design — bump the local schema before regenerating.
+
 For temporary API exploration, use read-only raw commands:
 
 ```bash
