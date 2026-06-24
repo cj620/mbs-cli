@@ -1,6 +1,6 @@
 {
   "name": "@mb-it-org/cli",
-  "version": "0.1.48",
+  "version": "0.1.49",
   "type": "module",
   "bin": {
     "mbs": "bin/run.js"
