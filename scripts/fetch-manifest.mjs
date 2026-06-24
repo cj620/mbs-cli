@@ -8,7 +8,7 @@ import { normalizeServerManifest } from './lib/normalize-manifest.mjs'
 
 const repoRoot = join(dirname(fileURLToPath(import.meta.url)), '..')
 const defaultOut = 'manifests/mbs-api-manifest.json'
-const defaultPath = '/gateway/cli-service/cli/api/manifest'
+const defaultPath = '/cli-service/cli/api/manifest'
 const defaultManifestVersion = '2026-05-20T00:00:00+08:00'
 
 const args = parseArgs(process.argv.slice(2))

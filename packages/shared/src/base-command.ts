@@ -9,6 +9,10 @@ import { getConfig } from "./config.js";
 import { APIClient } from "./http.js";
 import { NotAuthenticatedError, MBSError, PermissionError } from "./errors.js";
 
+// Gateway entry every CLI request passes through; the gateway routes to the
+// matching business microservice. Was "/gateway"; now "/gateway/cli".
+const API_GATEWAY_PREFIX = "/gateway/cli";
+
 export abstract class MBSCommand extends Command {
   protected client!: APIClient;
 
@@ -22,7 +26,11 @@ export abstract class MBSCommand extends Command {
       return newCookie;
     };
 
-    this.client = new APIClient(apiUrl, cookie, refreshAuth);
+    // Global gateway prefix: every request goes through /gateway/cli, which
+    // forwards to the right business microservice. Command paths stay bare
+    // (service-relative); the prefix is applied here in one place.
+    const baseUrl = `${apiUrl.replace(/\/+$/, "")}${API_GATEWAY_PREFIX}`;
+    this.client = new APIClient(baseUrl, cookie, refreshAuth);
   }
 
   protected output(data: unknown, meta?: Record<string, unknown>): void {

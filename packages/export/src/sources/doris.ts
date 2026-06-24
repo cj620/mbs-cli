@@ -2,7 +2,7 @@ import type { Readable } from 'node:stream'
 import type { APIClient } from '@mb-it-org/shared'
 import type { ColumnSpec, DorisSourceConfig, PreviewResult, Row } from '../types.js'
 
-const DORIS_QUERY_PATH = '/gateway/cli-service/cli/doris/query'
+const DORIS_QUERY_PATH = '/cli-service/cli/doris/query'
 
 interface NdjsonMsg {
   type: 'header' | 'data' | 'end' | 'error'

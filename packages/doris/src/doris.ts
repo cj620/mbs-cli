@@ -1,7 +1,7 @@
 import { Readable } from 'node:stream'
 
 export const MAX_SQL_LENGTH = 10_000
-export const DORIS_API_PREFIX = '/gateway/cli-service/cli/doris'
+export const DORIS_API_PREFIX = '/cli-service/cli/doris'
 
 export function validateSql(sql: string): string {
   const trimmed = sql.trim()

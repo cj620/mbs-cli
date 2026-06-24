@@ -3,10 +3,10 @@ import { describe, expect, it } from 'vitest'
 import { DORIS_API_PREFIX, MAX_SQL_LENGTH, resolveSql, writeNdjsonStream } from './doris.js'
 
 describe('Doris API paths', () => {
-  it('uses cli-service gateway prefix', () => {
-    expect(`${DORIS_API_PREFIX}/schemas`).toBe('/gateway/cli-service/cli/doris/schemas')
-    expect(`${DORIS_API_PREFIX}/show-create-table`).toBe('/gateway/cli-service/cli/doris/show-create-table')
-    expect(`${DORIS_API_PREFIX}/query`).toBe('/gateway/cli-service/cli/doris/query')
+  it('uses cli-service service-relative prefix (global /gateway/cli added by base-command)', () => {
+    expect(`${DORIS_API_PREFIX}/schemas`).toBe('/cli-service/cli/doris/schemas')
+    expect(`${DORIS_API_PREFIX}/show-create-table`).toBe('/cli-service/cli/doris/show-create-table')
+    expect(`${DORIS_API_PREFIX}/query`).toBe('/cli-service/cli/doris/query')
   })
 })
 

@@ -49,7 +49,7 @@ export default class ShopsHealth extends MBSCommand {
   async run(): Promise<void> {
     await this.parse(ShopsHealth)
     const result = await this.client.get<HealthResponse>(
-      '/gateway/crm-web-service/rpa/getAmazonAccHealthInfo',
+      '/crm-web-service/rpa/getAmazonAccHealthInfo',
     )
     this.output(result.data, { total: result.data.length })
   }

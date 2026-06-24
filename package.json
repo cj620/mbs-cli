@@ -9,6 +9,8 @@
     "gen:manifest": "node scripts/gen-from-manifest.mjs",
     "gen:manifest:dry": "node scripts/gen-from-manifest.mjs --dry-run",
     "fetch:manifest": "node scripts/fetch-manifest.mjs",
+    "gen:manifest:remote": "pnpm fetch:manifest && pnpm gen:manifest",
+    "gen:manifest:remote:build": "pnpm fetch:manifest && pnpm gen:manifest && pnpm install && pnpm build",
     "update:manifest": "node scripts/update-manifest.mjs",
     "update:manifest:dry": "node scripts/update-manifest.mjs --dry-run",
     "gen:manifest:sample": "node scripts/gen-from-manifest.mjs --file fixtures/sample-audit-manifest.json",
