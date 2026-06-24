@@ -1,0 +1,8 @@
+{
+  "owner": "mbs-audit-manifest",
+  "domain": "product",
+  "source": "manifests/mbs-api-manifest.json",
+  "schemaVersion": "1",
+  "manifestVersion": "2026-05-20T00:00:00+08:00",
+  "hash": "995055f1ed30462b9fba78171d75c93b5c1ad4d546c8bf3a02d98360813fa352"
+}

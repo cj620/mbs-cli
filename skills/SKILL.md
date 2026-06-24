@@ -32,7 +32,9 @@ metadata:
 | test / whoami / auth status / authentication | `test` | [references/test/SKILL.md](references/test/SKILL.md) |
 | 更新 / 升级 / 版本 / 有新版本 / update / upgrade / version / check update | `update` | [references/update/SKILL.md](references/update/SKILL.md) |
 | <!-- AUTO-GENERATED API MODULES START --> |  |  |
+| 在线listing / 商品 / product | `product` | [references/product/SKILL.md](references/product/SKILL.md) |
 | <!-- AUTO-GENERATED API MODULES END --> |  |  |
+
 
 > 后续模块按需追加到本表，Agent 只需读本文件即可完成一级路由，无需扫描全部文档。
 

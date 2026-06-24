@@ -105,9 +105,9 @@ describe('APIClient response interceptor', () => {
     expect(() => interceptor({ data: { code: 109, data: null, msg: 'no permission' } })).toThrow(PermissionError)
   })
 
-  it('throws NotAuthenticatedError when code === 403', () => {
+  it('throws PermissionError when code === 403', () => {
     const interceptor = captureInterceptor()
-    expect(() => interceptor({ data: { code: 403, data: null, msg: 'forbidden' } })).toThrow(NotAuthenticatedError)
+    expect(() => interceptor({ data: { code: 403, data: null, msg: 'forbidden' } })).toThrow(PermissionError)
   })
 
   it('throws NotAuthenticatedError for unknown error code', () => {

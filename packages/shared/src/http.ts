@@ -25,7 +25,7 @@ export interface PostOptions {
 const API_CODE_HANDLERS: Record<number, () => Error> = {
   601: () => new NotAuthenticatedError(),
   109: () => new PermissionError(),
-  403: () => new NotAuthenticatedError(),
+  403: () => new PermissionError(),
   401: () => new NotAuthenticatedError(),
   500: () => new NotAuthenticatedError(),
 };

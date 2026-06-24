@@ -29,6 +29,9 @@ importers:
       '@mb-it-org/org':
         specifier: workspace:*
         version: link:../org
+      '@mb-it-org/product':
+        specifier: workspace:*
+        version: link:../product
       '@mb-it-org/shared':
         specifier: workspace:*
         version: link:../shared
@@ -97,6 +100,22 @@ importers:
         version: 20.19.39
 
   packages/org:
+    dependencies:
+      '@mb-it-org/shared':
+        specifier: workspace:*
+        version: link:../shared
+      '@oclif/core':
+        specifier: ^4.10.5
+        version: 4.10.5
+    devDependencies:
+      '@types/node':
+        specifier: ^20.0.0
+        version: 20.19.39
+      typescript:
+        specifier: ^5.4.0
+        version: 5.9.3
+
+  packages/product:
     dependencies:
       '@mb-it-org/shared':
         specifier: workspace:*

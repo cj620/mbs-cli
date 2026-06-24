@@ -105,6 +105,21 @@
       "commands": [
         "mbs test whoami"
       ]
+    },
+    {
+      "name": "product",
+      "description": "线商品监控",
+      "keywords": [
+        "在线listing",
+        "商品",
+        "product"
+      ],
+      "skill": "references/product/SKILL.md",
+      "commands": [
+        "mbs product erpmonitor-hot-product-all-listing",
+        "mbs product erp-product-product"
+      ],
+      "generated": true
     }
   ]
 }
