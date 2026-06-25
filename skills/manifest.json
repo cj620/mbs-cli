@@ -116,7 +116,7 @@
       ],
       "skill": "references/product/SKILL.md",
       "commands": [
-        "mbs product erpmonitor-hot-product-all-listing",
+        "mbs product erp-monitor-hot-product-all-listing",
         "mbs product erp-product-product"
       ],
       "generated": true

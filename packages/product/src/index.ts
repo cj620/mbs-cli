@@ -1,6 +1,6 @@
 import { Plugin } from '@oclif/core'
 
-import './commands/product/erpmonitor-hot-product-all-listing.js'
+import './commands/product/erp-monitor-hot-product-all-listing.js'
 import './commands/product/erp-product-product.js'
 
 export default class ProductPlugin extends Plugin {

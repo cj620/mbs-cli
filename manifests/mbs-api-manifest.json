@@ -13,11 +13,11 @@
       "scenarios": "商品",
       "actions": [
         {
-          "name": "erpmonitor-hot-product-all-listing",
+          "name": "erp-monitor-hot-product-all-listing",
           "description": "在线商品列表展示：按平台/店铺/组织/销量/状态等条件分页查询在线商品(热销Listing)列表。数据源为ES商品SPU索引，查询后回填删除/编辑/改价/复制/同步等任务状态、白名单标记、店铺状态、TikTok差评率、SMT实时调控等。ES scroll分页。",
-          "service": "erpmonitor",
+          "service": "erp-monitor",
           "method": "POST",
-          "path": "/erpmonitor/hotProductMonitor/hotProductAllListing",
+          "path": "/erpmonitor/erpmonitor/hotProductMonitor/hotProductAllListing",
           "request": {
             "body": {
               "type": "object",

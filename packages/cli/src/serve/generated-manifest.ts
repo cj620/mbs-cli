@@ -1,6 +1,6 @@
 // AUTO-GENERATED FROM audit manifest. DO NOT EDIT.
 // Source: manifests/mbs-api-manifest.json
-// Manifest: 2026-05-20T00:00:00+08:00 @ 995055f1ed30462b9fba78171d75c93b5c1ad4d546c8bf3a02d98360813fa352
+// Manifest: 2026-05-20T00:00:00+08:00 @ 2bddc5dd5b2b4488c08576d0c1d5a7625f3ee7ff169ef6ce30761954a5b8f88a
 import type { AuditManifest } from './router.js'
 
 export const projectManifest = {
@@ -12,10 +12,10 @@ export const projectManifest = {
       "pathPrefix": "",
       "actions": [
         {
-          "name": "erpmonitor-hot-product-all-listing",
+          "name": "erp-monitor-hot-product-all-listing",
           "description": "在线商品列表展示：按平台/店铺/组织/销量/状态等条件分页查询在线商品(热销Listing)列表。数据源为ES商品SPU索引，查询后回填删除/编辑/改价/复制/同步等任务状态、白名单标记、店铺状态、TikTok差评率、SMT实时调控等。ES scroll分页。",
           "method": "POST",
-          "path": "/erpmonitor/hotProductMonitor/hotProductAllListing",
+          "path": "/erpmonitor/erpmonitor/hotProductMonitor/hotProductAllListing",
           "pathPrefix": "",
           "responseMode": "json"
         },
