@@ -151,31 +151,50 @@ describe('serve app', () => {
   })
 
   it('exposes project APIs as /api routes', async () => {
+    // Derived from the generated project manifest so it survives manifest changes.
+    const { projectManifest } = await import('../serve/generated-manifest.js')
     const app = buildApp(undefined, async () => fakeClient(), { projectApis: true })
     const res = await app.inject({ method: 'GET', url: '/__routes' })
     const body = JSON.parse(res.body)
 
+    // the local test route is always exposed
     expect(body.data).toEqual(expect.arrayContaining([
       expect.objectContaining({ method: 'GET', url: '/api/test/whoami' }),
-      expect.objectContaining({ method: 'GET', url: '/api/org/platforms' }),
-      expect.objectContaining({ method: 'GET', url: '/api/shops/health' }),
-      expect.objectContaining({ method: 'GET', url: '/api/doris/schemas' }),
-      expect.objectContaining({ method: 'POST', url: '/api/doris/query' }),
     ]))
+    // every generated action is exposed under /api/<domain>/<action>
+    for (const mod of projectManifest.modules) {
+      for (const action of mod.actions) {
+        expect(body.data).toEqual(expect.arrayContaining([
+          expect.objectContaining({ domain: mod.domain, action: action.name }),
+        ]))
+      }
+    }
   })
 
-  it('project API route forwards org platforms request', async () => {
-    const get = vi.fn().mockResolvedValue({ items: [] })
-    const app = buildApp(undefined, async () => fakeClient(get), { projectApis: true })
+  it('project API route forwards an upstream request to the matching path', async () => {
+    const { projectManifest } = await import('../serve/generated-manifest.js')
+    // pick the first generated action with no path params
+    const pick = projectManifest.modules
+      .flatMap((mod) => mod.actions.map((action) => ({ mod, action })))
+      .find(({ mod, action }) => !/\{/.test(`${action.pathPrefix ?? mod.pathPrefix ?? ''}${action.path}`))
+    expect(pick, 'expected at least one project action without path params').toBeTruthy()
+    const { mod, action } = pick!
+    const upstreamPath = `${action.pathPrefix ?? mod.pathPrefix ?? ''}${action.path}`
+
+    const isGet = String(action.method) === 'GET'
+    const handler = vi.fn().mockResolvedValue({ items: [] })
+    const client = isGet ? fakeClient(handler) : fakeClient(vi.fn(), handler)
+    const app = buildApp(undefined, async () => client, { projectApis: true })
 
     const res = await app.inject({
-      method: 'GET',
-      url: '/api/org/platforms',
+      method: action.method,
+      url: `/api/${mod.domain}/${action.name}`,
+      payload: isGet ? undefined : {},
     })
 
     expect(res.statusCode).toBe(200)
     expect(JSON.parse(res.body)).toEqual({ ok: true, data: { items: [] } })
-    expect(get).toHaveBeenCalledWith('/erpOrder/erpOrder/saleReport/getPlatformList', { params: {} })
+    expect(handler.mock.calls[0][0]).toBe(upstreamPath)
   })
 
   it('project API exposes local test whoami without an upstream client call', async () => {
@@ -196,20 +215,34 @@ describe('serve app', () => {
     expect(get).not.toHaveBeenCalled()
   })
 
-  it('project API ndjson route returns raw stream content', async () => {
+  it('ndjson route streams raw content from postStream', async () => {
+    // Fixed fixture (not the live project manifest) so the ndjson mechanism is
+    // tested independently of which domains the generated manifest contains.
+    const streamManifest: AuditManifest = {
+      schemaVersion: '1',
+      manifestVersion: '2026-05-20T00:00:00+08:00',
+      modules: [
+        {
+          domain: 'stream',
+          actions: [
+            { name: 'rows', description: 'ndjson rows', method: 'POST', path: '/v1/stream/rows', responseMode: 'ndjson' },
+          ],
+        },
+      ],
+    }
     const postStream = vi.fn().mockResolvedValue(Readable.from(['{"type":"row","value":1}\n']))
-    const app = buildApp(undefined, async () => fakeClient(vi.fn(), vi.fn(), vi.fn(), postStream), { projectApis: true })
+    const app = buildApp(streamManifest, async () => fakeClient(vi.fn(), vi.fn(), vi.fn(), postStream))
 
     const res = await app.inject({
       method: 'POST',
-      url: '/api/doris/query',
+      url: '/api/stream/rows',
       payload: { sql: 'select 1' },
     })
 
     expect(res.statusCode).toBe(200)
     expect(res.headers['content-type']).toContain('application/x-ndjson')
     expect(res.body).toBe('{"type":"row","value":1}\n')
-    expect(postStream).toHaveBeenCalledWith('/gateway/cli-service/cli/doris/query', { sql: 'select 1' })
+    expect(postStream).toHaveBeenCalledWith('/v1/stream/rows', { sql: 'select 1' })
   })
 
   it('proxy-all GET route forwards arbitrary upstream path and query', async () => {
