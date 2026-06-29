@@ -1017,7 +1017,7 @@
           "description": "获取店铺账号健康信息：获取所有 Amazon 店铺的账号健康信息（账号状况评级、政策合规、各类违规投诉计数、订单缺陷率/迟发率/有效追踪率等运营指标）。数据由 RPA 自动采集，附带健康页截图。",
           "service": "crm-web-service",
           "method": "GET",
-          "path": "/rpa/getAmazonAccHealthInfo",
+          "path": "/crm-web-service/rpa/getAmazonAccHealthInfo",
           "response": {
             "type": "object",
             "properties": {

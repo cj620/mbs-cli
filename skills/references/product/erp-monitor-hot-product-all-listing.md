@@ -15,7 +15,7 @@ mbs product erp-monitor-hot-product-all-listing [--platformId <integer>] [--shop
 - Path: `/erpmonitor/erpmonitor/hotProductMonitor/hotProductAllListing`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `0e4df16515006d442b1504ad89dfc84b4bd0a51e0ca3377eab13abb1c6f2402e`
+- Manifest hash: `ee66810aac7e26106913db03ce73be374ef8351183c705f239aae608b7152d22`
 
 ## 参数
 

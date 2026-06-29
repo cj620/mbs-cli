@@ -15,6 +15,7 @@ const dryRun = Boolean(args['dry-run'])
 const manifestInput = await loadManifest(args.file, process.env.MBS_AUDIT_MANIFEST_URL)
 const manifest = parseAuditManifest(JSON.parse(manifestInput.content))
 const sourceHash = createHash('sha256').update(manifestInput.content).digest('hex')
+applyResponseFieldOverrides(manifest)
 const activeDomains = new Set()
 const activeModules = manifest.modules
   .map((mod) => ({
@@ -469,6 +470,52 @@ function tupleItems(items) {
   const numericKeys = Object.keys(items).filter((key) => /^\d+$/.test(key))
   if (numericKeys.length === 0) return null
   return numericKeys.map((key) => [Number(key), items[key]]).sort((a, b) => a[0] - b[0])
+}
+
+// The server's audit tool encodes object-array elements by positional index
+// (`items: {"0":..,"1":..}`) and drops the real field names — which aren't
+// recoverable from the manifest alone. manifests/schema-overrides.json supplies
+// them by hand; here we rebuild `items` into a proper named-`properties` object
+// so the rest of the pipeline (docs/commands) sees the real shape. No-op once the
+// server is fixed (a corrected schema has no numeric keys left to rename).
+function applyResponseFieldOverrides(manifest) {
+  const overrides = loadSchemaOverrides()
+  for (const mod of manifest.modules) {
+    for (const action of mod.actions) {
+      const pathMap = overrides[action.name]
+      if (pathMap && action.response) renameTupleItems(action.response, pathMap, '')
+    }
+  }
+}
+
+function loadSchemaOverrides() {
+  const path = join(repoRoot, 'manifests', 'schema-overrides.json')
+  if (!existsSync(path)) return {}
+  const { _comment, ...rest } = JSON.parse(readFileSync(path, 'utf8'))
+  return rest
+}
+
+function renameTupleItems(schema, pathMap, basePath) {
+  if (!schema || typeof schema !== 'object') return
+  if (schema.type === 'array' && schema.items && typeof schema.items === 'object') {
+    const names = pathMap[basePath]
+    const tuple = tupleItems(schema.items)
+    if (names && tuple) {
+      if (names.length === tuple.length) {
+        const properties = {}
+        tuple.forEach(([, child], index) => {
+          properties[names[index]] = child
+        })
+        schema.items = { type: 'object', description: schema.items.description ?? '', properties }
+      } else {
+        console.error(`schema-override skipped at "${basePath}": ${tuple.length} fields but ${names.length} names`)
+      }
+    }
+    renameTupleItems(schema.items, pathMap, `${basePath}[]`)
+  }
+  for (const [name, child] of Object.entries(schema.properties ?? {})) {
+    renameTupleItems(child, pathMap, basePath ? `${basePath}.${name}` : name)
+  }
 }
 
 function responseRow(path, schema) {

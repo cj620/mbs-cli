@@ -1,6 +1,6 @@
 // AUTO-GENERATED FROM audit manifest. DO NOT EDIT.
 // Source: manifests/mbs-api-manifest.json
-// Manifest: 2026-05-20T00:00:00+08:00 @ 0e4df16515006d442b1504ad89dfc84b4bd0a51e0ca3377eab13abb1c6f2402e
+// Manifest: 2026-05-20T00:00:00+08:00 @ ee66810aac7e26106913db03ce73be374ef8351183c705f239aae608b7152d22
 import { Flags } from '@oclif/core'
 import { MBSCommand } from '@mb-it-org/shared'
 
@@ -12,7 +12,7 @@ export default class CrmCrmWebServiceGetAmazonAccHealthInfo extends MBSCommand {
   async run(): Promise<void> {
     const { flags } = await this.parse(CrmCrmWebServiceGetAmazonAccHealthInfo)
 
-    const data = await this.client.get('/rpa/getAmazonAccHealthInfo', { params: {} })
+    const data = await this.client.get('/crm-web-service/rpa/getAmazonAccHealthInfo', { params: {} })
     this.output(data)
   }
 }

@@ -1,0 +1,6 @@
+{
+  "_comment": "手工补丁：服务端 audit 工具把『对象数组』的元素字段名错导成数字下标(items:{0,1,2})且丢了真名。此文件按『下标顺序』提供真实字段名，生成时还原为 properties。key=action 名，值=数组节点路径 -> 有序字段名。后端修好后此文件自动失效(无数字键可还原)。",
+  "crm-web-service-get-amazon-acc-health-info": {
+    "data": ["shopName", "screenshot", "health"]
+  }
+}
