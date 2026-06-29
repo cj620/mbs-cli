@@ -135,7 +135,7 @@ mbs skills install    # 重跑覆盖
 mbs skills show                                   # 主入口 SKILL.md（必读）
 mbs skills show --file references/global.md       # 全局参考（必读）
 mbs skills show --file references/org/SKILL.md    # 涉及组织架构
-mbs skills show --file references/shops/SKILL.md  # 涉及店铺运营
+mbs skills show --file references/crm/SKILL.md    # 涉及店铺健康
 mbs skills show --file references/doris/SKILL.md  # 涉及 Doris/SQL
 ```
 
@@ -180,7 +180,7 @@ mbs org platforms   # ok:true，含平台数据（认证最终验证）
 5. 只调用系统已装 Chrome/Edge；**禁止安装 Playwright/Chromium 等浏览器运行时**。mbs login 报 "No supported browser runtime" 时按 hint 让用户装系统 Chrome/Edge，不要 agent 自行下载内核
 6. 接入 skill：
    - 平台支持：mbs skills install --dry-run 看检测结果 → mbs skills install；完成后明确告知用户重启 agent 会话
-   - 平台不支持：至少读 skills/SKILL.md 与 skills/references/global.md；按任务再读 references/org|shops|doris/SKILL.md
+   - 平台不支持：至少读 skills/SKILL.md 与 skills/references/global.md；按任务再读 references/org|crm|doris/SKILL.md
 7. 验收：node -v / npm -v / mbs version / mbs config get / mbs whoami / mbs skills show / mbs org platforms 全部 ok:true 且退出码 0
 8. 遇权限/网络/PATH/浏览器/认证阻塞，明确写出阻塞点 + error.hint 原文 + 建议处理；禁止跳过或谎报成功
 
@@ -248,7 +248,7 @@ mbs whoami
 | 模块 | 命令前缀 | 用途 |
 |------|---------|------|
 | org | `mbs org` | 组织架构：平台、站点、总监、经理、主管、店长、店铺、员工 |
-| shops | `mbs shops` | 店铺运营：Amazon 账号健康、违规统计、合规评分 |
+| crm | `mbs crm` | 店铺运营监控：Amazon 账号健康、违规统计、合规评分 |
 | doris | `mbs doris` | Doris 数据库：日销报表查询（按日 GMV / 订单 / 退款 / 利润等聚合）、库表与 DDL 探索、流式只读 SELECT |
 | export | `mbs export` | 数据导出 xlsx：`plan` 预览 + `run` 执行两阶段流程，支持 doris SELECT 与 API 分页 |
 
@@ -344,7 +344,7 @@ echo "select * from database.table limit 10" | mbs doris query
 GET http://127.0.0.1:7878/__routes
 ```
 
-当前 project API 覆盖 `org`、`shops`、`doris`，并额外提供 `GET /api/test/whoami` 作为认证状态检查。`--proxy-all` 会同时启用 project API，适合 Doris 示例页面：
+当前 project API 覆盖 `org`、`crm`、`doris`，并额外提供 `GET /api/test/whoami` 作为认证状态检查。`--proxy-all` 会同时启用 project API，适合 Doris 示例页面：
 
 ```bash
 mbs serve --proxy-all
@@ -360,7 +360,7 @@ mbs serve --proxy-all
 
 **适用场景**
 
-- 内部看板 / 运营辅助页：组合 `org` / `shops` / `doris` 已封装接口，做团队内只读视图。
+- 内部看板 / 运营辅助页：组合 `org` / `crm` / `doris` 已封装接口，做团队内只读视图。
 - 临时分析页：跑一次性的数据汇总、对账、对比，跑完就丢。
 - Agent 工作页面：给 LLM Agent 提供"页面级"工具，由页面调用 `/api/*` 拿数，Agent 负责编排与呈现。
 - 接口探活与 Demo：在封装前先用 `/proxy/*` 把上游接口接到页面验证可行性。

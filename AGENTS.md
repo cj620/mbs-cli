@@ -11,7 +11,6 @@
 packages/cli          oclif 根包，入口命令（login/logout/whoami/raw/config/skills/serve）
 packages/shared       共享层：认证、BaseCommand、HTTP 客户端（无业务逻辑）
 packages/org          业务模块：组织架构
-packages/shops        业务模块：店铺健康
 packages/_template    新模块脚手架，只复制，不直接修改
 ```
 
@@ -22,7 +21,6 @@ packages/_template    新模块脚手架，只复制，不直接修改
 | `@mb-it-org/cli` | `packages/cli` |
 | `@mb-it-org/shared` | `packages/shared` |
 | `@mb-it-org/org` | `packages/org` |
-| `@mb-it-org/shops` | `packages/shops` |
 
 **依赖方向（强制，不得违反）：**
 

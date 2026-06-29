@@ -109,7 +109,7 @@ mbs skills show
 # 2. 读取当前任务所需模块的 SKILL.md（优先级最高）
 #    根据任务选择对应文件：
 mbs skills show --file references/org/SKILL.md      # 涉及组织架构时
-mbs skills show --file references/shops/SKILL.md    # 涉及店铺运营时
+mbs skills show --file references/crm/SKILL.md      # 涉及店铺健康/账号健康时
 mbs skills show --file references/update/SKILL.md   # 涉及版本更新时
 
 # 3. 确认 skill 安装成功

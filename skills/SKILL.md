@@ -26,7 +26,6 @@ metadata:
 | 用户意图关键词（中 / EN） | 模块 | 详细文档 |
 |---|---|---|
 | 组织 / 平台 / 站点 / 总监 / 经理 / 主管 / 店长 / 员工 / org / platform / site / leader / manager | `org` | [references/org/SKILL.md](references/org/SKILL.md) |
-| 店铺健康 / 账号健康 / 健康评分 / 违规 / 知识产权投诉 / 政策合规 / Amazon 健康 | `shops` | [references/shops/SKILL.md](references/shops/SKILL.md) |
 | Doris / SQL / 数据库 / 表结构 / 数据分析 / 日销 / 日报 / 销售报表 / daily sales / agent query | `doris` | [references/doris/SKILL.md](references/doris/SKILL.md) |
 | 导出 / 导出 Excel / 导出报表 / 下载数据 / xlsx / export / download report | `export` | [references/export/SKILL.md](references/export/SKILL.md) |
 | test / whoami / auth status / authentication | `test` | [references/test/SKILL.md](references/test/SKILL.md) |
@@ -54,7 +53,7 @@ metadata:
 ```
 我不确定你想查哪个业务模块，目前支持：
 - org（组织架构：平台 / 站点 / 人员层级）
-- shops（店铺运营：Amazon 账号健康 / 违规 / 合规评分）
+- crm（店铺运营监控：Amazon 账号健康 / 违规 / 合规评分）
 （其他模块开发中）
 
 请问你想查哪个方向的数据？

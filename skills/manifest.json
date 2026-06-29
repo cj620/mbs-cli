@@ -35,26 +35,6 @@
       ]
     },
     {
-      "name": "shops",
-      "description": "店铺运营数据：Amazon 账号健康、违规统计、合规评分",
-      "keywords": [
-        "店铺健康",
-        "账号健康",
-        "健康评分",
-        "违规",
-        "知识产权投诉",
-        "政策合规",
-        "Amazon健康",
-        "shop health",
-        "account health",
-        "amazon health"
-      ],
-      "skill": "references/shops/SKILL.md",
-      "commands": [
-        "mbs shops health"
-      ]
-    },
-    {
       "name": "update",
       "description": "CLI 版本检查与更新：检查最新版本、通过 npm 或 GitHub Release 升级 CLI 及内置 skill 文档",
       "keywords": [
