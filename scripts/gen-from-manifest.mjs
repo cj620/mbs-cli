@@ -397,10 +397,10 @@ function renderActionSkillV2(mod, action, hash) {
   const actionParams = flattenActionParams(action)
   const usageFlags = actionParams
     .filter((param) => param.in !== 'path')
-    .map((param) => ` ${param.required ? '' : '['}--${param.name} <${param.type}>${param.required ? '' : ']'}`)
+    .map((param) => ` ${param.required ? '' : '['}--${param.name} <${paramTypeLabel(param)}>${param.required ? '' : ']'}`)
     .join('')
   const paramRows = actionParams
-    .map((param) => `| \`${param.name}\` | ${param.apiName || param.name} | ${param.in} | ${param.type} | ${param.required ? '是' : '否'} | ${param.default ?? '-'} | ${param.description || '-'} |`)
+    .map((param) => `| \`${param.name}\` | ${param.apiName || param.name} | ${param.in} | ${paramTypeLabel(param)} | ${param.required ? '是' : '否'} | ${param.default ?? '-'} | ${param.description || '-'} |`)
     .join('\n')
 
   return `# mbs ${mod.domain} ${action.name}\n\n${action.description}\n\n## 用法\n\n\`\`\`bash\nmbs ${mod.domain} ${action.name}${usageFlags}\n\`\`\`\n\n## API\n\n- Service: \`${action.service || mod.service || '-'}\`\n- Method: \`${action.method}\`\n- Path: \`${joinPaths(action.pathPrefix || mod.pathPrefix, action.path)}\`\n- Schema version: \`${manifest.schemaVersion}\`\n- Manifest version: \`${manifest.manifestVersion}\`\n- Manifest hash: \`${hash}\`\n\n## 参数\n\n| 参数 | API 字段 | 位置 | 类型 | 必填 | 默认值 | 说明 |\n|---|---|---|---|---|---|---|\n${paramRows || '| - | - | - | - | - | - | - |'}\n${renderResponseSkill(action.response)}\n## 调用规则\n\n- 缺少必填参数时先询问用户。\n- 不要自行编造参数值。\n`
@@ -415,6 +415,12 @@ function renderResponseSkill(response) {
     .map((field) => `| \`${field.path}\` | ${field.type} | ${field.description || '-'} | ${field.usage || '-'} |`)
     .join('\n')
   return `\n## 响应字段\n\n| 路径 | 类型 | 说明 | 用途 |\n|---|---|---|---|\n${fieldRows}\n\n`
+}
+
+// Arrays carry their element type in the schema (and the generated `toArray`
+// codegen uses it); surface it in docs as `array<integer>` instead of bare `array`.
+function paramTypeLabel(param) {
+  return param.type === 'array' && param.itemsType ? `array<${param.itemsType}>` : param.type
 }
 
 function joinPaths(prefix, path) {
@@ -438,13 +444,31 @@ function flattenResponseFields(schema, basePath = '') {
   if (schema.type === 'array') {
     const arrayPath = basePath ? `${basePath}[]` : '$[]'
     const rows = [responseRow(arrayPath, schema)]
-    if (schema.items) {
+    const tuple = tupleItems(schema.items)
+    if (tuple) {
+      for (const [index, child] of tuple) {
+        rows.push(...flattenResponseFields(child, `${arrayPath}[${index}]`))
+      }
+    } else if (schema.items) {
       rows.push(...flattenResponseFields(schema.items, arrayPath))
     }
     return rows
   }
 
   return basePath ? [responseRow(basePath, schema)] : [responseRow('$', schema)]
+}
+
+// The server encodes a heterogeneous array element as a positional tuple:
+// `items: { "0": <schema>, "1": <schema>, ... }` (a numeric-keyed object, not a
+// JSON-Schema node). The zod parse passes the numeric keys through while
+// injecting schema defaults (type:'unknown', properties, ...) onto the same
+// object, so detect by the presence of numeric keys, not by the absent type.
+// Returns entries in index order; null for a normal single-schema `items`.
+function tupleItems(items) {
+  if (!items || typeof items !== 'object') return null
+  const numericKeys = Object.keys(items).filter((key) => /^\d+$/.test(key))
+  if (numericKeys.length === 0) return null
+  return numericKeys.map((key) => [Number(key), items[key]]).sort((a, b) => a[0] - b[0])
 }
 
 function responseRow(path, schema) {

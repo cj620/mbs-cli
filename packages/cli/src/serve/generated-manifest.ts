@@ -1,6 +1,6 @@
 // AUTO-GENERATED FROM audit manifest. DO NOT EDIT.
 // Source: manifests/mbs-api-manifest.json
-// Manifest: 2026-05-20T00:00:00+08:00 @ 2bddc5dd5b2b4488c08576d0c1d5a7625f3ee7ff169ef6ce30761954a5b8f88a
+// Manifest: 2026-05-20T00:00:00+08:00 @ 0e4df16515006d442b1504ad89dfc84b4bd0a51e0ca3377eab13abb1c6f2402e
 import type { AuditManifest } from './router.js'
 
 export const projectManifest = {
@@ -24,6 +24,20 @@ export const projectManifest = {
           "description": "商品(SPU)列表查询：商品中心SPU列表多维度分页查询：支持类目、11种关键词类型、销量/售卖/产品状态、开发员、时间区间、店铺、属性、抽检/轻小件/采样等数十项筛选，返回SPU列表及销量/毛利/平台等汇总字段。",
           "method": "POST",
           "path": "/erpProduct/erpProduct/product/product",
+          "pathPrefix": "",
+          "responseMode": "json"
+        }
+      ]
+    },
+    {
+      "domain": "crm",
+      "pathPrefix": "",
+      "actions": [
+        {
+          "name": "crm-web-service-get-amazon-acc-health-info",
+          "description": "获取店铺账号健康信息：获取所有 Amazon 店铺的账号健康信息（账号状况评级、政策合规、各类违规投诉计数、订单缺陷率/迟发率/有效追踪率等运营指标）。数据由 RPA 自动采集，附带健康页截图。",
+          "method": "GET",
+          "path": "/rpa/getAmazonAccHealthInfo",
           "pathPrefix": "",
           "responseMode": "json"
         }

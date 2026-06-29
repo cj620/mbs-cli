@@ -120,6 +120,23 @@
         "mbs product erp-product-product"
       ],
       "generated": true
+    },
+    {
+      "name": "crm",
+      "description": "店铺运营监控：账号健康、违规与合规数据（当前仅 Amazon）",
+      "keywords": [
+        "店铺健康",
+        "账号健康",
+        "亚马逊",
+        "amazon",
+        "shops",
+        "合规"
+      ],
+      "skill": "references/crm/SKILL.md",
+      "commands": [
+        "mbs crm crm-web-service-get-amazon-acc-health-info"
+      ],
+      "generated": true
     }
   ]
 }

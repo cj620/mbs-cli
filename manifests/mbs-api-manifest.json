@@ -998,6 +998,144 @@
           "deprecated": false
         }
       ]
+    },
+    {
+      "domain": "crm",
+      "description": "店铺运营监控：账号健康、违规与合规数据（当前仅 Amazon）",
+      "keywords": [
+        "店铺健康",
+        "账号健康",
+        "亚马逊",
+        "amazon",
+        "shops",
+        "合规"
+      ],
+      "scenarios": "运营/店铺管理人员查询店铺账号健康状态、违规情况、合规评分等运营监控数据",
+      "actions": [
+        {
+          "name": "crm-web-service-get-amazon-acc-health-info",
+          "description": "获取店铺账号健康信息：获取所有 Amazon 店铺的账号健康信息（账号状况评级、政策合规、各类违规投诉计数、订单缺陷率/迟发率/有效追踪率等运营指标）。数据由 RPA 自动采集，附带健康页截图。",
+          "service": "crm-web-service",
+          "method": "GET",
+          "path": "/rpa/getAmazonAccHealthInfo",
+          "response": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "number",
+                "description": "返回编码。200=成功；非 200=失败"
+              },
+              "message": {
+                "type": "string",
+                "description": "结果描述信息"
+              },
+              "data": {
+                "type": "array",
+                "description": "店铺账号健康列表，每个元素为一个店铺。CLI 输出时取 data 作为 data，total=data.length",
+                "items": {
+                  "0": {
+                    "type": "string",
+                    "description": "店铺名称"
+                  },
+                  "1": {
+                    "type": "object",
+                    "description": "健康页截图信息",
+                    "properties": {
+                      "fileTime": {
+                        "type": "string",
+                        "description": "截图生成时间（ISO 8601）"
+                      },
+                      "ossPath": {
+                        "type": "string",
+                        "description": "截图文件访问地址（OSS）"
+                      }
+                    }
+                  },
+                  "2": {
+                    "type": "object",
+                    "description": "账号健康详情",
+                    "properties": {
+                      "dates": {
+                        "type": "string",
+                        "description": "健康数据所属日期"
+                      },
+                      "policyCompliance": {
+                        "type": "string",
+                        "description": "政策合规状态（如：良好）"
+                      },
+                      "accountHealthRating": {
+                        "type": "number",
+                        "description": "账户状况评级（Amazon 健康评分，越高越好）"
+                      },
+                      "suspectedIntellectualPropertyViolation": {
+                        "type": "number",
+                        "description": "涉嫌侵犯知识产权（计数）"
+                      },
+                      "intellectualPropertyComplaint": {
+                        "type": "number",
+                        "description": "知识产权投诉（计数）"
+                      },
+                      "productAuthenticitycomplaint": {
+                        "type": "number",
+                        "description": "商品真实性买家投诉（计数）"
+                      },
+                      "productConditionComplaint": {
+                        "type": "number",
+                        "description": "商品状况买家投诉（计数）"
+                      },
+                      "foodAndProductSafetyIssue": {
+                        "type": "number",
+                        "description": "食品和商品安全问题（计数）"
+                      },
+                      "listingPolicyViolation": {
+                        "type": "number",
+                        "description": "上架政策违规（计数）"
+                      },
+                      "restrictedProductPolicyViolation": {
+                        "type": "number",
+                        "description": "违反受限商品政策（计数）"
+                      },
+                      "customerReviewPolicyViolation": {
+                        "type": "number",
+                        "description": "违反买家商品评论政策（计数）"
+                      },
+                      "otherPolicyViolation": {
+                        "type": "number",
+                        "description": "其他违反政策（计数）"
+                      },
+                      "regulatoryCompliance": {
+                        "type": "number",
+                        "description": "监管合规性（计数）"
+                      },
+                      "order_defect_rate": {
+                        "type": "number",
+                        "description": "订单缺陷率(%)"
+                      },
+                      "late_shipment_rate": {
+                        "type": "number",
+                        "description": "迟发率(%)"
+                      },
+                      "pre_fulfillment_cancel_rate": {
+                        "type": "number",
+                        "description": "配送前取消率(%)"
+                      },
+                      "valid_tracking_rate": {
+                        "type": "number",
+                        "description": "有效追踪率(%)"
+                      },
+                      "on_time_delivery_rate": {
+                        "type": "number",
+                        "description": "准时交货率(%)"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "deprecated": false
+        }
+      ]
     }
   ]
 }

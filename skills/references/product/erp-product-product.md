@@ -15,7 +15,7 @@ mbs product erp-product-product [--categoryId <string>] [--levelNum <number>] [-
 - Path: `/erpProduct/erpProduct/product/product`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `2bddc5dd5b2b4488c08576d0c1d5a7625f3ee7ff169ef6ce30761954a5b8f88a`
+- Manifest hash: `0e4df16515006d442b1504ad89dfc84b4bd0a51e0ca3377eab13abb1c6f2402e`
 
 ## 参数
 
@@ -72,7 +72,44 @@ mbs product erp-product-product [--categoryId <string>] [--levelNum <number>] [-
 | `obj.count` | number | 满足条件的商品总数(前端据此与pageSize算总页数) | - |
 | `obj.pageSize` | number | 每页条数 | - |
 | `obj.result[]` | array | 商品(SPU)列表 | - |
-| `obj.result[]` | unknown | - | - |
+| `obj.result[][0]` | string | 商品SPU编号(主键标识) | - |
+| `obj.result[][1]` | string | 商品记录ID | - |
+| `obj.result[][2]` | number | 序号ID | - |
+| `obj.result[][3]` | string | 中文标题 | - |
+| `obj.result[][4]` | string | 别名 | - |
+| `obj.result[][5]` | string | 商品名称 | - |
+| `obj.result[][6]` | string | 商品主图URL | - |
+| `obj.result[][7]` | string | 商品视频URL | - |
+| `obj.result[][8]` | string | 商品GIF动图URL | - |
+| `obj.result[][9]` | number | 售卖状态枚举。1=超爆;2=爆A;3=爆B;4=旺A;5=旺B;6=平A;7=平B;8=滞A;9=滞B;10=无销新品(前端转中文展示) | - |
+| `obj.result[][10]` | string | 销量状态 | - |
+| `obj.result[][11]` | number | 毛利率(原值为小数,前端×100保留2位展示%) | - |
+| `obj.result[][12]` | number | 退款率(前端保留2位展示) | - |
+| `obj.result[][13]` | number | 近3天销量 | - |
+| `obj.result[][14]` | number | 近7天销量 | - |
+| `obj.result[][15]` | number | 近30天销量 | - |
+| `obj.result[][16]` | number | 近90天销量 | - |
+| `obj.result[][17]` | number | 时段销量 | - |
+| `obj.result[][18]` | string | 刊登(上架)时间 | - |
+| `obj.result[][19]` | string | 开发(创建)时间 | - |
+| `obj.result[][20]` | string | 开发员(创建人) | - |
+| `obj.result[][21]` | string | 商品属性 | - |
+| `obj.result[][22]` | string | 属性值 | - |
+| `obj.result[][23]` | string | 属性ID | - |
+| `obj.result[][24]` | string | 特殊标记 | - |
+| `obj.result[][25]` | string | 开发性质 | - |
+| `obj.result[][26]` | string | 所属公司ID | - |
+| `obj.result[][27]` | string | 分类ID | - |
+| `obj.result[][28]` | string | 是否已抽检 | - |
+| `obj.result[][29]` | string | 是否有TikTok视频 | - |
+| `obj.result[][30]` | string | 隐藏店铺标记 | - |
+| `obj.result[][31]` | string | 显示店铺标记 | - |
+| `obj.result[][32]` | string | 平台ID集合(前端会用逗号拆分) | - |
+| `obj.result[][33]` | string | 平台ID | - |
+| `obj.result[][34]` | string | 平台名称 | - |
+| `obj.result[][35]` | string | 类型名称 | - |
+| `obj.result[][36]` | string | 仓库类型ID | - |
+| `obj.result[][37]` | string | 仓库类型名称 | - |
 
 
 ## 调用规则
