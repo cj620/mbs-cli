@@ -15,7 +15,7 @@ mbs crm crm-web-service-get-amazon-acc-health-info
 - Path: `/crm-web-service/rpa/getAmazonAccHealthInfo`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `ee66810aac7e26106913db03ce73be374ef8351183c705f239aae608b7152d22`
+- Manifest hash: `a8cc5779a3dc318f4266ebdc97fdc120cd01b2e642e6ab618dc586ec950f808d`
 
 ## 参数
 

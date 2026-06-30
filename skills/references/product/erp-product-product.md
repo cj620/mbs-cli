@@ -5,7 +5,7 @@
 ## 用法
 
 ```bash
-mbs product erp-product-product [--categoryId <string>] [--levelNum <number>] [--sku <string>] [--sonSku <string>] [--spu <string>] [--manufacture <string>] [--proName <string>] [--productName <string>] [--englishTitle <string>] [--batchSku <string>] [--proNameForAny <string>] [--fuzzyQuery <string>] [--location <string>] [--salesStatus <string>] [--skuStatus <string>] [--sellingStatus <string>] [--status <string>] [--oper <string>] [--buyer <string>] [--orderBy <string>] [--startDate <string>] [--endDate <string>] [--publishStartTime <string>] [--publishEndTime <string>] [--saleStartTime <string>] [--saleEndTime <string>] [--reduceCost <string>] [--tort <string>] [--shopIdList <string>] [--propertiesid <string>] [--spotcheck <string>] [--tkVideo <string>] [--buyflag <string>] [--purchaseFlag <string>] [--isAll <string>] [--searchCompanyId <string>] [--isAccount <string>] [--positionId <string>] [--pageSize <string>] [--page <number>]
+mbs product erp-product-product [--categoryId <string>] [--levelNum <number>] [--sku <string>] [--sonSku <string>] [--spu <string>] [--manufacture <string>] [--proName <string>] [--productName <string>] [--englishTitle <string>] [--batchSku <string>] [--proNameForAny <string>] [--fuzzyQuery <string>] [--location <string>] [--salesStatus <string>] [--skuStatus <string>] [--sellingStatus <string>] [--status <string>] [--oper <string>] [--buyer <string>] [--orderBy <string>] [--startDate <string>] [--endDate <string>] [--publishStartTime <string>] [--publishEndTime <string>] [--saleStartTime <string>] [--saleEndTime <string>] [--reduceCost <string>] [--tort <string>] [--shopIdList <string>] [--propertiesid <string>] [--spotcheck <string>] [--tkVideo <string>] [--buyflag <string>] [--purchaseFlag <string>] [--isAll <string>] [--searchCompanyId <string>] [--isAccount <string>] [--positionId <string>] --pageSize <string> --page <number>
 ```
 
 ## API
@@ -15,7 +15,7 @@ mbs product erp-product-product [--categoryId <string>] [--levelNum <number>] [-
 - Path: `/erpProduct/erpProduct/product/product`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `ee66810aac7e26106913db03ce73be374ef8351183c705f239aae608b7152d22`
+- Manifest hash: `a8cc5779a3dc318f4266ebdc97fdc120cd01b2e642e6ab618dc586ec950f808d`
 
 ## 参数
 
@@ -59,8 +59,8 @@ mbs product erp-product-product [--categoryId <string>] [--levelNum <number>] [-
 | `searchCompanyId` | searchCompanyId | body | string | 否 | - | 公司ID(按公司过滤) |
 | `isAccount` | isAccount | body | string | 否 | - | 是否账期供应商(当前固定传空) |
 | `positionId` | positionId | body | string | 否 | - | 岗位ID(取自 localStorage) |
-| `pageSize` | pageSize | body | string | 否 | - | 每页条数 |
-| `page` | page | body | number | 否 | - | 当前页码(固定从1开始) |
+| `pageSize` | pageSize | body | string | 是 | - | 每页条数 |
+| `page` | page | body | number | 是 | - | 当前页码(固定从1开始) |
 
 ## 响应字段
 

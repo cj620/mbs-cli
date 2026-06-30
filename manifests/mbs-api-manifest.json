@@ -603,7 +603,10 @@
                   "type": "integer",
                   "description": "是否绑定商品。枚举：1=绑定，0=非绑定(termQuery bundType)；不传=不过滤"
                 }
-              }
+              },
+              "required": [
+                "orderFiled"
+              ]
             }
           },
           "response": {
@@ -633,7 +636,12 @@
                 "type": "object",
                 "description": "分页结果体。code=200时为PageBean(可能为空列表)；code=500时为null"
               }
-            }
+            },
+            "required": [
+              "success",
+              "code",
+              "desc"
+            ]
           },
           "deprecated": false
         },
@@ -807,7 +815,11 @@
                   "type": "number",
                   "description": "当前页码(固定从1开始)"
                 }
-              }
+              },
+              "required": [
+                "pageSize",
+                "page"
+              ]
             }
           },
           "response": {
@@ -839,161 +851,208 @@
                     "items": {
                       "0": {
                         "type": "string",
+                        "required": true,
                         "description": "商品SPU编号(主键标识)"
                       },
                       "1": {
                         "type": "string",
+                        "required": false,
                         "description": "商品记录ID"
                       },
                       "2": {
                         "type": "number",
+                        "required": false,
                         "description": "序号ID"
                       },
                       "3": {
                         "type": "string",
+                        "required": false,
                         "description": "中文标题"
                       },
                       "4": {
                         "type": "string",
+                        "required": false,
                         "description": "别名"
                       },
                       "5": {
                         "type": "string",
+                        "required": false,
                         "description": "商品名称"
                       },
                       "6": {
                         "type": "string",
+                        "required": false,
                         "description": "商品主图URL"
                       },
                       "7": {
                         "type": "string",
+                        "required": false,
                         "description": "商品视频URL"
                       },
                       "8": {
                         "type": "string",
+                        "required": false,
                         "description": "商品GIF动图URL"
                       },
                       "9": {
                         "type": "number",
+                        "required": false,
                         "description": "售卖状态枚举。1=超爆;2=爆A;3=爆B;4=旺A;5=旺B;6=平A;7=平B;8=滞A;9=滞B;10=无销新品(前端转中文展示)"
                       },
                       "10": {
                         "type": "string",
+                        "required": false,
                         "description": "销量状态"
                       },
                       "11": {
                         "type": "number",
+                        "required": false,
                         "description": "毛利率(原值为小数,前端×100保留2位展示%)"
                       },
                       "12": {
                         "type": "number",
+                        "required": false,
                         "description": "退款率(前端保留2位展示)"
                       },
                       "13": {
                         "type": "number",
+                        "required": false,
                         "description": "近3天销量"
                       },
                       "14": {
                         "type": "number",
+                        "required": false,
                         "description": "近7天销量"
                       },
                       "15": {
                         "type": "number",
+                        "required": false,
                         "description": "近30天销量"
                       },
                       "16": {
                         "type": "number",
+                        "required": false,
                         "description": "近90天销量"
                       },
                       "17": {
                         "type": "number",
+                        "required": false,
                         "description": "时段销量"
                       },
                       "18": {
                         "type": "string",
+                        "required": false,
                         "description": "刊登(上架)时间"
                       },
                       "19": {
                         "type": "string",
+                        "required": false,
                         "description": "开发(创建)时间"
                       },
                       "20": {
                         "type": "string",
+                        "required": false,
                         "description": "开发员(创建人)"
                       },
                       "21": {
                         "type": "string",
+                        "required": false,
                         "description": "商品属性"
                       },
                       "22": {
                         "type": "string",
+                        "required": false,
                         "description": "属性值"
                       },
                       "23": {
                         "type": "string",
+                        "required": false,
                         "description": "属性ID"
                       },
                       "24": {
                         "type": "string",
+                        "required": false,
                         "description": "特殊标记"
                       },
                       "25": {
                         "type": "string",
+                        "required": false,
                         "description": "开发性质"
                       },
                       "26": {
                         "type": "string",
+                        "required": false,
                         "description": "所属公司ID"
                       },
                       "27": {
                         "type": "string",
+                        "required": false,
                         "description": "分类ID"
                       },
                       "28": {
                         "type": "string",
+                        "required": false,
                         "description": "是否已抽检"
                       },
                       "29": {
                         "type": "string",
+                        "required": false,
                         "description": "是否有TikTok视频"
                       },
                       "30": {
                         "type": "string",
+                        "required": false,
                         "description": "隐藏店铺标记"
                       },
                       "31": {
                         "type": "string",
+                        "required": false,
                         "description": "显示店铺标记"
                       },
                       "32": {
                         "type": "string",
+                        "required": false,
                         "description": "平台ID集合(前端会用逗号拆分)"
                       },
                       "33": {
                         "type": "string",
+                        "required": false,
                         "description": "平台ID"
                       },
                       "34": {
                         "type": "string",
+                        "required": false,
                         "description": "平台名称"
                       },
                       "35": {
                         "type": "string",
+                        "required": false,
                         "description": "类型名称"
                       },
                       "36": {
                         "type": "string",
+                        "required": false,
                         "description": "仓库类型ID"
                       },
                       "37": {
                         "type": "string",
+                        "required": false,
                         "description": "仓库类型名称"
                       }
                     }
                   }
-                }
+                },
+                "required": [
+                  "count",
+                  "pageSize",
+                  "result"
+                ]
               }
-            }
+            },
+            "required": [
+              "code",
+              "obj"
+            ]
           },
           "deprecated": false
         }
@@ -1035,103 +1094,130 @@
                 "items": {
                   "0": {
                     "type": "string",
+                    "required": false,
                     "description": "店铺名称"
                   },
                   "1": {
                     "type": "object",
+                    "required": false,
                     "description": "健康页截图信息",
                     "properties": {
                       "fileTime": {
                         "type": "string",
+                        "required": false,
                         "description": "截图生成时间（ISO 8601）"
                       },
                       "ossPath": {
                         "type": "string",
+                        "required": false,
                         "description": "截图文件访问地址（OSS）"
                       }
                     }
                   },
                   "2": {
                     "type": "object",
+                    "required": false,
                     "description": "账号健康详情",
                     "properties": {
                       "dates": {
                         "type": "string",
+                        "required": false,
                         "description": "健康数据所属日期"
                       },
                       "policyCompliance": {
                         "type": "string",
+                        "required": false,
                         "description": "政策合规状态（如：良好）"
                       },
                       "accountHealthRating": {
                         "type": "number",
+                        "required": false,
                         "description": "账户状况评级（Amazon 健康评分，越高越好）"
                       },
                       "suspectedIntellectualPropertyViolation": {
                         "type": "number",
+                        "required": false,
                         "description": "涉嫌侵犯知识产权（计数）"
                       },
                       "intellectualPropertyComplaint": {
                         "type": "number",
+                        "required": false,
                         "description": "知识产权投诉（计数）"
                       },
                       "productAuthenticitycomplaint": {
                         "type": "number",
+                        "required": false,
                         "description": "商品真实性买家投诉（计数）"
                       },
                       "productConditionComplaint": {
                         "type": "number",
+                        "required": false,
                         "description": "商品状况买家投诉（计数）"
                       },
                       "foodAndProductSafetyIssue": {
                         "type": "number",
+                        "required": false,
                         "description": "食品和商品安全问题（计数）"
                       },
                       "listingPolicyViolation": {
                         "type": "number",
+                        "required": false,
                         "description": "上架政策违规（计数）"
                       },
                       "restrictedProductPolicyViolation": {
                         "type": "number",
+                        "required": false,
                         "description": "违反受限商品政策（计数）"
                       },
                       "customerReviewPolicyViolation": {
                         "type": "number",
+                        "required": false,
                         "description": "违反买家商品评论政策（计数）"
                       },
                       "otherPolicyViolation": {
                         "type": "number",
+                        "required": false,
                         "description": "其他违反政策（计数）"
                       },
                       "regulatoryCompliance": {
                         "type": "number",
+                        "required": false,
                         "description": "监管合规性（计数）"
                       },
                       "order_defect_rate": {
                         "type": "number",
+                        "required": false,
                         "description": "订单缺陷率(%)"
                       },
                       "late_shipment_rate": {
                         "type": "number",
+                        "required": false,
                         "description": "迟发率(%)"
                       },
                       "pre_fulfillment_cancel_rate": {
                         "type": "number",
+                        "required": false,
                         "description": "配送前取消率(%)"
                       },
                       "valid_tracking_rate": {
                         "type": "number",
+                        "required": false,
                         "description": "有效追踪率(%)"
                       },
                       "on_time_delivery_rate": {
                         "type": "number",
+                        "required": false,
                         "description": "准时交货率(%)"
                       }
                     }
                   }
                 }
               }
-            }
+            },
+            "required": [
+              "code",
+              "data"
+            ]
           },
           "deprecated": false
         }

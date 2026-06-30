@@ -25,15 +25,30 @@ function normalizeType(raw) {
 function normalizeJsonSchema(node) {
   if (!node || typeof node !== 'object') return node
   const out = { ...node }
+  // The server marks each property required with a self-describing boolean
+  // (`required: true`). JSON Schema (and the local audit schema) expects an
+  // array of names on the parent object. A stray boolean only reaches here at a
+  // schema root (nested ones are lifted by the parent loop below); drop it.
+  if (typeof out.required === 'boolean') delete out.required
   if (typeof out.type === 'string') {
     const t = normalizeType(out.type)
     out.type = t.type
     if (t.type === 'array' && t.items && !out.items) out.items = t.items
   }
   if (out.properties && typeof out.properties === 'object') {
+    const required = Array.isArray(out.required) ? [...out.required] : []
     out.properties = Object.fromEntries(
-      Object.entries(out.properties).map(([k, v]) => [k, normalizeJsonSchema(v)]),
+      Object.entries(out.properties).map(([k, v]) => {
+        if (v && typeof v === 'object' && typeof v.required === 'boolean') {
+          if (v.required) required.push(k)
+          const { required: _dropped, ...rest } = v
+          return [k, normalizeJsonSchema(rest)]
+        }
+        return [k, normalizeJsonSchema(v)]
+      }),
     )
+    if (required.length) out.required = required
+    else delete out.required
   }
   if (out.items) out.items = normalizeJsonSchema(out.items)
   return out

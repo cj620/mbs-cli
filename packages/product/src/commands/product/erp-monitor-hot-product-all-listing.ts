@@ -1,6 +1,6 @@
 // AUTO-GENERATED FROM audit manifest. DO NOT EDIT.
 // Source: manifests/mbs-api-manifest.json
-// Manifest: 2026-05-20T00:00:00+08:00 @ ee66810aac7e26106913db03ce73be374ef8351183c705f239aae608b7152d22
+// Manifest: 2026-05-20T00:00:00+08:00 @ a8cc5779a3dc318f4266ebdc97fdc120cd01b2e642e6ab618dc586ec950f808d
 import { Flags } from '@oclif/core'
 import { MBSCommand } from '@mb-it-org/shared'
 
@@ -25,7 +25,7 @@ export default class ProductErpMonitorHotProductAllListing extends MBSCommand {
     allPlatformId: Flags.string({ description: '登录人有权限的全部平台ID。服务端按登录人(销售部)自动注入；未配置平台返回code=500\'当前登录人未设置平台，请设置后再查看\'。前端无需传 (comma-separated)' }),
     finalShopNameList: Flags.string({ description: '最终生效的店铺名集合(ES termsQuery shopName)。服务端根据shopNames/组织条件/店铺状态计算注入，前端无需传 (comma-separated)' }),
     orderWay: Flags.string({ description: '排序方向。枚举：asc=升序(正序)；其他任意值或不传=降序(倒序，默认)。注意DTO注释\'DESC 升序\'有误，以代码为准' }),
-    orderFiled: Flags.string({ description: '排序字段(ES字段名)。页面枚举：spuDateUploaded=发布时间，spuSevenOrdernum=7天订单量(页面默认)，spuGrossProfit=30天毛利，spuThirtyDaysSoldCount=30天销量，spuThirtyOrdernum=30天订单量，spuFiftyOneOrdernum=51天订单量，spuNinetyOrdernum=90天订单量，spuProfitRate=30天毛利率，erpSpuCreateDate=开发时间，spuWatchCount=浏览量，spuNumberSaves=收藏量，rate=评价分数；传collection会被自动转为spuNumberSaves' }),
+    orderFiled: Flags.string({ description: '排序字段(ES字段名)。页面枚举：spuDateUploaded=发布时间，spuSevenOrdernum=7天订单量(页面默认)，spuGrossProfit=30天毛利，spuThirtyDaysSoldCount=30天销量，spuThirtyOrdernum=30天订单量，spuFiftyOneOrdernum=51天订单量，spuNinetyOrdernum=90天订单量，spuProfitRate=30天毛利率，erpSpuCreateDate=开发时间，spuWatchCount=浏览量，spuNumberSaves=收藏量，rate=评价分数；传collection会被自动转为spuNumberSaves', required: true }),
     emoloyeeId: Flags.string({ description: '员工ID(字段名拼写即如此)。本接口查询逻辑未使用' }),
     startTime: Flags.string({ description: '刊登(上传)时间起，格式yyyy-MM-dd。查询 spuDateUploaded >= 该日00:00(东八区)' }),
     endTime: Flags.string({ description: '刊登(上传)时间止，格式yyyy-MM-dd。查询 spuDateUploaded < 次日00:00(东八区，即含当天)' }),

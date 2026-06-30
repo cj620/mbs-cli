@@ -1,6 +1,6 @@
 // AUTO-GENERATED FROM audit manifest. DO NOT EDIT.
 // Source: manifests/mbs-api-manifest.json
-// Manifest: 2026-05-20T00:00:00+08:00 @ ee66810aac7e26106913db03ce73be374ef8351183c705f239aae608b7152d22
+// Manifest: 2026-05-20T00:00:00+08:00 @ a8cc5779a3dc318f4266ebdc97fdc120cd01b2e642e6ab618dc586ec950f808d
 import type { AuditManifest } from './router.js'
 
 export const projectManifest = {

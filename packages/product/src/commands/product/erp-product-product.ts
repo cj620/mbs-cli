@@ -1,6 +1,6 @@
 // AUTO-GENERATED FROM audit manifest. DO NOT EDIT.
 // Source: manifests/mbs-api-manifest.json
-// Manifest: 2026-05-20T00:00:00+08:00 @ ee66810aac7e26106913db03ce73be374ef8351183c705f239aae608b7152d22
+// Manifest: 2026-05-20T00:00:00+08:00 @ a8cc5779a3dc318f4266ebdc97fdc120cd01b2e642e6ab618dc586ec950f808d
 import { Flags } from '@oclif/core'
 import { MBSCommand } from '@mb-it-org/shared'
 
@@ -46,8 +46,8 @@ export default class ProductErpProductProduct extends MBSCommand {
     searchCompanyId: Flags.string({ description: '公司ID(按公司过滤)' }),
     isAccount: Flags.string({ description: '是否账期供应商(当前固定传空)' }),
     positionId: Flags.string({ description: '岗位ID(取自 localStorage)' }),
-    pageSize: Flags.string({ description: '每页条数' }),
-    page: Flags.string({ description: '当前页码(固定从1开始)' }),
+    pageSize: Flags.string({ description: '每页条数', required: true }),
+    page: Flags.string({ description: '当前页码(固定从1开始)', required: true }),
   }
 
   async run(): Promise<void> {
