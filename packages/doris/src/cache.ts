@@ -5,7 +5,7 @@ import { getConfigDir, readUserInfo } from '@mb-it-org/shared'
 
 export const DORIS_METADATA_CACHE_TTL_MS = 24 * 60 * 60 * 1000
 
-type DorisMetadataCacheKind = 'schemas' | 'show-create-table' | 'data-dictionary-query'
+type DorisMetadataCacheKind = 'my-tables' | 'schemas' | 'show-create-table' | 'data-dictionary-query'
 
 interface DorisMetadataCacheEntry<T> {
   savedAt: string

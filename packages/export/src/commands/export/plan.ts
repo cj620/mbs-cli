@@ -5,6 +5,35 @@ import { newPlanId, savePlan } from '../../plan-store.js'
 import type { ApiSourceConfig, PaginationSpec, PlanRecord, SourceConfig } from '../../types.js'
 
 const DEFAULT_TTL_SEC = 3600
+const MAX_DORIS_SOURCE_OPTION_LENGTH = 200
+
+function cleanDorisSourceOption(name: string, value: unknown): string | undefined {
+  if (typeof value !== 'string') return undefined
+  const trimmed = value.trim()
+  if (!trimmed) return undefined
+  if (trimmed.length > MAX_DORIS_SOURCE_OPTION_LENGTH) {
+    throw new Error(`${name} must be ${MAX_DORIS_SOURCE_OPTION_LENGTH} characters or fewer`)
+  }
+  return trimmed
+}
+
+function dorisSourceOptions(flags: Record<string, unknown>): {
+  host?: string
+  database?: string
+  schema?: string
+} {
+  const host = cleanDorisSourceOption('host', flags.host)
+  const database = cleanDorisSourceOption('database', flags.database)
+  const schema = cleanDorisSourceOption('schema', flags.schema)
+  if ((host && !database) || (!host && database)) {
+    throw new Error('host and database must be provided together')
+  }
+  return {
+    ...(host ? { host } : {}),
+    ...(database ? { database } : {}),
+    ...(schema ? { schema } : {}),
+  }
+}
 
 export default class ExportPlan extends MBSCommand {
   static description =
@@ -19,6 +48,9 @@ export default class ExportPlan extends MBSCommand {
     source: Flags.string({ required: true, options: ['doris', 'api'], description: 'Data source type' }),
     // doris
     sql: Flags.string({ description: '[doris] SELECT SQL' }),
+    host: Flags.string({ description: '[doris] Target data source host identifier. Use with --database.' }),
+    database: Flags.string({ description: '[doris] Target database name. Use with --host.' }),
+    schema: Flags.string({ description: '[doris] Target schema for ambiguous table names.' }),
     // api
     method: Flags.string({ options: ['GET', 'POST'], description: '[api] HTTP method' }),
     path: Flags.string({ description: '[api] API path, e.g. /v1/orders' }),
@@ -66,7 +98,7 @@ export default class ExportPlan extends MBSCommand {
     if (flags.source === 'doris') {
       const sql = typeof flags.sql === 'string' ? flags.sql.trim() : ''
       if (!sql) throw new Error('--sql is required when --source=doris')
-      return { type: 'doris', sql }
+      return { type: 'doris', sql, ...dorisSourceOptions(flags) }
     }
     const method = (flags.method as string | undefined) ?? 'GET'
     if (method !== 'GET' && method !== 'POST') throw new Error('--method must be GET or POST')
@@ -94,7 +126,13 @@ export default class ExportPlan extends MBSCommand {
   private summarizeSource(source: SourceConfig): Record<string, unknown> {
     if (source.type === 'doris') {
       const sql = source.sql
-      return { type: 'doris', sql: sql.length > 200 ? `${sql.slice(0, 200)}...` : sql }
+      return {
+        type: 'doris',
+        sql: sql.length > 200 ? `${sql.slice(0, 200)}...` : sql,
+        ...(source.host ? { host: source.host } : {}),
+        ...(source.database ? { database: source.database } : {}),
+        ...(source.schema ? { schema: source.schema } : {}),
+      }
     }
     return {
       type: 'api',

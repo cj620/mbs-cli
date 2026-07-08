@@ -32,6 +32,16 @@ mbs export plan --source doris \
   --sample 5
 ```
 
+外部数据源：
+```bash
+mbs export plan --source doris \
+  --host pg-main \
+  --database order_db \
+  --schema public \
+  --sql "SELECT order_id,status,create_time FROM orders WHERE create_time >= '2026-06-01' LIMIT 10000" \
+  --sample 5
+```
+
 #### API 源（分页）
 ```bash
 mbs export plan --source api \
@@ -101,6 +111,9 @@ agent 汇报：「导出完成：`<file>`，N 行」。**禁止把 sampleRows �
 |---|---|
 | `--source doris\|api` | **必填**。数据源类型 |
 | `--sql <SELECT>` | source=doris 必填。SELECT 语句 |
+| `--host <host>` | source=doris 可选。目标数据源主机标识，必须与 `--database` 成对提供 |
+| `--database <db>` | source=doris 可选。目标数据库名，必须与 `--host` 成对提供 |
+| `--schema <schema>` | source=doris 可选。同名表跨 schema 歧义时使用 |
 | `--method GET\|POST` | source=api 必填 |
 | `--path /v1/xxx` | source=api 必填。API 路径 |
 | `--params '{...}'` | source=api 可选。Query 参数 JSON |
@@ -180,7 +193,7 @@ agent 汇报：「导出完成：`<file>`，N 行」。**禁止把 sampleRows �
 ```
 1. XXX 有对应业务 API？
    是 → source=api，查接口文档拿 path + 分页结构
-   否 → source=doris，先 mbs doris schemas 找表，再 show-create-table 看 DDL
+   否 → source=doris，先 mbs doris my-tables 找当前用户可操作表，再 show-create-table 看 DDL
 2. 调 mbs export plan
 3. 展示 columns + samples + estimatedRows 给用户
 4. 等用户确认

@@ -3,6 +3,14 @@ import { Readable } from 'node:stream'
 export const MAX_SQL_LENGTH = 10_000
 export const DORIS_API_PREFIX = '/cli-service/cli/doris'
 
+const MAX_SOURCE_OPTION_LENGTH = 200
+
+export interface DataSourceOptions {
+  host?: string
+  database?: string
+  schema?: string
+}
+
 export function validateSql(sql: string): string {
   const trimmed = sql.trim()
   if (!trimmed) throw new Error('SQL is required')
@@ -28,6 +36,59 @@ export async function resolveSql(sqlFlag?: string, input?: NodeJS.ReadableStream
 
 export function isDataDictionarySql(sql: string): boolean {
   return /\bDB_DATA_DICTIONARY\b/i.test(sql)
+}
+
+function cleanSourceOption(name: string, value: unknown): string | undefined {
+  if (typeof value !== 'string') return undefined
+  const trimmed = value.trim()
+  if (!trimmed) return undefined
+  if (trimmed.length > MAX_SOURCE_OPTION_LENGTH) {
+    throw new Error(`${name} must be ${MAX_SOURCE_OPTION_LENGTH} characters or fewer`)
+  }
+  return trimmed
+}
+
+export function normalizeDataSourceOptions(input: {
+  host?: unknown
+  database?: unknown
+  schema?: unknown
+}): DataSourceOptions {
+  const host = cleanSourceOption('host', input.host)
+  const database = cleanSourceOption('database', input.database)
+  const schema = cleanSourceOption('schema', input.schema)
+
+  if ((host && !database) || (!host && database)) {
+    throw new Error('host and database must be provided together')
+  }
+
+  return {
+    ...(host ? { host } : {}),
+    ...(database ? { database } : {}),
+    ...(schema ? { schema } : {}),
+  }
+}
+
+export function dataSourceCacheKey(source: DataSourceOptions): string {
+  return JSON.stringify({
+    host: source.host ?? '',
+    database: source.database ?? '',
+    schema: source.schema ?? '',
+  })
+}
+
+export function dataSourceParams(source: DataSourceOptions): Record<string, string> {
+  return {
+    ...(source.host ? { host: source.host } : {}),
+    ...(source.database ? { database: source.database } : {}),
+    ...(source.schema ? { schema: source.schema } : {}),
+  }
+}
+
+export function dorisQueryBody(sql: string, source: DataSourceOptions): Record<string, string> {
+  return {
+    sql,
+    ...dataSourceParams(source),
+  }
 }
 
 function lineHasError(line: string): boolean {

@@ -26,7 +26,7 @@ metadata:
 | 用户意图关键词（中 / EN） | 模块 | 详细文档 |
 |---|---|---|
 | 组织 / 平台 / 站点 / 总监 / 经理 / 主管 / 店长 / 员工 / org / platform / site / leader / manager | `org` | [references/org/SKILL.md](references/org/SKILL.md) |
-| Doris / SQL / 数据库 / 表结构 / 数据分析 / 日销 / 日报 / 销售报表 / daily sales / agent query | `doris` | [references/doris/SKILL.md](references/doris/SKILL.md) |
+| Doris / SQL / 数据库 / 多数据源 / 可操作库表 / 权限库表 / 表结构 / 数据分析 / 日销 / 日报 / 销售报表 / daily sales / agent query | `doris` | [references/doris/SKILL.md](references/doris/SKILL.md) |
 | 导出 / 导出 Excel / 导出报表 / 下载数据 / xlsx / export / download report | `export` | [references/export/SKILL.md](references/export/SKILL.md) |
 | test / whoami / auth status / authentication | `test` | [references/test/SKILL.md](references/test/SKILL.md) |
 | 更新 / 升级 / 版本 / 有新版本 / update / upgrade / version / check update | `update` | [references/update/SKILL.md](references/update/SKILL.md) |

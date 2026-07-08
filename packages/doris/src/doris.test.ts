@@ -3,7 +3,11 @@ import { describe, expect, it } from 'vitest'
 import {
   DORIS_API_PREFIX,
   MAX_SQL_LENGTH,
+  dataSourceCacheKey,
+  dataSourceParams,
+  dorisQueryBody,
   isDataDictionarySql,
+  normalizeDataSourceOptions,
   resolveSql,
   writeAndCollectNdjsonStream,
   writeNdjsonStream,
@@ -11,6 +15,7 @@ import {
 
 describe('Doris API paths', () => {
   it('uses cli-service service-relative prefix (global /gateway/cli added by base-command)', () => {
+    expect(`${DORIS_API_PREFIX}/my-tables`).toBe('/cli-service/cli/doris/my-tables')
     expect(`${DORIS_API_PREFIX}/schemas`).toBe('/cli-service/cli/doris/schemas')
     expect(`${DORIS_API_PREFIX}/show-create-table`).toBe('/cli-service/cli/doris/show-create-table')
     expect(`${DORIS_API_PREFIX}/query`).toBe('/cli-service/cli/doris/query')
@@ -89,5 +94,37 @@ describe('isDataDictionarySql', () => {
 
   it('does not match ordinary Doris business queries', () => {
     expect(isDataDictionarySql('select stat_date, gmv from eshop.daily_sales limit 10')).toBe(false)
+  })
+})
+
+describe('data source options', () => {
+  it('normalizes optional host, database, and schema values', () => {
+    expect(normalizeDataSourceOptions({ host: ' pg-main ', database: ' orders ', schema: ' public ' })).toEqual({
+      host: 'pg-main',
+      database: 'orders',
+      schema: 'public',
+    })
+  })
+
+  it('requires host and database to be provided together', () => {
+    expect(() => normalizeDataSourceOptions({ host: 'pg-main' })).toThrow('host and database must be provided together')
+    expect(() => normalizeDataSourceOptions({ database: 'orders' })).toThrow(
+      'host and database must be provided together',
+    )
+  })
+
+  it('builds request params and query body without empty source fields', () => {
+    const source = normalizeDataSourceOptions({ host: 'pg-main', database: 'orders' })
+
+    expect(dataSourceParams(source)).toEqual({ host: 'pg-main', database: 'orders' })
+    expect(dorisQueryBody('SELECT 1', source)).toEqual({
+      sql: 'SELECT 1',
+      host: 'pg-main',
+      database: 'orders',
+    })
+  })
+
+  it('includes source values in cache keys', () => {
+    expect(dataSourceCacheKey({ host: 'pg-main', database: 'orders' })).not.toBe(dataSourceCacheKey({}))
   })
 })

@@ -12,6 +12,15 @@ interface NdjsonMsg {
   totalRows?: number
 }
 
+function queryBody(source: DorisSourceConfig): Record<string, string> {
+  return {
+    sql: source.sql,
+    ...(source.host ? { host: source.host } : {}),
+    ...(source.database ? { database: source.database } : {}),
+    ...(source.schema ? { schema: source.schema } : {}),
+  }
+}
+
 async function* parseNdjson(stream: Readable): AsyncIterable<NdjsonMsg> {
   let buffer = ''
   for await (const chunk of stream) {
@@ -42,7 +51,7 @@ export async function previewDoris(
   source: DorisSourceConfig,
   sampleSize: number,
 ): Promise<PreviewResult> {
-  const stream = (await client.postStream(DORIS_QUERY_PATH, { sql: source.sql })) as Readable
+  const stream = (await client.postStream(DORIS_QUERY_PATH, queryBody(source))) as Readable
   let columns: ColumnSpec[] = []
   const samples: Row[] = []
   for await (const msg of parseNdjson(stream)) {
@@ -69,7 +78,7 @@ export async function previewDoris(
 }
 
 export async function* runDoris(client: APIClient, source: DorisSourceConfig): AsyncIterable<Row> {
-  const stream = (await client.postStream(DORIS_QUERY_PATH, { sql: source.sql })) as Readable
+  const stream = (await client.postStream(DORIS_QUERY_PATH, queryBody(source))) as Readable
   for await (const msg of parseNdjson(stream)) {
     if (msg.type === 'error') throw new Error(`Doris error: ${msg.message ?? 'unknown'}`)
     if (msg.type === 'data' && msg.row) yield msg.row

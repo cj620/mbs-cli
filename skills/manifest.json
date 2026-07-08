@@ -55,11 +55,14 @@
     },
     {
       "name": "doris",
-      "description": "Doris 数据库探索与只读 SQL 查询：库表列表、建表语句、流式 SELECT 查询，专供 agent 使用",
+      "description": "多数据源只读 SQL 查询：先获取当前用户可操作库表，再查看结构、DDL 与流式 SELECT，专供 agent 使用",
       "keywords": [
         "Doris",
         "SQL",
         "数据库",
+        "多数据源",
+        "可操作库表",
+        "权限库表",
         "表结构",
         "数据分析",
         "agent query",
@@ -67,6 +70,7 @@
       ],
       "skill": "references/doris/SKILL.md",
       "commands": [
+        "mbs doris my-tables",
         "mbs doris schemas",
         "mbs doris show-create-table",
         "mbs doris query"

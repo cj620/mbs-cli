@@ -8,6 +8,9 @@ export type Row = Record<string, unknown>
 export interface DorisSourceConfig {
   type: 'doris'
   sql: string
+  host?: string
+  database?: string
+  schema?: string
 }
 
 export interface PaginationNone {

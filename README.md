@@ -249,7 +249,7 @@ mbs whoami
 |------|---------|------|
 | org | `mbs org` | 组织架构：平台、站点、总监、经理、主管、店长、店铺、员工 |
 | crm | `mbs crm` | 店铺运营监控：Amazon 账号健康、违规统计、合规评分 |
-| doris | `mbs doris` | Doris 数据库：日销报表查询（按日 GMV / 订单 / 退款 / 利润等聚合）、库表与 DDL 探索、流式只读 SELECT |
+| doris | `mbs doris` | 多数据源只读 SQL：先查当前用户可操作库表，再按源查看结构、DDL 与流式 SELECT |
 | export | `mbs export` | 数据导出 xlsx：`plan` 预览 + `run` 执行两阶段流程，支持 doris SELECT 与 API 分页 |
 
 ---
@@ -309,19 +309,21 @@ mbs serve --project-apis
 
 ---
 
-## Doris 数据探索与日销报表
+## 多数据源 SQL 探索与日销报表
 
-`doris` 模块覆盖两类任务，服务端校验只读 SQL，CLI 侧不绕过限制。
+`doris` 模块是只读 SQL 通道。虽然命令名仍叫 `doris`，现在可通过 `--host` + `--database` 查询外部数据源；都不传时查询默认 Doris。服务端校验只读 SQL、权限和资源限制，CLI 侧不绕过限制。
 
-**任务 A — 日销报表**：按日聚合销售额 / 订单量 / 退款 / 利润等指标。标准流程是先 `schemas` 找候选日销表（名称含 `sales` / `daily` / `dws` / `report` / `日销` 等），再 `show-create-table` 看日期列与分区键，最后写 `GROUP BY` 日期的 SELECT。完整范式见 [skills/references/doris/SKILL.md](skills/references/doris/SKILL.md)。
+**任务 A — 日销报表**：按日聚合销售额 / 订单量 / 退款 / 利润等指标。标准流程是先 `my-tables` 获取当前用户可操作库表，再按表说明和权限配置选择候选表；必要时用 `show-create-table` 看日期列与分区键，最后写 `GROUP BY` 日期的 SELECT。完整范式见 [skills/references/doris/SKILL.md](skills/references/doris/SKILL.md)。
 
-**任务 B — 数据探索**：自由 SELECT，先发现库表，再按需取数。
+**任务 B — 数据探索**：自由 SELECT，先从权限配置视角发现可操作库表，再按需取数。
 
 ```bash
+mbs doris my-tables
 mbs doris schemas
 mbs doris show-create-table --tableName database.table
 mbs doris query --sql "select * from database.table limit 10"
 echo "select * from database.table limit 10" | mbs doris query
+mbs doris query --sql "select * from orders limit 10" --host pg-main --database order_db --schema public
 ```
 
 `mbs doris query` 输出 NDJSON 流，适合大结果集增量消费；普通业务命令仍保持统一 JSON 包装。

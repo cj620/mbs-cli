@@ -23,6 +23,14 @@ afterEach(() => {
 })
 
 describe('Doris metadata cache', () => {
+  it('reads cached my-tables metadata', () => {
+    useTempConfigDir()
+
+    writeDorisMetadataCache('my-tables', 'current-user', [{ tableName: 'orders' }])
+
+    expect(readDorisMetadataCache('my-tables', 'current-user')).toEqual([{ tableName: 'orders' }])
+  })
+
   it('reads a cached value by kind and key', () => {
     useTempConfigDir()
 

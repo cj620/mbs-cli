@@ -1,11 +1,8 @@
-# doris - Doris 数据库查询
+# doris - 多数据源 SQL 查询
 
-`mbs doris` 用于两类任务：
+`mbs doris` 是只读 SQL 查询通道。服务端会做 SQL 安全检查、权限改写、行数限制和资源熔断。
 
-1. **日销报表查询** —— 按日聚合的销售额 / 订单量 / 退款 / 利润等指标。
-2. **数据探索** —— 自由 SELECT，先发现库表，再按需取数。
-
-底层是只读 SELECT 通道，服务端做 SQL 安全检查、权限改写和行数限制。
+虽然命令名仍叫 `doris`，现在它不只查默认 Doris：当传入 `--host` + `--database` 时，可查询对应的外部数据源；都不传时查询默认 Doris。
 
 ---
 
@@ -13,195 +10,192 @@
 
 | 意图 | 命令 | 必填参数 |
 |---|---|---|
-| **查数据字典（首选）** | `mbs doris query --sql "SELECT ... FROM eshop.DB_DATA_DICTIONARY WHERE ..."` | `sql` |
-| 查看 Doris 数据库和表列表 | `mbs doris schemas [--refresh]` | - |
-| 查看表 DDL 建表语句 | `mbs doris show-create-table --tableName <数据库.表名> [--refresh]` | `tableName` |
-| 流式执行 SELECT 查询 | `mbs doris query --sql <select> [--refresh]` | `sql` 或 stdin |
+| **获取当前用户可操作库表（首选）** | `mbs doris my-tables [--refresh]` | - |
+| 查看物理库/schema 和表列表 | `mbs doris schemas [--host <host> --database <db>] [--refresh]` | - |
+| 查看表 DDL | `mbs doris show-create-table --tableName <table> [--host <host> --database <db>] [--schema <schema>] [--refresh]` | `tableName` |
+| 流式执行 SELECT | `mbs doris query --sql <select> [--host <host> --database <db>] [--schema <schema>] [--refresh]` | `sql` 或 stdin |
 
 ## API 路径
 
+- `mbs doris my-tables` -> `GET /gateway/cli-service/cli/doris/my-tables`
 - `mbs doris schemas` -> `GET /gateway/cli-service/cli/doris/schemas`
-- `mbs doris show-create-table` -> `GET /gateway/cli-service/cli/doris/show-create-table?tableName=<数据库.表名>`
+- `mbs doris show-create-table` -> `GET /gateway/cli-service/cli/doris/show-create-table`
 - `mbs doris query` -> `POST /gateway/cli-service/cli/doris/query`
 
 ---
 
-## 数据字典优先（强制 Step 0）
+## 强制 Step 0：先查可操作库表
 
-`eshop.DB_DATA_DICTIONARY` 是 doris 元数据的语义层入口：集中存储所有库 / 表 / 字段的**业务含义、字段说明、枚举值、口径、关联关系、维护人**等元信息。
+每次查询前，先用 `my-tables` 从权限配置视角获取当前用户可操作的库表清单：
 
-**强制流程**：
-
-```
-DB_DATA_DICTIONARY  ─┬─ 命中 ──► 直接写 SQL ──► query
-                     │
-                     └─ 缺失 ──► schemas / show-create-table 兜底 ──► query
+```bash
+mbs doris my-tables
 ```
 
-> **schemas 不是必经环节**。字典已含表清单 + 表注释 + 字段口径 + 枚举值时，直接进 query；不要再多绕一步 `doris schemas`。
+返回项里重点看：
 
-### 三个入口的角色
+| 字段 | 用途 |
+|---|---|
+| `databaseName` | 后续 `--database` 或表名前缀依据 |
+| `host` | 数据源标识；空串表示默认 Doris |
+| `tableName` | 真实表名 |
+| `tableNike` | 表别名，优先用于理解业务含义 |
+| `tableDescription` | 表用途说明 |
+| `rules` | 当前用户在该表上的过滤规则，服务端查询时会自动注入 |
 
-| 入口 | 给什么 | 何时用 |
-|---|---|---|
-| **`DB_DATA_DICTIONARY`** | **表/字段业务含义 + 口径 + 枚举 + 关联** | **每次任务起点（强制）** |
-| `doris schemas` | 库 / 表清单 + 表注释 | 字典查不到目标表时兜底 |
-| `show-create-table` | 字段名 + 类型 + 分区 | 字典没覆盖该表字段、需要确认物理 schema（分区键 / 类型）时 |
+标准决策：
 
-跳过字典直接 schemas → 只能拿到表注释，看不到字段口径/枚举，极易选错表（如 `mv_sell_*` vs `mv_order_*` vs `DB_DAILY_SALES_REPORT_SELLER`）。
+```text
+my-tables
+  -> 根据 tableNike/tableDescription/tableName 匹配候选表
+  -> 记录该表的 host + databaseName + tableName
+  -> 必要时查 schemas / show-create-table
+  -> query 时带同一组 host/database/schema
+```
 
-### 标准用法
+不要跳过 `my-tables` 直接猜库、表、host 或 schema。
 
-1. **按业务关键词搜表**：
-   ```sql
-   SELECT table_schema, table_name, table_comment
-   FROM   eshop.DB_DATA_DICTIONARY
-   WHERE  table_comment LIKE '%日销%' OR table_name LIKE '%daily_sales%'
-   LIMIT  50
-   ```
-2. **按字段语义搜字段**：
-   ```sql
-   SELECT table_name, column_name, column_comment, data_type
-   FROM   eshop.DB_DATA_DICTIONARY
-   WHERE  column_comment LIKE '%毛利%' OR column_name LIKE '%profit%'
-   LIMIT  100
-   ```
-3. **看候选表所有字段及口径**：
-   ```sql
-   SELECT column_name, column_comment, data_type, enum_values
-   FROM   eshop.DB_DATA_DICTIONARY
-   WHERE  table_schema = 'eshop' AND table_name = '<候选表>'
-   ORDER  BY ordinal_position
-   ```
+---
 
-> 字段名以实际 `show-create-table eshop.DB_DATA_DICTIONARY` 为准（常见列：`table_schema` / `table_name` / `table_comment` / `column_name` / `column_comment` / `data_type` / `enum_values` / `is_partition_key` / `owner` 等）。**第一次使用必须先看一遍 DDL**。
+## 数据源参数规则
 
-### 触发时机
+`--host` 与 `--database` 必须成对提供：
 
-- 用户提需求含业务名词（日销、订单、退款、广告、库存、补货 …）→ 先查字典
-- 用户给出未在记忆中的表名 → 先查字典确认表用途、字段口径
-- 准备写 `WHERE 状态 = ?` / `WHERE 平台 = ?` 这类枚举过滤 → 先查 `enum_values` 列
+```bash
+mbs doris schemas --host pg-main --database order_db
+mbs doris show-create-table --tableName orders --host pg-main --database order_db --schema public
+mbs doris query --sql "SELECT order_id FROM orders LIMIT 20" --host pg-main --database order_db --schema public
+```
 
-### 找不到怎么办
+规则：
 
-字典里查不到 → 才回退到 `doris schemas` + `show-create-table` 探索，并在最终答复中**显式声明字段口径来源**（DDL 推断 vs 字典权威）。
+- `--host` + `--database` 都不传：查询默认 Doris
+- `--host` + `--database` 都传：查询对应外部数据源
+- `--schema` 仅在同名表映射到多个 schema、或服务端要求消歧时传
+- `query`、`show-create-table` 必须沿用从 `my-tables` 选出的同一组数据源参数
+
+---
+
+## 结构发现流程
+
+`my-tables` 是权限配置视角，适合快速找“我能查什么”。需要物理结构时再查：
+
+1. `mbs doris schemas [--host ... --database ...]`
+   - 给库/schema 与表列表
+   - 用于确认物理表是否存在、PG 源有哪些 schema
+2. `mbs doris show-create-table --tableName ... [--host ... --database ...] [--schema ...]`
+   - 给字段名、类型、分区或伪 DDL
+   - 用于写 SQL 前确认列名、日期列、金额列、维度列
+
+如果服务端提示同名表在多个 schema 下存在歧义，补 `--schema` 后重试。
+
+---
+
+## 默认 Doris 的语义辅助
+
+`eshop.DB_DATA_DICTIONARY` 只作为默认 Doris 的语义层辅助，不再是所有数据源的第一步。
+
+当 `my-tables` 选中的表属于默认 Doris，且需要字段口径、枚举值、业务说明时，可以查：
+
+```sql
+SELECT table_schema, table_name, table_comment
+FROM   eshop.DB_DATA_DICTIONARY
+WHERE  table_comment LIKE '%日销%' OR table_name LIKE '%daily_sales%'
+LIMIT  50
+```
+
+```sql
+SELECT column_name, column_comment, data_type, enum_values
+FROM   eshop.DB_DATA_DICTIONARY
+WHERE  table_schema = 'eshop' AND table_name = '<候选表>'
+ORDER  BY ordinal_position
+```
+
+如果目标表来自外部数据源，优先使用 `my-tables.tableDescription`、`show-create-table` 和用户确认，不要假设 `DB_DATA_DICTIONARY` 覆盖该源。
 
 ---
 
 ## 元数据缓存
 
-CLI 会缓存 Doris 的**元数据**，减少 Agent 反复查同一份地图：
+CLI 会缓存元数据，减少反复查同一份地图：
 
-- `doris schemas`：缓存库 / 表清单
-- `doris show-create-table`：按 `tableName` 缓存 DDL
+- `doris my-tables`：缓存当前用户可操作库表
+- `doris schemas`：按 `host + database` 缓存库/schema 与表清单
+- `doris show-create-table`：按 `host + database + schema + tableName` 缓存 DDL
 - `doris query`：仅当 SQL 查询 `DB_DATA_DICTIONARY` 时缓存返回流
 
-**不会缓存普通业务查询结果**。销售额、订单量、库存、退款等实时数据仍然每次查询 Doris。
+**不会缓存普通业务查询结果**。销售额、订单量、库存、退款等实时数据仍然每次查询。
 
-缓存按当前登录用户隔离，默认用于后续相同元数据查询。需要强制刷新时加 `--refresh`：
+用户明确要求最新权限、最新表结构、刚改过授权或刚建表时，加 `--refresh`：
 
 ```bash
-mbs doris schemas --refresh
-mbs doris show-create-table --tableName eshop.<table> --refresh
-mbs doris query --sql "SELECT ... FROM eshop.DB_DATA_DICTIONARY WHERE ..." --refresh
+mbs doris my-tables --refresh
+mbs doris schemas --host pg-main --database order_db --refresh
+mbs doris show-create-table --tableName orders --host pg-main --database order_db --schema public --refresh
 ```
-
-使用规则：
-
-- 查询表/字段/口径/枚举/DDL 时优先接受缓存命中
-- 用户明确要求“最新表结构 / 最新字段 / 刚改过表”时使用 `--refresh`
-- 业务数据查询不要为了缓存改写 SQL；按实时查询处理
 
 ---
 
-## 任务 A：日销报表查询
+## 查询规则
 
-**触发关键词**：日销 / 日报 / 每日销售 / 销售报表 / daily sales / GMV by day / 每天的销售额。
+- 只允许 `SELECT`；`INSERT/UPDATE/DELETE/DROP/ALTER` 服务端会拒
+- 不猜库名、表名、字段名、host、database、schema、ID、状态枚举、业务含义
+- 先从 `my-tables` 确认可操作表，再写 SQL
+- 明确列名，禁止裸 `SELECT *`
+- 必须加 `LIMIT`，除非用户明确要求“全量聚合”且结果行数可控
+- 优先命中分区键 / 日期列，避免全表扫描
+- 日期 / 时间用字符串字面量 `'YYYY-MM-DD'`
 
-### 标准流程
+---
 
-1. **数据字典定位**（强制 Step 0）：查 `eshop.DB_DATA_DICTIONARY`，按 `table_comment LIKE '%日销%'` + 字段语义匹配候选表 & 字段口径。**字典命中就跳过 schemas 直接进 step 3**。字典查不到再回退 `mbs doris schemas` 关键字匹配。**不要猜表名**。
-2. **（可选）DDL 兜底**：字典未覆盖物理细节（分区键、字段类型）时才跑 `mbs doris show-create-table --tableName <候选>`，确认：
-   - 日期列（常见 `stat_date` / `dt` / `order_date` / `pay_date`，以 DDL 为准）
-   - 金额 / 数量列（`gmv` / `sales_amount` / `order_cnt` / `refund_amount` 等）
-   - 维度列（站点 / 店铺 / 平台 / SKU / 公司编号）
-   - 分区键（`PARTITION BY`，写 WHERE 时优先命中分区，避免全表扫描）
-3. **消歧**：执行前与用户确认：
-   - 时间窗口（默认最近 7 天还是指定区间？）
-   - 维度（按日 + 全公司？还是按日 × 店铺 / 平台 / 站点？）
-   - 公司 (`groupCompanyId`) —— 个人信息有则默认带，没有再问
-4. **写 SQL**：
-   - 明确列名，禁止 `SELECT *`
-   - WHERE 命中分区键 / 日期列
-   - `GROUP BY` 日期（+ 维度），`ORDER BY` 日期
-   - 加 `LIMIT`（聚合结果也加，例如 `LIMIT 1000`，防爆量）
-5. **执行**：`mbs doris query --sql "..."`，或多行 SQL 走 stdin。
+## 日销 / 报表类流程
 
-### 范式 SQL（仅示例骨架，列名 / 表名以 DDL 为准）
+触发关键词：日销 / 日报 / 每日销售 / 销售报表 / daily sales / GMV by day / 每天的销售额。
 
-按日合计：
+1. `mbs doris my-tables`，按 `tableNike` / `tableDescription` / `tableName` 找候选表
+2. 如候选表是默认 Doris，可按需查 `DB_DATA_DICTIONARY` 补字段口径
+3. `show-create-table` 确认日期列、金额列、维度列、分区键
+4. 执行前确认时间窗口、统计维度、公司或组织范围
+5. 写聚合 SQL 并执行 `mbs doris query`
+
+示例：
+
 ```sql
 SELECT stat_date,
        SUM(sales_amount) AS gmv,
        SUM(order_cnt)    AS orders
-FROM   <db>.<daily_sales_table>
+FROM   <table>
 WHERE  stat_date BETWEEN '2026-05-22' AND '2026-05-28'
-  AND  group_company_id = <id>
 GROUP  BY stat_date
 ORDER  BY stat_date
 LIMIT  1000;
 ```
 
-按日 × 平台：
-```sql
-SELECT stat_date, platform,
-       SUM(sales_amount) AS gmv
-FROM   <db>.<daily_sales_table>
-WHERE  stat_date BETWEEN '2026-05-22' AND '2026-05-28'
-  AND  group_company_id = <id>
-GROUP  BY stat_date, platform
-ORDER  BY stat_date, platform
-LIMIT  1000;
-```
-
 ---
 
-## 任务 B：数据探索
+## 数据探索流程
 
-**触发关键词**：表里有什么 / 查一下 / 看看 / 数据长什么样 / explore / sample。
+触发关键词：表里有什么 / 查一下 / 看看 / 数据长什么样 / explore / sample。
 
-### 标准流程
-
-1. **强制先查 `eshop.DB_DATA_DICTIONARY`** 找候选库表 + 字段口径（按 `table_comment` / `column_comment` 模糊匹配业务关键词）
-2. 字典命中 → 跳过 schemas，直达 step 4
-3. 字典查不到 → 回退 `mbs doris schemas` 找表清单，必要时 `show-create-table` 看字段类型 / 分区
-4. 起始查询保守：少量列 + 强 WHERE + `LIMIT 20`
-5. 根据返回结果，再迭代收窄或聚合
+1. `mbs doris my-tables` 找当前用户可操作表
+2. 必要时 `schemas` / `show-create-table` 看物理结构
+3. 起始查询保守：少量列 + 强 WHERE + `LIMIT 20`
+4. 根据返回结果，再迭代收窄或聚合
 
 样本探查：
+
 ```sql
 SELECT col1, col2, col3
-FROM   <db>.<table>
-WHERE  <partition_col> = '2026-05-28'
+FROM   <table>
+WHERE  <partition_or_date_col> = '2026-05-28'
 LIMIT  20;
 ```
 
 ---
 
-## 查询规则（两类任务通用）
-
-- 不猜数据库名、表名、字段名、ID、状态枚举、业务含义 —— **强制先查 `DB_DATA_DICTIONARY`**；字典查得到就直接进 `query`，查不到再回退 `schemas` / `show-create-table`
-- 只允许 `SELECT`；`INSERT/UPDATE/DELETE/DROP/ALTER` 服务端会拒
-- 明确列名，禁止裸 `SELECT *`
-- 必须加 `LIMIT`，除非用户明确要求"全量聚合"且结果行数可控
-- 优先命中分区键 / 日期列，避免全表扫描
-- 日期 / 时间用字符串字面量 `'YYYY-MM-DD'`，跨年报表注意时区
-
----
-
 ## 输出格式
 
-`schemas` 和 `show-create-table` 返回标准 MBS JSON：
+`my-tables`、`schemas` 和 `show-create-table` 返回标准 MBS JSON：
 
 ```json
 { "ok": true, "data": "<业务数据>" }
@@ -224,28 +218,14 @@ LIMIT  20;
 - 把 `error.message` 原文贴给用户
 - 明确告知：当前账号对该表/字段无权限，无法直接查询
 - **禁止**：自动换表、改字段、拆 SQL、绕道其它 domain 命令、用 `mbs raw` 探路等任何替代探索
-- 询问用户是否继续尝试替代路径，并**显式警告**：替代查询的口径/字段定义可能与目标表不一致，**数据可能不准确**，需用户自行确认风险
+- 询问用户是否继续尝试替代路径，并显式警告：替代查询的口径/字段定义可能与目标表不一致，数据可能不准确
 - 用户明确同意后方可继续探索；用户未表态前保持等待
-
-格式示例：
-
-```
-Doris 查询权限不足：
-  error.message: "<原文>"
-当前账号对该表/字段无访问权限，无法直接拿到目标数据。
-可尝试的替代路径：<列出 1-2 条>，但口径可能与目标表不一致，结果可能不准确。
-是否继续尝试？请确认后我再继续。
-```
-
-### 退出码
-
-- `0` —— 查询完整结束
-- `1` —— 流中出现 `error` 行或 HTTP / 鉴权失败
 
 ---
 
 ## 限制
 
-- 单条 SQL ≤ 10,000 字符（`MAX_SQL_LENGTH`）
+- 单条 SQL <= 10,000 字符（`MAX_SQL_LENGTH`）
+- `host` / `database` / `schema` 单项 <= 200 字符
 - SQL 必须非空；空白会被拒
 - `--sql` 与 stdin 二选一；都没有时 TTY 下会报错
