@@ -179,6 +179,12 @@ assert.match(
 
 assert.match(
   workflow,
+  /- name: Notify DingTalk release[\s\S]*timeout-minutes:\s*1/,
+  'DingTalk notification must not hang the release workflow'
+)
+
+assert.match(
+  workflow,
   /DINGTALK_WEBHOOK:\s*\${{\s*secrets\.DINGTALK_WEBHOOK\s*}}/,
   'DingTalk notification must read the webhook from a GitHub secret'
 )
@@ -237,6 +243,18 @@ assert.match(
   dingTalkNotificationStep,
   /\\u5e2e\\u6211\\u628ambs\\u66f4\\u65b0\\u5230\\u6700\\u65b0/,
   'DingTalk notification must tell users what prompt to use without relying on non-ASCII runtime source'
+)
+
+assert.match(
+  dingTalkNotificationStep,
+  /\\u5b89\\u88c5\\u63d0\\u793a\\u8bcd[\s\S]*https:\/\/github\.com\/cj620\/mbs-cli\/blob\/master\/README\.md/,
+  'DingTalk notification must include the README URL in plain text for copying'
+)
+
+assert.doesNotMatch(
+  dingTalkNotificationStep,
+  /\[README\.md\]\(\$\{readmeUrl\}\)/,
+  'DingTalk notification must not hide the README URL behind link text'
 )
 
 assert.match(
