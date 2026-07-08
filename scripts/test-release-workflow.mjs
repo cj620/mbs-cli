@@ -165,6 +165,104 @@ assert.doesNotMatch(
   'release workflow should not keep publishing or checking deprecated legacy package names'
 )
 
+assert.match(
+  workflow,
+  /- name: Publish @mb-it-org\/cli to npm[\s\S]*- name: Notify DingTalk release/,
+  'release workflow must notify DingTalk only after npm publish succeeds'
+)
+
+assert.match(
+  workflow,
+  /- name: Notify DingTalk release[\s\S]*continue-on-error:\s*true/,
+  'DingTalk notification must not fail the release workflow'
+)
+
+assert.match(
+  workflow,
+  /DINGTALK_WEBHOOK:\s*\${{\s*secrets\.DINGTALK_WEBHOOK\s*}}/,
+  'DingTalk notification must read the webhook from a GitHub secret'
+)
+
+assert.match(
+  workflow,
+  /DINGTALK_SECRET:\s*\${{\s*secrets\.DINGTALK_SECRET\s*}}/,
+  'DingTalk notification must read the signing secret from a GitHub secret'
+)
+
+assert.match(
+  workflow,
+  /DingTalk notification skipped: DINGTALK_WEBHOOK or DINGTALK_SECRET is not configured/,
+  'DingTalk notification must skip cleanly when notification secrets are missing'
+)
+
+assert.match(
+  workflow,
+  /msgtype:\s*'markdown'/,
+  'DingTalk notification must send a Markdown message'
+)
+
+const dingTalkNotificationStep = workflow.match(/- name: Notify DingTalk release[\s\S]*$/)?.[0] || ''
+
+assert.match(
+  dingTalkNotificationStep,
+  /const version = process\.env\.GITHUB_REF_NAME \|\| 'unknown'/,
+  'DingTalk notification title must use the release tag as the published version'
+)
+
+assert.match(
+  dingTalkNotificationStep,
+  /const title = `MBS-CLI \$\{version\} \\u5df2\\u53d1\\u5e03`/,
+  'DingTalk notification title must include the MBS-CLI version and published wording'
+)
+
+assert.match(
+  dingTalkNotificationStep,
+  /`### \$\{title\}`/,
+  'DingTalk notification must include a visible Markdown title in the message body'
+)
+
+assert.match(
+  dingTalkNotificationStep,
+  /\*\*\$\{releaseTimeLabel\}\*\*\\uff1a\$\{releaseTime\}/,
+  'DingTalk notification must include the release time label without relying on non-ASCII runtime source'
+)
+
+assert.match(
+  dingTalkNotificationStep,
+  /\*\*\$\{updatePromptLabel\}\*\*\\uff1a\$\{updatePrompt\}/,
+  'DingTalk notification must render the update prompt label as Markdown'
+)
+
+assert.match(
+  dingTalkNotificationStep,
+  /\\u5e2e\\u6211\\u628ambs\\u66f4\\u65b0\\u5230\\u6700\\u65b0/,
+  'DingTalk notification must tell users what prompt to use without relying on non-ASCII runtime source'
+)
+
+assert.match(
+  dingTalkNotificationStep,
+  /\\u66f4\\u65b0\\u65e5\\u5fd7[\s\S]*https:\/\/github\.com\/cj620\/mbs-cli\/commits\/master\//,
+  'DingTalk notification must include the requested changelog link'
+)
+
+assert.match(
+  dingTalkNotificationStep,
+  /\\u6765\\u81ea[\s\S]*GitHub Release \\u5de5\\u4f5c\\u6d41/,
+  'DingTalk notification must include a concise source footer'
+)
+
+assert.doesNotMatch(
+  dingTalkNotificationStep,
+  /`> \$\{sourceLabel\}/,
+  'DingTalk notification must avoid blockquote footers'
+)
+
+assert.doesNotMatch(
+  dingTalkNotificationStep,
+  /包名|仓库|提交|最新版本|升级方式|查看当前版本|如暂时|packageUrl|runUrl|GITHUB_REPOSITORY|GITHUB_SHA|GITHUB_RUN_ID|RELEASE_VERSION/,
+  'DingTalk notification must not expose unnecessary release details to business users'
+)
+
 const cliPackage = readFileSync(new URL('../packages/cli/package.json', import.meta.url), 'utf8')
 const cliGitignore = readFileSync(new URL('../packages/cli/.gitignore', import.meta.url), 'utf8')
 const orgPackage = readFileSync(new URL('../packages/org/package.json', import.meta.url), 'utf8')

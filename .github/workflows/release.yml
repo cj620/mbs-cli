@@ -263,3 +263,115 @@ jobs:
           fi
 
           npm publish --access public
+
+      - name: Notify DingTalk release
+        continue-on-error: true
+        env:
+          DINGTALK_WEBHOOK: ${{ secrets.DINGTALK_WEBHOOK }}
+          DINGTALK_SECRET: ${{ secrets.DINGTALK_SECRET }}
+        run: |
+          node << 'EOF'
+          const crypto = require('crypto');
+
+          function formatReleaseTime(date) {
+            const parts = new Intl.DateTimeFormat('zh-CN', {
+              timeZone: 'Asia/Shanghai',
+              year: 'numeric',
+              month: '2-digit',
+              day: '2-digit',
+              hour: '2-digit',
+              minute: '2-digit',
+              hour12: false,
+              hourCycle: 'h23',
+            })
+              .formatToParts(date)
+              .reduce((result, part) => {
+                result[part.type] = part.value;
+                return result;
+              }, {});
+
+            return `${parts.year}/${parts.month}/${parts.day} ${parts.hour}:${parts.minute}`;
+          }
+
+          async function main() {
+            const webhook = process.env.DINGTALK_WEBHOOK;
+            const secret = process.env.DINGTALK_SECRET;
+
+            if (!webhook || !secret) {
+              console.log('DingTalk notification skipped: DINGTALK_WEBHOOK or DINGTALK_SECRET is not configured.');
+              return;
+            }
+
+            const timestamp = Date.now().toString();
+            const sign = encodeURIComponent(
+              crypto.createHmac('sha256', secret).update(`${timestamp}\n${secret}`).digest('base64'),
+            );
+            const separator = webhook.includes('?') ? '&' : '?';
+            const url = `${webhook}${separator}timestamp=${timestamp}&sign=${sign}`;
+            const version = process.env.GITHUB_REF_NAME || 'unknown';
+            const releaseTime = formatReleaseTime(new Date());
+            const title = `MBS-CLI ${version} \u5df2\u53d1\u5e03`;
+            const releaseTimeLabel = '\u53d1\u5e03\u65f6\u95f4';
+            const updatePromptLabel = '\u66f4\u65b0\u63d0\u793a\u8bcd';
+            const updatePrompt = '\u5e2e\u6211\u628ambs\u66f4\u65b0\u5230\u6700\u65b0';
+            const changelogLabel = '\u66f4\u65b0\u65e5\u5fd7';
+            const changelogUrl = 'https://github.com/cj620/mbs-cli/commits/master/';
+            const fromLabel = '\u6765\u81ea';
+            const source = 'GitHub Release \u5de5\u4f5c\u6d41';
+            const text = [
+              `### ${title}`,
+              '',
+              '---',
+              '',
+              `**${releaseTimeLabel}**\uff1a${releaseTime}`,
+              '',
+              `**${updatePromptLabel}**\uff1a${updatePrompt}`,
+              '',
+              `**${changelogLabel}**\uff1a[${changelogUrl}](${changelogUrl})`,
+              '',
+              '---',
+              '',
+              `${fromLabel} ${source}`,
+            ].join('\n');
+
+            try {
+              const response = await fetch(url, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({
+                  msgtype: 'markdown',
+                  markdown: {
+                    title,
+                    text,
+                  },
+                }),
+              });
+              const body = await response.text();
+
+              if (!response.ok) {
+                console.warn(`DingTalk notification failed with HTTP ${response.status}: ${body}`);
+                return;
+              }
+
+              let payload;
+              try {
+                payload = JSON.parse(body);
+              } catch {
+                payload = null;
+              }
+
+              if (payload && payload.errcode && Number(payload.errcode) !== 0) {
+                console.warn(`DingTalk notification failed: ${body}`);
+                return;
+              }
+
+              console.log('DingTalk notification sent.');
+            } catch (error) {
+              console.warn(`DingTalk notification failed: ${error.message}`);
+            }
+          }
+
+          main().catch((error) => {
+            console.warn(`DingTalk notification failed: ${error.message}`);
+          });
+          EOF
