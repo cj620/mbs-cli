@@ -1,7 +1,7 @@
 import { Flags } from '@oclif/core'
 import { MBSCommand } from '@mb-it-org/shared'
 import { readDorisMetadataCache, writeDorisMetadataCache } from '../../cache.js'
-import { DORIS_API_PREFIX, dataSourceCacheKey, dataSourceParams, normalizeDataSourceOptions } from '../../doris.js'
+import { DATABASE_API_PREFIX, dataSourceCacheKey, dataSourceParams, normalizeDataSourceOptions } from '../../doris.js'
 
 interface DorisSchemasResponse {
   data?: unknown
@@ -35,7 +35,7 @@ export default class DorisSchemas extends MBSCommand {
       }
     }
 
-    const response = await this.client.get<DorisSchemasResponse>(`${DORIS_API_PREFIX}/schemas`, {
+    const response = await this.client.get<DorisSchemasResponse>(`${DATABASE_API_PREFIX}/schemas`, {
       params: dataSourceParams(source),
     })
     const data = response?.data ?? response

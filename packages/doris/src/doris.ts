@@ -1,15 +1,18 @@
 import { Readable } from 'node:stream'
 
 export const MAX_SQL_LENGTH = 10_000
-export const DORIS_API_PREFIX = '/cli-service/cli/doris'
+export const DATABASE_API_PREFIX = '/cli-service/cli/doris'
+export const DORIS_API_PREFIX = DATABASE_API_PREFIX
 
 const MAX_SOURCE_OPTION_LENGTH = 200
 
-export interface DataSourceOptions {
+export interface DatabaseSourceOptions {
   host?: string
   database?: string
   schema?: string
 }
+
+export type DataSourceOptions = DatabaseSourceOptions
 
 export function validateSql(sql: string): string {
   const trimmed = sql.trim()
@@ -52,7 +55,7 @@ export function normalizeDataSourceOptions(input: {
   host?: unknown
   database?: unknown
   schema?: unknown
-}): DataSourceOptions {
+}): DatabaseSourceOptions {
   const host = cleanSourceOption('host', input.host)
   const database = cleanSourceOption('database', input.database)
   const schema = cleanSourceOption('schema', input.schema)
@@ -68,7 +71,7 @@ export function normalizeDataSourceOptions(input: {
   }
 }
 
-export function dataSourceCacheKey(source: DataSourceOptions): string {
+export function dataSourceCacheKey(source: DatabaseSourceOptions): string {
   return JSON.stringify({
     host: source.host ?? '',
     database: source.database ?? '',
@@ -76,7 +79,7 @@ export function dataSourceCacheKey(source: DataSourceOptions): string {
   })
 }
 
-export function dataSourceParams(source: DataSourceOptions): Record<string, string> {
+export function dataSourceParams(source: DatabaseSourceOptions): Record<string, string> {
   return {
     ...(source.host ? { host: source.host } : {}),
     ...(source.database ? { database: source.database } : {}),
@@ -84,12 +87,14 @@ export function dataSourceParams(source: DataSourceOptions): Record<string, stri
   }
 }
 
-export function dorisQueryBody(sql: string, source: DataSourceOptions): Record<string, string> {
+export function databaseQueryBody(sql: string, source: DatabaseSourceOptions): Record<string, string> {
   return {
     sql,
     ...dataSourceParams(source),
   }
 }
+
+export const dorisQueryBody = databaseQueryBody
 
 function lineHasError(line: string): boolean {
   const text = line.trim()

@@ -1,7 +1,7 @@
 import { Flags } from '@oclif/core'
 import { MBSCommand } from '@mb-it-org/shared'
 import { readDorisMetadataCache, writeDorisMetadataCache } from '../../cache.js'
-import { DORIS_API_PREFIX } from '../../doris.js'
+import { DATABASE_API_PREFIX } from '../../doris.js'
 
 interface DorisMyTablesResponse {
   data?: unknown
@@ -27,7 +27,7 @@ export default class DorisMyTables extends MBSCommand {
       }
     }
 
-    const response = await this.client.get<DorisMyTablesResponse>(`${DORIS_API_PREFIX}/my-tables`)
+    const response = await this.client.get<DorisMyTablesResponse>(`${DATABASE_API_PREFIX}/my-tables`)
     const data = response?.data ?? response
     writeDorisMetadataCache('my-tables', 'current-user', data)
     this.output(data)

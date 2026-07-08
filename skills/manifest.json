@@ -54,26 +54,57 @@
       ]
     },
     {
-      "name": "doris",
-      "description": "多数据源只读 SQL 查询：先获取当前用户可操作库表，再查看结构、DDL 与流式 SELECT，专供 agent 使用",
+      "name": "database",
+      "description": "多数据库源只读 SQL 查询：先获取当前用户可操作库表，再查看结构、DDL 与流式 SELECT；doris 为历史兼容命令名",
       "keywords": [
-        "Doris",
-        "SQL",
         "数据库",
         "多数据源",
+        "SQL",
+        "Doris",
         "可操作库表",
         "权限库表",
         "表结构",
         "数据分析",
+        "日销",
+        "日报",
+        "销售报表",
+        "daily sales",
         "agent query",
         "query"
       ],
-      "skill": "references/doris/SKILL.md",
+      "skill": "references/database/SKILL.md",
       "commands": [
+        "mbs database my-tables",
+        "mbs database schemas",
+        "mbs database show-create-table",
+        "mbs database query",
+        "mbs db my-tables",
+        "mbs db schemas",
+        "mbs db show-create-table",
+        "mbs db query",
         "mbs doris my-tables",
         "mbs doris schemas",
         "mbs doris show-create-table",
         "mbs doris query"
+      ]
+    },
+    {
+      "name": "export",
+      "description": "数据导出 Excel：先 plan 预览，再经用户确认后 run 落盘；支持 database 与 api 数据源",
+      "keywords": [
+        "导出",
+        "导出 Excel",
+        "导出报表",
+        "下载数据",
+        "xlsx",
+        "export",
+        "download report"
+      ],
+      "skill": "references/export/SKILL.md",
+      "commands": [
+        "mbs export plan",
+        "mbs export run",
+        "mbs export list"
       ]
     },
     {

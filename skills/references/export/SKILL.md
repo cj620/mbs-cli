@@ -2,7 +2,7 @@
 
 `mbs export` 将查询结果导出为 `.xlsx` 文件。两类数据源：
 
-1. **doris** —— 自由 SELECT，大数据量
+1. **database** —— 多数据库源自由 SELECT，大数据量（`doris` 仍作为历史兼容 source 值）
 2. **api** —— 业务接口，支持分页（page / cursor / none）
 
 **强制两阶段流程**：`plan` 预览 → 用户确认 → `run` 执行。**禁止跳过 plan 直接 run。**
@@ -13,7 +13,7 @@
 
 | 意图 | 命令 | 必填 |
 |---|---|---|
-| 预览导出（生成 planId） | `mbs export plan --source doris\|api ...` | `--source` |
+| 预览导出（生成 planId） | `mbs export plan --source database\|api ...` | `--source` |
 | 执行导出 | `mbs export run --plan <id>` | `--plan` |
 | 列已生成的 plan | `mbs export list` | - |
 
@@ -25,16 +25,16 @@ Plan 落盘 `~/.config/mbs/plans/<id>.json`，默认 TTL 1h。过期需重新 `p
 
 ### Step 1 — 调 `plan` 预览
 
-#### Doris 源
+#### Database 源
 ```bash
-mbs export plan --source doris \
+mbs export plan --source database \
   --sql "SELECT date,sku,qty,amount FROM ods.daily_sales WHERE date BETWEEN '2026-06-01' AND '2026-06-07'" \
   --sample 5
 ```
 
 外部数据源：
 ```bash
-mbs export plan --source doris \
+mbs export plan --source database \
   --host pg-main \
   --database order_db \
   --schema public \
@@ -109,11 +109,11 @@ agent 汇报：「导出完成：`<file>`，N 行」。**禁止把 sampleRows �
 
 | flag | 说明 |
 |---|---|
-| `--source doris\|api` | **必填**。数据源类型 |
-| `--sql <SELECT>` | source=doris 必填。SELECT 语句 |
-| `--host <host>` | source=doris 可选。目标数据源主机标识，必须与 `--database` 成对提供 |
-| `--database <db>` | source=doris 可选。目标数据库名，必须与 `--host` 成对提供 |
-| `--schema <schema>` | source=doris 可选。同名表跨 schema 歧义时使用 |
+| `--source database\|api` | **必填**。数据源类型；旧值 `doris` 仍兼容 |
+| `--sql <SELECT>` | source=database 必填。SELECT 语句 |
+| `--host <host>` | source=database 可选。目标数据源主机标识，必须与 `--database` 成对提供 |
+| `--database <db>` | source=database 可选。目标数据库名，必须与 `--host` 成对提供 |
+| `--schema <schema>` | source=database 可选。同名表跨 schema 歧义时使用 |
 | `--method GET\|POST` | source=api 必填 |
 | `--path /v1/xxx` | source=api 必填。API 路径 |
 | `--params '{...}'` | source=api 可选。Query 参数 JSON |
@@ -193,7 +193,7 @@ agent 汇报：「导出完成：`<file>`，N 行」。**禁止把 sampleRows �
 ```
 1. XXX 有对应业务 API？
    是 → source=api，查接口文档拿 path + 分页结构
-   否 → source=doris，先 mbs doris my-tables 找当前用户可操作表，再 show-create-table 看 DDL
+   否 → source=database，先 mbs database my-tables 找当前用户可操作表，再 show-create-table 看 DDL
 2. 调 mbs export plan
 3. 展示 columns + samples + estimatedRows 给用户
 4. 等用户确认
@@ -202,9 +202,9 @@ agent 汇报：「导出完成：`<file>`，N 行」。**禁止把 sampleRows �
 
 ---
 
-## 与 doris 模块的关系
+## 与 database 模块的关系
 
-- `mbs doris query` 适合**小量数据 + agent 自己处理**（流式 NDJSON 回 stdout）
+- `mbs database query` 适合**小量数据 + agent 自己处理**（流式 NDJSON 回 stdout）
 - `mbs export` 适合**任意量数据 + 给用户文件**（落盘 xlsx，stdout 只回元信息）
 
 行数预期 > 100 行 → 优先用 export。

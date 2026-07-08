@@ -132,9 +132,9 @@ mbs serve --project-apis
 ```text
 GET /api/org/platforms
 GET  /api/test/whoami
-GET  /api/doris/schemas
-GET  /api/doris/show-create-table?tableName=<database.table>
-POST /api/doris/query
+GET  /api/database/schemas
+GET  /api/database/show-create-table?tableName=<database.table>
+POST /api/database/query
 GET  /api/org/platforms
 GET  /api/org/sites?platform=<ids>
 POST /api/org/leaders

@@ -5,8 +5,8 @@ export interface ColumnSpec {
 
 export type Row = Record<string, unknown>
 
-export interface DorisSourceConfig {
-  type: 'doris'
+export interface DatabaseSourceConfig {
+  type: 'database' | 'doris'
   sql: string
   host?: string
   database?: string
@@ -48,7 +48,7 @@ export interface ApiSourceConfig {
   pagination: PaginationSpec
 }
 
-export type SourceConfig = DorisSourceConfig | ApiSourceConfig
+export type SourceConfig = DatabaseSourceConfig | ApiSourceConfig
 
 export interface PlanRecord {
   id: string

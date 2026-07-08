@@ -1,10 +1,11 @@
 import { Readable } from 'node:stream'
 import { describe, expect, it } from 'vitest'
 import {
-  DORIS_API_PREFIX,
+  DATABASE_API_PREFIX,
   MAX_SQL_LENGTH,
   dataSourceCacheKey,
   dataSourceParams,
+  databaseQueryBody,
   dorisQueryBody,
   isDataDictionarySql,
   normalizeDataSourceOptions,
@@ -13,12 +14,12 @@ import {
   writeNdjsonStream,
 } from './doris.js'
 
-describe('Doris API paths', () => {
+describe('database API paths', () => {
   it('uses cli-service service-relative prefix (global /gateway/cli added by base-command)', () => {
-    expect(`${DORIS_API_PREFIX}/my-tables`).toBe('/cli-service/cli/doris/my-tables')
-    expect(`${DORIS_API_PREFIX}/schemas`).toBe('/cli-service/cli/doris/schemas')
-    expect(`${DORIS_API_PREFIX}/show-create-table`).toBe('/cli-service/cli/doris/show-create-table')
-    expect(`${DORIS_API_PREFIX}/query`).toBe('/cli-service/cli/doris/query')
+    expect(`${DATABASE_API_PREFIX}/my-tables`).toBe('/cli-service/cli/doris/my-tables')
+    expect(`${DATABASE_API_PREFIX}/schemas`).toBe('/cli-service/cli/doris/schemas')
+    expect(`${DATABASE_API_PREFIX}/show-create-table`).toBe('/cli-service/cli/doris/show-create-table')
+    expect(`${DATABASE_API_PREFIX}/query`).toBe('/cli-service/cli/doris/query')
   })
 })
 
@@ -92,7 +93,7 @@ describe('isDataDictionarySql', () => {
     expect(isDataDictionarySql('SELECT table_name FROM eshop.db_data_dictionary LIMIT 1')).toBe(true)
   })
 
-  it('does not match ordinary Doris business queries', () => {
+  it('does not match ordinary business queries', () => {
     expect(isDataDictionarySql('select stat_date, gmv from eshop.daily_sales limit 10')).toBe(false)
   })
 })
@@ -117,11 +118,12 @@ describe('data source options', () => {
     const source = normalizeDataSourceOptions({ host: 'pg-main', database: 'orders' })
 
     expect(dataSourceParams(source)).toEqual({ host: 'pg-main', database: 'orders' })
-    expect(dorisQueryBody('SELECT 1', source)).toEqual({
+    expect(databaseQueryBody('SELECT 1', source)).toEqual({
       sql: 'SELECT 1',
       host: 'pg-main',
       database: 'orders',
     })
+    expect(dorisQueryBody('SELECT 1', source)).toEqual(databaseQueryBody('SELECT 1', source))
   })
 
   it('includes source values in cache keys', () => {

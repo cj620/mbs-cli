@@ -2,9 +2,9 @@ import { Flags } from '@oclif/core'
 import { MBSCommand } from '@mb-it-org/shared'
 import { readDorisMetadataCache, writeDorisMetadataCache } from '../../cache.js'
 import {
-  DORIS_API_PREFIX,
+  DATABASE_API_PREFIX,
+  databaseQueryBody,
   dataSourceCacheKey,
-  dorisQueryBody,
   isDataDictionarySql,
   normalizeDataSourceOptions,
   resolveSql,
@@ -48,7 +48,7 @@ export default class DorisQuery extends MBSCommand {
       }
     }
 
-    const stream = await this.client.postStream(`${DORIS_API_PREFIX}/query`, dorisQueryBody(sql, source))
+    const stream = await this.client.postStream(`${DATABASE_API_PREFIX}/query`, databaseQueryBody(sql, source))
     if (cacheable) {
       const result = await writeAndCollectNdjsonStream(stream)
       if (!result.hasError) writeDorisMetadataCache('data-dictionary-query', cacheKey, result.text)

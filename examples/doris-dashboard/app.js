@@ -1,4 +1,4 @@
-const DORIS_PREFIX = '/api/doris'
+const DATABASE_PREFIX = '/api/database'
 
 const els = {
   gatewayUrl: document.querySelector('#gateway-url'),
@@ -119,7 +119,7 @@ async function loadSchemas() {
   setBusy(els.schemasButton, true)
   setStatus('Loading', 'loading')
   try {
-    const data = await gatewayFetch(`${DORIS_PREFIX}/schemas`)
+    const data = await gatewayFetch(`${DATABASE_PREFIX}/schemas`)
     renderSchemas(data)
     setStatus('Schemas loaded', 'ok')
   } catch (err) {
@@ -140,7 +140,7 @@ async function showDdl() {
   setBusy(els.ddlButton, true)
   setStatus('Loading', 'loading')
   try {
-    const path = `${DORIS_PREFIX}/show-create-table?tableName=${encodeURIComponent(tableName)}`
+    const path = `${DATABASE_PREFIX}/show-create-table?tableName=${encodeURIComponent(tableName)}`
     const data = await gatewayFetch(path)
     els.ddlOutput.textContent = formatValue(data)
     setStatus('DDL loaded', 'ok')
@@ -162,7 +162,7 @@ async function runQuery() {
   setBusy(els.queryButton, true)
   setStatus('Running', 'loading')
   try {
-    const data = await gatewayFetch(`${DORIS_PREFIX}/query`, {
+    const data = await gatewayFetch(`${DATABASE_PREFIX}/query`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ sql }),

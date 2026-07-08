@@ -8,7 +8,7 @@
 - **审计驱动的代码生成**：业务模块从 `audit manifest` 自动生成 CLI 命令、HTTP 路由与 skill 文档三件套，新增能力只需更新 manifest，杜绝手写漂移。
 - **Agent-Native Skill 体系**：随 CLI 打包发布 `skills/` 目录，一键 `mbs skills install` 注入 Claude / Codex 等平台；内置意图路由表、消歧协议、参数约束，Agent 即装即用。
 - **本地 HTTP 网关 (`mbs serve`)**：在 `127.0.0.1` 起一层只读网关，复用 CLI 当前登录态，支持三种模式 —— 项目内置 API、外部 manifest 路由、`/proxy/*` 任意上游直通，配套 `/__routes` 自描述发现端点，内部看板与运营页可秒级接入。
-- **流式数据通道**：Doris 查询透传 NDJSON，结构化 `header / data / end / error` 行，原生支持大结果集增量消费。
+- **流式数据通道**：database 查询透传 NDJSON，结构化 `header / data / end / error` 行，原生支持大结果集增量消费。
 - **只读安全边界**：架构层强制 `GET` 与查询型 `POST`，禁止 `PUT/PATCH/DELETE`；包间依赖单向（`<domain> → shared ← cli`），认证与浏览器登录集中收敛在 `shared/auth`。
 - **逃生通道**：未封装的接口可用 `mbs raw GET/POST` 直通探索，复用同一认证与错误契约，不必为一次性需求新建模块。
 
@@ -136,7 +136,7 @@ mbs skills show                                   # 主入口 SKILL.md（必读�
 mbs skills show --file references/global.md       # 全局参考（必读）
 mbs skills show --file references/org/SKILL.md    # 涉及组织架构
 mbs skills show --file references/crm/SKILL.md    # 涉及店铺健康
-mbs skills show --file references/doris/SKILL.md  # 涉及 Doris/SQL
+mbs skills show --file references/database/SKILL.md  # 涉及数据库/SQL
 ```
 
 **方式 C（仓库在本机）**：直接读源文件 [`skills/SKILL.md`](skills/SKILL.md) / [`skills/references/global.md`](skills/references/global.md)。
@@ -180,7 +180,7 @@ mbs org platforms   # ok:true，含平台数据（认证最终验证）
 5. 只调用系统已装 Chrome/Edge；**禁止安装 Playwright/Chromium 等浏览器运行时**。mbs login 报 "No supported browser runtime" 时按 hint 让用户装系统 Chrome/Edge，不要 agent 自行下载内核
 6. 接入 skill：
    - 平台支持：mbs skills install --dry-run 看检测结果 → mbs skills install；完成后明确告知用户重启 agent 会话
-   - 平台不支持：至少读 skills/SKILL.md 与 skills/references/global.md；按任务再读 references/org|crm|doris/SKILL.md
+   - 平台不支持：至少读 skills/SKILL.md 与 skills/references/global.md；按任务再读 references/org|crm|database/SKILL.md
 7. 验收：node -v / npm -v / mbs version / mbs config get / mbs whoami / mbs skills show / mbs org platforms 全部 ok:true 且退出码 0
 8. 遇权限/网络/PATH/浏览器/认证阻塞，明确写出阻塞点 + error.hint 原文 + 建议处理；禁止跳过或谎报成功
 
@@ -249,8 +249,9 @@ mbs whoami
 |------|---------|------|
 | org | `mbs org` | 组织架构：平台、站点、总监、经理、主管、店长、店铺、员工 |
 | crm | `mbs crm` | 店铺运营监控：Amazon 账号健康、违规统计、合规评分 |
-| doris | `mbs doris` | 多数据源只读 SQL：先查当前用户可操作库表，再按源查看结构、DDL 与流式 SELECT |
-| export | `mbs export` | 数据导出 xlsx：`plan` 预览 + `run` 执行两阶段流程，支持 doris SELECT 与 API 分页 |
+| database | `mbs database` / `mbs db` | 多数据库源只读 SQL：先查当前用户可操作库表，再按源查看结构、DDL 与流式 SELECT |
+| doris | `mbs doris` | 数据库查询网关历史兼容入口；新任务优先使用 `mbs database` |
+| export | `mbs export` | 数据导出 xlsx：`plan` 预览 + `run` 执行两阶段流程，支持 database SELECT 与 API 分页 |
 
 ---
 
@@ -300,33 +301,33 @@ mbs serve --project-apis
 | 查看认证状态 | `mbs whoami` 或 `mbs test whoami` |
 | 查看版本与更新 | `mbs version` / `mbs update` |
 | 查看 skill 目录 | `mbs skills path` |
-| 查看 skill 内容 | `mbs skills show --file references/doris/SKILL.md` |
+| 查看 skill 内容 | `mbs skills show --file references/database/SKILL.md` |
 | 直通只读 API | `mbs raw GET /path --params '{"key":"value"}'` |
 | 本地 project API 网关 | `mbs serve --project-apis` |
 | 任意只读上游代理 | `mbs serve --proxy-all` |
-| 导出 xlsx（预览） | `mbs export plan --source doris\|api ...` |
+| 导出 xlsx（预览） | `mbs export plan --source database\|api ...` |
 | 导出 xlsx（执行） | `mbs export run --plan <id>` |
 
 ---
 
 ## 多数据源 SQL 探索与日销报表
 
-`doris` 模块是只读 SQL 通道。虽然命令名仍叫 `doris`，现在可通过 `--host` + `--database` 查询外部数据源；都不传时查询默认 Doris。服务端校验只读 SQL、权限和资源限制，CLI 侧不绕过限制。
+`database` 模块是只读 SQL 通道。`mbs doris ...` 仍作为历史兼容命令保留；新任务优先使用 `mbs database ...` 或短别名 `mbs db ...`。通过 `--host` + `--database` 查询外部数据源；都不传时查询默认 Doris。服务端校验只读 SQL、权限和资源限制，CLI 侧不绕过限制。
 
-**任务 A — 日销报表**：按日聚合销售额 / 订单量 / 退款 / 利润等指标。标准流程是先 `my-tables` 获取当前用户可操作库表，再按表说明和权限配置选择候选表；必要时用 `show-create-table` 看日期列与分区键，最后写 `GROUP BY` 日期的 SELECT。完整范式见 [skills/references/doris/SKILL.md](skills/references/doris/SKILL.md)。
+**任务 A — 日销报表**：按日聚合销售额 / 订单量 / 退款 / 利润等指标。标准流程是先 `my-tables` 获取当前用户可操作库表，再按表说明和权限配置选择候选表；必要时用 `show-create-table` 看日期列与分区键，最后写 `GROUP BY` 日期的 SELECT。完整范式见 [skills/references/database/SKILL.md](skills/references/database/SKILL.md)。
 
 **任务 B — 数据探索**：自由 SELECT，先从权限配置视角发现可操作库表，再按需取数。
 
 ```bash
-mbs doris my-tables
-mbs doris schemas
-mbs doris show-create-table --tableName database.table
-mbs doris query --sql "select * from database.table limit 10"
-echo "select * from database.table limit 10" | mbs doris query
-mbs doris query --sql "select * from orders limit 10" --host pg-main --database order_db --schema public
+mbs database my-tables
+mbs database schemas
+mbs database show-create-table --tableName database.table
+mbs database query --sql "select * from database.table limit 10"
+echo "select * from database.table limit 10" | mbs database query
+mbs database query --sql "select * from orders limit 10" --host pg-main --database order_db --schema public
 ```
 
-`mbs doris query` 输出 NDJSON 流，适合大结果集增量消费；普通业务命令仍保持统一 JSON 包装。
+`mbs database query` 输出 NDJSON 流，适合大结果集增量消费；普通业务命令仍保持统一 JSON 包装。
 
 ---
 
@@ -346,13 +347,11 @@ mbs doris query --sql "select * from orders limit 10" --host pg-main --database 
 GET http://127.0.0.1:7878/__routes
 ```
 
-当前 project API 覆盖 `org`、`crm`、`doris`，并额外提供 `GET /api/test/whoami` 作为认证状态检查。`--proxy-all` 会同时启用 project API，适合 Doris 示例页面：
+当前 project API 覆盖 `manifests/mbs-api-manifest.json` 中已生成的模块，并额外提供 `GET /api/test/whoami` 作为认证状态检查。`--proxy-all` 会同时启用 project API，适合快速探索未封装的只读上游路径：
 
 ```bash
 mbs serve --proxy-all
 ```
-
-然后打开 [examples/doris-dashboard/index.html](examples/doris-dashboard/index.html)。
 
 ---
 
@@ -362,7 +361,7 @@ mbs serve --proxy-all
 
 **适用场景**
 
-- 内部看板 / 运营辅助页：组合 `org` / `crm` / `doris` 已封装接口，做团队内只读视图。
+- 内部看板 / 运营辅助页：组合 `org` / `crm` / `database` 已封装接口，做团队内只读视图。
 - 临时分析页：跑一次性的数据汇总、对账、对比，跑完就丢。
 - Agent 工作页面：给 LLM Agent 提供"页面级"工具，由页面调用 `/api/*` 拿数，Agent 负责编排与呈现。
 - 接口探活与 Demo：在封装前先用 `/proxy/*` 把上游接口接到页面验证可行性。
@@ -374,7 +373,7 @@ mbs serve --proxy-all
 | 零认证调用 | 页面 `fetch('/api/<domain>/<action>')` 即得数据，认证全部由 CLI 本地登录态承担 |
 | 路由自描述 | `GET /__routes` 返回当前进程暴露的所有接口（method/url/domain/action/description/responseMode），可直接驱动表单或下拉 |
 | 三档接入粒度 | `--project-apis` 用稳定封装、`--manifest` 用临时 audit、`--proxy-all` 用任意上游路径 |
-| 流式消费 | Doris 类 NDJSON 路由透传，前端按行解析，无需等大查询整段返回 |
+| 流式消费 | database NDJSON 路由透传，前端按行解析，无需等大查询整段返回 |
 | CORS 白名单 | 内置常见本地开发端口白名单（vite/CRA 等），异源页面也能直接调 |
 | 起手模板 | `examples/` 下三个示例页面即可作为脚手架复制改造 |
 
@@ -405,7 +404,7 @@ render(platforms.data)
 | 示例 | 用途 | 推荐启动方式 |
 |------|------|--------------|
 | [examples/serve-dashboard/index.html](examples/serve-dashboard/index.html) | 验证本地网关、`/__routes` 和 `/api/test/whoami` | `mbs serve --project-apis` |
-| [examples/doris-dashboard/index.html](examples/doris-dashboard/index.html) | 浏览 Doris schema、查看 DDL、执行只读查询 | `mbs serve --proxy-all` |
+| [examples/doris-dashboard/index.html](examples/doris-dashboard/index.html) | 浏览数据库 schema、查看 DDL、执行只读查询 | `mbs serve --manifest <含 database 路由的 manifest>` |
 | [examples/manifest-viewer/index.html](examples/manifest-viewer/index.html) | 查看 manifest 模块、接口、参数和服务关系；可加载本地 JSON | 直接用浏览器打开 |
 
 ---
@@ -434,7 +433,7 @@ pnpm test
 { "ok": false, "error": { "type": "auth|validation|api", "message": "...", "hint": "..." } }
 ```
 
-例外：`mbs doris query` 会直接透传服务端 NDJSON 流，便于 agent 增量消费大结果集。
+例外：`mbs database query` 会直接透传服务端 NDJSON 流，便于 agent 增量消费大结果集。
 
 退出码：`0` 成功 / `1` 参数或 API 错误 / `2` 认证失效（需重新 `mbs login`）
 

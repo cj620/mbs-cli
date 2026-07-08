@@ -26,7 +26,7 @@ metadata:
 | 用户意图关键词（中 / EN） | 模块 | 详细文档 |
 |---|---|---|
 | 组织 / 平台 / 站点 / 总监 / 经理 / 主管 / 店长 / 员工 / org / platform / site / leader / manager | `org` | [references/org/SKILL.md](references/org/SKILL.md) |
-| Doris / SQL / 数据库 / 多数据源 / 可操作库表 / 权限库表 / 表结构 / 数据分析 / 日销 / 日报 / 销售报表 / daily sales / agent query | `doris` | [references/doris/SKILL.md](references/doris/SKILL.md) |
+| 数据库 / 多数据源 / SQL / Doris / 可操作库表 / 权限库表 / 表结构 / 数据分析 / 日销 / 日报 / 销售报表 / daily sales / agent query | `database` | [references/database/SKILL.md](references/database/SKILL.md) |
 | 导出 / 导出 Excel / 导出报表 / 下载数据 / xlsx / export / download report | `export` | [references/export/SKILL.md](references/export/SKILL.md) |
 | test / whoami / auth status / authentication | `test` | [references/test/SKILL.md](references/test/SKILL.md) |
 | 更新 / 升级 / 版本 / 有新版本 / update / upgrade / version / check update | `update` | [references/update/SKILL.md](references/update/SKILL.md) |
@@ -38,6 +38,8 @@ metadata:
 
 
 > 后续模块按需追加到本表，Agent 只需读本文件即可完成一级路由，无需扫描全部文档。
+
+> `doris` 是数据库查询网关的历史命令名。新的 agent 路由应归到 `database`，旧的 `mbs doris ...` 命令仅作为兼容入口。
 
 ---
 

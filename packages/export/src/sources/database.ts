@@ -1,8 +1,8 @@
 import type { Readable } from 'node:stream'
 import type { APIClient } from '@mb-it-org/shared'
-import type { ColumnSpec, DorisSourceConfig, PreviewResult, Row } from '../types.js'
+import type { ColumnSpec, DatabaseSourceConfig, PreviewResult, Row } from '../types.js'
 
-const DORIS_QUERY_PATH = '/cli-service/cli/doris/query'
+const DATABASE_QUERY_PATH = '/cli-service/cli/doris/query'
 
 interface NdjsonMsg {
   type: 'header' | 'data' | 'end' | 'error'
@@ -12,7 +12,7 @@ interface NdjsonMsg {
   totalRows?: number
 }
 
-function queryBody(source: DorisSourceConfig): Record<string, string> {
+function queryBody(source: DatabaseSourceConfig): Record<string, string> {
   return {
     sql: source.sql,
     ...(source.host ? { host: source.host } : {}),
@@ -46,18 +46,18 @@ async function* parseNdjson(stream: Readable): AsyncIterable<NdjsonMsg> {
   }
 }
 
-export async function previewDoris(
+export async function previewDatabase(
   client: APIClient,
-  source: DorisSourceConfig,
+  source: DatabaseSourceConfig,
   sampleSize: number,
 ): Promise<PreviewResult> {
-  const stream = (await client.postStream(DORIS_QUERY_PATH, queryBody(source))) as Readable
+  const stream = (await client.postStream(DATABASE_QUERY_PATH, queryBody(source))) as Readable
   let columns: ColumnSpec[] = []
   const samples: Row[] = []
   for await (const msg of parseNdjson(stream)) {
     if (msg.type === 'error') {
       stream.destroy()
-      throw new Error(`Doris error: ${msg.message ?? 'unknown'}`)
+      throw new Error(`Database query error: ${msg.message ?? 'unknown'}`)
     }
     if (msg.type === 'header' && msg.columns) {
       columns = msg.columns.map((name) => ({ name }))
@@ -77,10 +77,10 @@ export async function previewDoris(
   return { columns, estimatedRows: null, sampleRows: samples }
 }
 
-export async function* runDoris(client: APIClient, source: DorisSourceConfig): AsyncIterable<Row> {
-  const stream = (await client.postStream(DORIS_QUERY_PATH, queryBody(source))) as Readable
+export async function* runDatabase(client: APIClient, source: DatabaseSourceConfig): AsyncIterable<Row> {
+  const stream = (await client.postStream(DATABASE_QUERY_PATH, queryBody(source))) as Readable
   for await (const msg of parseNdjson(stream)) {
-    if (msg.type === 'error') throw new Error(`Doris error: ${msg.message ?? 'unknown'}`)
+    if (msg.type === 'error') throw new Error(`Database query error: ${msg.message ?? 'unknown'}`)
     if (msg.type === 'data' && msg.row) yield msg.row
     if (msg.type === 'end') return
   }

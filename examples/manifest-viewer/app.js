@@ -19,23 +19,23 @@ const DEFAULT_MANIFEST = {
       ],
     },
     {
-      domain: 'doris',
+      domain: 'database',
       service: 'cli-service',
-      description: 'Doris schema and read-only query APIs',
-      keywords: ['doris', 'sql', 'schema', 'table', 'query'],
-      scenarios: 'Explore Doris schemas, inspect table DDL, and run server-validated SELECT queries.',
+      description: 'Multi-source database schema and read-only query APIs',
+      keywords: ['database', 'doris', 'sql', 'schema', 'table', 'query'],
+      scenarios: 'Explore database schemas, inspect table DDL, and run server-validated SELECT queries.',
       generate: false,
       pathPrefix: '/gateway/cli-service/cli/doris',
       actions: [
         {
           name: 'schemas',
-          description: 'List Doris databases and tables',
+          description: 'List databases, schemas, and tables',
           method: 'GET',
           path: '/schemas',
         },
         {
           name: 'show-create-table',
-          description: 'Show Doris CREATE TABLE DDL',
+          description: 'Show CREATE TABLE DDL',
           method: 'GET',
           path: '/show-create-table',
           request: {
@@ -53,7 +53,7 @@ const DEFAULT_MANIFEST = {
         },
         {
           name: 'query',
-          description: 'Execute Doris SELECT query',
+          description: 'Execute database SELECT query',
           method: 'POST',
           path: '/query',
           responseMode: 'ndjson',
