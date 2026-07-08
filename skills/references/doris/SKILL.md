@@ -14,9 +14,9 @@
 | 意图 | 命令 | 必填参数 |
 |---|---|---|
 | **查数据字典（首选）** | `mbs doris query --sql "SELECT ... FROM eshop.DB_DATA_DICTIONARY WHERE ..."` | `sql` |
-| 查看 Doris 数据库和表列表 | `mbs doris schemas` | - |
-| 查看表 DDL 建表语句 | `mbs doris show-create-table --tableName <数据库.表名>` | `tableName` |
-| 流式执行 SELECT 查询 | `mbs doris query --sql <select>` | `sql` 或 stdin |
+| 查看 Doris 数据库和表列表 | `mbs doris schemas [--refresh]` | - |
+| 查看表 DDL 建表语句 | `mbs doris show-create-table --tableName <数据库.表名> [--refresh]` | `tableName` |
+| 流式执行 SELECT 查询 | `mbs doris query --sql <select> [--refresh]` | `sql` 或 stdin |
 
 ## API 路径
 
@@ -85,6 +85,32 @@ DB_DATA_DICTIONARY  ─┬─ 命中 ──► 直接写 SQL ──► query
 ### 找不到怎么办
 
 字典里查不到 → 才回退到 `doris schemas` + `show-create-table` 探索，并在最终答复中**显式声明字段口径来源**（DDL 推断 vs 字典权威）。
+
+---
+
+## 元数据缓存
+
+CLI 会缓存 Doris 的**元数据**，减少 Agent 反复查同一份地图：
+
+- `doris schemas`：缓存库 / 表清单
+- `doris show-create-table`：按 `tableName` 缓存 DDL
+- `doris query`：仅当 SQL 查询 `DB_DATA_DICTIONARY` 时缓存返回流
+
+**不会缓存普通业务查询结果**。销售额、订单量、库存、退款等实时数据仍然每次查询 Doris。
+
+缓存按当前登录用户隔离，默认用于后续相同元数据查询。需要强制刷新时加 `--refresh`：
+
+```bash
+mbs doris schemas --refresh
+mbs doris show-create-table --tableName eshop.<table> --refresh
+mbs doris query --sql "SELECT ... FROM eshop.DB_DATA_DICTIONARY WHERE ..." --refresh
+```
+
+使用规则：
+
+- 查询表/字段/口径/枚举/DDL 时优先接受缓存命中
+- 用户明确要求“最新表结构 / 最新字段 / 刚改过表”时使用 `--refresh`
+- 业务数据查询不要为了缓存改写 SQL；按实时查询处理
 
 ---
 
