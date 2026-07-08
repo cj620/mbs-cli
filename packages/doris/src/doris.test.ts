@@ -1,6 +1,13 @@
 import { Readable } from 'node:stream'
 import { describe, expect, it } from 'vitest'
-import { DORIS_API_PREFIX, MAX_SQL_LENGTH, resolveSql, writeNdjsonStream } from './doris.js'
+import {
+  DORIS_API_PREFIX,
+  MAX_SQL_LENGTH,
+  isDataDictionarySql,
+  resolveSql,
+  writeAndCollectNdjsonStream,
+  writeNdjsonStream,
+} from './doris.js'
 
 describe('Doris API paths', () => {
   it('uses cli-service service-relative prefix (global /gateway/cli added by base-command)', () => {
@@ -49,5 +56,38 @@ describe('writeNdjsonStream', () => {
 
     await expect(writeNdjsonStream(stream, (chunk) => written.push(chunk))).resolves.toEqual({ hasError: true })
     expect(written.join('')).toContain('"type":"error"')
+  })
+})
+
+describe('writeAndCollectNdjsonStream', () => {
+  it('preserves, collects, and reports success', async () => {
+    const written: string[] = []
+    const stream = Readable.from(['{"type":"data","row":{"table_name":"daily_sales"}}\n'])
+
+    await expect(writeAndCollectNdjsonStream(stream, (chunk) => written.push(chunk))).resolves.toEqual({
+      hasError: false,
+      text: '{"type":"data","row":{"table_name":"daily_sales"}}\n',
+    })
+    expect(written.join('')).toBe('{"type":"data","row":{"table_name":"daily_sales"}}\n')
+  })
+
+  it('detects collected error lines', async () => {
+    const stream = Readable.from(['{"type":"error","message":"bad sql"}\n'])
+
+    await expect(writeAndCollectNdjsonStream(stream, () => undefined)).resolves.toEqual({
+      hasError: true,
+      text: '{"type":"error","message":"bad sql"}\n',
+    })
+  })
+})
+
+describe('isDataDictionarySql', () => {
+  it('matches DB_DATA_DICTIONARY metadata queries case-insensitively', () => {
+    expect(isDataDictionarySql('select * from eshop.DB_DATA_DICTIONARY limit 1')).toBe(true)
+    expect(isDataDictionarySql('SELECT table_name FROM eshop.db_data_dictionary LIMIT 1')).toBe(true)
+  })
+
+  it('does not match ordinary Doris business queries', () => {
+    expect(isDataDictionarySql('select stat_date, gmv from eshop.daily_sales limit 10')).toBe(false)
   })
 })

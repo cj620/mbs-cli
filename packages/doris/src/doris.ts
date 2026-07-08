@@ -26,6 +26,21 @@ export async function resolveSql(sqlFlag?: string, input?: NodeJS.ReadableStream
   return validateSql(await readStdin(input))
 }
 
+export function isDataDictionarySql(sql: string): boolean {
+  return /\bDB_DATA_DICTIONARY\b/i.test(sql)
+}
+
+function lineHasError(line: string): boolean {
+  const text = line.trim()
+  if (!text) return false
+  try {
+    const parsed = JSON.parse(text) as { type?: unknown }
+    return parsed.type === 'error'
+  } catch {
+    return false
+  }
+}
+
 export async function writeNdjsonStream(
   stream: NodeJS.ReadableStream,
   write: (chunk: string) => void = (chunk) => {
@@ -35,17 +50,6 @@ export async function writeNdjsonStream(
   let buffer = ''
   let hasError = false
 
-  const inspectLine = (line: string): void => {
-    const text = line.trim()
-    if (!text) return
-    try {
-      const parsed = JSON.parse(text) as { type?: unknown }
-      if (parsed.type === 'error') hasError = true
-    } catch {
-      // Preserve malformed server lines for the caller; do not reinterpret the stream.
-    }
-  }
-
   for await (const chunk of stream as Readable) {
     const text = Buffer.isBuffer(chunk) ? chunk.toString('utf8') : String(chunk)
     write(text)
@@ -53,9 +57,38 @@ export async function writeNdjsonStream(
 
     const lines = buffer.split('\n')
     buffer = lines.pop() ?? ''
-    for (const line of lines) inspectLine(line)
+    for (const line of lines) {
+      if (lineHasError(line)) hasError = true
+    }
   }
 
-  inspectLine(buffer)
+  if (lineHasError(buffer)) hasError = true
   return { hasError }
+}
+
+export async function writeAndCollectNdjsonStream(
+  stream: NodeJS.ReadableStream,
+  write: (chunk: string) => void = (chunk) => {
+    process.stdout.write(chunk)
+  },
+): Promise<{ hasError: boolean; text: string }> {
+  let buffer = ''
+  let text = ''
+  let hasError = false
+
+  for await (const chunk of stream as Readable) {
+    const value = Buffer.isBuffer(chunk) ? chunk.toString('utf8') : String(chunk)
+    write(value)
+    text += value
+    buffer += value
+
+    const lines = buffer.split('\n')
+    buffer = lines.pop() ?? ''
+    for (const line of lines) {
+      if (lineHasError(line)) hasError = true
+    }
+  }
+
+  if (lineHasError(buffer)) hasError = true
+  return { hasError, text }
 }
