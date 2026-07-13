@@ -71,6 +71,18 @@ export function normalizeDataSourceOptions(input: {
   }
 }
 
+export function requireDataSourceOptions(input: {
+  host?: unknown
+  database?: unknown
+  schema?: unknown
+}): DatabaseSourceOptions {
+  const source = normalizeDataSourceOptions(input)
+  if (!source.host || !source.database) {
+    throw new Error('host and database are required')
+  }
+  return source
+}
+
 export function dataSourceCacheKey(source: DatabaseSourceOptions): string {
   return JSON.stringify({
     host: source.host ?? '',

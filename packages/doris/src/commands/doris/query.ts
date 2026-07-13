@@ -6,7 +6,7 @@ import {
   databaseQueryBody,
   dataSourceCacheKey,
   isDataDictionarySql,
-  normalizeDataSourceOptions,
+  requireDataSourceOptions,
   resolveSql,
   writeAndCollectNdjsonStream,
   writeNdjsonStream,
@@ -37,7 +37,7 @@ export default class DorisQuery extends MBSCommand {
   async run(): Promise<void> {
     const { flags } = await this.parse(DorisQuery)
     const sql = await resolveSql(flags.sql)
-    const source = normalizeDataSourceOptions(flags)
+    const source = requireDataSourceOptions(flags)
     const cacheable = isDataDictionarySql(sql)
     const cacheKey = `${dataSourceCacheKey(source)}\n${sql}`
     if (cacheable && !flags.refresh) {

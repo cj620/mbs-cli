@@ -1,7 +1,12 @@
 import { Flags } from '@oclif/core'
 import { MBSCommand } from '@mb-it-org/shared'
 import { readDorisMetadataCache, writeDorisMetadataCache } from '../../cache.js'
-import { DATABASE_API_PREFIX, dataSourceCacheKey, dataSourceParams, normalizeDataSourceOptions } from '../../doris.js'
+import {
+  DATABASE_API_PREFIX,
+  dataSourceCacheKey,
+  dataSourceParams,
+  requireDataSourceOptions,
+} from '../../doris.js'
 
 interface DorisSchemasResponse {
   data?: unknown
@@ -25,7 +30,7 @@ export default class DorisSchemas extends MBSCommand {
 
   async run(): Promise<void> {
     const { flags } = await this.parse(DorisSchemas)
-    const source = normalizeDataSourceOptions(flags)
+    const source = requireDataSourceOptions(flags)
     const cacheKey = dataSourceCacheKey(source)
     if (!flags.refresh) {
       const cached = readDorisMetadataCache<unknown>('schemas', cacheKey)

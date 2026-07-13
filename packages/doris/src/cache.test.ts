@@ -2,7 +2,7 @@ import { mkdtempSync, rmSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { afterEach, describe, expect, it } from 'vitest'
-import { readDorisMetadataCache, writeDorisMetadataCache } from './cache.js'
+import { DORIS_METADATA_CACHE_TTL_MS, readDorisMetadataCache, writeDorisMetadataCache } from './cache.js'
 
 const originalConfigDir = process.env.MBS_CONFIG_DIR
 let tempDir: string | null = null
@@ -53,5 +53,9 @@ describe('Doris metadata cache', () => {
     writeDorisMetadataCache('data-dictionary-query', 'select 1', 'cached')
 
     expect(readDorisMetadataCache('data-dictionary-query', 'select 1', -1)).toBeNull()
+  })
+
+  it('uses a 30-minute ttl for all metadata caches by default', () => {
+    expect(DORIS_METADATA_CACHE_TTL_MS).toBe(30 * 60 * 1000)
   })
 })

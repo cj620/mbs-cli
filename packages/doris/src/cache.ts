@@ -3,7 +3,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { getConfigDir, readUserInfo } from '@mb-it-org/shared'
 
-export const DORIS_METADATA_CACHE_TTL_MS = 24 * 60 * 60 * 1000
+export const DORIS_METADATA_CACHE_TTL_MS = 30 * 60 * 1000
 
 type DorisMetadataCacheKind = 'my-tables' | 'schemas' | 'show-create-table' | 'data-dictionary-query'
 

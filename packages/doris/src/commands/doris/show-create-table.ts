@@ -1,7 +1,12 @@
 import { Flags } from '@oclif/core'
 import { MBSCommand } from '@mb-it-org/shared'
 import { readDorisMetadataCache, writeDorisMetadataCache } from '../../cache.js'
-import { DATABASE_API_PREFIX, dataSourceCacheKey, dataSourceParams, normalizeDataSourceOptions } from '../../doris.js'
+import {
+  DATABASE_API_PREFIX,
+  dataSourceCacheKey,
+  dataSourceParams,
+  requireDataSourceOptions,
+} from '../../doris.js'
 
 interface ShowCreateTableResponse {
   data?: unknown
@@ -32,7 +37,7 @@ export default class DorisShowCreateTable extends MBSCommand {
 
   async run(): Promise<void> {
     const { flags } = await this.parse(DorisShowCreateTable)
-    const source = normalizeDataSourceOptions(flags)
+    const source = requireDataSourceOptions(flags)
     const cacheKey = `${dataSourceCacheKey(source)}\n${flags.tableName}`
     if (!flags.refresh) {
       const cached = readDorisMetadataCache<unknown>('show-create-table', cacheKey)

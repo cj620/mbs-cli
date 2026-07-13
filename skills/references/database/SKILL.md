@@ -11,9 +11,9 @@
 | 意图 | 首选命令 | 兼容命令 | 必填参数 |
 |---|---|---|---|
 | **获取当前用户可操作库表（首选）** | `mbs database my-tables [--refresh]` | `mbs doris my-tables [--refresh]` | - |
-| 查看物理库/schema 和表列表 | `mbs database schemas [--host <host> --database <db>] [--refresh]` | `mbs doris schemas ...` | - |
-| 查看表 DDL | `mbs database show-create-table --tableName <table> [--host <host> --database <db>] [--schema <schema>] [--refresh]` | `mbs doris show-create-table ...` | `tableName` |
-| 流式执行 SELECT | `mbs database query --sql <select> [--host <host> --database <db>] [--schema <schema>] [--refresh]` | `mbs doris query ...` | `sql` 或 stdin |
+| 查看物理库/schema 和表列表 | `mbs database schemas --host <host> --database <db> [--refresh]` | `mbs doris schemas ...` | `host`、`database` |
+| 查看表 DDL | `mbs database show-create-table --tableName <table> --host <host> --database <db> [--schema <schema>] [--refresh]` | `mbs doris show-create-table ...` | `tableName`、`host`、`database` |
+| 流式执行 SELECT | `mbs database query --sql <select> --host <host> --database <db> [--schema <schema>] [--refresh]` | `mbs doris query ...` | `sql` 或 stdin、`host`、`database` |
 
 ## API 路径
 
@@ -61,7 +61,7 @@ my-tables
 
 ## 数据源参数规则
 
-`--host` 与 `--database` 必须成对提供：
+除 `my-tables` 外，所有数据库命令都必须提供 `--host` 与 `--database`，且两者必须成对出现：
 
 ```bash
 mbs database schemas --host pg-main --database order_db
@@ -71,10 +71,11 @@ mbs database query --sql "SELECT order_id FROM orders LIMIT 20" --host pg-main -
 
 规则：
 
-- `--host` + `--database` 都不传：查询默认 Doris
-- `--host` + `--database` 都传：查询对应外部数据源
+- `my-tables` 不需要 `--host` 或 `--database`
+- `schemas`、`show-create-table`、`query` 缺少任一参数时，CLI 在请求前直接报错
+- `--host` + `--database` 都传：查询对应数据源
 - `--schema` 仅在同名表映射到多个 schema、或服务端要求消歧时传
-- `query`、`show-create-table` 必须沿用从 `my-tables` 选出的同一组数据源参数
+- `schemas`、`query`、`show-create-table` 必须沿用从 `my-tables` 选出的同一组数据源参数
 
 ---
 
@@ -82,10 +83,10 @@ mbs database query --sql "SELECT order_id FROM orders LIMIT 20" --host pg-main -
 
 `my-tables` 是权限配置视角，适合快速找“我能查什么”。需要物理结构时再查：
 
-1. `mbs database schemas [--host ... --database ...]`
+1. `mbs database schemas --host ... --database ...`
    - 给库/schema 与表列表
    - 用于确认物理表是否存在、PG 源有哪些 schema
-2. `mbs database show-create-table --tableName ... [--host ... --database ...] [--schema ...]`
+2. `mbs database show-create-table --tableName ... --host ... --database ... [--schema ...]`
    - 给字段名、类型、分区或伪 DDL
    - 用于写 SQL 前确认列名、日期列、金额列、维度列
 
@@ -119,7 +120,7 @@ ORDER  BY ordinal_position
 
 ## 元数据缓存
 
-CLI 会缓存元数据，减少反复查同一份地图：
+CLI 会缓存元数据，默认缓存 30 分钟，减少反复查同一份地图：
 
 - `database my-tables`：缓存当前用户可操作库表
 - `database schemas`：按 `host + database` 缓存库/schema 与表清单

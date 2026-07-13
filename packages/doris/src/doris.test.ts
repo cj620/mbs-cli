@@ -9,6 +9,7 @@ import {
   dorisQueryBody,
   isDataDictionarySql,
   normalizeDataSourceOptions,
+  requireDataSourceOptions,
   resolveSql,
   writeAndCollectNdjsonStream,
   writeNdjsonStream,
@@ -112,6 +113,15 @@ describe('data source options', () => {
     expect(() => normalizeDataSourceOptions({ database: 'orders' })).toThrow(
       'host and database must be provided together',
     )
+  })
+
+  it('requires host and database for database operations', () => {
+    expect(() => requireDataSourceOptions({ schema: 'public' })).toThrow('host and database are required')
+    expect(requireDataSourceOptions({ host: 'pg-main', database: 'orders', schema: 'public' })).toEqual({
+      host: 'pg-main',
+      database: 'orders',
+      schema: 'public',
+    })
   })
 
   it('builds request params and query body without empty source fields', () => {
