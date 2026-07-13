@@ -22,7 +22,9 @@ mbs whoami             # 验证认证状态
 MBS_API_URL=https://api.example.com MBS_TOKEN=xxx mbs org platforms
 ```
 
-### 直通命令（探索未封装接口）
+### 开发专用直通命令（探索未封装接口）
+
+`raw` 仅用于开发者明确要求的接口探索，不是普通业务查询的兜底路径。普通查询应优先使用已封装的业务命令。
 
 ```bash
 mbs raw GET /v1/orders

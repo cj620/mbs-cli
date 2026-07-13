@@ -1,6 +1,6 @@
 ---
 name: mbs
-description: "Use when working with MBS / 马帮 CLI for authentication, CLI version checks, CLI updates, raw API access, or business data queries (org hierarchy, orders, procurement, products, operations, finance)."
+description: "Use when working with MBS / 马帮 CLI for authentication, CLI version checks, CLI updates, or business data queries (org hierarchy, orders, procurement, products, operations, finance)."
 metadata:
   requires:
     bins: ["mbs"]
@@ -113,7 +113,7 @@ metadata:
 
 ## 全局参考
 
-认证配置 / 版本更新 / 输出格式 / 退出码 / `raw` 直通命令 / `serve` 本地 HTTP 网关 → [references/global.md](references/global.md)
+认证配置 / 版本更新 / 输出格式 / 退出码 / `serve` 本地 HTTP 网关 → [references/global.md](references/global.md)
 
 ---
 
@@ -121,5 +121,5 @@ metadata:
 
 1. **业务数据查询**：查模块路由表 → 命中 1 个模块则读其 SKILL.md → 执行命令
 2. **命中 0 或 ≥ 2 个模块**：触发消歧协议（见上方）
-3. **认证 / raw / serve**：直接看 [references/global.md](references/global.md)。**版本 / 更新**：查路由表 `update` 模块 → [references/update/SKILL.md](references/update/SKILL.md)
-4. **找不到对应模块**：告知用户该模块尚未封装，可用 `mbs raw GET <endpoint>` 探索原始接口
+3. **认证 / serve**：直接看 [references/global.md](references/global.md)。**版本 / 更新**：查路由表 `update` 模块 → [references/update/SKILL.md](references/update/SKILL.md)
+4. **找不到对应模块**：告知用户该模块尚未封装；只有用户明确要求探索原始接口时，才使用开发专用的 `mbs raw GET/POST <endpoint>`

@@ -10,7 +10,7 @@
 - **本地 HTTP 网关 (`mbs serve`)**：在 `127.0.0.1` 起一层只读网关，复用 CLI 当前登录态，支持三种模式 —— 项目内置 API、外部 manifest 路由、`/proxy/*` 任意上游直通，配套 `/__routes` 自描述发现端点，内部看板与运营页可秒级接入。
 - **流式数据通道**：database 查询透传 NDJSON，结构化 `header / data / end / error` 行，原生支持大结果集增量消费。
 - **只读安全边界**：架构层强制 `GET` 与查询型 `POST`，禁止 `PUT/PATCH/DELETE`；包间依赖单向（`<domain> → shared ← cli`），认证与浏览器登录集中收敛在 `shared/auth`。
-- **逃生通道**：未封装的接口可用 `mbs raw GET/POST` 直通探索，复用同一认证与错误契约，不必为一次性需求新建模块。
+- **开发探索通道**：开发者明确探索未封装接口时可用 `mbs raw GET/POST` 直通，复用同一认证与错误契约；普通业务查询应使用已封装命令。
 
 定位：**一个把"内部 API + 浏览器登录态 + Agent 工作流"打包为单一命令的能力底座**，让一行 `mbs <domain> <action>` 等价于一次合规、可追溯、可被 Agent 安全消费的业务调用。
 
@@ -236,7 +236,7 @@ mbs whoami
 |------|---------|------|
 | config | `mbs config` | 查看或初始化 CLI API Base URL |
 | update | `mbs version` / `mbs update` | CLI 版本检查与更新 |
-| raw | `mbs raw` | 已认证直通请求：只允许 `GET` 和查询类 `POST`，用于封装前探索接口 |
+| raw | `mbs raw` | 隐藏的开发者直通请求：只允许 `GET` 和查询类 `POST`，用于封装前探索接口 |
 | skills | `mbs skills` | 查看、定位、安装随 CLI 打包的 agent skill 文档 |
 | serve | `mbs serve` | 本地 HTTP 网关，让业务页面二次开发时复用 CLI 认证查询 manifest 中的只读接口 |
 | test | `mbs test` | 本地测试工具：复用 shared whoami 状态逻辑，便于验证 serve project API |
@@ -302,7 +302,7 @@ mbs serve --project-apis
 | 查看版本与更新 | `mbs version` / `mbs update` |
 | 查看 skill 目录 | `mbs skills path` |
 | 查看 skill 内容 | `mbs skills show --file references/database/SKILL.md` |
-| 直通只读 API | `mbs raw GET /path --params '{"key":"value"}'` |
+| 开发者探索只读 API | `mbs raw GET /path --params '{"key":"value"}'` |
 | 本地 project API 网关 | `mbs serve --project-apis` |
 | 任意只读上游代理 | `mbs serve --proxy-all` |
 | 导出 xlsx（预览） | `mbs export plan --source database\|api ...` |

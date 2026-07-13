@@ -128,9 +128,9 @@ node packages/cli/bin/run.js serve --manifest fixtures/sample-audit-manifest.jso
 
 ---
 
-## raw 直通命令（快速探索 API）
+## raw 直通命令（开发/探索专用）
 
-封装前用只读 `raw` 探索原始接口：
+仅在开发者明确探索未封装接口时使用只读 `raw`；普通业务查询必须使用正式业务命令：
 
 ```bash
 mbs raw GET /v1/orders

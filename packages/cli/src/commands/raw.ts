@@ -3,7 +3,8 @@ import { Args, Flags } from '@oclif/core'
 import { MBSCommand } from '@mb-it-org/shared'
 
 export default class Raw extends MBSCommand {
-  static description = 'Make a raw authenticated HTTP request to the API'
+  static description = 'Developer-only raw authenticated HTTP request to the API'
+  static hidden = true
 
   static examples = [
     'mbs raw GET /v1/orders',
