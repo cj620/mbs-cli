@@ -45,7 +45,7 @@ mbs org shop-managers --company 1 --littleLeaders LL001 | jq '[.data[].id]'
 
 ## 前置步骤
 
-`littleLeaderId` 来自 `mbs org little-leaders`
+已有 `littleLeaderId` 时可直接传入；如果还不知道目标 ID，再通过 `mbs org little-leaders` 查询。查询业务数据时不需要为了获取店长 ID 而继续下钻。
 
 ## 上下文传递
 

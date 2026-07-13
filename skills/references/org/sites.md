@@ -43,4 +43,4 @@ mbs org sites --platform 101 | jq '[.data[].id]'
 
 ## 前置步骤
 
-`platformId` 来自 `mbs org platforms | jq '.data[].id'`
+已有 `platformId` 时可直接传入；如果还不知道平台 ID，再通过 `mbs org platforms | jq '.data[].id'` 查询。

@@ -44,7 +44,7 @@ mbs org little-leaders --company 1 --managers M001 | jq '[.data[].id]'
 
 ## 前置步骤
 
-`leaderId` 来自 `mbs org leaders`，`managerId` 来自 `mbs org managers`
+已有 `leaderId` 或 `managerId` 时可直接传入；如果还不知道目标 ID，再分别通过 `mbs org leaders` 或 `mbs org managers` 查询。查询业务数据时不需要为了获取下级 ID 而继续下钻。
 
 ## 上下文传递
 

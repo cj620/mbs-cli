@@ -139,11 +139,11 @@ Flags:
 用户说"有哪些平台" → `org platforms`
 用户说"平台下有哪些站点" → `org sites`（需 platformId）
 用户说"有哪些总监/找总监" → `org leaders`（需 company + platform）
-用户说"有哪些经理" → `org managers`（需 + leaders）
-用户说"有哪些主管" → `org little-leaders`（需 + managers）
-用户说"有哪些店长" → `org shop-managers`（需 + littleLeaders）
+用户说"有哪些经理" → `org managers`（可按 leaders 过滤）
+用户说"有哪些主管" → `org little-leaders`（可按 leaders / managers 过滤）
+用户说"有哪些店长" → `org shop-managers`（可按 leaders / managers / littleLeaders 过滤）
 用户说"有哪些店铺/所有店" → `org shops`（company 即可，其余可选过滤）
-用户说"有哪些员工/团队编号" → `org employees`（需完整链路）
+用户说"有哪些员工/团队编号" → `org employees`（可按已知组织层级过滤）
 
 ---
 
@@ -162,7 +162,7 @@ mbs org shops --company 1 --platform <platformId> --status 1
 mbs org shops --company 1 --platform <platformId> --status 1 | jq '[.data[].id]'
 ```
 
-### 场景二：按组织层级逐层下钻
+### 场景二：需要获取下级 ID 时按组织层级逐层下钻
 
 ```bash
 # 1. 获取平台列表
@@ -200,10 +200,22 @@ mbs org employees --company 1 --platform <platformId> --leaders <leaderId> --man
 
 ---
 
+### 场景三：按已知组织直接查询业务数据
+
+业务命令中的组织参数是独立筛选条件。例如已知总监 ID 时，直接传入：
+
+```bash
+mbs <domain> <action> --director <leaderId> ...
+```
+
+不需要先查询经理、主管、店长和员工 ID。只有用户明确要求下级名单，或接口明确要求下级参数时，才继续下钻。
+
+---
+
 ## 注意事项
 
 - 公司 ID：`1`=胤元，`33`=启元，多数查询都需要先确认公司
-- 组织层级**从上到下单向依赖**，不可跳层（例如不能跳过 leaders 直接查 managers）
+- 组织层级表示上下级关系，不代表业务查询必须逐层执行；已知目标层级 ID 时，可直接使用对应筛选参数
 - `org shops` 是例外：只需 `--company`，其他层级参数均为可选过滤条件
 - 多个 ID 传参统一用逗号分隔，例如 `--leaders L001,L002`
 - 所有命令均输出 `{ "ok": true, "data": [...] }`，失败时 `ok: false` 并附 `error.hint` 恢复提示

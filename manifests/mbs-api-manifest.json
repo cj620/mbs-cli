@@ -66,28 +66,28 @@
                 },
                 "director": {
                   "type": "array",
-                  "description": "总监(员工ID)多选，用于按组织架构圈定店铺集合(getShopListByParams)，结果写入finalShopNameList",
+                  "description": "总监(员工ID)多选，用于按组织架构圈定店铺集合(getShopListByParams)，结果写入finalShopNameList。可独立传入；已知总监ID时无需先查询或传入经理、主管、店长ID",
                   "items": {
                     "type": "integer"
                   }
                 },
                 "manager": {
                   "type": "array",
-                  "description": "经理(员工ID)多选，用途同director",
+                  "description": "经理(员工ID)多选，用途同director；可独立传入，不要求先获取下级主管、店长或员工ID",
                   "items": {
                     "type": "integer"
                   }
                 },
                 "littleLeaders": {
                   "type": "array",
-                  "description": "主管(员工ID)多选，用途同director",
+                  "description": "主管(员工ID)多选，用途同director；可独立传入，不要求先获取下级店长或员工ID",
                   "items": {
                     "type": "integer"
                   }
                 },
                 "shopManager": {
                   "type": "array",
-                  "description": "店长(员工ID)多选，用途同director",
+                  "description": "店长(员工ID)多选，用途同director；可直接传入已知店长ID",
                   "items": {
                     "type": "integer"
                   }

@@ -50,12 +50,15 @@ mbs org employees --company 1 --shopManagers SM001 | jq '[.data[].id]'
 mbs org employees --company 1 --shopManagers SM001 | jq '[.data[].teamNo]'
 ```
 
-## 前置步骤
+## 选择过滤范围
 
-通常需要通过完整层级链路逐步获取各级 ID：
+获取员工/团队编号时，可以直接使用已知的任意组织层级作为过滤条件，不要求先获取完整链路：
 ```
-platforms → leaders → managers → little-leaders → shop-managers → employees
+已知 leaderId / managerId / littleLeaderId / shopManagerId → employees
 ```
+
+只有用户明确要求查看下级组织，或需要把下级 ID 传给其他接口时，才按以下关系继续下钻：
+`platforms → leaders → managers → little-leaders → shop-managers → employees`
 
 ## 上下文传递
 

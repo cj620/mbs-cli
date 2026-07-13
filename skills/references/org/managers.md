@@ -46,7 +46,7 @@ mbs org managers --company 1 --leaders L001 | jq '[.data[].id]'
 
 ## 前置步骤
 
-`leaderId` 来自 `mbs org leaders`
+已有 `leaderId` 时可直接传入；如果还不知道 ID，再通过 `mbs org leaders` 查询。
 
 ## 上下文传递
 

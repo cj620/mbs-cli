@@ -9,11 +9,11 @@
 | "有哪些平台" | `org platforms` |
 | "平台下有哪些站点" | `org sites`（需 platformId） |
 | "有哪些总监/找总监" | `org leaders`（需 company + platform） |
-| "有哪些经理" | `org managers`（需 + leaders） |
-| "有哪些主管" | `org little-leaders`（需 + managers） |
-| "有哪些店长" | `org shop-managers`（需 + littleLeaders） |
+| "有哪些经理" | `org managers`（可按 leaders 过滤） |
+| "有哪些主管" | `org little-leaders`（可按 leaders / managers 过滤） |
+| "有哪些店长" | `org shop-managers`（可按 leaders / managers / littleLeaders 过滤） |
 | "有哪些店铺/所有店" | `org shops`（company 即可） |
-| "有哪些员工/团队编号" | `org employees`（需完整链路） |
+| "有哪些员工/团队编号" | `org employees`（可按已知组织层级过滤） |
 
 ## 命令一览
 
@@ -32,17 +32,26 @@
 
 ```
 platforms
-  └─ leaders（需 company + platform）
-       └─ managers（需 + leaders）
-            └─ little-leaders（需 + managers）
-                 └─ shop-managers（需 + littleLeaders）
-                      └─ employees（需完整链路）
+  └─ leaders（按 company / platform 过滤）
+       └─ managers（可按 leaders 过滤）
+            └─ little-leaders（可按 leaders / managers 过滤）
+                 └─ shop-managers（可按 leaders / managers / littleLeaders 过滤）
+                      └─ employees（可按已知组织层级过滤）
 
 sites（独立，仅依赖 platform ID）
 shops（独立，仅需 company；其余字段为可选过滤）
 ```
 
-组织层级**从上到下单向依赖**，不可跳层。`shops` 是例外：只需 `--company`，其余均为可选过滤条件。
+这张图描述的是组织关系，不代表每次查询都必须按顺序执行。实际命令支持哪些筛选字段，以对应命令文档为准；已经有目标层级 ID 时，不要为了业务查询自动补齐下级 ID。`shops` 只需 `--company`，其余均为可选过滤条件。
+
+## 组织参数使用规则（重要）
+
+要区分两类需求：
+
+1. **查询业务数据**：组织字段是独立筛选条件。比如用户要查询某个总监负责的商品、店铺或订单，已知总监 ID 时，直接传业务命令的 `--director`、`--leaders` 等对应参数即可，不需要先查询经理、主管、店长和员工 ID。
+2. **获取下级名单**：只有用户明确要知道某个总监下面有哪些经理、主管、店长或员工时，才调用对应的 `org` 命令继续下钻。
+
+`company`、`platform` 等业务命令明确要求的参数仍需提供；“不必下钻”不等于可以猜测或省略必填参数。
 
 ## 上下文传递
 
@@ -65,7 +74,7 @@ mbs org shops --company 1 --platform <platformId> --status 1
 mbs org shops --company 1 --platform <platformId> --status 1 | jq '[.data[].id]'
 ```
 
-**按组织层级逐层下钻：**
+**需要获取下级 ID 时，按组织层级逐层下钻：**
 ```bash
 mbs org platforms
 mbs org leaders --company 1 --platform <platformId>
