@@ -67,6 +67,10 @@ function lastPathSegment(path) {
   return String(path ?? '').split('/').filter(Boolean).pop() ?? ''
 }
 
+function normalizeMethod(method) {
+  return String(method ?? '').trim().toUpperCase()
+}
+
 function normalizeAction(action) {
   const service = action.serviceName ?? action.service
   const tail = lastPathSegment(action.path)
@@ -82,7 +86,7 @@ function normalizeAction(action) {
     description,
     ...(service ? { service } : {}),
     ...(action.pathPrefix ? { pathPrefix: action.pathPrefix } : {}),
-    method: action.method,
+    method: normalizeMethod(action.method),
     path: action.path,
     ...(action.responseMode ? { responseMode: action.responseMode } : {}),
     ...(action.params ? { params: action.params } : {}),

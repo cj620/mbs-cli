@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "build": "pnpm -r build",
-    "test": "pnpm -r test",
+    "test": "node --test scripts/lib/normalize-manifest.test.mjs && pnpm -r test",
     "dev": "pnpm --filter @mb-it-org/cli dev",
     "serve:restart": "node scripts/restart-serve.mjs",
     "gen:manifest": "node scripts/gen-from-manifest.mjs",
