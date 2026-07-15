@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-find-shopee-shop
 
 Shopee店铺列表查询：Shopee批量删除页面进入时调用，查询当前用户可见的Shopee店铺名称列表，用于渲染搜索区店铺多选下拉(#shopName)与生成删除任务弹窗店铺多选下拉(#creatShop)。无入参，返回店铺名称字符串数组。
@@ -15,7 +16,7 @@ mbs pim erp-product-find-shopee-shop
 - Path: `/erpProduct/erpProduct/shopeeProductController/findShopeeShop`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

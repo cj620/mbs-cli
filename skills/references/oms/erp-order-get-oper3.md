@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-get-oper3
 
 高级搜索-开发员下拉数据查询：订单列表页「高级搜索」弹窗中，初始化「开发员」(#selloper)下拉框选项。返回当前用户可选的开发员(销售开发员)名称列表；前端用 art-template selloperTemplate 遍历 obj 渲染为 option，并对 #selloper 启用 select2。无任何请求参数。
@@ -15,7 +16,7 @@ mbs oms erp-order-get-oper3
 - Path: `/erpOrder/erpOrder/orderNew/getOper3`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

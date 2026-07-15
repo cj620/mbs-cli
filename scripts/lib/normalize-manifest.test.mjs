@@ -161,3 +161,33 @@ test('renames request fields that conflict with oclif built-in flags', () => {
   assert.equal(field['x-cli-name'], 'jsonValue')
   assert.doesNotThrow(() => parseAuditManifest(normalized))
 })
+
+test('gives query and body fields distinct CLI names when their API names match', () => {
+  const manifest = manifestWithMethod('POST')
+  manifest.modules[0].actions[0].request = {
+    query: { type: 'object', properties: { sku: { type: 'string', required: true } } },
+    body: { type: 'object', properties: { sku: { type: 'string', required: true } } },
+  }
+
+  const normalized = normalizeServerManifest(manifest)
+  const request = normalized.modules[0].actions[0].request
+
+  assert.equal(request.query.properties.sku['x-cli-name'], 'skuQuery')
+  assert.equal(request.body.properties.sku['x-cli-name'], 'skuBody')
+  assert.doesNotThrow(() => parseAuditManifest(normalized))
+})
+
+test('drops legacy path params that are absent from the action URL', () => {
+  const manifest = manifestWithMethod('GET')
+  manifest.modules[0].actions[0].path = '/orders/{id}'
+  manifest.modules[0].actions[0].params = [
+    { name: 'id', in: 'path', type: 'string', required: true },
+    { name: 'employeeType', in: 'path', type: 'string', required: true },
+    { name: 'status', in: 'query', type: 'string' },
+  ]
+
+  const normalized = normalizeServerManifest(manifest)
+
+  assert.deepEqual(normalized.modules[0].actions[0].params.map((param) => param.name), ['id', 'status'])
+  assert.doesNotThrow(() => parseAuditManifest(normalized))
+})

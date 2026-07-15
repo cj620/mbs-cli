@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs prm erpsoldout-get-site
 
 根据平台查询站点列表(getSite)：在「提交钓鱼信息」弹窗中，用户选择「平台」(多选)后触发，根据所选平台ID集合查询其对应的站点(site)列表，用于「站点」下拉框的可选项渲染。
@@ -15,7 +16,7 @@ mbs prm erpsoldout-get-site --platformIds <string>
 - Path: `/erpsoldout/erpsoldout/infringing/getSite`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

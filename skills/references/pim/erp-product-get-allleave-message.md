@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-get-allleave-message
 
 商品咨询留言列表查询：商品咨询页按提问人/回复人/开发员、提问时间区间分页查询商品(SPU/SKU)留言：返回主留言(提问)及其子留言(回复)两级结构，前端渲染为表格并分页。
@@ -15,7 +16,7 @@ mbs pim erp-product-get-allleave-message --page <number> --pageSize <number> [--
 - Path: `/erpProduct/erpProduct/productDetails/getALLLeaveMessage`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

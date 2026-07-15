@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-get-shop-select2
 
 新人转正第二阶段考核店铺下拉查询：营销新人成绩单详情页“新人转正目标 - 第二阶段”考核店铺下拉框(#shopSelect7_2)的数据源。按员工(新人)姓名查询其可选店铺名称列表，前端用 art-template 渲染成 <option>，并初始化 ySelect 多选下拉。
@@ -15,7 +16,7 @@ mbs oms erp-order-get-shop-select2 --employeeName <string>
 - Path: `/erpOrder/erpOrder/newComerTranscript/getShopSelect2`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

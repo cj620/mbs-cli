@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs scm erp-manufacture-find-postpone-info
 
 延长收货订单分页查询：延长收货订单管理页查询：按订单编号、买家、时间(订单/发货)区间、店铺、店铺负责人、物流类型/方式、剩余收货时间区间、排序及 Tab 状态(延长收货订单/延长中)分页查询，返回订单列表及订单金额、毛利、物流、剩余收货时间、延长状态等字段。
@@ -15,7 +16,7 @@ mbs scm erp-manufacture-find-postpone-info --page <number> [--tradeId <string>] 
 - Path: `/erpManufacture/erpManufacture/postponeInfo/findPostponeInfo`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

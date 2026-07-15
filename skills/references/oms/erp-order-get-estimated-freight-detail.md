@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-get-estimated-freight-detail
 
 预估运费明细查询：销售报表-预估运费明细分页查询：根据父页面透传的查询条件(params)、统计日期(currentdate)与页码(page)，分页返回订单的预估运费明细列表(订单号/店铺号/预估运费/店长/时间)及总条数、总页数。
@@ -15,7 +16,7 @@ mbs oms erp-order-get-estimated-freight-detail --currentdate <string> --page <nu
 - Path: `/erpOrder/erpOrder/saleReport/getEstimatedFreightDetail`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

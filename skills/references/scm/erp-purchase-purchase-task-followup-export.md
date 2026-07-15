@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs scm erp-purchase-purchase-task-followup-export
 
 采购任务跟进导出：将「今日采购跟进」页面当前筛选条件（downloadparams）下的采购跟进任务列表导出为 Excel 文件。前端点击导出按钮触发 outdown()，POST 请求体为最近一次任务类型为1(今日必跟进)或14(今日已跟进)的查询条件，后端返回 xlsx 二进制流，前端以 Blob 下载。
@@ -15,7 +16,7 @@ mbs scm erp-purchase-purchase-task-followup-export --searchType <string> [--filt
 - Path: `/erpPurchase/erpPurchase/purchaseDevelop/purchaseTaskFollowupExport`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

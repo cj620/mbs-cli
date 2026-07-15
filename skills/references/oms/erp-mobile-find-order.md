@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-mobile-find-order
 
 订单列表查询（移动端正常/缺货订单）：移动端订单列表分页查询：按店长、店铺类型、订单类型标志(正常/缺货)与模糊关键字(订单ID/交易ID/卖家ID/SKU)分页拉取订单列表，返回订单行及正常/缺货数量汇总，并下发当前用户头像。
@@ -15,7 +16,7 @@ mbs oms erp-mobile-find-order --currentPage <number> [--shopmanager <string>] [-
 - Path: `/erpMobile/erpMobile/pushController/findOrder`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

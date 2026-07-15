@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-get-product-log-spu-or-sku
 
 SPU/SKU 操作日志查询：根据 SPU 分页（滚动加载）查询该商品 SPU 及其下 SKU 的操作日志列表，返回操作人、操作时间、关联SKU、操作内容，前端在 SPU 详情页右侧操作日志栏渲染，并通过 IntersectionObserver 触底递增 limitNum 加载更多。
@@ -15,7 +16,7 @@ mbs pim erp-product-get-product-log-spu-or-sku --spu <string> --isAll <string> [
 - Path: `/erpProduct/erpProduct/productDetails/getProductLogSpuOrSku`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

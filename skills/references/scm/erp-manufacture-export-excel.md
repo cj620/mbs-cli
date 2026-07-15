@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs scm erp-manufacture-export-excel
 
 SMT纠纷信息导出Excel：在SMT纠纷统计页点击导出按钮，按当前列表查询条件导出纠纷信息明细Excel。请求体复用纠纷列表查询(getIssueInfoList)最后一次的查询参数(exportdata=params)，响应为二进制文件流(responseType:blob)，文件名取自响应头content-disposition。
@@ -15,7 +16,7 @@ mbs scm erp-manufacture-export-excel [--country <string>] [--shopManager <string
 - Path: `/erpManufacture/erpManufacture/issueInfo/exportExcel`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

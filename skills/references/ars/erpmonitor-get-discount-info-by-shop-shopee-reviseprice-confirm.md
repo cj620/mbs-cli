@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs ars erpmonitor-get-discount-info-by-shop-shopee-reviseprice-confirm
 
 按店铺获取折扣活动信息：Shopee 提价（改价）确认页“生成提价商品信息”弹窗中，选定单个店铺后，根据店铺名查询该店铺已同步的折扣活动列表，用于填充“店铺活动”下拉框（select2），下拉项 value=discountId、显示文本=discountName。
@@ -15,7 +16,7 @@ mbs ars erpmonitor-get-discount-info-by-shop-shopee-reviseprice-confirm --shopNa
 - Path: `/erpmonitor/erpmonitor/shopeeRevisepriceConfirm/getDiscountInfoByShop`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

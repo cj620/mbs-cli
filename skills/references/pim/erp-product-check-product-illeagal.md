@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-check-product-illeagal
 
 违规产品审核：违规产品登记表(registrationForm)「违规产品」页签中，总经办点击行内[审核]弹出审核模态框，选择审核结果(通过/驳回)并填写备注后提交。后端按 sequenceid 标记该违规记录审核状态与备注，仅返回 code/desc，前端据 code 弹窗提示并刷新列表。
@@ -15,7 +16,7 @@ mbs pim erp-product-check-product-illeagal --sequenceid <string> --checkstatus <
 - Path: `/erpProduct/erpProduct/product/checkProductIlleagal`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

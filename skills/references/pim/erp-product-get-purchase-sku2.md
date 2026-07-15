@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-get-purchase-sku2
 
 SKU采购在途运单查询(getPurchaseSku2)：SPU管理列表中鼠标悬停某SKU在途小窗时触发，按SKU查询该SKU的采购在途运单明细（运单号、在途数量、到货状态、采购跟进日志、最新物流轨迹），渲染到 popover 弹窗。
@@ -5,7 +6,7 @@ SKU采购在途运单查询(getPurchaseSku2)：SPU管理列表中鼠标悬停某
 ## 用法
 
 ```bash
-mbs pim erp-product-get-purchase-sku2 --sku <string> --sku <string>
+mbs pim erp-product-get-purchase-sku2 --skuQuery <string> --skuBody <string>
 ```
 
 ## API
@@ -15,14 +16,14 @@ mbs pim erp-product-get-purchase-sku2 --sku <string> --sku <string>
 - Path: `/erpProduct/erpProduct/productDetails/getPurchaseSku2`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 
 | 参数 | API 字段 | 位置 | 类型 | 必填 | 默认值 | 说明 |
 |---|---|---|---|---|---|---|
-| `sku` | sku | query | string | 是 | - | URL查询参数，当前SKU编号(来源列表行 data-sid) |
-| `sku` | sku | body | string | 是 | - | 请求体参数，与query同值，当前SKU编号 |
+| `skuQuery` | sku | query | string | 是 | - | URL查询参数，当前SKU编号(来源列表行 data-sid) |
+| `skuBody` | sku | body | string | 是 | - | 请求体参数，与query同值，当前SKU编号 |
 
 ## 响应字段
 

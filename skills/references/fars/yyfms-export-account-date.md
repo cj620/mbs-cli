@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs fars yyfms-export-account-date
 
 Payoneer账户费用明细导出：根据币种、起止日期、邮箱、描述等筛选条件及表格勾选的记录ID集合，导出账户费用明细文件(Excel)。前端以XMLHttpRequest POST JSON、responseType=blob接收二进制流，并从响应头content-disposition解析文件名后触发浏览器下载。
@@ -15,7 +16,7 @@ mbs fars yyfms-export-account-date [--currency <string>] [--startDate <string>] 
 - Path: `/yyfms/fms/accountcostexport/exportAccountDate`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

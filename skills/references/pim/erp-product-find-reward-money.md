@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-find-reward-money
 
 爆款listing奖励排行榜查询：商品中心“爆款listing”页面「排行榜」标签页查询接口：无请求参数，后端返回各店铺负责人(shopPrincipal)的爆款listing数量(listingNum)排行榜列表，前端按返回顺序生成名次、姓名、listing数三列展示；奖励金额(rewardMoney)字段在模板中已注释、当前不展示。
@@ -15,7 +16,7 @@ mbs pim erp-product-find-reward-money
 - Path: `/erpProduct/erpProduct/listingController/findRewardMoney`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

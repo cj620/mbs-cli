@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-get-developer-info-by-shop-manager
 
 开发员覆盖率-按店长查询(第二级下钻)：产品刊登分析-开发覆盖率页面，点击大酋长(第一级)行展开时调用，按所选大酋长/组员(开发员)及该组员 employeeId，查询其名下各店长(shopManager)维度的刊登/覆盖率/SPU汇总/销售额占比等数据，返回店长列表用于二级表格渲染。
@@ -15,7 +16,7 @@ mbs oms erp-order-get-developer-info-by-shop-manager --bigChief <array> [--devel
 - Path: `/erpOrder/erpOrder/developerTarget/getDeveloperInfoByShopManager`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

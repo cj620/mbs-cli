@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-get-leave-message-sku
 
 获取SKU留言列表：商品详情「全部留言」页加载指定SKU的留言列表：按SKU(及SPU)查询全部留言，返回每条留言的留言人/时间/内容/头像、附带的图片与文件附件，以及该留言下的子留言(回复)。
@@ -15,7 +16,7 @@ mbs pim erp-product-get-leave-message-sku --sku <string> [--spu <string>] [--isA
 - Path: `/erpProduct/erpProduct/productDetails/getLeaveMessageSku`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

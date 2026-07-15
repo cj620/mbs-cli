@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs ars erpmonitor-get-discount-info-by-shop-tiktok-reviseprice-confirm
 
 按店铺查询TikTok折扣活动信息：TikTok改价确认(提价)弹窗中，当仅选择1个店铺时，按店铺名查询该店铺下的TikTok折扣活动列表，用于渲染“店铺活动”下拉框：每项以 discountId 为值、discountName 为展示文本。
@@ -15,7 +16,7 @@ mbs ars erpmonitor-get-discount-info-by-shop-tiktok-reviseprice-confirm --shopNa
 - Path: `/erpmonitor/erpmonitor/tiktokRevisepriceConfirm/getDiscountInfoByShop`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs ars erpmonitor-match-skus-of-shop
 
 店铺下架商品SKU匹配查询：修正刊登监控-下架明细页加载时调用：根据页面 URL 携带的店铺名称(shopName)与 SKU 集合(skus)查询该店铺下匹配到的商品 SKU 列表，返回店铺名称、商品标题、商品编号、平台SKU、主图、库存等，用于下架明细列表渲染。
@@ -15,7 +16,7 @@ mbs ars erpmonitor-match-skus-of-shop --shopName <string> [--skus <string>]
 - Path: `/erpmonitor/erpmonitor/ReviseListingMonitor/matchSkusOfShop`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

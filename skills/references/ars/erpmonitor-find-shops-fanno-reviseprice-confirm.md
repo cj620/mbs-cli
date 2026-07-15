@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs ars erpmonitor-find-shops-fanno-reviseprice-confirm
 
 店铺列表查询(fanno提价店铺下拉)：fanno提价页面初始化时调用，获取当前用户可选的店铺列表，用于顶部店铺多选下拉(#checkShops)的渲染。请求体为空对象{}，无入参；返回店铺集合，每项含店铺名称与店铺ID，供勾选后回填 checkShop(店铺名)与 checkShopId(店铺ID)。
@@ -15,7 +16,7 @@ mbs ars erpmonitor-find-shops-fanno-reviseprice-confirm
 - Path: `/erpmonitor/erpmonitor/fannoRevisepriceConfirm/findShops`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

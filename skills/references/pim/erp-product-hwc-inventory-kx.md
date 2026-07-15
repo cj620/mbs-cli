@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-hwc-inventory-kx
 
 海外仓产品库息(明细)查询：海外仓产品报表(notFbareport)中，点击某商品的“昨日库息”数值时弹出“库息明细”弹窗，按 SKU(或捆绑商品 bindId)+海外仓分页查询该商品逐条库息记录(时间、单个成本、库存、日均销量、库息、创建/操作时间)。
@@ -15,7 +16,7 @@ mbs pim erp-product-hwc-inventory-kx [--bindId <string>] [--skuValue <string>] -
 - Path: `/erpProduct/erpProduct/hwcProduct/HwcInventoryKx`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

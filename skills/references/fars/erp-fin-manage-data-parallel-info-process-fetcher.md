@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs fars erp-fin-manage-data-parallel-info-process-fetcher
 
 账单反查表查询：TikTok 核对域「账单反查表」列表分页查询：按付款单号/结算单号/店铺名称/所属公司等条件，返回账单反查明细列表（结算/付款单号、店铺、币种、总应收、平台费、物流费、广告费、税费、退款、打款金额、公司等）及总数。
@@ -15,7 +16,7 @@ mbs fars erp-fin-manage-data-parallel-info-process-fetcher --type <number> [--pa
 - Path: `/erpFinManageData/erpFinManageData/finance/parallelInfoProcessFetcher`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

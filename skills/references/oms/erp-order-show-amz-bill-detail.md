@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-show-amz-bill-detail
 
 亚马逊平台费账单明细查询：销售业绩报表中点击某日「平台费」(发货时间业绩 + 平台=Amazon)下钻，按账单日期分页查询亚马逊平台费账单明细，返回店铺/币种/费用金额/费用类型/订单号/SKU/出账时间等明细行及总条数。
@@ -15,7 +16,7 @@ mbs oms erp-order-show-amz-bill-detail [--employeeType <string>] [--startTime <s
 - Path: `/erpOrder/erpOrder/saleReport/showAmzBillDetail`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

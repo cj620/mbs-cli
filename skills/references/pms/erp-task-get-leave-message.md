@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pms erp-task-get-leave-message
 
 任务留言列表查询：任务/投诉详情页底部「物流任务 留言」模块的留言列表查询：按任务标识(spu)拉取该任务下全部留言及其子留言(回复)，用于渲染留言时间线（头像、留言人、时间、内容、关联SKU、嵌套回复）。
@@ -15,7 +16,7 @@ mbs pms erp-task-get-leave-message --spu <string> --isAll <string> --isSystem <s
 - Path: `/erpTask/erpTask/taskController/getLeaveMessage`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

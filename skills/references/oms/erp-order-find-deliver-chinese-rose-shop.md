@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-find-deliver-chinese-rose-shop
 
 月度店销报表-发货时间业绩查询(findDeliverChineseRoseShop)：月度店销报表「发货时间业绩」维度查询：按人员类别、平台、品类、客户经理、组织架构(总监/经理/主管/店长)、店铺、月份、统计类型、公司、海外仓、店龄等条件筛选，返回 ECharts 折线图系列(series/x)、表头(title)与店铺明细行列表(saleReportList，含发货小计/利润/毛利率/运营毛利率/订单量/退款金额/平台费/站内推广费等分时段汇总)。
@@ -15,7 +16,7 @@ mbs oms erp-order-find-deliver-chinese-rose-shop [--employeeType <string>] [--pl
 - Path: `/erpOrder/erpOrder/personSaleReport/findDeliverChineseRoseShop`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

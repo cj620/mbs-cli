@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-get-hwcorder-shipment-info
 
 订单货件(海外仓发货)信息查询：订单详情页加载时按订单号查询该订单的海外仓货件/发货信息(货件店铺、货件编号、发货实重、真实运费、仓库类型)，渲染到货件信息区并回填仓库类型，随后联动加载SKU标签/装箱单标签。
@@ -15,7 +16,7 @@ mbs oms erp-order-get-hwcorder-shipment-info --orderid <string>
 - Path: `/erpOrder/erpOrder/orderNew/getHwcorderShipmentInfo`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs ars erpmonitor-get-customer-service
 
 客服组员(组员下拉)查询：客服绩效(组员维度)页面中，根据已选「店长」(leaderList 多选)联动查询其名下的客服组员列表，返回结果渲染到「组员」下拉框(customberTemplate)。请求体为裸JSON数组(店长ID数组)。
@@ -15,7 +16,7 @@ mbs ars erpmonitor-get-customer-service --root <array<string>>
 - Path: `/erpmonitor/erpmonitor/smtShopKpi/getCustomerService`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

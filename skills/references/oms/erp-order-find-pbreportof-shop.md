@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-find-pbreportof-shop
 
 店铺ProductBoost(PB)推广费报表查询：根据店铺ID与活动时间区间，查询该店铺下 Wish ProductBoost(商品推广)各活动的费用报表：返回活动基础信息、GMV/PB GMV、活动最大预算、广告总消耗与期间消耗、曝光费/报名费/曝光数等明细；前端对 totalCampaignSpend、incrementFee 做合计生成汇总行并以 art-template 渲染表格。
@@ -15,7 +16,7 @@ mbs oms erp-order-find-pbreportof-shop --startTime <string> --endTime <string> -
 - Path: `/erpOrder/erpOrder/wishProductBoost/findPBReportofShop`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

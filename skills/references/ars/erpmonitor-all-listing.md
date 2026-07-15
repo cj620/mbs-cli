@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs ars erpmonitor-all-listing
 
 在线商品列表查询（本周新刊登 / 所有在线商品）：在线商品监控列表分页查询。同一接口被两处复用：本周新刊登标签页固定带 thisWeek=1 查询本周新刊登商品；所有在线商品标签页不带 thisWeek 查询全部在线商品。返回商品列表及分页信息（total/pages/scrollId）。
@@ -15,7 +16,7 @@ mbs ars erpmonitor-all-listing --currpage <number> [--scrollId <string>] [--this
 - Path: `/erpmonitor/erpmonitor/managerHotProduct/allListing`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

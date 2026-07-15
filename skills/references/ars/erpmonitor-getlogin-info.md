@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs ars erpmonitor-getlogin-info
 
 获取登录用户信息：页面加载后拉取当前登录用户的基础信息，前端仅取用其中的 obj.manageShopIds（当前用户可管理的店铺ID集合），用于后续店铺列表查询/过滤。请求无入参，返回统一响应体。
@@ -15,7 +16,7 @@ mbs ars erpmonitor-getlogin-info
 - Path: `/erpmonitor/erpmonitor/monitor/getloginInfo`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

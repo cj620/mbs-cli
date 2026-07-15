@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-get-amazon-shop-by-id
 
 根据店铺ID查询Amazon店铺信息：商品导出新建页选择 Amazon 店铺(下拉控件 #shopnames)后，按所选店铺 sid 查询该店铺详情，回填品牌名称(platformshopname)与店铺URL名(amazonurlname)到表单。店铺ID以 URL query 参数 shopid 传递，无请求体。
@@ -15,7 +16,7 @@ mbs pim erp-product-get-amazon-shop-by-id --shopid <string>
 - Path: `/erpProduct/erpProduct/productReport/getAmazonShopById`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

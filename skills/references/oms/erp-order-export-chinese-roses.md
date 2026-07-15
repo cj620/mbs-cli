@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-export-chinese-roses
 
 月度店销报表导出：导出「月度店销报表」。按人员类别(订单时间业绩/发货时间业绩)、平台、品类、客户经理、总监/大酋长/组员、店铺、年月、展示指标类型、公司、海外仓类型、店龄区间等条件，导出 Excel(.xls) 文件流；无数据或异常时返回 JSON 提示。
@@ -15,7 +16,7 @@ mbs oms erp-order-export-chinese-roses --employeeType <string> [--startTime <str
 - Path: `/erpOrder/erpOrder/personSaleReport/exportChineseRoses`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

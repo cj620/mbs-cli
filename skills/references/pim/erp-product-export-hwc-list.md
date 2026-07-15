@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-export-hwc-list
 
 真实海外仓跟踪单-导出：「真实海外仓跟踪单」页面的导出接口。以与列表查询(trackingListHwcList)完全相同的筛选条件异步生成 Excel 导出文件。前端 myAxios.post(..., {download: true}) 触发浏览器下载并提示'已创建下载'。响应为 Excel 文件流，下表 response 为导出文件数据列(与列表行字段同源)。
@@ -15,7 +16,7 @@ mbs pim erp-product-export-hwc-list --page <number> [--dateType <string>] [--sta
 - Path: `/erpProduct/erpProduct/hwcProduct/exportHwcList`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

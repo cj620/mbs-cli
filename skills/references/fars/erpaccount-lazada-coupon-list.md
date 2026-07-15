@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs fars erpaccount-lazada-coupon-list
 
 Lazada优惠券(促销)执行记录列表查询：查询各店铺Lazada促销(优惠券)定时执行结果：按店铺/店长(组员)/大酋长/站点/状态/日期类型与时间区间分页筛选，返回店铺、店长、站点、促销设置、上一次成功/失败时间及失败原因，并支持分页与排序。
@@ -15,7 +16,7 @@ mbs fars erpaccount-lazada-coupon-list --page <number> --pageSize <string> [--or
 - Path: `/erpaccount/erpaccount/lazadaUnRead/lazadaCouponList`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

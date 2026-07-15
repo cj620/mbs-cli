@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-batch-list-fba
 
 FBA批次上架库存明细查询(查看全部)：FBA库存报表页点击某SKU“查看全部”时，按 SKU+店铺 分页查询该SKU各批次的上架库存明细（批次描述、FBA对应批次上架库存数、接收日期），并在弹窗表格中展示，支持分页。
@@ -15,7 +16,7 @@ mbs pim erp-product-batch-list-fba --sku <string> --shopName <string> --page <nu
 - Path: `/erpProduct/erpProduct/fbaProduct/batchListFba`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

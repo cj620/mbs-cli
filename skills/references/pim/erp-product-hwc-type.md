@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-hwc-type
 
 根据海外仓类型查询发货仓库(前缀)列表：订单详情页「海外仓发货设置」弹窗中，用户选择「海外仓类型」后触发；以海外仓类型ID作为路径参数，返回该类型下可选的发货仓库(中转仓/前缀)列表，用于「选择前缀」下拉框。仅有一项时前端默认选中并继续联动 SKU 后缀与收货仓库。
@@ -15,7 +16,7 @@ mbs pim erp-product-hwc-type
 - Path: `/erpProduct/erpProduct/product/getHWCSuffByHwcType/{hwcType}`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

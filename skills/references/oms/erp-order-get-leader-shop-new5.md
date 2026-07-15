@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-get-leader-shop-new5
 
 店长店铺列表查询(getLeaderShopNew5)：销售报表(saleReport)模块：根据大区长、客服经理、店长(员工)、平台、关键词、运营状态等条件查询店长名下的店铺列表，返回店铺数组(SHOPID/SHOPNAME)，用于「店铺」多选下拉(el-select)的选项渲染与远程搜索。
@@ -15,7 +16,7 @@ mbs oms erp-order-get-leader-shop-new5 [--bigChiefList <array>] [--customerServi
 - Path: `/erpOrder/erpOrder/saleReport/getLeaderShopNew5`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

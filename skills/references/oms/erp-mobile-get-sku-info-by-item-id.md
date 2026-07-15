@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-mobile-get-sku-info-by-item-id
 
 在线商品SKU信息查询（按商品ID）：移动端「在线」商品列表中点击某商品行的展开箭头时调用，按商品ID(parentSPUId/itemId)与店铺ID(shopId)查询该商品下全部SKU的售价、币种、运费、在线库存、马帮库存及调价/调库存状态，并据部门(department)判断是否展示调价/调库存入口。
@@ -15,7 +16,7 @@ mbs oms erp-mobile-get-sku-info-by-item-id --parentSPUId <string> --shopId <stri
 - Path: `/erpMobile/erpMobile/hotProductListing/getSkuInfoByItemId`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

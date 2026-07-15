@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-get-publish-info-spu-new
 
 SPU刊登信息查询(新)：SPU详情页「刊登信息」面板查询：传入SPU与白名单/低分等筛选开关，返回该SPU在各平台店铺的刊登明细列表(图片、标题、销量、售价、店铺、负责人、平台SPU、刊登日期等)，以及当前用户名下尚未刊登该SPU的店铺列表；同时返回数据更新时间。
@@ -15,7 +16,7 @@ mbs pim erp-product-get-publish-info-spu-new --spu <string> --isAll <string> [--
 - Path: `/erpProduct/erpProduct/productDetails/getPublishInfoSpuNew`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

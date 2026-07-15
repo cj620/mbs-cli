@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pms center-message-service-query-notice-page
 
 通知公告分页查询：站内通知公告分页查询。页面加载后调用，拉取当前用户的通知列表（默认只查未读），前端取列表第一条 records[0].id，再调用 getById 拉取详情并弹窗提醒。
@@ -15,7 +16,7 @@ mbs pms center-message-service-query-notice-page --currentPage <number> --pageSi
 - Path: `/gateway/center-message-service/message/notice/queryNoticePage`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

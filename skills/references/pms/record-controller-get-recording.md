@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pms record-controller-get-recording
 
 获取单条录制详情：录制回放(recordplay)插件在页面加载时先调用 /RecordController/ListRecordings 取得录制列表，再对列表中每条录制按 recordingId 调用本接口获取该条录制的完整内容（录制名、录制ID、事件列表），随后经 convertFromJson 转换并渲染为录制树、绑定回放触发事件。
@@ -15,7 +16,7 @@ mbs pms record-controller-get-recording --recordingId <string>
 - Path: `/RecordController/GetRecording`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

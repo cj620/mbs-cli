@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-find-wish-pbof-itemid-every-next-or-last
 
 WishPB商品翻页(前/后45天)趋势查询：WishPB(Product Boost)推广趋势图的翻页查询：在 listingChart 页面点击「前45天 searchChart('0')」/「后45天 searchChart('1')」时，按 productId + 基准日期 date + 选中指标 selectOption + 方向 days 拉取折线趋势数据(x 轴日期 + series 多指标系列)，并回写新的基准日期用于继续翻页。
@@ -15,7 +16,7 @@ mbs oms erp-order-find-wish-pbof-itemid-every-next-or-last --productId <string> 
 - Path: `/erpOrder/erpOrder/wishProductBoost/findWishPBOfItemidEveryNextOrLast`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

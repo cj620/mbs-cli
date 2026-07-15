@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-check-tracking-list-fba
 
 FBA货件校验（checkTrackingListFba）：在出库进度/状态报表页的FBA出库校验弹窗中，输入FBA货件编号、头程运费、包裹称重(kg)、实际发货时间、店铺后点击校验，对货件做出库校验，返回该货件下每个FNSKU的马帮商品编号、本次出库量、重量、头程运费及异常信息列表(含捆绑商品标记)，结果用于 saveTrackingListFba 保存。
@@ -15,7 +16,7 @@ mbs pim erp-product-check-tracking-list-fba --groupId <string> [--headFreight <s
 - Path: `/erpProduct/erpProduct/fbaProduct/checkTrackingListFba`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

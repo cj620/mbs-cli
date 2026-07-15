@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs ars erpmonitor-deleteshopee-reviseprice-confirm-list
 
 Shopee提价确认Listing删除：在“Shopee提价确认”页面勾选一条或多条Listing记录后，点击“删除listing”并确认，将所选记录的唯一ID(uniqueId)以逗号拼接经查询串 ids 提交，批量删除对应提价确认Listing记录；成功后按当前Tab刷新列表。
@@ -15,7 +16,7 @@ mbs ars erpmonitor-deleteshopee-reviseprice-confirm-list --ids <string>
 - Path: `/erpmonitor/erpmonitor/shopeeRevisepriceConfirm/deleteshopeeRevisepriceConfirmList`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

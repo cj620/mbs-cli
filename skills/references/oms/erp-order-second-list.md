@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-second-list
 
 SeeBee平台开发-店铺下钻(二级)列表查询：SeeBee平台开发报表中，点击某店铺管理员(开发员)行展开后触发，按 店铺管理员+店铺状态+起止时间 查询该管理员名下各店铺的开发明细（订单量/销售额/毛利/新老品出单量与销售额/总产品数/爆B以上产品数/爆款率），返回明细列表渲染为子表格。
@@ -15,7 +16,7 @@ mbs oms erp-order-second-list --shopManager <string> --status <string> --beginTi
 - Path: `/erpOrder/erpOrder/seebeeDevelopmentShop/secondList`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

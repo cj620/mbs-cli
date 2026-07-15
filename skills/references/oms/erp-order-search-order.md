@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-search-order
 
 待发货订单查询：待发货订单列表分页查询：按订单状态(必选)、SKU、供应商、平台/店铺、货运方式、订单时间区间、是否缺货等条件筛选，返回订单列表及总数、总页数。
@@ -15,7 +16,7 @@ mbs oms erp-order-search-order --status <string> --page <number> --pageSize <num
 - Path: `/erpOrder/erpOrder/orderDeliver/searchOrder`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

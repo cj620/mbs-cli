@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs fars erp-fin-manage-data-parallel-his-bill-infos-fetcher
 
 非当月账单明细查询：TikTok 对账中心「非当月账单明细」分页查询：按汇总单号/财务单号/订单编号/付款单号/结算单号/店铺名称/账单时间/问题反馈/账单分类/所属公司等条件筛选，返回账单明细列表及总条数。
@@ -15,7 +16,7 @@ mbs fars erp-fin-manage-data-parallel-his-bill-infos-fetcher [--relatedOrderIds 
 - Path: `/erpFinManageData/erpFinManageData/finance/parallelHisBillInfosFetcher`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

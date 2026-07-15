@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs fars finance-lingxing-data-service-parallel-lingxing-download-infos
 
 领星下载历史分页查询：下载历史页分页查询领星导出任务记录：按文件名、任务状态、创建时间区间筛选并分页，返回任务文件名、下载地址、状态、创建时间、表格总数、文件大小等列表数据。
@@ -15,7 +16,7 @@ mbs fars finance-lingxing-data-service-parallel-lingxing-download-infos --page <
 - Path: `/gateway/finance-lingxing-data-service/LingxingPaging/parallelLingxingDownloadInfos`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

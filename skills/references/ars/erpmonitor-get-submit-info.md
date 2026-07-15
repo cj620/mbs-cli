@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs ars erpmonitor-get-submit-info
 
 TikTok提价-提交任务信息列表查询：TikTok提价确认页“查看任务信息”弹窗的分页查询：按当前页/每页条数分页拉取提价找源提交任务列表，返回任务的店铺/站点/ItemID/SKU/销量区间/毛利与费率/算价渠道/任务状态/创建人时间及执行详情内容。
@@ -15,7 +16,7 @@ mbs ars erpmonitor-get-submit-info --currPage <number> --pageSize <number>
 - Path: `/erpmonitor/erpmonitor/tiktokRevisepriceConfirm/getSubmitInfo`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

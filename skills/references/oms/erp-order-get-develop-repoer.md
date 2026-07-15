@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-get-develop-repoer
 
 开发大酋长报表查询：「开发大酋长报表」页面按周(本周/上周/上上周)查询开发员开发与业绩报表：返回开发员(含组员明细 reportList)的开发表现、业绩表现、工作表现、质量表现等多维指标及一行汇总(sum)。
@@ -15,7 +16,7 @@ mbs oms erp-order-get-develop-repoer --times <string> --status <number>
 - Path: `/erpOrder/erpOrder/developReport/getDevelopRepoer`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

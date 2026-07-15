@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs ars erpmonitor-get-item-ids-by-discount-id-tiktok-reviseprice-confirm
 
 根据折扣活动ID查询ItemId：TikTok提价：在“生成提价商品信息”弹窗中选中单个店铺后，选择该店铺的折扣活动(select2)，根据折扣活动ID查询该活动下的商品 Item ID 列表，前端将结果回填到 itemId 文本域，供后续批量提价使用。
@@ -15,7 +16,7 @@ mbs ars erpmonitor-get-item-ids-by-discount-id-tiktok-reviseprice-confirm --disc
 - Path: `/erpmonitor/erpmonitor/tiktokRevisepriceConfirm/getItemIdsByDiscountId`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

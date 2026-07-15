@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-find-pbfeeof-spu
 
 SPU的PB(Product Boost)费用明细查询：根据SPU及时间区间，查询该SPU在各店铺的Wish Product Boost(PB)推广活动费用明细，返回活动基本信息、GMV、预算、消耗、曝光与曝光费等字段；前端在末尾追加一行汇总行后渲染表格。
@@ -15,7 +16,7 @@ mbs oms erp-order-find-pbfeeof-spu --spu <string> --startTime <string> --endTime
 - Path: `/erpOrder/erpOrder/wishProductBoost/findPBFeeofSpu`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

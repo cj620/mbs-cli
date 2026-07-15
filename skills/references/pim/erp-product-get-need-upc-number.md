@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-get-need-upc-number
 
 获取批量刊登所需UPC数量：亚马逊自动刊登确认列表中点击「批量UPC」时调用：把所有勾选的待刊登SPU行(每行携带 groupid)封装为 list 上送，后端按这些刊登组计算批量刊登所需补充的 UPC 总数，前端展示为「请填入 N 个UPC」的提示。
@@ -15,7 +16,7 @@ mbs pim erp-product-get-need-upc-number --list <array<string>>
 - Path: `/erpProduct/erpProduct/amazonProductPublish/getNeedUpcNumber`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

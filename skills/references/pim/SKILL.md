@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # pim - 商品管理
 
 通过 `mbs pim` 命令查询商品管理数据。
@@ -138,7 +139,7 @@
 | SPU留言查询：SPU详情页加载时查询该SPU下的全部留言（含子回复）列表，渲染到"SPU 留言"卡片。返回留言人、头像、留言内容、留言时间、留言目标(SKU/SPU)、留言类型及嵌套子留言。当前用户头像通过顶层 content 字段返回。 | `mbs pim erp-product-get-leave-message-spu` | `spu`, `isAll`, `isSystem` |
 | SKU供应商信息查询(getManufactureSku)：SKU详情页加载该SKU的供应商(含主供应商与两个备选供应商)信息：供应商名称/ID、采购价、起批量、采购平台、平台链接、1688/淘宝/天猫备选供应商链接、旺旺号、商品图片等，用于渲染供应商表格(content2/contentTemplate2)。前端对返回数组补位至3条。 | `mbs pim erp-product-get-manufacture-sku` | `sku` |
 | 商品(SPU)供应商信息查询：根据 SPU 查询该商品在 1688 上匹配的全部供应商信息，返回供应商旺旺、供货商品(SKU/图片/1688商品名)、商品属性、是否自动采购、捆绑数量、起批量、商品价格、含运费报价、供应商状态、匹配人/匹配时间等，用于 SPU 详情页「供应商信息」表格渲染。 | `mbs pim erp-product-get-manufacture-spu` | `spu` |
-| 最优采购/预计到货信息查询：在店铺爆款监控列表中点击某行预计到货/日志入口时，按该行 ERP SKU 查询其最优采购方案下采购发货、采购到货、仓库签收等各环节的开始/完成/预警时间及整体预计到货时间，在预计到货弹窗以步骤表展示。 | `mbs pim erp-product-get-optimal-purchase` | `sku`, `sku` |
+| 最优采购/预计到货信息查询：在店铺爆款监控列表中点击某行预计到货/日志入口时，按该行 ERP SKU 查询其最优采购方案下采购发货、采购到货、仓库签收等各环节的开始/完成/预警时间及整体预计到货时间，在预计到货弹窗以步骤表展示。 | `mbs pim erp-product-get-optimal-purchase` | `skuQuery`, `skuBody` |
 | 产品详情-销售单(订单)列表查询(getOrderSku)：移动端马帮ERP产品详情页加载时按SKU查询该商品关联的销售单(订单)列表，前端取data.obj，前3条渲染到默认销售单信息区，其余在点击查看更多后展开，逐条展示订单号/状态/英文标题/售价/数量/总收入/总毛利/国家/成交账号/店铺管理员/下单时间。 | `mbs pim erp-product-get-order-sku` | `sku` |
 | 获取包装方式下拉选项：SKU 详情页初始化时调用，拉取全部包装方式字典项（ID + 名称），渲染到 #packageType 下拉框。无任何请求参数，返回包装方式列表，前端用 art-template 遍历生成 <option>；packageTypeId == 0 的项作为占位项并置为 disabled。 | `mbs pim erp-product-get-package-type` | - |
 | 包材下拉列表查询：查询全部可选包材(包装材料)列表，用于 SKU 详情页"包材"下拉框(#getPackingContent)的选项渲染。前端通过 art-template getPackingTemplate 把返回的 obj 数组渲染为 <option value="包材ID">包材名称</option>。 | `mbs pim erp-product-get-packing` | - |
@@ -154,7 +155,7 @@
 | SPU刊登信息查询(新)：SPU详情页「刊登信息」面板查询：传入SPU与白名单/低分等筛选开关，返回该SPU在各平台店铺的刊登明细列表(图片、标题、销量、售价、店铺、负责人、平台SPU、刊登日期等)，以及当前用户名下尚未刊登该SPU的店铺列表；同时返回数据更新时间。 | `mbs pim erp-product-get-publish-info-spu-new` | `spu`, `isAll` |
 | SKU采购异常统计查询：SKU详情页加载时调用，查询该SKU近60天的采购收货异常统计：少发、多发、漏发、错发、正常各类型的数量及其占总数比例，渲染到“查看采购单”旁的标签区(#infoContent)。 | `mbs pim erp-product-get-purchaseabnormal` | `sku` |
 | SKU采购异常消息查询：SKU详情页加载「采购异常」(searchAwait) 面板时调用，按 SKU 查询该商品的采购异常消息列表（异常状态、消息类型、消息详情、反馈、开发员/采购员、任务推送与截止日期等），用于渲染 awaitTempalte 表格。 | `mbs pim erp-product-get-purchase-bysku` | `sku` |
-| SKU采购在途运单查询(getPurchaseSku2)：SPU管理列表中鼠标悬停某SKU在途小窗时触发，按SKU查询该SKU的采购在途运单明细（运单号、在途数量、到货状态、采购跟进日志、最新物流轨迹），渲染到 popover 弹窗。 | `mbs pim erp-product-get-purchase-sku2` | `sku`, `sku` |
+| SKU采购在途运单查询(getPurchaseSku2)：SPU管理列表中鼠标悬停某SKU在途小窗时触发，按SKU查询该SKU的采购在途运单明细（运单号、在途数量、到货状态、采购跟进日志、最新物流轨迹），渲染到 popover 弹窗。 | `mbs pim erp-product-get-purchase-sku2` | `skuQuery`, `skuBody` |
 | SKU详情-采购记录查询(getPurchaseSku)：按SKU查询该SKU的全部采购记录，返回每条采购单的仓库、采购批次/组、供应商及等级、运单号与物流轨迹、购买/到货数量、采购价/运费、采购备注、采购员、采购/入库时间、采购状态/退款原因、跟单日志等。SKU详情页采购记录面板(content4)渲染数据源；按部门(content)做供应商/价格脱敏。 | `mbs pim erp-product-get-purchase-sku` | `sku` |
 | 按平台查询刊登站点(getSiteByPlatform)：根据所选主销平台查询该平台下已刊登过的站点列表。前端在平台下拉框 #kingPlatform 的 onchange 事件中调用，返回的站点字符串数组用于渲染‘刊登过的站点’下拉框 #siteslesct2（art-template 模板 sitemTempalte），供 SKU 列表查询按 site 参数过滤。 | `mbs pim erp-product-get-site-by-platform` | - |
 | 获取SKU图片列表：根据 SKU 查询该商品的图片列表，返回每张图片的URL与图片记录序号。前端用于 SKU 详情页主图轮播展示(exzoom)与编辑图片弹窗(可删除/设为主图)。前端在拿到 imageUrl 后会把图床域名 http://instudio.gnway.cc 替换为 http://www.instudio.me 再渲染。 | `mbs pim erp-product-get-sku-images` | `sku` |

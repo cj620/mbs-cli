@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-get-profit-variance
 
 事业部人员毛利方差图查询：按月份、平台、总监、经理、店长等条件，查询事业部各店长的毛利方差数据，返回每个店长的实际毛利/人均毛利/总毛利及入职、平台、经理等信息，前端用 ECharts 渲染柱状图(实际毛利)+折线(平均值)。
@@ -15,7 +16,7 @@ mbs oms erp-order-get-profit-variance --targetStartTime <string> [--platformName
 - Path: `/erpOrder/erpOrder/getProfitVariance`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

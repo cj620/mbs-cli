@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs fars erp-finance-list
 
 Payoneer账号列表查询：查询 Payoneer 合作伙伴账号列表：支持按邮箱、账号状态筛选并分页，返回账号基础信息(ID/合作伙伴ID/邮箱/姓名/电话/地址/状态/授权状态)及总数。
@@ -15,7 +16,7 @@ mbs fars erp-finance-list [--email <string>] [--status <string>] [--currentPage 
 - Path: `/erpFinance/erpFinance/payoneer/account/list`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

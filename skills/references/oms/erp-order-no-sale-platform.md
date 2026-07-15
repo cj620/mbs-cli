@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-no-sale-platform
 
 平台禁限售政策列表查询：在「产品问题投诉」页面，当问题类型为“平台限售”且选择平台后，按平台名称查询该平台对应的禁限售（禁售）政策列表，返回字符串数组用于「禁售政策」下拉框选项。
@@ -15,7 +16,7 @@ mbs oms erp-order-no-sale-platform --platformName <string>
 - Path: `/erpOrder/erpOrder/saleReport/noSalePlatform`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-show-ebay-bill-detail
 
 Ebay账户费用账单明细查询：按账单标识(billStr)、店铺、费用类型分页查询某 Ebay 账单下的费用明细，返回明细列表(店铺、账户、费用类型、毛/净明细、增值税率、人民币金额、汇率、itemid、商品标题等)及分页信息(总页数、总条数)。
@@ -15,7 +16,7 @@ mbs oms erp-order-show-ebay-bill-detail --billStr <string> --shopId <string> [--
 - Path: `/erpOrder/erpOrder/ebayAccountFee/showEbayBillDetail`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

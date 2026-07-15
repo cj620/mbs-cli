@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-get-leader-shop2-shop-achievements
 
 店长名下店铺下拉查询(getLeaderShop2)：订单看板页中，选择销售负责人(店长)下拉后，根据所选店长(employeeList)联动查询其名下店铺列表，渲染到各 Tab 的店铺(shopName1~shopName10)下拉框。请求体还固定携带空的 bigChiefList(大酋长列表)与 platformId(平台ID列表)两个数组占位参数。
@@ -15,7 +16,7 @@ mbs oms erp-order-get-leader-shop2-shop-achievements [--employeeList <array>] [-
 - Path: `/erpOrder/erpOrder/shopAchievements/getLeaderShop2`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

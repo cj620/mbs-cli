@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-find-deliver-chinese-rose
 
 人员发货时间业绩报表查询：按发货时间维度统计人员（大酋长/组员）销售业绩，支持平台、品类、组员、大酋长、月份、统计类型等多维筛选；返回 ECharts 折线图序列（series + x 轴）、表头标题对象（title）及报表行列表（saleReportList），用于发货时间业绩页表格与图表渲染。
@@ -15,7 +16,7 @@ mbs oms erp-order-find-deliver-chinese-rose --employeeType <string> [--platformI
 - Path: `/erpOrder/erpOrder/personSaleReport/findDeliverChineseRose`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

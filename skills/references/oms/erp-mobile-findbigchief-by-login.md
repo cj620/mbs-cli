@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-mobile-findbigchief-by-login
 
 按平台查询大酋长(负责人)列表：销售趋势图搜索页(移动端)：选择平台后，按平台ID查询该平台对应的「大酋长」负责人列表，渲染为可多选的复选框供筛选。页面初始化时以空 platformId 调用一次拉取默认列表。
@@ -15,7 +16,7 @@ mbs oms erp-mobile-findbigchief-by-login [--platformId <string>]
 - Path: `/erpMobile/erpMobile/saleTrendChart/findbigchiefByLogin`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

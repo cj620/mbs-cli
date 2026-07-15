@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-list-ez-buy-publish
 
 Ezbuy刊登列表查询：Ezbuy刊登页列表分页查询。按店铺、刊登人、刊登状态、刊登时间区间筛选，返回刊登记录列表（含 SPU、标题、分类、店铺、刊登人、状态、生成/刊登时间及子 SKU 明细）。同一接口被「刊登中」(search) 与「刊登完毕」(search2) 两个 Tab 复用。
@@ -15,7 +16,7 @@ mbs pim erp-product-list-ez-buy-publish [--shopName <string>] [--employeeId <str
 - Path: `/erpProduct/erpProduct/ezBuyProductPublish/listEzBuyPublish`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

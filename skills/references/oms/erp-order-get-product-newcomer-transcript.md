@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-get-product-newcomer-transcript
 
 产品新人成绩单查询：根据员工姓名查询产品新人试用期成绩单：返回新人summary（头像、姓名、入职、指导人、HRBP、简介）及业绩明细（开发量SPU、动销率、百元动销率、新品销售额、日均销售额、发货毛利率及各自我司产品部平均值），并返回大酋长评语、总经办意见。
@@ -15,7 +16,7 @@ mbs oms erp-order-get-product-newcomer-transcript --employeeName <string>
 - Path: `/erpOrder/erpOrder/newComerTranscript/getProductNewcomerTranscript`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

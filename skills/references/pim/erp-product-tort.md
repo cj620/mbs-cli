@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-tort
 
 图片关联侵权SKU搜索：商品侵权审核「关联SKU」环节调用：把待审核清单中的 SKU+图片分批(每批最多20条)提交，以图搜款返回图片相似的关联商品列表(含相似度评分、是否侵权标记)，前端按 sku 去重后追加到审核弹窗 list3，供审核人勾选一并提交审核。
@@ -15,7 +16,7 @@ mbs pim erp-product-tort --submitBy <string> --body <array<unknown>>
 - Path: `/erpProduct/erpProduct/picture/search/product/tort`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

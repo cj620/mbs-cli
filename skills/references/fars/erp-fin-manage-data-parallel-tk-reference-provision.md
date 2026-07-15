@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs fars erp-fin-manage-data-parallel-tk-reference-provision
 
 TikTok 凭证计提参考(账单反查表)查询：TikTok 凭证计提参考页面的列表查询：按流水号 / 店铺名称 / 所属公司及分页条件，反查并返回各店铺平台费、物流费的计提/冲销金额、差值，以及借贷方科目（分析账户、辅助核算、科目编号、币种、金额）和凭证字/凭证编号等明细，供凭证计提参考。type=1 为固定查询类型。
@@ -15,7 +16,7 @@ mbs fars erp-fin-manage-data-parallel-tk-reference-provision --type <number> [--
 - Path: `/erpFinManageData/erpFinManageData/finance/parallelTkReferenceProvision`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-find-wish-pbof-manager
 
 PB（广告）按人员维度统计查询：按交易时间区间，统计每个运营人员（店铺管理员）的销售收入（总/新品/老品）、销售订单数、毛利额、广告费（总/新品/老品）、广告销售额（总/新品/老品）、广告占比、PB占比、毛利率、ROI 等指标，按所选字段升/降序分页返回人员汇总列表。
@@ -15,7 +16,7 @@ mbs oms erp-order-find-wish-pbof-manager --startTime <string> --endTime <string>
 - Path: `/erpOrder/erpOrder/wishProductBoost/findWishPBOfManager`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

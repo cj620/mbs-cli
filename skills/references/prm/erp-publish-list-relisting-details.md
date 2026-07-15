@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs prm erp-publish-list-relisting-details
 
 SMT Relisting失败信息详情列表查询：查询速卖通(SMT/aliexpress)商品重新刊登(relisting)的明细列表，按是否成功、刊登时间、店铺名进行分页过滤，返回失败/成功的源SPU、源itemID、状态、销量、失败原因等明细，用于relisting失败信息详情页面表格渲染。
@@ -15,7 +16,7 @@ mbs prm erp-publish-list-relisting-details --isSuccess <string> [--relistingTime
 - Path: `/erpPublish/erpPublish/smtProductPublish/listRelistingDetails`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-check-batch-modify-price
 
 校验批量改价（批量改价前置校验）：亚马逊自动刊登确认列表中，勾选若干待刊登数据后点击“批量改价”时触发：把所选行的分组ID(groupIds)提交后端做改价前置校验。校验通过返回这批数据对应的币种符号(obj)，前端弹出批量改价弹窗并把币种显示在价格输入框旁；校验不通过则返回提示信息(desc)弹框告警。
@@ -15,7 +16,7 @@ mbs pim erp-product-check-batch-modify-price --groupIds <array<string>>
 - Path: `/erpProduct/erpProduct/amazonProductPublish/checkBatchModifyPrice`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

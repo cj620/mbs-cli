@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs ars erpmonitor-hot-product-with-shop
 
 店铺热销商品(listing)查询：按平台、店铺、店铺负责人、原币种、销售金额区间、统计时间等条件，分页查询店铺维度的热销商品(listing)列表，返回商品图文、售价区间、7/30/90天销量、浏览量、收藏量等运营监控字段。
@@ -15,7 +16,7 @@ mbs ars erpmonitor-hot-product-with-shop [--plaformId <string>] [--shopId <strin
 - Path: `/erpmonitor/erpmonitor/hotProductMonitor/hotProductWithShop`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

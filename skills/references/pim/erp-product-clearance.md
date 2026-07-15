@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-clearance
 
 国内清仓商品管理-清仓商品列表查询：国内清仓商品管理页面列表查询接口：按清仓状态(草稿中/等待清仓/清仓中/清仓完成)分页查询清仓商品，支持按SKU、子目录、排序方式、进度(移仓/拍照/刊登)筛选，返回清仓商品列表及总数。
@@ -15,7 +16,7 @@ mbs pim erp-product-clearance [--status <string>] [--pageSize <string>] [--page 
 - Path: `/erpProduct/erpProduct/productClearance/clearance`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

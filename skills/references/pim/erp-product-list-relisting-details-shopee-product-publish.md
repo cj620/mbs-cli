@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-list-relisting-details-shopee-product-publish
 
 Shopee Relisting失败信息详情列表查询：查询某次 Shopee 重新刊登(Relisting)任务的失败明细：按刊登时间、店铺名分页返回失败的 Shopee 商品(平台/店铺/负责人/胤元SPU/源itemID/状态/销量/失败原因等)，前端用于 relisting 失败信息详情页表格渲染与分页。
@@ -15,7 +16,7 @@ mbs pim erp-product-list-relisting-details-shopee-product-publish --isSuccess <s
 - Path: `/erpProduct/erpProduct/shopeeProductPublish/listRelistingDetails`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

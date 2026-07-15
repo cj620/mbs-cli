@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs scm erp-manufacture-get-manufacture-risk-assess
 
 供应商风险评估列表查询：供应商风险评估页面分页列表查询：通过 assessStatus 区分“待评估供应商”与“历史评估供应商”两个 Tab，keyword 在两个 Tab 下含义不同（待评估=是否仅看需进一步检查；历史=通过/未通过），返回供应商基础信息、评估内容与评估结果汇总，前端用 art-template 模板渲染列表卡片。
@@ -15,7 +16,7 @@ mbs scm erp-manufacture-get-manufacture-risk-assess --pageSize <number> --page <
 - Path: `/erpManufacture/erpManufacture/manufactureExtendController/getManufactureRiskAssess`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

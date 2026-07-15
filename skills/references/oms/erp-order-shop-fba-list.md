@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-shop-fba-list
 
 店铺(FBA)列表查询：订单详情页进入「修改」编辑态时调用，拉取当前可选店铺列表，用于渲染所属店铺下拉框(select2)。接口无请求参数，返回店铺名称集合。
@@ -15,7 +16,7 @@ mbs oms erp-order-shop-fba-list
 - Path: `/erpOrder/erpOrder/orderNew/shopFbaList`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs fars yyaccount-getstaymessage
 
 待办通知（全部通知）查询：经理看板右侧通知卡片点击【全部】按钮触发，按当前员工 userid 拉取全部待办/通知消息列表，返回 JSON 字符串形式通知数组与新通知条数；前端 JSON.parse(data.obj) 后 shift() 去首行，用 art-template contentComment 渲染到 #comment-section。
@@ -15,7 +16,7 @@ mbs fars yyaccount-getstaymessage --userid <string> --callback <string>
 - Path: `/yyaccount/account/messagecontroller/getstaymessage`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-get-reclassify
 
 获取子分类(店长)列表：移动端搜索页"店长"下拉的联动查询接口：当用户在"平台(父目录)"复选框中勾选某一项时，以该项的 sequenceid 作为 primaryCateId，查询其下属的子分类(店长)列表，用于渲染"店长"复选框组，并把每项的 sequenceid 收集到 childAll 作为默认子目录候选。
@@ -15,7 +16,7 @@ mbs pim erp-product-get-reclassify --primaryCateId <string>
 - Path: `/erpProduct/erpProduct/product/getReclassify`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

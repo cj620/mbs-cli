@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-intercept-log
 
 亚马逊刊登拦截词/SKU 操作日志查询：查询亚马逊自动刊登「拦截词/拦截SKU」的操作日志：按拦截关键字模糊检索，分页返回每条日志的操作人、操作时间、类型(拦截词/拦截SKU)与内容。用于「操作日志」弹窗展示。
@@ -15,7 +16,7 @@ mbs pim erp-product-intercept-log [--interceptKey <string>] --page <number> --pa
 - Path: `/erpProduct/erpProduct/amazonProductPublish/interceptLog`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

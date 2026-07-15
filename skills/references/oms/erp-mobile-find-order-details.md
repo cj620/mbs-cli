@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-mobile-find-order-details
 
 订单详情查询：移动端订单详情页加载接口：根据订单ID(orderid)查询单个订单的完整详情，返回订单状态/属性/物流、客户信息、SKU商品明细列表、金额(毛利/实收/运费/平台交易费)及店铺/时间等信息，供详情页渲染。
@@ -15,7 +16,7 @@ mbs oms erp-mobile-find-order-details --orderid <string>
 - Path: `/erpMobile/erpMobile/pushController/findOrderDetails`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pms erp-task-write-review-listing-detail
 
 提交/保存 Listing 评价（writeReviewListingDetail）：提交或暂存一条 Listing 打造质量评价：七项 1~5 星评分(标题/图片/价格/属性/促销/维护频次(核心卖点)/好评维护(颜色/尺码))、综合评定下拉、listing亮点(content)与需要改进(listingMerit)两段富文本；按 draftType 区分保存草稿与提交评价，按场景传 sequenceid/listingId。
@@ -15,7 +16,7 @@ mbs pms erp-task-write-review-listing-detail [--draftType <number>] --sequenceid
 - Path: `/erpTask/erpTask/reviewListingTask/writeReviewListingDetail`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

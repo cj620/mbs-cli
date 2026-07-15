@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-get-stage-info
 
 新人转正阶段考核信息查询：新人转正成绩单详情页中，按员工+阶段(第一阶段/第二阶段)+店铺查询该阶段考核指标：手动刊登量、订单量、店铺发货运营毛利率、月目标完成档位，结果回填到对应阶段表格行。
@@ -15,7 +16,7 @@ mbs oms erp-order-get-stage-info --employeeName <string> --status <string> [--sh
 - Path: `/erpOrder/erpOrder/newComerTranscript/getStageInfo`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

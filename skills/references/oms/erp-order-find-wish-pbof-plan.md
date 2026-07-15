@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-find-wish-pbof-plan
 
 按投放计划查询 Wish ProductBoost 推广效果：Wish ProductBoost(产品推广)报表「按照投放计划查看」维度的分页查询：按交易时间区间、店长、店铺、活动名称、活动状态等条件筛选，按指定字段升/降序排序，返回投放计划(活动)列表及其活动花费、订单数、ERP总成交额/总单量等汇总字段。
@@ -15,7 +16,7 @@ mbs oms erp-order-find-wish-pbof-plan --startTime <string> --endTime <string> [-
 - Path: `/erpOrder/erpOrder/wishProductBoost/findWishPBOfPlan`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

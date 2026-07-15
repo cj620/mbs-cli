@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-page-product-must-task
 
 清仓/停产待办任务分页查询：成品看板「清仓申请」标签页加载/翻页时调用，按状态类型(statusType)分页查询商品清仓/停产待办任务，返回任务总数与任务行列表(SKU、商品名、销量级别、库存、推送人/时间、审核人等)。前端以 res.obj.items[0] 作为表格行渲染，并支持对单条任务进行同意/拒绝处理。
@@ -15,7 +16,7 @@ mbs pim erp-product-page-product-must-task [--statusType <number>] [--currentPag
 - Path: `/erpProduct/erpProduct/productDetails/productMustTask/page`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

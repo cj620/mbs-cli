@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs fars yyfms-fms-position-name
 
 查询当前用户岗位名称：根据员工ID查询其在财务结算体系中的岗位名称，前端据返回值是否等于"财务组员"来控制仪表盘上提现登记/账户流水登记两组区块的显隐。JSONP 跨域调用。
@@ -15,7 +16,7 @@ mbs fars yyfms-fms-position-name --userId <string>
 - Path: `/yyfms/fms/shopSettlementNew/positionName`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

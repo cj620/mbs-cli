@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs prm erpsoldout-on-line-product-sold-out
 
 平台在线商品(下架任务)列表查询：平台商品下架管理页列表查询：按平台、店铺、SKU(多值)、操作状态、下架原因等条件分页查询在线商品/下架任务记录，返回分页列表(含店铺、标题、SKU、库存、销量、操作状态、执行信息等)。
@@ -15,7 +16,7 @@ mbs prm erpsoldout-on-line-product-sold-out [--platformId <string>] [--id <strin
 - Path: `/erpsoldout/erpsoldout/soldOut/onLineProduct`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

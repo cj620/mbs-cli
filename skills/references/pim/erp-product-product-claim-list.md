@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-product-claim-list
 
 独立站产品认领列表查询：独立站产品认领页列表查询：按 SPU、认领人、提交销售时间区间、测款状态分页查询已认领去广告测款的 SPU 列表，返回 SPU 基本信息及各认领人操作（认领/去广告）记录。
@@ -15,7 +16,7 @@ mbs pim erp-product-product-claim-list [--spu <string>] [--operDtos <array>] [--
 - Path: `/erpProduct/erpProduct/productClaim/productClaimList`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-first-list
 
 SeeBee平台开发报表-店铺首层列表查询：SeeBee平台开发报表首层数据查询：按开始/结束时间筛选，返回店长(店铺管理者)维度的店铺汇总报表行，含订单量、订单销售额、发货毛利额、新品/老品出单量与销售额、总产品数、爆B以上产品数及爆款率(均含搜索时间范围内与不受时间限制两套口径)。
@@ -15,7 +16,7 @@ mbs oms erp-order-first-list --beginTime <string> --endTime <string>
 - Path: `/erpOrder/erpOrder/seebeeDevelopmentShop/firstList`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

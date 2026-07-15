@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs prm product-auto-listing-service-get-listing-template-page
 
 刊登模板分页查询：根据 ERP SPU 与平台类型(platformType)分页查询该商品在指定平台下已存在的刊登模板列表；前端取返回列表首条记录的 id，用于刊登模板下拉跳转到对应平台的编辑页(回填模板id)。
@@ -15,7 +16,7 @@ mbs prm product-auto-listing-service-get-listing-template-page --erpSpu <string>
 - Path: `/gateway/product-auto-listing-service/listing/listingTemplate/getListingTemplatePage`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

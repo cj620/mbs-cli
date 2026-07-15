@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs ars erpmonitor-batch-add-revise-white-list
 
 批量加入改价(缺货不改0)白名单：在线列表页面勾选一条或多条 listing 后，点击"我不要缺货改0"，将所选 listing（按 平台ID+店铺名+平台商品ID 定位）批量加入改价白名单，加入后系统不再对其执行缺货自动改0处理。请求体为 JSON 数组，成功后弹出提示并刷新列表。
@@ -15,7 +16,7 @@ mbs ars erpmonitor-batch-add-revise-white-list --root <array<unknown>>
 - Path: `/erpmonitor/erpmonitor/hotProductMonitor/batchAddReviseWhiteList`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

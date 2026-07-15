@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-list-product-by-listing-tiktok-product-publish
 
 TikTok刊登-按Listing查询商品列表：TikTok批量刊登页的商品(SPU)列表分页查询：按刊登状态、属性类型、店铺、刊登人、站点、SPU、批量备注、刊登时间区间、是否含风险预警等条件分页，返回SPU行(含子SKU列表 ebayPublishSkuVo)及刊登状态/毛利/店铺等字段。
@@ -15,7 +16,7 @@ mbs pim erp-product-list-product-by-listing-tiktok-product-publish [--status <st
 - Path: `/erpProduct/erpProduct/tiktokProductPublish/listProductByListing`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

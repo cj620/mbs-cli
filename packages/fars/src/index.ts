@@ -1,3 +1,4 @@
+// AUTO-GENERATED FROM audit manifest. DO NOT EDIT.
 import { Plugin } from '@oclif/core'
 
 import './commands/fars/erpaccount-get-ding-ding-attendance.js'

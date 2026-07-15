@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-find-sta-publish-shop
 
 刊登统计-按店铺统计查询：刊登统计报表「按照店铺统计」页签的列表查询：按统计月份(date)及站点、大酋长、店铺负责人、店铺等筛选条件分页查询各店铺的销售额、上新量、在线量、上新占比、剩余刊登数量、剩余销售额、卖家等级等汇总指标。
@@ -15,7 +16,7 @@ mbs oms erp-order-find-sta-publish-shop --date <string> [--site <string>] [--big
 - Path: `/erpOrder/erpOrder/statisticsPublish/findStaPublishShop`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

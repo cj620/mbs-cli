@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs prm erpsoldout-info
 
 提交侵权(下架授权)信息：商品侵权页“提交侵权信息”弹框点击确认后，提交侵权SKU、侵权关键词、侵权图片、侵权平台/站点、移除范围(类别/标题关键字)及自动移除图片/自动下架/自动移除关键词等处理选项，由后端登记侵权信息并按选项执行下架/移除处理。
@@ -15,7 +16,7 @@ mbs prm erpsoldout-info [--platformIds <string>] [--skus <string>] [--infringing
 - Path: `/erpsoldout/erpsoldout/infringing/upload/info`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

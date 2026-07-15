@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs fars erp-finance-auth-url
 
 Payoneer 账号授权链接获取：根据 Payoneer 账号ID获取该账号的 OAuth 授权链接。前端点击「获取授权链接」按钮触发；返回链接非空时 window.open 打开授权，返回空字符串时提示「暂无授权链接」。
@@ -15,7 +16,7 @@ mbs fars erp-finance-auth-url --accountId <string>
 - Path: `/erpFinance/erpFinance/payoneer/account/100049360/auth-url`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

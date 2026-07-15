@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # scm - 供应链
 
 通过 `mbs scm` 命令查询供应链数据。

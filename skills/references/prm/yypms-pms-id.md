@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs prm yypms-pms-id
 
 Walmart 产品属性条件必填规则查询：Walmart 刊登编辑页加载产品属性时调用：依据刊登任务ID查询该商品/模板下属性条件必填联动规则列表。前端据此在某属性当前值命中 conditionValue 时，把 thenRequiredField 指定的字段由选填动态切换为必填（反之回退为选填）。
@@ -15,7 +16,7 @@ mbs prm yypms-pms-id
 - Path: `/yypms/pms/walmart/getConditionRequiredInfo/{id}`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

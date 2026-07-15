@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs fars erp-fin-manage-data-query-download-infos-fetcher
 
 下载任务记录查询：「下载任务记录」页面分页查询下载任务列表：按所属公司、文件名、创建时间区间、任务状态、平台等条件筛选，返回任务列表（含文件名、创建人、状态、表格大小/总数、进度、sheet 信息、起止/刷新时间、错误摘要、所属公司等）及总记录数。
@@ -15,7 +16,7 @@ mbs fars erp-fin-manage-data-query-download-infos-fetcher --type <string> [--tas
 - Path: `/erpFinManageData/erpFinManageData/finance/queryDownloadInfosFetcher`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

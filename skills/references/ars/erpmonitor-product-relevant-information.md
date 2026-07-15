@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs ars erpmonitor-product-relevant-information
 
 店铺运营相关信息列表查询：店铺运营监控看板列表分页查询：按平台、店铺、销售负责人、销售大酋长、客户经理、统计时间区间、运营状态等条件筛选，返回各店铺的新品率、动销率、在售/下架商品数、刊登/改价/改运费/改标题等运营维护指标及反馈好评率、统计周期等汇总字段。
@@ -15,7 +16,7 @@ mbs ars erpmonitor-product-relevant-information [--platformId <string>] [--shopN
 - Path: `/erpmonitor/erpmonitor/monitor/productRelevantInformation`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

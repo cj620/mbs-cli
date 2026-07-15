@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-find-wish-pbfee-by-spu
 
 按SPU查询商品推广(PB)费用统计：按交易时间区间与排序条件，分页查询各 SPU 的销售收入(总/新品/老品)、订单数、订单毛利额、广告费(总/新品/老品)、广告销售额(总/新品/老品)、广告占比(ACOS)、PB占比与 ROI 等统计指标，用于 PB费用-按SPU查看 报表页渲染。
@@ -15,7 +16,7 @@ mbs oms erp-order-find-wish-pbfee-by-spu --startTime <string> --endTime <string>
 - Path: `/erpOrder/erpOrder/wishProductBoost/findWishPBFeeBySpu`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

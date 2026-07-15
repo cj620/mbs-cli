@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs fars erp-finance-finance-res-partner-list
 
 辅助核算(合作伙伴)列表查询：日记账凭证创建/编辑时，点击「辅助核算」打开 #partnerModal 弹窗，按名称关键词分页查询合作伙伴(辅助核算)列表，供选择后回填到凭证的辅助核算字段。支持 name 关键词模糊搜索与 page/pageSize 分页。
@@ -15,7 +16,7 @@ mbs fars erp-finance-finance-res-partner-list [--name <string>] --page <number> 
 - Path: `/erpFinance/erpFinance/financeResPartner/financeResPartnerList`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

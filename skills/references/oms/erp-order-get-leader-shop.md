@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-get-leader-shop
 
 大酋长/组员店铺列表查询(getLeaderShop)：店铺业绩页的「店铺」下拉联动接口：根据所选平台、大酋长(组长)、组员(员工)，查询其名下可选店铺集合，用于填充 #shop 多选下拉。平台/大酋长/组员任一为空时传空数组。
@@ -15,7 +16,7 @@ mbs oms erp-order-get-leader-shop [--platformId <array<string>>] [--employeeList
 - Path: `/erpOrder/erpOrder/shopAchievements/getLeaderShop`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

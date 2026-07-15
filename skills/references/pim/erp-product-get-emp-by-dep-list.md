@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-get-emp-by-dep-list
 
 获取部门员工列表(提问人下拉)：进入商品咨询(留言)页面时自动调用，返回当前部门下的员工(提问人)姓名列表，前端用 art-template 渲染成"提问人"下拉框(#productName)的 <option> 选项。请求无任何业务参数(部门由后端依据登录态/默认部门判定)。
@@ -15,7 +16,7 @@ mbs pim erp-product-get-emp-by-dep-list
 - Path: `/erpProduct/erpProduct/product/getEmpByDepList`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

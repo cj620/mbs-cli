@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-get-result-target-info
 
 新人转正结果考核目标查询(getResultTargetInfo)：营销新人成绩单「新人转正目标」模块——结果考核数据查询：按员工姓名查询该新人「结果考核」表格(考核店铺、转正目标、提前转正目标、实际完成销售额)及第一/第二阶段日常任务完成率，用于渲染结果考核行并回填两阶段完成率。
@@ -15,7 +16,7 @@ mbs oms erp-order-get-result-target-info --employeeName <string>
 - Path: `/erpOrder/erpOrder/newComerTranscript/getResultTargetInfo`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

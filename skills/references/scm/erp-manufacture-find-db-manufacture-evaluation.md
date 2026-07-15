@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs scm erp-manufacture-find-db-manufacture-evaluation
 
 供应商采购评价列表查询：供应商详情页「采购评价」Tab 的分页列表查询：按供应商ID查询该供应商的采购评价记录（评价星级、评价内容、评价人、评价时间、关联采购单号），支持分页；返回评价行列表及总数/总页数，前端用 art-template (contentTemplate8) 渲染并用 pagination 翻页。
@@ -15,7 +16,7 @@ mbs scm erp-manufacture-find-db-manufacture-evaluation --manufactureId <string> 
 - Path: `/erpManufacture/erpManufacture/manufactureExtendController/findDbManufactureEvaluation`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs ars erpmonitor-shopify-detail-csv
 
 Shopify商品详情文件上传(shopifyDetailCsv)：在"文件批量刊登"页面选择本地文件(Excel/CSV)后自动上传，用于按所选刊登店铺导入Shopify商品详情/刊登数据；以 multipart/form-data 携带文件，店铺名以 URL 查询参数 shopName 传入。上传完成后前端弹窗展示返回提示语(desc)并刷新刊登中列表。
@@ -15,7 +16,7 @@ mbs ars erpmonitor-shopify-detail-csv [--shopName <string>] --file <unknown>
 - Path: `/erpmonitor/erpmonitor/shopifyConventSku/shopifyDetailCsv`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

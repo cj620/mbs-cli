@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs scm erp-manufacture-find-return-list
 
 退换货情况下拉框查询：查询「退换货情况」下拉枚举列表。后端从 ReturnEnum 枚举构造 code/desc 列表返回，前端用作 SPU 列表筛选区「退换货情况」多选下拉框的选项数据源（item.code 作 value、item.desc 作 label）。无请求参数，仅校验登录会话。
@@ -15,7 +16,7 @@ mbs scm erp-manufacture-find-return-list
 - Path: `/erpManufacture/erpManufacture/manufactureExtendController/findReturnList`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

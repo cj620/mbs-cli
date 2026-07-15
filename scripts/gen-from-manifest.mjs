@@ -150,10 +150,11 @@ function findStaleGeneratedDomains(activeDomainNames) {
 function syncDomainSkills(mod, hash) {
   const skillDir = join(repoRoot, 'skills', 'references', mod.domain)
   const activeSkillFiles = new Set(['SKILL.md', ...mod.actions.map((action) => `${action.name}.md`)])
+  const generatedBanner = '<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->\n'
   removeStaleFiles(skillDir, activeSkillFiles, '.md')
-  writeFile(join(skillDir, 'SKILL.md'), renderModuleSkill(mod))
+  writeFile(join(skillDir, 'SKILL.md'), `${generatedBanner}${renderModuleSkill(mod)}`)
   for (const action of mod.actions) {
-    writeFile(join(skillDir, `${action.name}.md`), renderActionSkill(mod, action, hash))
+    writeFile(join(skillDir, `${action.name}.md`), `${generatedBanner}${renderActionSkill(mod, action, hash)}`)
   }
 }
 
@@ -307,7 +308,7 @@ function renderPluginIndex(mod) {
   const imports = mod.actions
     .map((action) => `import './commands/${mod.domain}/${action.name}.js'`)
     .join('\n')
-  return `import { Plugin } from '@oclif/core'\n\n${imports}\n\nexport default class ${toClassName(mod.domain)}Plugin extends Plugin {\n  static readonly topic = '${mod.domain}'\n  static readonly description = '${escapeTs(mod.description)}'\n\n  async loadCommands(): Promise<void> {\n    // Commands are auto-loaded via the glob pattern in package.json\n  }\n}\n`
+  return `// AUTO-GENERATED FROM audit manifest. DO NOT EDIT.\nimport { Plugin } from '@oclif/core'\n\n${imports}\n\nexport default class ${toClassName(mod.domain)}Plugin extends Plugin {\n  static readonly topic = '${mod.domain}'\n  static readonly description = '${escapeTs(mod.description)}'\n\n  async loadCommands(): Promise<void> {\n    // Commands are auto-loaded via the glob pattern in package.json\n  }\n}\n`
 }
 
 function renderCommand(mod, action, source, hash) {

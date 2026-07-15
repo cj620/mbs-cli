@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pms erp-task-find-photograph-mission
 
 拍照延迟任务列表查询：首页/看板"拍照延迟"面板分页查询：按完成状态与当前页码，返回拍照/作图任务列表（含SPU、任务类型、拍照耗时、拍摄备注、采购/物流、库存状态、创建人/时间、任务起止时间、拍照状态等）及分页信息(总数、总页数)，前端以art-template渲染成列表并分页。
@@ -15,7 +16,7 @@ mbs pms erp-task-find-photograph-mission --finishStatus <number> --currentPage <
 - Path: `/erpTask/erpTask/developMustDo/findPhotographMission`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

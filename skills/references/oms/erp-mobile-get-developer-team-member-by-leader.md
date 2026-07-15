@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-mobile-get-developer-team-member-by-leader
 
 获取组长下属开发组员列表：移动端马帮ERP「开发搜索」页面加载时调用，返回当前登录组长名下的开发组员(姓名)列表，用于"组员"筛选区渲染可勾选的复选框。GET 请求，无业务请求参数(身份由会话/Cookie 识别)。
@@ -15,7 +16,7 @@ mbs oms erp-mobile-get-developer-team-member-by-leader
 - Path: `/erpMobile/erpMobile/saleTrendChart/getDeveloperTeamMemberByLeader`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

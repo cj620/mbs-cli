@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-product-info-for-export
 
 商品(SPU)导出数据查询：SPU 管理列表点击导出时调用：把当前列表全部筛选条件(outdownparams，由 getParams() 构建)作为请求体提交，后端返回待导出的 ES 数据列表(esDataList) 及 ES 查询构造串(sourceBuilderString)；前端据 originalSku 拼成 skuStr，type=2 时再把 sourceBuilderString 回传给 saveProductReport 完成导出。
@@ -15,7 +16,7 @@ mbs pim erp-product-product-info-for-export [--categoryId <string>] [--levelNum 
 - Path: `/erpProduct/erpProduct/product/productInfoForExport`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

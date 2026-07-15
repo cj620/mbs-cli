@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs ars erpmonitor-find-product-and-order
 
 EZBuy 商品 & 订单报表查询：EZBuy 各店铺按品类的商品数/订单数监控报表分页查询：按统计时间区间、店铺过滤，返回每条统计日期-店铺-品类下的平台总商品数、平台总订单数、当日订单数及排名，并返回总条数与总页数用于前端分页。
@@ -15,7 +16,7 @@ mbs ars erpmonitor-find-product-and-order --startDate <string> --endDate <string
 - Path: `/erpmonitor/erpmonitor/ezbuy/findProductAndOrder`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

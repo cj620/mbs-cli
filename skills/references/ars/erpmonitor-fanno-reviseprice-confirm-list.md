@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs ars erpmonitor-fanno-reviseprice-confirm-list
 
 fanno提价列表查询：fanno提价页面「等待提价 / 提价完毕」两个标签页的列表分页查询：按创建时间、店铺、提价结果、涨价/降价、当前售价区间、新售价区间、创建人、itemid、sku 等条件筛选，返回提价 listing 列表及店铺、负责人、当前售价、新售价、新折前价格、站点、提价结果、刊登/提价时间等字段。
@@ -15,7 +16,7 @@ mbs ars erpmonitor-fanno-reviseprice-confirm-list --currPage <number> --pageSize
 - Path: `/erpmonitor/erpmonitor/fannoRevisepriceConfirm/fannoRevisepriceConfirmList`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

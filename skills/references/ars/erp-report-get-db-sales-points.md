@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs ars erp-report-get-db-sales-points
 
 销售积分榜单-左榜排名查询：销售积分榜单大屏页面加载时调用，按月份 + 销售人员名单查询各销售人员当月积分排名，返回排名/姓名/积分列表，用于左侧「销售积分榜单」表格自动滚动展示。
@@ -15,7 +16,7 @@ mbs ars erp-report-get-db-sales-points --months <string> [--salePersonList <arra
 - Path: `/erpReport/erpReport/pointsRanking/getDbSalesPoints`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

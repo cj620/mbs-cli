@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-find-infriging-order
 
 侵权商品订单查询：查询命中侵权(已标注侵权但线上仍出单)的订单列表，按店铺、店长筛选并分页返回侵权订单及其侵权SKU、订单金额、状态、店铺等信息，供仪表盘“侵权或禁售”页签展示与后续作废/换图下架/标记处理。
@@ -15,7 +16,7 @@ mbs oms erp-order-find-infriging-order [--shopid <string>] [--shopManager <strin
 - Path: `/erpOrder/erpOrder/saleFussionOrder/findInfrigingOrder`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

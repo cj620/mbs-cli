@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs fars erp-fin-manage-data-parallel-tk-bill-infos-fetcher
 
 TikTok账单核对表查询：TikTok核销·账单核对明细列表分页查询：按汇总单号/订单编号/付款单号/结算单号/店铺名称/账单时间/问题反馈/异常分类/是否核销/付款反查/所属公司等条件筛选，返回账单核对行明细及总条数。type=1 标识账单核对表。
@@ -15,7 +16,7 @@ mbs fars erp-fin-manage-data-parallel-tk-bill-infos-fetcher --type <number> [--r
 - Path: `/erpFinManageData/erpFinManageData/finance/parallelTkBillInfosFetcher`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

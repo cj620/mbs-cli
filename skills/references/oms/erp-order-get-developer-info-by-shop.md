@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-get-developer-info-by-shop
 
 开发员店铺刊登覆盖率明细查询（按店铺）：产品刊登分析报表第三级钻取：在选定大酋长+组员(开发员)、并指定店长(employeeId)后，查询该店长名下各店铺的刊登覆盖明细，返回店铺在线listing、开发员刊登数、总/新品覆盖率、SPU汇总及占比、近30天销售额占比等汇总字段。
@@ -15,7 +16,7 @@ mbs oms erp-order-get-developer-info-by-shop [--bigChief <array>] [--developer <
 - Path: `/erpOrder/erpOrder/developerTarget/getDeveloperInfoByShop`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

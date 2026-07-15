@@ -60868,7 +60868,8 @@
               "properties": {
                 "sku": {
                   "type": "string",
-                  "description": "URL查询串中的SKU，值=当前列表行ERP SKU(item.erpSku，经 sessionStorage('logsku') 中转)"
+                  "description": "URL查询串中的SKU，值=当前列表行ERP SKU(item.erpSku，经 sessionStorage('logsku') 中转)",
+                  "x-cli-name": "skuQuery"
                 }
               },
               "required": [
@@ -60880,7 +60881,8 @@
               "properties": {
                 "sku": {
                   "type": "string",
-                  "description": "请求体中的SKU，与query中的sku同值({ sku: sku })，冗余双传"
+                  "description": "请求体中的SKU，与query中的sku同值({ sku: sku })，冗余双传",
+                  "x-cli-name": "skuBody"
                 }
               },
               "required": [
@@ -62586,7 +62588,8 @@
               "properties": {
                 "sku": {
                   "type": "string",
-                  "description": "URL查询参数，当前SKU编号(来源列表行 data-sid)"
+                  "description": "URL查询参数，当前SKU编号(来源列表行 data-sid)",
+                  "x-cli-name": "skuQuery"
                 }
               },
               "required": [
@@ -62598,7 +62601,8 @@
               "properties": {
                 "sku": {
                   "type": "string",
-                  "description": "请求体参数，与query同值，当前SKU编号"
+                  "description": "请求体参数，与query同值，当前SKU编号",
+                  "x-cli-name": "skuBody"
                 }
               },
               "required": [

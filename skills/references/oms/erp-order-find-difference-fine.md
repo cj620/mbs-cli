@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-find-difference-fine
 
 销售报表-罚款差异明细查询：日销售报表费用差异下钻：平台含Wish(16)且费用类型为罚款时，按报表搜索条件+指定日期分页查询罚款明细。
@@ -15,7 +16,7 @@ mbs oms erp-order-find-difference-fine [--employeeType <string>] [--startTime <s
 - Path: `/erpOrder/erpOrder/saleReport/findDifferenceFine`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

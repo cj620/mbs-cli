@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-get-sku-purchase-info
 
 订单SKU采购信息查询：订单详情页订单状态条「采购中」图标鼠标移上(onmouseover)时触发，弹出「采购中」模态框，按订单ID查询该订单下各SKU的采购单信息(SKU、采购批次/组ID、备注、采购状态)，渲染到 skuInfosTemplate 列表。
@@ -15,7 +16,7 @@ mbs oms erp-order-get-sku-purchase-info --orderid <string>
 - Path: `/erpOrder/erpOrder/orderNew/getSkuPurchaseInfo`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

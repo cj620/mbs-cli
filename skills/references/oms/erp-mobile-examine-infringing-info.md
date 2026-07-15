@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-mobile-examine-infringing-info
 
 侵权SKU审核(审核通过)：移动端侵权审核页：用户在「待审核SKU」与「关联出的SKU」两个列表中勾选 SKU 后，点击「审核通过已选择的SKU」提交，把所选侵权 SKU 及其关联 SKU 以审核状态=2(通过)提交给后端完成侵权审核处理。
@@ -15,7 +16,7 @@ mbs oms erp-mobile-examine-infringing-info --id <string> --verifyStatus <string>
 - Path: `/erpMobile/erpMobile/infringing/examineInfringingInfo`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

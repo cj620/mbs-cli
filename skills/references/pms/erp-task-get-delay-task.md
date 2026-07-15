@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pms erp-task-get-delay-task
 
 拍照/作图延迟任务列表查询：首页看板「拍照(延迟)」标签页分页查询：固定按 checkStatus=2 拉取拍照延迟(type=1)与作图延迟(type=2)两类任务，返回任务列表(含SPU/采购单/物流跟踪/完成状态/库存/创建人/任务起止时间等)及总数、总页数，前端用 art-template delayTemplate 渲染表格。
@@ -15,7 +16,7 @@ mbs pms erp-task-get-delay-task --checkStatus <number> --page <number> --pageSiz
 - Path: `/erpTask/erpTask/developMustDo/getDelayTask`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

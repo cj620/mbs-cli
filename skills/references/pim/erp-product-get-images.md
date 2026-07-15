@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-get-images
 
 获取亚马逊刊登SKU图片列表：亚马逊自动刊登确认列表中，点击某 SKU 的图片排序/拖拽排序时调用：按店铺+ERP SPU+ERP SKU+刊登分组ID 查询该 SKU 当前的主图、附图1~8、样本图(色卡图)URL，前端用 art-template imagesTemplate 渲染成可拖拽排序的 li>img 列表。
@@ -15,7 +16,7 @@ mbs pim erp-product-get-images --shopId <string> --erpSPU <string> --erpSKU <str
 - Path: `/erpProduct/erpProduct/amazonProductPublish/getImages`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

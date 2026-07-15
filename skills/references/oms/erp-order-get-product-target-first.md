@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-get-product-target-first
 
 月度业绩目标首页查询：月业绩目标页首屏加载：按 targetType=2（月）与 week（月偏移量）查询当前层级（level 1/2/3）下各销售/主管的本月业绩目标、环比涨跌、实际销售额/毛利率/毛利额、完成率，以及上月、下月目标等数据，并返回历史目标时段（timeSlot）列表用于切换查看。
@@ -15,7 +16,7 @@ mbs oms erp-order-get-product-target-first --targetType <string> --week <string>
 - Path: `/erpOrder/erpOrder/salesTarget/getProductTargetFirst`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

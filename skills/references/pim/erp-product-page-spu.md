@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-page-spu
 
 图片转文本侵权检测SPU分页查询：按SPU/图片链接/文本/类目/侵权词/钓鱼词/开发员/美工/审核员/查询时间区间等条件，分页查询图片转文本侵权/钓鱼词检测结果列表，返回每条SPU的图片、文本、类目、侵权词、钓鱼词、相关人员及检测时间。
@@ -15,7 +16,7 @@ mbs pim erp-product-page-spu [--spu <array>] [--imageUrl <array>] [--text <strin
 - Path: `/erpProduct/erpProduct/image-to-text/spu/page`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

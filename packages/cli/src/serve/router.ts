@@ -91,12 +91,12 @@ export function buildRoutes(manifest: AuditManifest): ServeRoute[] {
             if (action.method === 'GET') {
               return client.get(concretePath, { params: query })
             }
-            return readStream(await client.postStream(concretePath, body))
+            return readStream(await client.postStream(concretePath, body, { params: query }))
           }
           if (action.method === 'GET') {
             return client.get(concretePath, { params: query })
           }
-          return client.post(concretePath, body)
+          return client.post(concretePath, body, { params: query })
         },
       })
     }

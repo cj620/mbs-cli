@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-find-smt-autopublish-spu
 
 SMT自动刊登SPU列表查询：SMT(速卖通)自动刊登管理页的SPU分页列表查询：支持按SPU编码/批量SPU/itemid关键词、店铺、SMT分类、开发时间/刊登时间区间、产品状态、销量级别、在线状态、价差大等条件筛选；返回SPU行及其下挂的SKU明细列表。
@@ -15,7 +16,7 @@ mbs pim erp-product-find-smt-autopublish-spu --currentPage <number> --pageSize <
 - Path: `/erpProduct/erpProduct/smtProductController/findSmtAutopublishSpu`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

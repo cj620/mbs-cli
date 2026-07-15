@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs prm erpsoldout-get-info-submit
 
 SKU侵权平台信息查询(getInfoSubmit)：SKU详情页加载时查询该SKU的侵权平台提示信息，后端返回以英文分号';'拼接的侵权平台字符串，前端按';'拆分后逐条以红色文字渲染到#totarplat区域，用于提示运营该SKU在哪些平台存在侵权风险。
@@ -15,7 +16,7 @@ mbs prm erpsoldout-get-info-submit --sku <string>
 - Path: `/erpsoldout/erpsoldout/infringing/getInfoSubmit`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

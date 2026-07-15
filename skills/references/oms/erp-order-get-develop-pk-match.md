@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-get-develop-pk-match
 
 开发员PK榜单查询：开发员PK大屏数据查询：按指定日期与平台，返回各开发员的爆款SKU数量、百元动销率、新品销售额及对应排名，用于 developer.html 全屏轮播榜单展示。
@@ -15,7 +16,7 @@ mbs oms erp-order-get-develop-pk-match --time <string> --platform <string>
 - Path: `/erpOrder/erpOrder/pKmatchController/getDevelopPkMatch`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

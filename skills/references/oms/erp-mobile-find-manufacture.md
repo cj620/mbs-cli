@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-mobile-find-manufacture
 
 供应商列表查询(含名下SKU订单)：移动端「供应商管理」页面，根据供应商名称关键词分页查询供应商列表，每个供应商下挂其相关 SKU 的商品(图片/名称/SKU/总笔数/总金额)，并返回当前用户头像地址。支持「加载更多」翻页。
@@ -15,7 +16,7 @@ mbs oms erp-mobile-find-manufacture --currentPage <number> [--name <string>]
 - Path: `/erpMobile/erpMobile/shoeController/findManufacture`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

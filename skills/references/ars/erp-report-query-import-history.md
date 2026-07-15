@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs ars erp-report-query-import-history
 
 支付宝采购账单-导入历史查询(分摊价导入历史)：查询「支付宝采购账单/分摊价」文件的导入历史记录：按操作人、操作时间区间、解析状态分页过滤(fileType 固定=2),返回导入文件名、操作人、操作时间、解析状态、总/成功/失败行数、导入结果描述及记录ID(用于下载分摊结果)。
@@ -15,7 +16,7 @@ mbs ars erp-report-query-import-history --fileType <number> [--oper <string>] [-
 - Path: `/erpReport/erpReport/zfbPurchaseBill/queryImportHistory`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

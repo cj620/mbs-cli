@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-mobile-get-listing-order-by-item-id
 
 商品在线详情-销售单列表查询：移动端马帮ERP「在线详情」页根据商品ID(SPU)与平台ID查询该商品对应的销售单(订单)列表，返回订单号、状态、售价/数量、总收入/总毛利、国家、成交账号、下单时间等，前端按前10条/其余两段渲染。
@@ -15,7 +16,7 @@ mbs oms erp-mobile-get-listing-order-by-item-id [--parentSPUId <string>] [--plat
 - Path: `/erpMobile/erpMobile/hotProductListing/getListingOrderByItemId`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

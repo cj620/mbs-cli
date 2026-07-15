@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs scm erp-manufacture-batch-sku-list
 
 客户订单-批量SKU明细列表查询：客户详情页订单列表点击行展开（第二层）时，按订单批量SKU(batchSku)查询其下属 SKU 明细列表，返回每个 SKU 的图片、编号、名称、商品属性、销量等级、近7/30/90天销量、库存、在途、开发员及开发时间，用于渲染子表 twoContentTemplate。
@@ -15,7 +16,7 @@ mbs scm erp-manufacture-batch-sku-list --batchSku <string>
 - Path: `/erpManufacture/erpManufacture/customer/batchSkuList`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

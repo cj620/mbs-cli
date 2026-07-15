@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-borrow-order-log
 
 借用订单日志查询：按订单时间区间、物流类型(平邮/挂号)、订单编号、借用运单号、借用物流方式、国家等条件分页查询借用订单操作日志，返回订单基本信息、借用运单信息及操作人/操作时间/描述。
@@ -15,7 +16,7 @@ mbs oms erp-order-borrow-order-log [--ordertimestart <string>] [--ordertimeend <
 - Path: `/erpOrder/erpOrder/ERPOrder/borrowOrderLog`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs ars erpmonitor-get-site-by-platform
 
 根据平台查找站点：依据平台标识(platform)查询该平台下的全部站点列表，用于「店铺上新统计」页面顶部「站点」下拉框的选项渲染(art-template #siteTemplate)。页面加载即调用，返回站点集合。
@@ -15,7 +16,7 @@ mbs ars erpmonitor-get-site-by-platform --platform <number>
 - Path: `/erpmonitor/erpmonitor/hotProductMonitor/getSiteByPlatform`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

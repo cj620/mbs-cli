@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs ars erpmonitor-sku-deficit-of-shop
 
 店铺亏损SKU明细查询：按店铺查询亏损SKU明细列表，分页返回该店铺下商品(SPU/SKU)的店铺、图片、上架时间、售价、总成本、预估亏损金额、售出数量、是否加钻、库存等，用于亏损监控与批量下架/立即拉取商品。
@@ -15,7 +16,7 @@ mbs ars erpmonitor-sku-deficit-of-shop --shopId <string> --currPage <number> [--
 - Path: `/erpmonitor/erpmonitor/monitor/skuDeficitOfShop`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

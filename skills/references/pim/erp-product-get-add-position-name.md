@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-get-add-position-name
 
 根据部门名称获取岗位/人员名称：备货规则新增/编辑弹窗中，用户在「部门权限」下拉选择部门并触发 change 时调用。以部门名称为入参，返回该部门下可分配的岗位/人员名称集合，前端将返回的 obj 赋给 state.dialogOptions.stockUpCheckEmp 作为人员权限相关选项数据。
@@ -15,7 +16,7 @@ mbs pim erp-product-get-add-position-name --name <string>
 - Path: `/erpProduct/erpProduct/product/getAddPositionName`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

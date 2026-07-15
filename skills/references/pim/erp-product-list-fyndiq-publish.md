@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-list-fyndiq-publish
 
 Fyndiq刊登列表查询：Fyndiq刊登管理页列表分页查询：按店铺、刊登人、刊登状态、刊登时间区间筛选，分页返回 SPU 行及其下挂 skuList 子表与退款信息。页面三个 Tab（等待刊登/刊登中/刊登完毕）及分页回调共用同一接口，仅入参不同。
@@ -15,7 +16,7 @@ mbs pim erp-product-list-fyndiq-publish [--shopName <string>] [--employeeId <str
 - Path: `/erpProduct/erpProduct/fyndiqProductPublish/listFyndiqPublish`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

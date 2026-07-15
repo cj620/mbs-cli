@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs prm erpsoldout-find-sold-out-task
 
 下架任务列表查询：平台商品下架任务分页查询：按 SKU、创建人、平台、创建时间区间、下架原因、任务状态等条件分页查询下架任务列表，返回任务编号、状态、平台、下架原因、下架总量/成功/失败数、关联 SKU、创建人/审核人/创建时间/完成时间等字段。
@@ -15,7 +16,7 @@ mbs prm erpsoldout-find-sold-out-task [--skuList <array>] [--creater <string>] [
 - Path: `/erpsoldout/erpsoldout/soldOut/findSoldOutTask`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

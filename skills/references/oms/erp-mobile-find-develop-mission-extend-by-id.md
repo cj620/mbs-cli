@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-mobile-find-develop-mission-extend-by-id
 
 货源报价详情查询(按ID)：移动端「货源报价录入」页进入时，根据货源记录ID与开发任务ID查询该货源的报价资料详情（联系人/手机/旺旺/质量/供货类型/供应商地址/报价规格/店铺链接/备注/商品图片），用于回显表单及图片列表。
@@ -15,7 +16,7 @@ mbs oms erp-mobile-find-develop-mission-extend-by-id --id <string> --missionid <
 - Path: `/erpMobile/erpMobile/shoeController/findDevelopMissionExtendById`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

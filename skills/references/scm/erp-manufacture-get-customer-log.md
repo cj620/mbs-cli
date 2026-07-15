@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs scm erp-manufacture-get-customer-log
 
 客户操作日志查询(getCustomerLog)：客户详情页加载/编辑客户信息后调用，按客户ID查询该客户的全部操作日志(操作人、操作时间、操作内容)，返回日志列表渲染到 #customerLog 区域(art-template logTemplate)。
@@ -15,7 +16,7 @@ mbs scm erp-manufacture-get-customer-log --customId <string>
 - Path: `/erpManufacture/erpManufacture/customer/getCustomerLog`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

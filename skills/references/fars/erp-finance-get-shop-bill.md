@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs fars erp-finance-get-shop-bill
 
 平台店铺列表查询：财务-平台账单页中，平台下拉框 change 时触发，按所选平台名称查询其下全部店铺，返回店铺列表用于渲染「店铺」下拉框选项。
@@ -15,7 +16,7 @@ mbs fars erp-finance-get-shop-bill [--platform <string>]
 - Path: `/erpFinance/erpFinance/bill/getShop`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

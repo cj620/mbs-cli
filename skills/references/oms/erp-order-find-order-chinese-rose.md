@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-find-order-chinese-rose
 
 人销售报表(订单时间业绩)曲线查询：按订单时间维度统计人员/团队销售业绩：依据人员类别、平台、品类、大酋长、组员、月份、指标类型等条件查询，返回 ECharts 曲线数据(x轴/series)、表头(title)及报表明细列表(saleReportList，含收入小计/利润/毛利率/订单量/退款金额/平台费/站内推广费/单包裹利润等分时段指标)。
@@ -15,7 +16,7 @@ mbs oms erp-order-find-order-chinese-rose --employeeType <string> [--platformId 
 - Path: `/erpOrder/erpOrder/personSaleReport/findOrderChineseRose`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

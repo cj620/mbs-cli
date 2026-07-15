@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-get-reclassify-by-cate-ids
 
 按父类目分页查询子类目(重新分类)：SPU列表页"重新分类"弹窗中，根据所选父目录(一级类目)分页查询其下子类目列表；支持按子类目名称关键词搜索。返回子类目(sequenceid+name)列表及分页信息(总条数、总页数)，前端渲染为可勾选的子类目复选框列表。
@@ -15,7 +16,7 @@ mbs pim erp-product-get-reclassify-by-cate-ids [--primaryCateId <string>] --curr
 - Path: `/erpProduct/erpProduct/product/getReclassifyByCateIds`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

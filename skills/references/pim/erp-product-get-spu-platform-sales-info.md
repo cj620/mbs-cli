@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-get-spu-platform-sales-info
 
 SPU平台30天销量信息查询：商品详情「spu销售量趋势图」页面右侧「平台30天销量(单)」柱状图数据源：按 SPU 查询该商品近30天(可按 month 月份偏移)各平台/店铺的销量(订单数)，前端用 ECharts 横向柱状图渲染。
@@ -15,7 +16,7 @@ mbs pim erp-product-get-spu-platform-sales-info --spu <string> [--month <number>
 - Path: `/erpProduct/erpProduct/productDetails/getSpuPlatformSalesInfo`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

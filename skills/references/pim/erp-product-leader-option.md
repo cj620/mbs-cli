@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-leader-option
 
 创建人组长下拉选项查询：进入违规产品处理页面时调用，获取「创建人组长」筛选下拉框的全部组长名称选项。无入参，返回组长姓名字符串数组，前端用 art-template 的 groupLeaderTemplate 逐项渲染为 option，并在 search2()/exportTable() 的 getSearchParams() 中把所选组长拼进 employees 数组作为查询条件。
@@ -15,7 +16,7 @@ mbs pim erp-product-leader-option
 - Path: `/erpProduct/erpProduct/product/leaderOption`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

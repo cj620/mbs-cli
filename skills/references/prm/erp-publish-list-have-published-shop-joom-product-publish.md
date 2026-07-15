@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs prm erp-publish-list-have-published-shop-joom-product-publish
 
 查询已刊登过的店铺(Joom)：Joom 批量刊登页切换到"刊登完毕"视图时调用，获取已刊登过的 Joom 店铺列表，用于渲染"选择新刊登店铺"下拉框。无任何请求参数，返回店铺名称列表。
@@ -15,7 +16,7 @@ mbs prm erp-publish-list-have-published-shop-joom-product-publish
 - Path: `/erpPublish/erpPublish/joomProductPublish/listHavePublishedShop`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-get-add-shippingfee-by-one-day
 
 某日补差运费(getAddShippingfeeByOneDay)明细查询：查询某一天(oneDay)的订单补差运费明细：以上一页传入的报表筛选条件(URL params)为基础，叠加统计日 oneDay、分页参数，分页返回订单编号、店铺号、补差运费、店长等明细行，并返回总页数用于分页。
@@ -15,7 +16,7 @@ mbs oms erp-order-get-add-shippingfee-by-one-day [--oneDay <string>] --pageSize 
 - Path: `/erpOrder/erpOrder/saleReport/getAddShippingfeeByOneDay`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

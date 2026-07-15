@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-get-bad-comment-task-detail
 
 获取差评任务详情：根据订单编号(orderId)与任务状态(status)查询该订单下差评任务的商品(SKU)明细列表，返回SKU图片/标题/itemId/销量级别/商品状态/售价/原始币种售价/币种/数量/总售价/评价类别/评价内容等字段，用于差评处理页(待处理/已处理/已结案)点击订单行展开时渲染下级明细表。
@@ -15,7 +16,7 @@ mbs oms erp-order-get-bad-comment-task-detail
 - Path: `/erpOrder/erpOrder/badCommentTask/{orderId}/{status}/getBadCommentTaskDetail`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

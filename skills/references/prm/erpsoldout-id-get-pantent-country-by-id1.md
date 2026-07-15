@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs prm erpsoldout-id-get-pantent-country-by-id1
 
 按专利国家ID查询关联禁售平台/站点：SPU详情页“禁售平台/专利国家”模块中，用户在「专利国家」多选下拉选择一个或多个国家后触发，按所选专利国家ID(列表)查询其对应需禁售的平台与站点集合，前端据此把对应平台名加入禁售平台多选、把站点加入禁售站点多选。
@@ -15,7 +16,7 @@ mbs prm erpsoldout-id-get-pantent-country-by-id1
 - Path: `/erpsoldout/erpsoldout/infringing/getPantentCountryById1/{id}`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

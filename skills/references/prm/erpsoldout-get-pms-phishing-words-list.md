@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs prm erpsoldout-get-pms-phishing-words-list
 
 钓鱼词库列表查询：钓鱼词库（侵权钓鱼词）分页列表查询：支持按钓鱼词、平台、提交人、审核人、大类、审核状态等条件分页过滤，返回钓鱼词记录列表（含平台/站点/替换词/筛选规则/创建更新删除轨迹/审核状态/操作日志）及总条数。
@@ -15,7 +16,7 @@ mbs prm erpsoldout-get-pms-phishing-words-list [--phishingWord <string>] [--plat
 - Path: `/erpsoldout/erpsoldout/infringing/getPmsPhishingWordsList`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

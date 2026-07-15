@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs ars erp-report-get-aliexpress-pop-product
 
 速卖通POP半托管JIT预约商品列表查询：速卖通（AliExpress）POP半托管「立即加入JIT」页面的商品分页查询：按店铺、预约状态、item ID、库存区间筛选并支持排序，返回商品列表及每个商品的SKU明细（属性、销量级别、包装尺寸重量、价格、货品信息、各仓JIT可售库存）。
@@ -15,7 +16,7 @@ mbs ars erp-report-get-aliexpress-pop-product [--shopName <array<string>>] [--pr
 - Path: `/erpReport/erpReport/aliexpressPopProduct/getAliexpressPopProduct`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

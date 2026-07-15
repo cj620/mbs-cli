@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-get-product-tort
 
 商品SPU侵权信息查询：根据商品 SPU 与平台(固定 Walmart)查询该商品的侵权提示信息，前端将返回的 content 文本以告警条形式展示在限价/侵权提示组件中，用于刊登前提醒卖家避免侵权下架风险。
@@ -15,7 +16,7 @@ mbs pim erp-product-get-product-tort --spu <string> --platform <string>
 - Path: `/erpProduct/erpProduct/productDetails/getProductTort`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

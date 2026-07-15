@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pms erp-task-spu
 
 获取商品英文描述(getEnglishDescRipiton)：质检详情弹窗打开时（老维度质检任务），按 SPU 拉取该商品的英文产品描述文本；前端取返回体的 desc 字段，若非空再调用 AI 翻译接口翻成中文，填入‘产品描述’文本域。SPU 作为 URL 路径变量传递，无请求体。
@@ -15,7 +16,7 @@ mbs pms erp-task-spu
 - Path: `/erpTask/erpTask/developMustDo/getEnglishDescRipiton/{spu}`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-export-low-profit-order
 
 限价(低毛利)订单导出：订单中心「限价」页签的订单导出接口：以与列表查询(findLowProfitOrder)相同的筛选条件(店长、店铺、任务类型、平台、推送时间区间、处理状态)拉取低毛利/限价订单，以 Excel(.xls) 二进制流返回供前端下载。导出全部走 limitedPriceExportall()，导出选中走 limitedPriceExportchek()(追加 orderids)。
@@ -15,7 +16,7 @@ mbs oms erp-order-export-low-profit-order [--shopManager <string>] [--shopid <st
 - Path: `/erpOrder/erpOrder/saleFussionOrder/exportLowProfitOrder`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

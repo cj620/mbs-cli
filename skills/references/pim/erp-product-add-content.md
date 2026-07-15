@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-add-content
 
 根据SKU/平台/备货内容获取可备货数量(getSaleNumBySku)：SKU详情页「申请备货」弹窗中，选择备货平台与备货内容后，按 SKU + 平台 + 备货内容 三个路径参数请求后端，返回该 SKU 在该平台下的最大可备货量(max)、可输入上限(other)、平台已备货量(platform)，用于回填输入框上限、placeholder 及前置校验。
@@ -15,7 +16,7 @@ mbs pim erp-product-add-content
 - Path: `/erpProduct/erpProduct/product/getSaleNumBySku/{sku}/{platform}/{addContent}`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

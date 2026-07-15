@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-get-product-reduce-price
 
 降本SKU榜查询：降本排行榜页「降本SKU榜」分页查询：按SKU编号、开发员、采购员筛选，返回SKU降本明细（开发员/采购组、图片、产品名、降本持续天数、30天销量、当前采购价、累计降本金额、每周降本金额）及总数、总页数。
@@ -15,7 +16,7 @@ mbs pim erp-product-get-product-reduce-price [--sku <string>] [--developOper <st
 - Path: `/erpProduct/erpProduct/productExtend/getProductReducePrice`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

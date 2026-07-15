@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-list-relisting-details-lazada-publish
 
 Lazada Relisting失败信息详情列表查询：查询 Lazada 平台重新刊登(relisting)的失败信息详情：按 relisting 时间、店铺名称分页查询失败列表，返回每条 SPU 的平台、店铺、店铺负责人、源标题/源itemID、上架状态、销量、失败原因等，并返回总条数与总页数用于分页。
@@ -15,7 +16,7 @@ mbs pim erp-product-list-relisting-details-lazada-publish --isSuccess <string> -
 - Path: `/erpProduct/erpProduct/lazadaPublish/listRelistingDetails`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

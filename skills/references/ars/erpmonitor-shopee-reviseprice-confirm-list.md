@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs ars erpmonitor-shopee-reviseprice-confirm-list
 
 Shopee提价确认列表查询：Shopee提价页「等待提价 / 提价完毕」两个 Tab 的列表分页查询：按创建时间、店铺、提价结果、价格涨跌、当前售价区间、新售价区间、创建人等条件分页查询提价确认记录，返回主记录及其提价明细子列表(confirmList)。getList()/getList2() 复用同一后端接口。
@@ -15,7 +16,7 @@ mbs ars erpmonitor-shopee-reviseprice-confirm-list --currPage <number> --pageSiz
 - Path: `/erpmonitor/erpmonitor/shopeeRevisepriceConfirm/shopeeRevisepriceConfirmList`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

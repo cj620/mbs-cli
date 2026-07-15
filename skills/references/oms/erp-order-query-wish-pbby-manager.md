@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-query-wish-pbby-manager
 
 Wish推广(店长维度)活动查询：按店长(店铺经理)与时间区间查询其名下店铺的 Wish 商品推广(Product Boost)活动列表，返回各活动的店铺、活动ID/名称、起止时间、状态、成交额(GMV)、最大预算与期间消耗等；前端汇总各活动期间消耗(incrementFee)合计展示。
@@ -15,7 +16,7 @@ mbs oms erp-order-query-wish-pbby-manager --shopmanager <string> --startTime <st
 - Path: `/erpOrder/erpOrder/wishProductBoost/QueryWishPBByManager`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

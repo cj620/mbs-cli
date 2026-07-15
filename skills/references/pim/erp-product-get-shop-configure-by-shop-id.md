@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-get-shop-configure-by-shop-id
 
 根据店铺ID查询亚马逊自动刊登店铺配置：打开自动刊登设置弹窗(showModal)时调用，按 shopId 查询该亚马逊店铺已保存的自动刊登配置(库存/平台费率/毛利/品牌/制造商/物流渠道/类目/VAT/国家/预刊登时间/自动刊登开关/UPC豁免/备货天数/跟卖移除等)，用于回填弹窗各表单控件；无配置时返回空对象，前端清空表单。
@@ -15,7 +16,7 @@ mbs pim erp-product-get-shop-configure-by-shop-id --shopId <string>
 - Path: `/erpProduct/erpProduct/amazonProductPublish/getShopConfigureByShopId`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

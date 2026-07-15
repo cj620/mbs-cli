@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-product-info
 
 商品(SKU)极致版列表查询：商品极致版页面 SKU 维度分页查询：按类目、11种关键词类型、售卖/销量/产品状态、开发员/采购员、开发时间区间、库存/销量/重量/成本区间、国家/平台、黑马、抽检/轻小件/采样、站点等数十项筛选，返回 SKU 列表及毛利/退款/销量/库存/刊登率等汇总字段。
@@ -15,7 +16,7 @@ mbs pim erp-product-product-info [--categoryId2 <array>] [--sku <string>] [--son
 - Path: `/erpProduct/erpProduct/product/productInfo`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

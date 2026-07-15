@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-forbid-sku-list
 
 拦截SKU列表查询(forbidSkuList)：eBay 批量刊登页「拦截SKU」弹框的分页列表查询。打开拦截SKU弹框、翻页、以及按 SKU 模糊搜索均调用本接口，返回被拦截 SKU 列表(SKU编号/拦截站点范围/提交人/提交时间)及分页汇总。
@@ -15,7 +16,7 @@ mbs pim erp-product-forbid-sku-list [--currentPage <number>] [--pageSize <number
 - Path: `/erpProduct/erpProduct/productPublish/forbidSkuList`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

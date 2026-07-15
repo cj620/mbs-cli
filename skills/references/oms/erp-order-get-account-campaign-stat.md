@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-get-account-campaign-stat
 
 人员任务报表-账号Campaign统计查询：按时间区间与排序方式统计各业务员(ERP用户)的广告投放业绩：返回每个人的 campaigns 数量、消耗金额、转化价值、单量、ROI、周出单≥10 的 campaigns 数量、出单比例、点击、转化率等汇总指标，用于报表页表格渲染。
@@ -15,7 +16,7 @@ mbs oms erp-order-get-account-campaign-stat [--starttime <string>] [--endtime <s
 - Path: `/erpOrder/erpOrder/seebeeDevelopmentShop/getAccountCampaignStat`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

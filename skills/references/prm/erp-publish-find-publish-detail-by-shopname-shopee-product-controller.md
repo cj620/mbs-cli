@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs prm erp-publish-find-publish-detail-by-shopname-shopee-product-controller
 
 店铺刊登状态数量统计查询：Shopee 自动刊登页面，按店铺名称查询该店铺「等待刊登/刊登成功/刊登失败/放弃刊登」四类数量，回填到店铺左侧统计标签；删除/放弃刊登成功后重新调用以刷新数量。
@@ -15,7 +16,7 @@ mbs prm erp-publish-find-publish-detail-by-shopname-shopee-product-controller --
 - Path: `/erpPublish/erpPublish/shopeeProductController/findPublishDetailByShopname`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

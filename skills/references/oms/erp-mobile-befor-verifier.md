@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-mobile-befor-verifier
 
 侵权审核SKU预校验(审核前查询)：移动端侵权下架审核页打开时，根据侵权记录 id 查询该侵权单下「待审核SKU(listbefore)」与「关联出的SKU(listAfter)」两组列表，分别渲染到审核页两块卡片，供用户勾选后审核通过。
@@ -15,7 +16,7 @@ mbs oms erp-mobile-befor-verifier --id <string>
 - Path: `/erpMobile/erpMobile/infringing/beforVerifier`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

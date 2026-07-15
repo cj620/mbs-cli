@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-get-country-sales-info
 
 SKU国家销量统计查询：查询指定SKU近15天按国家维度的销量统计，用于SKU详情页 ECharts 横向柱状图「国家15天销量(单)」渲染。仅当商品 salesLevel 为超级爆款/爆A/爆B/旺A/旺B 时由 getProductInfoSku 成功回调触发调用。
@@ -15,7 +16,7 @@ mbs pim erp-product-get-country-sales-info --sku <string>
 - Path: `/erpProduct/erpProduct/productDetails/getCountrySalesInfo`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

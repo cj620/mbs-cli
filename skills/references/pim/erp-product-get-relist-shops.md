@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-get-relist-shops
 
 获取可重新刊登(Relist)店铺列表：Shopee 刊登页“编辑/搜索店铺”弹窗中，按店铺名称关键词分页查询可用于重新刊登的店铺列表，返回店铺名称及其开启/关闭状态，并支持分页与状态切换。
@@ -15,7 +16,7 @@ mbs pim erp-product-get-relist-shops [--shopName <string>] --currentPage <number
 - Path: `/erpProduct/erpProduct/shopeeProductPublish/getRelistShops`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

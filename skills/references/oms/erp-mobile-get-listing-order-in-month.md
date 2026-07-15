@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-mobile-get-listing-order-in-month
 
 刊登商品近一月销量趋势查询：移动端「商品在线详情」页销量趋势图（echarts）数据来源接口：按商品(itemId/parentSPUId)与平台(platformId)查询该刊登商品近一个月内逐日的销量数据，返回销售时间(saleTime)与销量(saleNum)序列，前端据此绘制销量趋势折线图。
@@ -15,7 +16,7 @@ mbs oms erp-mobile-get-listing-order-in-month [--parentSPUId <string>] [--platfo
 - Path: `/erpMobile/erpMobile/hotProductListing/getListingOrderInMonth`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

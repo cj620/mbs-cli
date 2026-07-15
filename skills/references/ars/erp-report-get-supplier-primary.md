@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs ars erp-report-get-supplier-primary
 
 供应商初付/批次明细查询：按供应商名称、平台单号、应付金额区间、入库时间区间分页查询供应商应付（初付）汇总数据，返回每条供应商应付记录及其下挂的批次入库明细列表（批次号/单价/入库数量/邮费/入库时间/采购时间）。
@@ -15,7 +16,7 @@ mbs ars erp-report-get-supplier-primary [--supplierName <string>] [--orderNumber
 - Path: `/erpReport/erpReport/SupplierPrimaryBatchController/getSupplierPrimary`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

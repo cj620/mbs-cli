@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-get-publish-info-sku-new
 
 SKU刊登信息查询(近30天)：根据SKU查询该商品近30天已刊登的数据排名(图片、刊登标题、销量、站点/发货地、售价、店铺、平台SKU、大酋长/客户经理、店铺类型/运营状态、刊登日期等),并返回当前用户名下未刊登该商品的店铺及负责人。支持是否全公司、低分筛选、仅白名单店铺、仅白名单SKU等开关。
@@ -15,7 +16,7 @@ mbs pim erp-product-get-publish-info-sku-new --sku <string> [--isAll <string>] [
 - Path: `/erpProduct/erpProduct/productDetails/getPublishInfoSkuNew`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

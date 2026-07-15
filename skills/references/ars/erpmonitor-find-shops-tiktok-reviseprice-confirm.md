@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs ars erpmonitor-find-shops-tiktok-reviseprice-confirm
 
 TikTok提价-店铺列表查询（findShops）：TikTok改价（提价确认）页面查询店铺列表：按关键词(店铺名)与站点过滤，返回店铺名称/店铺ID列表；供搜索店铺名下拉(select2)、Element Plus 店铺多选框及选择店铺弹层复选列表使用；无参调用则返回全部店铺。
@@ -15,7 +16,7 @@ mbs ars erpmonitor-find-shops-tiktok-reviseprice-confirm [--keyword <string>] [-
 - Path: `/erpmonitor/erpmonitor/tiktokRevisepriceConfirm/findShops`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

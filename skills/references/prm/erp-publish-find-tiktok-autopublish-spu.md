@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs prm erp-publish-find-tiktok-autopublish-spu
 
 TikTok自动刊登SPU列表查询：TikTok自动刊登页（已刊登/待刊登）SPU分页列表查询：支持按目标店铺、刊登结果、店铺名称、刊登状态、SPU编码、产品状态、销量级别、站点等条件分页查询，返回SPU列表（含每个SPU下的刊登SKU明细、价格/毛利率、刊登状态、开发员等）。
@@ -15,7 +16,7 @@ mbs prm erp-publish-find-tiktok-autopublish-spu --currentPage <number> --pageSiz
 - Path: `/erpPublish/erpPublish/tiktokProductController/findTiktokAutopublishSpu`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-get-amazon-auto-publish-info-by-shop-id-and-erp-sku
 
 亚马逊自动刊登-按店铺与ERP SKU查询刊登明细：在「亚马逊自动刊登确认」列表中点击 SPU 行展开时，按 erpSpu+shopId+groupid 加载该 SPU 在该店铺下的全部变体 SKU 刊登明细（标题/描述/类目/主题/库存/颜色/尺寸/价格/运费模板/刊登状态/多张图片），渲染为子表格行供逐项编辑。
@@ -15,7 +16,7 @@ mbs pim erp-product-get-amazon-auto-publish-info-by-shop-id-and-erp-sku --erpSpu
 - Path: `/erpProduct/erpProduct/amazonProductPublish/getAmazonAutoPublishInfoByShopIdAndErpSku`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

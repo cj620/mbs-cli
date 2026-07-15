@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs ars erpflowmonitor-get-item-data-monitor
 
 商品流量监控列表查询（getItemDataMonitor）：平台流量看板页「商品流量看板」Tab 的商品维度流量监控分页查询：按平台、大酋长、组员、店铺、SPU、统计天数（1/7/30天）筛选，并按订单量/销售数量/访问/转化率/销售风向/退款风向等排序，返回商品流量列表及总数、总页数。
@@ -15,7 +16,7 @@ mbs ars erpflowmonitor-get-item-data-monitor [--bigChief <array>] [--employeeNam
 - Path: `/erpflowmonitor/erpflowmonitor/ebayDataMonitor/getItemDataMonitor`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

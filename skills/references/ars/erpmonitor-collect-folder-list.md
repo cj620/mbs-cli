@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs ars erpmonitor-collect-folder-list
 
 收藏夹列表查询：查询当前用户的全部商品收藏夹（我的收藏夹），用于管理收藏夹/加入收藏夹弹窗的单选列表渲染：返回每个收藏夹的ID、名称及夹内收藏商品数量。请求体为空对象{}，后端按当前登录用户返回其收藏夹。
@@ -15,7 +16,7 @@ mbs ars erpmonitor-collect-folder-list
 - Path: `/erpmonitor/erpmonitor/hotProductMonitor/collectFolderList`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

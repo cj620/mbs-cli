@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-find-other-ban-order
 
 其他禁止订单分页查询：订单监控看板「其他禁止」标签页的列表查询：按店铺、店长筛选并分页拉取“其他原因被禁止发货”的订单，返回订单总数、总页数及订单行，前端用 art-template otherContentTemplate 渲染表格。
@@ -15,7 +16,7 @@ mbs oms erp-order-find-other-ban-order [--currPage <number>] [--shopid <string>]
 - Path: `/erpOrder/erpOrder/saleFussionOrder/findOtherBanOrder`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

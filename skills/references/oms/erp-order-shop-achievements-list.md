@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-shop-achievements-list
 
 店铺业绩列表查询：店铺业绩(店铺成绩)分页列表查询：按平台、月份、店铺、组员、大酋长、店铺站点、店铺类型、店铺等级、运营状态、店铺属性、店铺标签、店龄区间、客户经理、资质状态、跟卖状态等条件筛选，支持排序字段与升降序，返回店铺业绩列表及总数、总页数。
@@ -15,7 +16,7 @@ mbs oms erp-order-shop-achievements-list [--platform <array>] [--dateMonth <arra
 - Path: `/erpOrder/erpOrder/shopAchievements/shopAchievementsList`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

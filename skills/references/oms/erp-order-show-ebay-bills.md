@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-show-ebay-bills
 
 eBay账期(账单周期)列表查询：eBay账户费用对账页面初始化时调用，查询当前可选的eBay账单账期(账单周期)列表。返回值为账期字符串数组，前端用于渲染“选择账期”下拉框选项，并默认选中第一个账期后触发账单明细查询(search())。
@@ -15,7 +16,7 @@ mbs oms erp-order-show-ebay-bills
 - Path: `/erpOrder/erpOrder/ebayAccountFee/showEbayBills`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

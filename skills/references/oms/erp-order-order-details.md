@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-order-details
 
 订单详情查询：马帮ERP订单详情页主数据加载接口：依据订单ID返回单个订单的全量信息(状态/标志位、买家资料、收货地址、Paypal地址、物流详情、支付账号、费用核算、毛利等)，结果赋给 orderdata 渲染整页。
@@ -15,7 +16,7 @@ mbs oms erp-order-order-details --orderid <string>
 - Path: `/erpOrder/erpOrder/orderNew/orderDetails`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

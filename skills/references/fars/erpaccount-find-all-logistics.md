@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs fars erpaccount-find-all-logistics
 
 物流(货运渠道)统计明细查询：物流明细看板按统计时间区间查询各货运渠道(默认按货运渠道维度)的发货单量、运费、重量、单价、上网/妥投时效、无物流轨迹占比、退款/回归退款、各平台(wish/ebay/amz/smt/joom/其他)单量及覆盖国家等统计指标；支持类型筛选与多种排序方式。
@@ -15,7 +16,7 @@ mbs fars erpaccount-find-all-logistics [--sortorder <string>] [--types2 <string>
 - Path: `/erpaccount/erpaccount/logisticsController/findAllLogistics`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

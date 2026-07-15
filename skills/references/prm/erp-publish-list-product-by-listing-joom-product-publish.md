@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs prm erp-publish-list-product-by-listing-joom-product-publish
 
 Joom刊登商品(Listing)列表查询：Joom批量刊登页面列表分页查询：等待刊登/刊登完毕两标签页共用，按刊登状态、商品属性、店铺、刊登人、站点、SPU备注、刊登时间区间、新刊登店铺等筛选，返回SPU行(含子SKU列表joomPublishSkuVo)、价格/毛利、店铺、刊登状态与时间等字段。
@@ -15,7 +16,7 @@ mbs prm erp-publish-list-product-by-listing-joom-product-publish [--status <stri
 - Path: `/erpPublish/erpPublish/joomProductPublish/listProductByListing`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

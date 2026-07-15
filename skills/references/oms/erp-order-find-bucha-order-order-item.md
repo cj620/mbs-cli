@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-find-bucha-order-order-item
 
 补差大订单-商品明细查询(第二层)：在订单管理“补差大”页签的订单列表中，点击某条订单的展开图标时触发；以该订单 orderId 为入参，POST 查询该订单下的补差商品明细行(图片/标题/SKU/销量/等级/单价/补差金额/库存等)，渲染到二级明细表格。
@@ -15,7 +16,7 @@ mbs oms erp-order-find-bucha-order-order-item --orderId <string>
 - Path: `/erpOrder/erpOrder/saleFussionOrder/findBuchaOrderOrderItem`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

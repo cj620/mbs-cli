@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-find-publish-shop-amazon-product-publish
 
 亚马逊待刊登-侧边店铺列表渲染（findPublishShop）：进入亚马逊自动刊登页左侧渲染当前用户的可刊登店铺树：返回用户头像、刊登成功总数、UPC使用/可用数量，以及店铺列表（每店含店铺ID/名称/刊登成功数/是否开启推荐刊登/是否UPC豁免）。无请求参数，后端按当前登录用户上下文返回。
@@ -15,7 +16,7 @@ mbs pim erp-product-find-publish-shop-amazon-product-publish
 - Path: `/erpProduct/erpProduct/amazonProductPublish/findPublishShop`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

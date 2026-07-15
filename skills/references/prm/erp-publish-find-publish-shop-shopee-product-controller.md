@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs prm erp-publish-find-publish-shop-shopee-product-controller
 
 查询Shopee自动刊登店铺及刊登统计：Shopee自动刊登页面加载时调用，查询当前用户的头像、当前刊登成功数、当前等待刊登数，以及该用户名下的Shopee店铺列表（含每个店铺的店铺名、店铺ID、已刊登成功数量）。返回结果用于渲染顶部统计、左侧店铺树与店铺下拉框。该接口无请求参数，依赖登录态识别当前用户。
@@ -15,7 +16,7 @@ mbs prm erp-publish-find-publish-shop-shopee-product-controller
 - Path: `/erpPublish/erpPublish/shopeeProductController/findPublishShop`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

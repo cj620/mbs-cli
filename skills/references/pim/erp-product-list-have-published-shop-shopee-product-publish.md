@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-list-have-published-shop-shopee-product-publish
 
 查询已刊登店铺列表：切换到“刊登完毕”视图时调用，获取当前已经刊登过商品的 Shopee 店铺集合，用于渲染页面“选择新刊登店铺”下拉框(#PublishedShop)。请求不携带任何参数(空请求体)，仅返回店铺名称列表。
@@ -15,7 +16,7 @@ mbs pim erp-product-list-have-published-shop-shopee-product-publish
 - Path: `/erpProduct/erpProduct/shopeeProductPublish/listHavePublishedShop`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

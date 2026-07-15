@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-get-pro-newcomer-transcript-det
 
 新人成绩单-产品开发明细查询：新人成绩单详情页第二块数据查询：按员工姓名查询其各接手时间段(平均/0-15天…61-75天)的产品开发量、营销率、销量及增长、以及各时间节点(第0/30/60/75天)的SPU爆款/旺款/平款/滞款占比、供应商占比、侵权误导处罚、降本数量等明细，前端用 contentTemplate3~6 渲染 4 张明细表。
@@ -15,7 +16,7 @@ mbs oms erp-order-get-pro-newcomer-transcript-det --employeeName <string>
 - Path: `/erpOrder/erpOrder/newComerTranscript/getProNewcomerTranscriptDet`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

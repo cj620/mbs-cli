@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-get-manufac-refund
 
 供应商/开发员退货排行查询（退货排行榜）：降本排行榜页面「退货排行」标签页数据查询：按开始/结束时间区间统计各人员（开发员/采购员）的退款情况，返回按退款金额排行的人员列表（姓名、统计项金额、累计退款金额）。
@@ -15,7 +16,7 @@ mbs pim erp-product-get-manufac-refund --page <number> [--startTime <string>] [-
 - Path: `/erpProduct/erpProduct/productExtend/getManufacRefund`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

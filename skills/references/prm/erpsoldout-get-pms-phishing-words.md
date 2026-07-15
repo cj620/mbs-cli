@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs prm erpsoldout-get-pms-phishing-words
 
 钓鱼词详情查询：根据钓鱼词记录ID查询单条钓鱼词配置详情，用于「编辑」弹窗回填表单（钓鱼词、替换词、平台、描述、站点、一级分类、包含词、是否包含for、是否车标词等）。
@@ -15,7 +16,7 @@ mbs prm erpsoldout-get-pms-phishing-words --id <string>
 - Path: `/erpsoldout/erpsoldout/infringing/getPmsPhishingWords`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs fars erp-finance-get-paypal-case-constant
 
 获取PayPal纠纷承运商常量(TRACK_NAME)：PayPal纠纷详情页加载时调用，获取"提供跟踪信息"时可选择的承运商(物流商)常量列表。URL中 TRACK_NAME 为固定常量类型标识。返回承运商列表渲染为 #paypalConstant 下拉框选项，供提交跟踪信息时填入 carrierName。无请求体参数。
@@ -15,7 +16,7 @@ mbs fars erp-finance-get-paypal-case-constant
 - Path: `/erpFinance/erpFinance/paypalcase/TRACK_NAME/getPaypalCaseConstant`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

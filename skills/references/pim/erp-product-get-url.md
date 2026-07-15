@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-get-url
 
 获取SPU立刻刊登/编辑跳转地址：库存看板（必刊登/推荐刊登列表）点击「立刻刊登」时调用，依据 SPU、必修改记录序号ID、平台ID 获取后端生成的刊登/编辑页面跳转URL；成功后前端 window.open 新窗口打开 obj 返回的地址。
@@ -15,7 +16,7 @@ mbs pim erp-product-get-url --spu <string> --sequenceid <string> --ptid <string>
 - Path: `/erpProduct/erpProduct/stockProduct/getUrl`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-query-shopee-tort-words
 
 查询Shopee拦截关键词(侵权词)：Shopee商品刊登页面点击「拦截关键词」按钮时调用，无入参，返回当前Shopee平台的全部拦截/侵权关键词字符串列表，前端在 #shopeeWordModal 弹窗内用 art-template 模板 shopeeWordTemplate 遍历 obj 渲染为关键词标签。
@@ -15,7 +16,7 @@ mbs pim erp-product-query-shopee-tort-words
 - Path: `/erpProduct/erpProduct/shopeeProductPublish/queryShopeeTortWords`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

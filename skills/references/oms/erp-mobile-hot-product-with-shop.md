@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-mobile-hot-product-with-shop
 
 在线商品(SPU)列表查询(带店铺)：移动端"在线"页热卖商品列表分页查询：按关键词(店铺名/商品ID)、时间区间、价格区间、缺货标记、平台、大区主管、团队成员、店铺等条件筛选，返回在线商品(SPU)列表及销量、单量、毛利率、备货天数、TikTok佣金率等字段；用于首屏 search() 与加载更多 getMore()。
@@ -15,7 +16,7 @@ mbs oms erp-mobile-hot-product-with-shop [--searchKey <string>] --pageSize <numb
 - Path: `/erpMobile/erpMobile/hotProductListing/hotProductWithShop`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

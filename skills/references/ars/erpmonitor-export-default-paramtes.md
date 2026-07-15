@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs ars erpmonitor-export-default-paramtes
 
 导出默认参数查询（按平台取默认平台费率/毛利率/退款率）：商品导出创建页在选择/初始化导出平台时调用，按 platformId 查询该平台对应的默认导出参数（平台费率、毛利率、退款率），并回填到「数据格式」区的平台费率、毛利率、退款率输入框。
@@ -15,7 +16,7 @@ mbs ars erpmonitor-export-default-paramtes --platformId <string>
 - Path: `/erpmonitor/erpmonitor/managerHotProduct/exportDefaultParamtes`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

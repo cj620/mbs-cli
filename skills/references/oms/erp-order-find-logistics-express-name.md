@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-find-logistics-express-name
 
 物流货运渠道(三级)统计查询：物流跟进看板(taskFollow)第三层下钻接口：在「国家→货运类型」展开后，按所选国家、货运类型及统计时间区间、排序方式，返回该货运类型下各具体货运渠道(物流商)的发货单量、运费、重量、单价、上网/妥投时效、无物流轨迹占比、退款订单数/退款率以及 wish/ebay/amazon/aliexpress/joom/其他 各平台单量；同时回传上层员工头像、跟进描述与跟进总次数用于头部展示。
@@ -15,7 +16,7 @@ mbs oms erp-order-find-logistics-express-name [--country <string>] [--expressTyp
 - Path: `/erpOrder/erpOrder/trackController/findLogisticsExpressName`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

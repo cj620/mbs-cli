@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-get-director-sales-pkmatch
 
 二级部门销售PK榜(总监)查询：销售PK大屏播报：按平台与日期查询各二级部门(及负责人/总监)的上月销售额、当月销售额、预计当月销售额、预计增长额、排名与预估输赢，渲染于 Element-Plus 表格大屏轮播。
@@ -15,7 +16,7 @@ mbs oms erp-order-get-director-sales-pkmatch --time <string> --platform <string>
 - Path: `/erpOrder/erpOrder/pKmatchController/getDirectorSalesPKMatch`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

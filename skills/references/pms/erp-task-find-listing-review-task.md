@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pms erp-task-find-listing-review-task
 
 刊登评价任务详情查询：根据任务ID查询「刊登评价」任务详情：返回任务处理状态/系统检查结果/截止时间/创建人等任务头信息，以及待评价的商品(listing)列表(图片、链接、商品ID、发布时间、评价状态等)，供任务细节页渲染倒计时、任务状态与商品评价入口。
@@ -15,7 +16,7 @@ mbs pms erp-task-find-listing-review-task --id <string>
 - Path: `/erpTask/erpTask/reviewListingTask/findListingReviewTask`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

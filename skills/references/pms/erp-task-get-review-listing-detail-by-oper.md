@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pms erp-task-get-review-listing-detail-by-oper
 
 我也要点评-Listing评价详情查询(按操作人)：“我也要点评”场景(flag=2)下，按 listingId 查询当前操作人对该 listing 的评价详情，回显标题/图片/价格/属性/促销/维护/好评 7 项评分、综合评定、评价正文与需改进内容，并据 evaluateTime 判断是否显示“保存草稿”按钮。
@@ -15,7 +16,7 @@ mbs pms erp-task-get-review-listing-detail-by-oper --listingId <string>
 - Path: `/erpTask/erpTask/reviewListingTask/getReviewListingDetailByOper`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

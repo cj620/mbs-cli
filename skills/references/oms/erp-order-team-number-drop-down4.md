@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-team-number-drop-down4
 
 根据人员获取下面组员的店铺(店铺下拉)：团队下拉组件数据源：根据店长(shopManagers)与平台(platform/平台名称)筛选在营店铺，返回店铺ID与店铺名称列表，供前端“店铺”下拉选择器渲染 label/value。
@@ -15,7 +16,7 @@ mbs oms erp-order-team-number-drop-down4 [--shopManagers <array>] [--platform <a
 - Path: `/erpOrder/erpOrder/teamDropDown/teamNumberDropDown4`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-get-dbsell-info
 
 订单SKU(商品)明细列表查询(getDbsellInfo)：订单详情页根据订单ID(orderid)查询该订单下的全部商品(SKU)明细行，返回 obj.list 数组，含每行 SKU 的产品信息、价格(售价/成本)、订购数量、库存/在途/缺货、仓库仓位、收入金额、状态/侵权/折扣等字段；前端据此渲染商品明细表并计算订单总成本(totalCost = Σ ordernum × costprice)。
@@ -15,7 +16,7 @@ mbs oms erp-order-get-dbsell-info --orderid <string>
 - Path: `/erpOrder/erpOrder/orderNew/getDbsellInfo`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

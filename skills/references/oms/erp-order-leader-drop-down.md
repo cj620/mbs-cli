@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-leader-drop-down
 
 总监下拉列表查询：依据人员类别+公司+所属平台查询团队总监(leader)下拉列表，用于自定义客单价报表页『所有总监』多选下拉的数据源，返回总监 id/name 列表。
@@ -15,7 +16,7 @@ mbs oms erp-order-leader-drop-down [--employeeType <string>] [--companyIds <stri
 - Path: `/erpOrder/erpOrder/teamDropDown/leaderDropDown`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

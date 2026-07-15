@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs scm erp-purchase-purchase-and-manufac
 
 采购下单-供应商SKU采购明细查询(purchaseAndManufac)：采购下单页(采购任务列表)展开某一供应商行时，按当前搜索/筛选条件查询该供应商(某仓库)下的待采购SKU明细，返回每个SKU的商品信息、供应商、成本/备货价、推荐采购量、库存/在途、销量预留、异常提示等，前端拼接HTML表格渲染。
@@ -15,7 +16,7 @@ mbs scm erp-purchase-purchase-and-manufac [--searchType <string>] [--isFinish <s
 - Path: `/erpPurchase/erpPurchase/purchaseDownOrder/purchaseAndManufac`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

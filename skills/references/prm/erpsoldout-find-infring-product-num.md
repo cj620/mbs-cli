@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs prm erpsoldout-find-infring-product-num
 
 侵权商品数量查询：仪表盘(common.html)按员工/店铺统计该用户名下已标注侵权但线上仍在售的商品数量，结果填入侵权商品角标(#findInfringProductNum)，并据返回 content 拼接跳转到侵权商品明细页。订单看板加载(orderstats)、切换组员(salesmanstats)及每5分钟定时刷新(settime)均会调用。
@@ -15,7 +16,7 @@ mbs prm erpsoldout-find-infring-product-num --userId <string>
 - Path: `/erpsoldout/erpsoldout/infringing/findInfringProductNum`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

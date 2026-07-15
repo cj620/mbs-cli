@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs fars erp-fin-manage-data-parallel-tk-query-lianlian-fetcher
 
 连连反查表(明细)查询：TikTok 平台「连连反查表」明细分页查询：以流水号、店铺名称(拆分后/原)、流水时间区间、所属公司为筛选条件，返回连连流水反查明细列表(流水id/币种/金额/店铺/创建时间/匹配状态/公司)及总记录数。
@@ -15,7 +16,7 @@ mbs fars erp-fin-manage-data-parallel-tk-query-lianlian-fetcher [--lid <string>]
 - Path: `/erpFinManageData/erpFinManageData/finance/parallelTkQueryLianlianFetcher`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

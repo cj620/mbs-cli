@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-tracking-list-fba-details
 
 FBA跟踪单-货件SKU明细查询：FBA跟踪单报表中，点击某条 FBA 货件行的“点击看sku详情”时触发：以货件编号(groupId)为主键，结合时间类型/起止时间/FBA货件状态/SKU 条件，查询该货件下各 SKU 的发货数、接收数、损耗、重量、头程运费、状态等明细，渲染到展开的子表格。
@@ -15,7 +16,7 @@ mbs pim erp-product-tracking-list-fba-details --groupId <string> [--dateType <st
 - Path: `/erpProduct/erpProduct/fbaProduct/trackingListFbaDetails`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

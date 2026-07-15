@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-find-difference
 
 销售报表-差异费用明细查询(findDifference)：日订单时效/销售报表中点击某日某类费用金额时，按上一页报表查询条件(localStorage params)+当日日期 oneDay+费用类型 type 分页查询该费用对应的订单/批次费用明细列表。
@@ -15,7 +16,7 @@ mbs oms erp-order-find-difference [--employeeType <string>] [--startTime <string
 - Path: `/erpOrder/erpOrder/saleReport/findDifference`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs fars erp-finance-finance-account-account-list
 
 科目(会计科目)列表查询：查询全部会计科目(account.account)列表，用于日记账凭证页面顶部筛选栏“科目”下拉框，以及创建/修改凭证弹窗中的“科目/银行科目”下拉框数据填充。页面加载时一次性拉取全部科目，前端用 art-template 渲染为 <option>。前端为不带请求体的空 POST。
@@ -15,7 +16,7 @@ mbs fars erp-finance-finance-account-account-list
 - Path: `/erpFinance/erpFinance/financeAccountAccount/financeAccountAccountList`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

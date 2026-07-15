@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs fars erp-finance-finance-account-move-line-list
 
 日记账凭证(分录)列表查询：日记账凭证页(journalVoucher)列表分页查询：按科目、账户、币种、凭证来源、费用日期区间、摘要等条件筛选，返回会计分录(account_move_line)列表及借贷方、状态、创建人等字段。
@@ -15,7 +16,7 @@ mbs fars erp-finance-finance-account-move-line-list [--accountAccountId <string>
 - Path: `/erpFinance/erpFinance/financeAccountMoveLine/financeAccountMoveLineList`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

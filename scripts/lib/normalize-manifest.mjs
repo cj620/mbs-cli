@@ -96,7 +96,50 @@ function normalizeRequest(req, path) {
     }
     out[key] = schema
   }
-  return Object.keys(out).length > 0 ? out : undefined
+  if (Object.keys(out).length === 0) return undefined
+  disambiguateRequestCliNames(out)
+  return out
+}
+
+function disambiguateRequestCliNames(request) {
+  const fields = []
+  for (const location of ['path', 'query', 'body']) {
+    collectRequestFields(request[location], location, [], fields)
+  }
+  const groups = new Map()
+  for (const field of fields) {
+    const name = field.schema['x-cli-name'] ?? toCamelCase(field.path)
+    const group = groups.get(name) ?? []
+    group.push(field)
+    groups.set(name, group)
+  }
+
+  const used = new Set([...groups].filter(([, group]) => group.length === 1).map(([name]) => name))
+  for (const [name, group] of groups) {
+    if (group.length === 1) continue
+    for (const field of group) {
+      const suffix = `${field.location.charAt(0).toUpperCase()}${field.location.slice(1)}`
+      let candidate = `${name}${suffix}`
+      let index = 2
+      while (used.has(candidate)) {
+        candidate = `${name}${suffix}${index}`
+        index += 1
+      }
+      field.schema['x-cli-name'] = candidate
+      used.add(candidate)
+    }
+  }
+}
+
+function collectRequestFields(schema, location, path, fields) {
+  if (!schema) return
+  if (schema.type === 'object') {
+    for (const [name, child] of Object.entries(schema.properties ?? {})) {
+      collectRequestFields(child, location, [...path, name], fields)
+    }
+    return
+  }
+  fields.push({ schema, location, path })
 }
 
 function pathParamNames(path) {
@@ -120,6 +163,10 @@ function normalizeAction(action) {
   const tail = lastPathSegment(path)
   const name = [service ? kebab(service) : '', kebab(tail)].filter(Boolean).join('-')
   const request = normalizeRequest(action.request, path)
+  const declaredPathNames = new Set(pathParamNames(path))
+  const params = action.params?.filter(
+    (param) => param.in !== 'path' || declaredPathNames.has(param.name) || declaredPathNames.has(param.apiName),
+  )
 
   // Preserve the (often Chinese) human title from the server's `name` by
   // folding it into the description so skill docs keep a readable label.
@@ -134,7 +181,7 @@ function normalizeAction(action) {
     method: normalizeMethod(action.method),
     path,
     ...(action.responseMode ? { responseMode: action.responseMode } : {}),
-    ...(action.params ? { params: action.params } : {}),
+    ...(params ? { params } : {}),
     ...(request ? { request } : {}),
     ...(action.response ? { response: normalizeJsonSchema(action.response) } : {}),
     ...(action.deprecated !== undefined ? { deprecated: action.deprecated } : {}),
@@ -192,11 +239,23 @@ function disambiguateActionNames(actions) {
       }
     }
 
-    candidates ??= group.map(
-      (action) => `${baseName}-${kebab(action.method)}-${kebab(action.path)}`,
-    )
+    candidates ??= group.map((action) => `${baseName}-${kebab(action.method)}-${kebab(action.path)}`)
     if (new Set(candidates).size !== candidates.length || candidates.some((name) => reserved.has(name))) {
-      continue
+      const fallbackNames = new Map()
+      const sorted = [...group].sort((left, right) =>
+        `${left.method} ${left.path}`.localeCompare(`${right.method} ${right.path}`),
+      )
+      sorted.forEach((action, index) => {
+        let suffix = index + 1
+        let candidate = `${baseName}-${kebab(action.method)}-${suffix}`
+        while (reserved.has(candidate)) {
+          suffix += 1
+          candidate = `${baseName}-${kebab(action.method)}-${suffix}`
+        }
+        fallbackNames.set(action, candidate)
+        reserved.add(candidate)
+      })
+      candidates = group.map((action) => fallbackNames.get(action))
     }
 
     group.forEach((action, index) => {

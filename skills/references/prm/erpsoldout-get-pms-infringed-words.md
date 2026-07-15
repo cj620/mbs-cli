@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs prm erpsoldout-get-pms-infringed-words
 
 侵权词库分页查询：侵权词库列表分页查询：按侵权词、平台、提交人筛选，分页返回侵权词记录列表（含替换词、平台、描述、提交记录、站点、筛选规则等）及总条数，供侵权词库页面表格展示。
@@ -15,7 +16,7 @@ mbs prm erpsoldout-get-pms-infringed-words [--infringedWord <string>] [--platfor
 - Path: `/erpsoldout/erpsoldout/infringing/getPmsInfringedWords`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

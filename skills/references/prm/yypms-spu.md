@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs prm yypms-spu
 
 获取SPU的AI商品属性：文生图向导(场景图/ozon主图/自定义咒语)打开时，按 SPU 拉取该商品由AI生成的结构化属性(产品名、关键词、卖点、受众、使用场景/方式、材质、ozon类目与排版模板、ozon中俄标题与主/次卖点)，用于自动拼装“商品信息”向导文本与排版模板默认值。
@@ -15,7 +16,7 @@ mbs prm yypms-spu
 - Path: `/yypms/pms/developerMission/ai/ai/attributes/{spu}`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

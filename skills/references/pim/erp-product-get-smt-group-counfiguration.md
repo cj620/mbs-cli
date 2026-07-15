@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-get-smt-group-counfiguration
 
 获取SMT自动刊登模板分组配置：SMT(速卖通)自动刊登店铺参数设置弹窗中，根据店铺类型(零售/批发客户为主)加载该类型下可用的自动刊登模板分组列表，用于渲染自动刊登模板下拉框。仅当模板下拉项不足时才发起请求。
@@ -15,7 +16,7 @@ mbs pim erp-product-get-smt-group-counfiguration --isAutopublish <number> [--isC
 - Path: `/erpProduct/erpProduct/smtProductController/getSmtGroupCounfiguration`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

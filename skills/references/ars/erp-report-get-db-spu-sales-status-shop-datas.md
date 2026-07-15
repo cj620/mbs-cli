@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs ars erp-report-get-db-spu-sales-status-shop-datas
 
 个人SKU业绩-店铺SKU销售业绩数据查询：「个人sku业绩」页面主列表查询：按月份(可多选)、平台、总监/经理/主管/店长组织层级、SKU、排序条件分页查询店铺维度的SKU销售业绩，返回销售额、销量、毛利额/毛利率、退款/退款率、广告费(含店长明细)等汇总指标。
@@ -15,7 +16,7 @@ mbs ars erp-report-get-db-spu-sales-status-shop-datas [--platformList <array<unk
 - Path: `/erpReport/erpReport/feeReport/getDbSpuSalesStatusShopDatas`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-export-registration-list
 
 侵权登记列表导出：侵权(showslog/tort)登记列表按平台、问题类型、店铺/店长/销售大酋长、开发员/开发大酋长、SPU、提交时间区间、SPU提交售卖时间区间、扣分数区间、禁售政策、触发产品等多维条件，导出侵权登记记录 Excel 文件。以 XMLHttpRequest(responseType=blob) 发起，返回二进制文件流，文件名由 content-disposition 响应头携带。
@@ -15,7 +16,7 @@ mbs pim erp-product-export-registration-list [--koufenshuMin <number>] [--koufen
 - Path: `/erpProduct/erpProduct/infringement/exportRegistrationList`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

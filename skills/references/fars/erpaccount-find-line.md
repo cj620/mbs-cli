@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs fars erpaccount-find-line
 
 物流方式统计查询(findLine)：物流仪表盘统计接口：按统计时间区间与排序方式，统计各物流方式(/货运渠道/国家/物流公司，随页面 viewMode 切换)的发货单量、运费、重量、单价、上网/妥投时效、无物流轨迹占比、退款及各平台(wish/ebay/amz/smt/joom/其他)单量。
@@ -15,7 +16,7 @@ mbs fars erpaccount-find-line [--sortorder <string>] [--types2 <string>] [--star
 - Path: `/erpaccount/erpaccount/logisticsController/findLine`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-find-logistics-country
 
 物流国家统计列表查询：物流跟进看板（任务跟进页）按国家维度统计查询：依据国家、物流类型、统计时间区间与排序方式，返回各国家的跟进次数、发货单量、运费、重量、单价、上网/妥投时效、无物流轨迹占比、退款数/退款率及各平台（wish/ebay/amz/smt/joom/其他）发货单量。
@@ -15,7 +16,7 @@ mbs oms erp-order-find-logistics-country [--country <string>] [--expressType <st
 - Path: `/erpOrder/erpOrder/trackController/findLogisticsCountry`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

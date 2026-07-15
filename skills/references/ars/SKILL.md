@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # ars - 数据分析与报表
 
 通过 `mbs ars` 命令查询数据分析与报表数据。

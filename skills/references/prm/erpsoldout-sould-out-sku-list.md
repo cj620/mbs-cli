@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs prm erpsoldout-sould-out-sku-list
 
 侵权/下架SKU列表查询：侵权下架（SKU下架）管理列表的多条件分页查询：支持一级分类、平台、提交人、下架原因、侵权关键词、SKU（多值空格分割）、商品标题关键词、创建时间区间等筛选，返回下架商品列表及总数、总页数。
@@ -15,7 +16,7 @@ mbs prm erpsoldout-sould-out-sku-list [--primaryCategory <string>] [--infringWor
 - Path: `/erpsoldout/erpsoldout/infringing/souldOutSkuList`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

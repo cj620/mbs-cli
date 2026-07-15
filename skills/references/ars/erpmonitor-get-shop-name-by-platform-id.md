@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs ars erpmonitor-get-shop-name-by-platform-id
 
 根据平台ID查询店铺(店铺下拉联动)：商品统计页平台选择器 onchange 触发：当已选中具体平台时，按 platformId 拉取该平台下的店铺列表，用于渲染“请选择店铺”下拉框(#ShopName)。若平台未选(值为空)则改走 /erpmonitor/erpmonitor/monitor/getShopName 查询全部店铺。
@@ -15,7 +16,7 @@ mbs ars erpmonitor-get-shop-name-by-platform-id --platformId <string>
 - Path: `/erpmonitor/erpmonitor/monitor/getShopNameByPlatformId`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

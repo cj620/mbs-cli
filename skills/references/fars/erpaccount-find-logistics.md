@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs fars erpaccount-find-logistics
 
 昨天货运渠道监控报表查询：物流员/销售首页仪表盘加载时调用，按时间区间统计昨天各货运渠道的发货单量、运费、重量、单价、上网/妥投时效、无物流轨迹占比及渠道启用状态，返回渠道监控列表用于「昨天货运渠道监控报表」表格渲染。
@@ -15,7 +16,7 @@ mbs fars erpaccount-find-logistics --sortStyle <string> --endnum <string> --star
 - Path: `/erpaccount/erpaccount/logisticsController/findLogistics`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

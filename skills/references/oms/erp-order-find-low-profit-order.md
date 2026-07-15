@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-find-low-profit-order
 
 低利润(限价)订单列表查询：仪表盘「限价订单」(低利润订单)页签的分页列表查询：按店长、店铺、任务类型、平台、推送时间区间、处理状态等条件筛选低利润/限价订单，返回订单列表及金额、国家、时间、运费、交易单号、订单备注、是否低利润等字段，前端用 art-template 渲染表格。
@@ -15,7 +16,7 @@ mbs oms erp-order-find-low-profit-order [--shopManager <string>] [--shopid <stri
 - Path: `/erpOrder/erpOrder/saleFussionOrder/findLowProfitOrder`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

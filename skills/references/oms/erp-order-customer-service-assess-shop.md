@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-customer-service-assess-shop
 
 店铺客服考核(平台店铺评估)查询：店铺业绩列表(chakanShop)中鼠标悬浮店铺名时触发，按店铺名查询该店铺在所属平台(Shopee/Lazada/ebay)的客服考核/店铺评估明细，返回评估项数组(obj)。前端按 platform 套用不同模板(shopeeTemplate/lazadaTemplate/ebayTemplate)渲染，code=500 时直接展示 desc 文案。
@@ -15,7 +16,7 @@ mbs oms erp-order-customer-service-assess-shop --shopName <string>
 - Path: `/erpOrder/erpOrder/shopAchievements/customerServiceAssessShop`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

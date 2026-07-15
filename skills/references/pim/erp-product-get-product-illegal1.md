@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-get-product-illegal1
 
 违规/举报产品列表查询：商品违规处理页(registrationForm)的列表查询接口：按 flag 区分两种业务视图——flag=1 违规产品列表(tab1)，flag=2 举报产品列表(tab2)。支持开发经理/开发员/采购员/创建人组长/适用平台/异常原因/SKU/开发时间区间等条件筛选，返回产品行列表及销量、毛利率、退款率、异常/举报信息、审核状态等字段。
@@ -15,7 +16,7 @@ mbs pim erp-product-get-product-illegal1 --flag <number> [--startDate <string>] 
 - Path: `/erpProduct/erpProduct/product/getProductIllegal1`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

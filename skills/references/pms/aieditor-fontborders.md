@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pms aieditor-fontborders
 
 字体特效(边框)样式列表查询：拉取字体特效/边框样式集合(Strapi collection)。前端右侧属性面板展示样式缩略图，点击后把样式配置(json:填充/描边/阴影等)应用到画布文本对象。请求为Strapi标准查询参数(populate展开缩略图、pagination分页)，响应为Strapi列表结构，经前端拦截器拍平后使用。
@@ -15,7 +16,7 @@ mbs pms aieditor-fontborders [--populateImg <string>] [--paginationPage <number>
 - Path: `/api/fontborders`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

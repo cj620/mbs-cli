@@ -1,3 +1,4 @@
+// AUTO-GENERATED FROM audit manifest. DO NOT EDIT.
 import { Plugin } from '@oclif/core'
 
 import './commands/oms/erp-mobile-get-db-sysadmin.js'

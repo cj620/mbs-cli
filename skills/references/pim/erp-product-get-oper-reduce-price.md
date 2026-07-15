@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-get-oper-reduce-price
 
 降本英雄榜(开发员降本汇总查询)：降本排行榜页「降本英雄榜」标签的数据查询：按时间区间统计各开发员(或采购组)在该期间内的降本明细，返回动态列头(title)与对应数据行(list)，前端以表头字段名 name 动态从每行取值渲染等级榜单。
@@ -15,7 +16,7 @@ mbs pim erp-product-get-oper-reduce-price --page <number> [--startTime <string>]
 - Path: `/erpProduct/erpProduct/productExtend/getOperReducePrice`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs ars erpmonitor-product-brand
 
 热销商品监控-商品品牌下拉查询：进入热销商品监控页(shopHotProducts2)时调用，加载"商品品牌"筛选下拉框的全部可选品牌列表。无请求参数，返回品牌集合(品牌ID + 品牌名称)，前端以 brandName 作为选项的 label 与 value。
@@ -15,7 +16,7 @@ mbs ars erpmonitor-product-brand
 - Path: `/erpmonitor/erpmonitor/hotProductMonitor/productBrand`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

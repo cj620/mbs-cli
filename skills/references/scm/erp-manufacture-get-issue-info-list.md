@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs scm erp-manufacture-get-issue-info-list
 
 SMT纠纷信息列表查询：SMT纠纷统计列表分页查询：按物流方式、店铺、店长、订单时间区间、纠纷时间区间、SKU/SPU/产品ID/订单ID/国家等条件筛选，返回各产品纠纷数量、货不对板纠纷数、物流纠纷数、退款金额、纠纷率等汇总列表。
@@ -15,7 +16,7 @@ mbs scm erp-manufacture-get-issue-info-list [--country <string>] [--shopManager 
 - Path: `/erpManufacture/erpManufacture/issueInfo/getIssueInfoList`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

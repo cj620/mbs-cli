@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs scm erp-manufacture-query-sku-issue-num-list
 
 SKU纠纷数量明细查询：SMT纠纷分析列表页点击某行 SPU 时触发，按当前筛选条件 + 该行 SPU/产品ID 查询该 SPU 下各 SKU 的纠纷数量、退款金额与纠纷率明细，结果渲染到弹出表格(treedata)。
@@ -15,7 +16,7 @@ mbs scm erp-manufacture-query-sku-issue-num-list [--country <string>] [--shopMan
 - Path: `/erpManufacture/erpManufacture/issueInfo/querySkuIssueNumList`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

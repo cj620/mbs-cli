@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs scm erp-purchase-querypurchase-custom-order-list
 
 采购定制订单明细列表查询：采购任务页(purchaseTask)「制作/条码/财务」页签中，展开某供应商行时按 manufactureId 拉取该供应商下的定制订单明细列表，支持SKU/SPU/供应商/批次/订单号/平台单号/订单状态/采购状态/核销状态/到货状态/同步状态/采购时间区间等多维筛选与排序，返回订单明细列表(含定制内容图文、成本、店铺、采购与签收信息)。
@@ -15,7 +16,7 @@ mbs scm erp-purchase-querypurchase-custom-order-list [--productId <string>] [--s
 - Path: `/erpPurchase/erpPurchase/purchaseCustomOrder/querypurchaseCustomOrderList`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

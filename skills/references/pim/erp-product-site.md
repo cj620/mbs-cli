@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-site
 
 获取大类目(Excel模板)列表：亚马逊自动刊登确认页，点击/批量修改大类时，按当前SPU所在站点(site)拉取该站点下可选的Excel模板(大类)列表，用于填充 #bigCategorySelect 下拉，选项展示为"模板名 > 产品类型"，选中后用 templateId/productType 修改大类。
@@ -15,7 +16,7 @@ mbs pim erp-product-site
 - Path: `/erpProduct/erpProduct/amazonProductPublish/getExcelTemplate/{site}`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

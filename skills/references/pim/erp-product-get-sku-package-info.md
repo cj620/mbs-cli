@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-get-sku-package-info
 
 SKU包装信息列表查询：查询SKU包装测量任务列表：按状态(全部/未完成/已完成)、SKU、提交人、开发组长、开发员、完成时间区间分页筛选，返回SKU原始/现/包装尺寸重量、开发员、仓库、提交/完成信息、图片及任务状态。
@@ -15,7 +16,7 @@ mbs pim erp-product-get-sku-package-info [--status <number>] [--skus <string>] [
 - Path: `/erpProduct/erpProduct/skuPackage/getSkuPackageInfo`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

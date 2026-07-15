@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs ars erpmonitor-list-product-by-listing-allegro-product-publish
 
 Allegro已导入商品(Listing)列表查询：查询 Allegro 商品导入(刊登 listing)结果列表：按 SPU、导入结果状态、导入人分页筛选，返回导入商品(SPU)行及其下 SKU 明细、店铺、毛利率、备货时长、物流模板、价格、导入人、导入结果与时间等字段；列表行可展开查看 SKU 价格/库存/币种。
@@ -15,7 +16,7 @@ mbs ars erpmonitor-list-product-by-listing-allegro-product-publish --currentPage
 - Path: `/erpmonitor/erpmonitor/allegroProductPublish/listProductByListing`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-get-week-month-product-sales-volume
 
 月度商品销量(周/月)统计查询：业绩目标(月)看板顶部卡片数据查询：返回所选时段的年度已完成销售额及按周/月维度的销量目标完成列表(实际/目标 形式)，供 contentTemplate2 模板渲染「{year}年已完成 / 月业绩目标」区块。
@@ -15,7 +16,7 @@ mbs oms erp-order-get-week-month-product-sales-volume --targetType <string> --mo
 - Path: `/erpOrder/erpOrder/salesTarget/getWeekMonthProductSalesVolume`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

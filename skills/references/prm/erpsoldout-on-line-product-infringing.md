@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs prm erpsoldout-on-line-product-infringing
 
 侵权在线商品列表查询：侵权商品详情页的在线商品分页查询：按 SKU、平台、店铺、开发员、关键词移除状态、图片移除/更换状态、商品(下架)状态、时间等条件分页查询平台在线侵权商品列表，返回商品信息、店铺、侵权关键词/商品/图片三类侵权信息列表及 SKU 列表。
@@ -15,7 +16,7 @@ mbs prm erpsoldout-on-line-product-infringing [--skuList <array>] [--employeeId 
 - Path: `/erpsoldout/erpsoldout/infringing/onLineProduct`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

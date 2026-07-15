@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-find-difference-for-ebay
 
 eBay账单差异明细查询：日销售报表-成本明细下钻：根据上级报表查询条件(平台/站点/品类/人员/店铺)+账单日期oneDay+费用类型type，分页查询某日各订单的费用差异明细(订单号、店铺、店长、交易单号、付款交易费及原始金额、币种、费用类型、费用说明、账单时间)。
@@ -15,7 +16,7 @@ mbs oms erp-order-find-difference-for-ebay [--employeeType <string>] [--startTim
 - Path: `/erpOrder/erpOrder/saleReport/findDifferenceForEbay`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

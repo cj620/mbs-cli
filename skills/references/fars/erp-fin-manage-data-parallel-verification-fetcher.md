@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs fars erp-fin-manage-data-parallel-verification-fetcher
 
 异常账单表-平行核对数据查询：TikTok「异常账单明细」表的平行核对数据分页查询：按汇总单号/订单编号/结算单号/店铺名称/账单时间区间/问题反馈/所属公司等条件分页查询异常账单核对明细，返回明细列表及总记录数。
@@ -15,7 +16,7 @@ mbs fars erp-fin-manage-data-parallel-verification-fetcher [--relatedOrderIds <a
 - Path: `/erpFinManageData/erpFinManageData/finance/parallelVerificationFetcher`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

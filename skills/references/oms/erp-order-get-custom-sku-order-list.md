@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-get-custom-sku-order-list
 
 定制SKU订单列表查询：仪表盘「定制sku」面板分页查询定制订单列表：按确认状态(未确认/已确认/已下单/所有)、店长、店铺过滤，返回订单+SKU+定制内容(文字/图片1/2/3)+采购发货等行数据及总条数，供 Element Plus 表格渲染与批量确认。
@@ -15,7 +16,7 @@ mbs oms erp-order-get-custom-sku-order-list --page <number> --pageSize <number> 
 - Path: `/erpOrder/erpOrder/customOrder/getCustomSkuOrderList`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-get-leave-message-spu
 
 SPU留言查询：SPU详情页加载时查询该SPU下的全部留言（含子回复）列表，渲染到"SPU 留言"卡片。返回留言人、头像、留言内容、留言时间、留言目标(SKU/SPU)、留言类型及嵌套子留言。当前用户头像通过顶层 content 字段返回。
@@ -15,7 +16,7 @@ mbs pim erp-product-get-leave-message-spu --spu <string> --isAll <string> --isSy
 - Path: `/erpProduct/erpProduct/productDetails/getLeaveMessageSpu`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

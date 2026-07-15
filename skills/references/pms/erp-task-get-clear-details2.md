@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pms erp-task-get-clear-details2
 
 开发必做清零明细查询(人事部/组员维度)：按时间区间与组员维度分页查询开发必做各类任务的应完成/未完成明细：涵盖重量异常、产品投诉、售后问题、采购异常、拍照、质检二套图、复审被拒、推荐品共8类任务的应完成与未完成量，以及手动清零时间。
@@ -15,7 +16,7 @@ mbs pms erp-task-get-clear-details2 --startTime <string> --endTime <string> --pa
 - Path: `/erpTask/erpTask/developMustDo/getClearDetails2`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

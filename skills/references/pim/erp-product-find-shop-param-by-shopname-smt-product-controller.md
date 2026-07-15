@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-find-shop-param-by-shopname-smt-product-controller
 
 根据店铺名查询店铺自动刊登参数(回显)：SMT自动刊登设置弹窗回显：根据店铺名(shopname)查询该店铺已保存的自动刊登配置(类目、批量折扣、毛利率/促销折扣率上下限、刊登间隔/时段、库存、JIT、水印、自动开关、安全承诺等)，用于弹窗各表单控件回显。
@@ -15,7 +16,7 @@ mbs pim erp-product-find-shop-param-by-shopname-smt-product-controller --shopnam
 - Path: `/erpProduct/erpProduct/smtProductController/findShopParamByShopname`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

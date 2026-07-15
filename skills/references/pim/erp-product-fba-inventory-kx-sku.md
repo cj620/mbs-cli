@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-fba-inventory-kx-sku
 
 FBA库存可销SKU明细查询：FBA库存可销(KX)报表的行下钻接口：点击「店铺负责人」行展开时，按该负责人(shopManager)查询其名下各SKU在各月份/周期的可销(kx)数据，返回 SKU + 周期可销数组，渲染到该行的子表格。
@@ -15,7 +16,7 @@ mbs pim erp-product-fba-inventory-kx-sku --sale <string>
 - Path: `/erpProduct/erpProduct/fbaProduct/fbaInventoryKxSku`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

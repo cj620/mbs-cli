@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs fars erp-fin-manage-data-erp-fin-manage-data
 
 财务数据批量更新/核销（通用 updateRows）：前端通用助手 updateRows(url, search?, index) 向 /erpFinManageData/erpFinManageData 拼接子路径后 POST，对勾选行执行批量更新/核销；无 JSON 请求体，参数经 URL 子路径+查询串传递；成功(code==200)弹提示并回调 search 重查。
@@ -15,7 +16,7 @@ mbs fars erp-fin-manage-data-erp-fin-manage-data --url <string> --subPath <strin
 - Path: `/erpFinManageData/erpFinManageData`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

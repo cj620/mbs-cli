@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-get-team-member-by-leader
 
 根据大酋长获取组员列表：平台流量看板/商品流量看板页面，选择大酋长(销售主管)下拉后联动调用，根据所选大酋长ID集合查询其名下组员(员工)列表，用于填充组员多选下拉框。请求体为大酋长ID的JSON数组(非对象)，响应obj为组员数组，前端仅取employee_name作为下拉项的value与文本。
@@ -15,7 +16,7 @@ mbs oms erp-order-get-team-member-by-leader --root <array<string>>
 - Path: `/erpOrder/erpOrder/saleReport/getTeamMemberByLeader`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

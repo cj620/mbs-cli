@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-find-auto-create-order
 
 自动创建(自建)订单列表查询：订单看板「自动创建/自建订单」Tab的分页列表查询：按店长、店铺过滤，分页返回自建订单列表（订单编号、状态、店铺/客户、原币与RMB金额、国家、下单与拉单时间、运费、交易单号、是否低利润、备注等）。参数以URL查询串传递，无请求体。
@@ -15,7 +16,7 @@ mbs oms erp-order-find-auto-create-order [--currPage <number>] [--shopid <string
 - Path: `/erpOrder/erpOrder/saleFussionOrder/findAutoCreateOrder`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

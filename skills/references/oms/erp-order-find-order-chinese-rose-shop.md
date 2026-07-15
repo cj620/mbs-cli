@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-find-order-chinese-rose-shop
 
 月度店销报表(按订单时间)查询：月度店销报表页订单时间业绩维度查询：按平台、品类、客户经理、店铺、组员/大酋长/总监/主管、运营状态、月份、统计指标、公司、海外仓类型、店龄区间等筛选，返回echarts折线序列、动态时间表头及报表行数据。
@@ -15,7 +16,7 @@ mbs oms erp-order-find-order-chinese-rose-shop --employeeType <string> [--platfo
 - Path: `/erpOrder/erpOrder/personSaleReport/findOrderChineseRoseShop`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

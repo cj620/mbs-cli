@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-sku
 
 获取速卖通(SMT)托管内容选项：SKU详情页“申请备货/上架”弹窗中，选择速卖通(smt1/aliexpress)平台时，根据当前 SKU 拉取该平台可选的托管内容选项列表(返回字符串数组)，前端用于渲染“适用内容”下拉选项(value 与 label 同值)。
@@ -15,7 +16,7 @@ mbs pim erp-product-sku
 - Path: `/erpProduct/erpProduct/product/getSmtTuoGuan/{SKU}`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

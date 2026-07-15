@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs fars erp-finance-paypalcase-list
 
 PayPal纠纷(Case)列表查询：PayPal纠纷(Case)列表查询：按编号类型(事件编号/交易号/账单编号)、原因、到期日区间、处理状态、PayPal账号、店铺/店长/客服、平台、异常case等条件分页查询，并返回未解决/已结束事件统计及待处理/审查中/等待对方处理各子状态数量与当前生命周期阶段的Case列表。
@@ -15,7 +16,7 @@ mbs fars erp-finance-paypalcase-list [--caseId <string>] [--sellerTransactionId 
 - Path: `/erpFinance/erpFinance/paypalcase/paypalcaseList`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

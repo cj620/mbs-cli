@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-get-emp-sale-rep-site
 
 员工销售报表站点统计查询：月销售主管报表中，鼠标悬浮到某员工行时按需查询该员工在指定月份、指定平台下各站点的新刊登量、总在线量与新品比例，渲染到悬浮下拉框中。第一层(getEmpSaleRepSite)与第二层(getEmpSaleRepSite2)均调用本接口，入参与出参一致。
@@ -15,7 +16,7 @@ mbs oms erp-order-get-emp-sale-rep-site --empName <string> --descr <string> --is
 - Path: `/erpOrder/erpOrder/saleReport/getEmpSaleRepSite`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

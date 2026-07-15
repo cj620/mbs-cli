@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs fars erpaccount-get-shorage-sku-info
 
 缺货SKU列表查询：仪表盘“缺货SKU”明细查询：按平台分类(sortnum)查询当前缺货的SKU列表，返回每个SKU的图片、商品信息、状态、侵权/淘汰标记、开发员/采购员、缺货单量与件数、销售级别、近7/30/90天销量、产品创建时间、最新采购信息及最后一次跟进日志。
@@ -15,7 +16,7 @@ mbs fars erpaccount-get-shorage-sku-info [--sortnum <string>]
 - Path: `/erpaccount/erpaccount/dashboard/getShorageSkuInfo`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

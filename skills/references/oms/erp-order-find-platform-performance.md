@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-find-platform-performance
 
 平台绩效月报查询：平台绩效月报页面按月查询各电商平台绩效数据：传入起始月份(starttime)、平台(platformid)、类型(type=2)，返回 obj.data 各平台行（本月/上月各项数据反馈、月度涨幅、近30天数据、毛利率等）与 obj.sum 汇总行，以及最后更新日期 obj.time。本月/上月/上上月/上三~六月各 Tab 均调用本接口，仅 starttime 不同。
@@ -15,7 +16,7 @@ mbs oms erp-order-find-platform-performance --starttime <string> [--platformid <
 - Path: `/erpOrder/erpOrder/platformPerformance/findPlatformPerformance`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

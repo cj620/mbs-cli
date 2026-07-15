@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-find-lazada-disabled-confirm
 
 Lazada下架确认列表查询：Lazada批量下架管理页的下架任务列表查询：按店铺、创建时间区间、在线编号、SPU、下架状态分页筛选，返回下架任务列表(商品图/SKU/SPU/店铺/负责人/在线编号/近30天销量/创建人/创建时间/下架状态/刊登时间/下架时间/失败原因)及总数、总页数。
@@ -15,7 +16,7 @@ mbs pim erp-product-find-lazada-disabled-confirm [--shopName <string>] [--beginT
 - Path: `/erpProduct/erpProduct/lazadaExportController/findLazadaDisabledConfirm`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

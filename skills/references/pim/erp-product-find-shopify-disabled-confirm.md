@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-find-shopify-disabled-confirm
 
 Shopify下架确认任务列表查询：Shopify批量下架页面：按创建时间区间、店铺、下架状态、SKU/SPU编号分页查询已生成的下架确认任务列表；返回任务总数、总页数及任务行(含商品信息、店铺、负责人、销量、下架状态、刊登/下架时间等)，供页面 art-template 渲染表格并支持批量下架/删除。
@@ -15,7 +16,7 @@ mbs pim erp-product-find-shopify-disabled-confirm [--shopName <string>] [--begin
 - Path: `/erpProduct/erpProduct/shopifyProductController/findShopifyDisabledConfirm`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

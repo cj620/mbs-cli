@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-ebay-shop-spk-order
 
 eBay店铺SPK发货比例(周报)查询：按店铺/店铺负责人/国家及周次维度，分页查询 eBay 店铺一周(周日~周六)每天的「符合SPK考核范围订单数 / 客户自选SPK订单数 / 自选并匹配SPK订单数 / 符合且自选且匹配SPK订单数」，并返回考核范围内实际发SPK比例与自选SPK实际发SPK比例；支持上一周/下一周翻页。
@@ -15,7 +16,7 @@ mbs oms erp-order-ebay-shop-spk-order --page <number> [--shopId <string>] [--sho
 - Path: `/erpOrder/erpOrder/ebayShopSpkRate/ebayShopSpkOrder`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-get-all-must-publish-spu
 
 获取全部必刊登SPU(导出用)：按处理状态、店铺、平台、年月、类目、刊登人等筛选条件，查询满足条件的全部「必刊登SPU」编号集合。前端在商品导出页加载时调用，把返回的SPU编号列表逗号拼接后写入导出条件(spuStr)，实现按当前筛选条件批量选取SPU导出。
@@ -15,7 +16,7 @@ mbs pim erp-product-get-all-must-publish-spu [--status <string>] [--shopId <stri
 - Path: `/erpProduct/erpProduct/stockProduct/getAllMustPublishSpu`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

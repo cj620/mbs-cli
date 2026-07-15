@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-0-2
 
 获取大酋长(销售战报)列表：进入“产品刊登分析(开发覆盖率)”页面时加载“大酋长”下拉框数据源。页面 ready 时调用，返回大酋长(销售主管/区域负责人)列表，渲染为 #bigChief 下拉的 option，其 id 作为选中值、name 作为显示文本与 peoanme 属性。
@@ -15,7 +16,7 @@ mbs oms erp-order-0-2 --p1 <number> --p2 <number>
 - Path: `/erpOrder/erpOrder/saleReport/getBigChief2/2/0`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

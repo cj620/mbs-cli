@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-tracking-list-hwc-list
 
 真实海外仓跟踪单列表查询：真实海外仓(HWC)跟踪单分页列表查询：按时间类型/时间区间、货件编号、货件状态、海外仓、SKU、酋长/店长等条件筛选，返回跟踪单汇总列表(货件、发/收数量、损耗、金额、运费、状态等)及总条数与总页数。
@@ -15,7 +16,7 @@ mbs pim erp-product-tracking-list-hwc-list --page <number> [--dateType <string>]
 - Path: `/erpProduct/erpProduct/hwcProduct/trackingListHwcList`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

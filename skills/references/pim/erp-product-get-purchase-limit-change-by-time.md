@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-get-purchase-limit-change-by-time
 
 导出备货额度变更明细：库存/备货额度管理页「导出额度明细」按钮触发：按提交人、审核人、审核状态、额度状态、SKU、提交时间区间等条件，导出采购/备货额度变更明细。响应为二进制文件流(Excel)，前端以 blob 接收并通过 content-disposition 中的 fileName 生成下载链接。
@@ -15,7 +16,7 @@ mbs pim erp-product-get-purchase-limit-change-by-time [--oper <array>] [--checkB
 - Path: `/erpProduct/erpProduct/product/getPurchaseLimitChangeByTime`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

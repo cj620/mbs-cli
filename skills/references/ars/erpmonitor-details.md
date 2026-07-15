@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs ars erpmonitor-details
 
 账户对账单监控-收支明细查询：账户对账单监控页面，根据交易时间区间、账户邮箱、收支类型、币种查询某账户的资金收支(进账/出账)流水明细，分页返回流水列表(币种、外币/人民币金额、来源去向、账户余额、平台、店铺、备注、交易日期)及总条数/总页数。
@@ -15,7 +16,7 @@ mbs ars erpmonitor-details --startTime <string> --endTime <string> [--email <str
 - Path: `/erpmonitor/erpmonitor/accountStatementMonitor/details`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

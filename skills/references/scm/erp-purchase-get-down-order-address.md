@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs scm erp-purchase-get-down-order-address
 
 采购下单-获取下单收货地址列表：采购下单/自动下单弹窗中，依据当前勾选的子SKU列表与所属仓库(storageId)，向后端查询可下单的收货地址集合，返回地址字符串数组，前端渲染为地址下拉框(#address2/#genaddress)的option选项，默认选中第一项。
@@ -15,7 +16,7 @@ mbs scm erp-purchase-get-down-order-address --storageId <string> --skuList <arra
 - Path: `/erpPurchase/erpPurchase/purchaseDownOrder/getDownOrderAddress`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs prm erpsoldout-get-pantent-country
 
 获取专利国家下拉选项：SPU详情页“专利国家”多选下拉的数据源接口。页面加载时以 axios.get 调用，无请求参数；返回 obj 数组赋给 state.patentCountryOptions，在 #patentCountry el-select 中以 id 为选项值、countryName 为显示文本渲染，并据用户角色与已选专利国家设置选项禁用态。
@@ -15,7 +16,7 @@ mbs prm erpsoldout-get-pantent-country
 - Path: `/erpsoldout/erpsoldout/infringing/getPantentCountry`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pms erp-order-get-remind-msg
 
 销售拜访卡-获取提醒消息：客服/销售工作台首页加载时拉取当前登录用户的提醒消息，返回提醒类型(color)与提醒文案(msg)，前端据 color 值以橙色警告条或绿色奖杯成功条的样式渲染到页面顶部 #getRemindMsg 区域，展示 5 秒后自动上滑隐藏。
@@ -15,7 +16,7 @@ mbs pms erp-order-get-remind-msg
 - Path: `/dev/erpOrder/erpOrder/saleVistingCard/getRemindMsg`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

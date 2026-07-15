@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-find-wish-pbof-itemid-every
 
 Wish商品Boost每日PB趋势查询：根据产品ID与起止日期，查询该产品 Wish ProductBoost(PB) 推广在前45天时间窗内每日的趋势数据，返回 echarts 折线图所需的 X 轴日期分类与多条系列(总费用/总计费流量/ERP总成交额/ERP总单量)，并回传当前定位日期(desc)用于前/后45天翻页。
@@ -15,7 +16,7 @@ mbs oms erp-order-find-wish-pbof-itemid-every --productId <string> --startTime <
 - Path: `/erpOrder/erpOrder/wishProductBoost/findWishPBOfItemidEvery`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

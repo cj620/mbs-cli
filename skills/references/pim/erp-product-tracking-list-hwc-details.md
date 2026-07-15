@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-tracking-list-hwc-details
 
 真实海外仓跟踪单-SKU明细查询：真实海外仓(HWC)跟踪单列表中，点击某条货件行的“点击看sku详情”展开按钮时，按货件编号(groupId)+时间类型/区间+货件状态+SKU 查询该货件下的逐 SKU 明细(发货/接收数量、金额、损耗、重量、头程运费、货件状态等)，用于子表 sontableTemplate 渲染。
@@ -15,7 +16,7 @@ mbs pim erp-product-tracking-list-hwc-details --groupId <string> [--dateType <st
 - Path: `/erpProduct/erpProduct/hwcProduct/trackingListHwcDetails`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-find-logistics-by-order-id
 
 订单物流轨迹查询(按订单ID)：在"投递失败订单"列表行操作菜单点击"查看轨迹"时调用，按订单编号 orderId 查询该订单的物流轨迹明细，返回一组(时间+状态描述)记录，前端拼接为多行文本后 alert 展示，无数据时提示"无"。
@@ -15,7 +16,7 @@ mbs oms erp-order-find-logistics-by-order-id --orderId <string>
 - Path: `/erpOrder/erpOrder/saleFussionOrder/findLogisticsByOrderId`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

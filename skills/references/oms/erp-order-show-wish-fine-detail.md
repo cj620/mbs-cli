@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-show-wish-fine-detail
 
 Wish罚款明细查询：按时间区间、店铺名、罚款类型分页查询 Wish 平台罚款明细列表，返回总条数、总页数及每条罚款记录(店铺、交易/订单ID、延迟天数、发生时间、罚款/扣减金额(美元/人民币)、是否撤销、罚款类型与状态)。
@@ -15,7 +16,7 @@ mbs oms erp-order-show-wish-fine-detail [--dateFromStr <string>] [--dateToStr <s
 - Path: `/erpOrder/erpOrder/wishFine/showWishFineDetail`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

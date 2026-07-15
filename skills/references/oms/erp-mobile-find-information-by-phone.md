@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-mobile-find-information-by-phone
 
 根据手机号查询供应商报价资料：移动端「货源报价录入」页，手机号输入框失焦(onblur)时按手机号查询该供应商已有的报价资料(联系人/旺旺号/质量/供货类型/供应商地址/报价规格/店铺链接/备注/商品图片等)，并通过 art-template 模板 infosTemplate 渲染回填表单。
@@ -15,7 +16,7 @@ mbs oms erp-mobile-find-information-by-phone --phone <string>
 - Path: `/erpMobile/erpMobile/shoeController/findInformationByPhone`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

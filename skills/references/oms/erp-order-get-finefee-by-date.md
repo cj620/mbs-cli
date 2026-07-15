@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-get-finefee-by-date
 
 按日期查询店铺罚款明细：销售日报(dailySalesReport)中“罚款”金额单元格下钻：携带日报查询条件(参数取自 sessionStorage 的 params)加上所点击行的日期 oneDay，查询当日各交易单的罚款明细列表，渲染为交易单号/罚款日期/店铺/罚款金额/店铺负责人表格。
@@ -15,7 +16,7 @@ mbs oms erp-order-get-finefee-by-date --oneDay <string> [--employeeType <string>
 - Path: `/erpOrder/erpOrder/saleReport/getFinefeeByDate`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

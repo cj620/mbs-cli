@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-sku-warehouse-list
 
 海外仓SKU仓位查询：订单详情页「转海外仓」弹窗中，选择海外仓类型后，按订单未删除明细行(flag!=3)批量提交 sku/海外仓类型/订单号，查询并返回各 SKU 对应的海外仓 SKU(hwcSku)等信息，渲染「修改前SKU/修改后SKU」对照表。
@@ -15,7 +16,7 @@ mbs oms erp-order-sku-warehouse-list --root <array<unknown>>
 - Path: `/erpOrder/erpOrder/orderNew/skuWarehouseList`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-find-logistics-follow-log
 
 物流跟进记录查询：物流跟进日志看板查询：按国家、类型、物流商及操作时间区间分页查询物流商跟进记录，返回跟进编号、跟进人/时间、国家/类型、物流商类型/物流商、跟进内容、聊天图片、价格附件、下一步跟进计划与下一次联系日期等列表数据。
@@ -15,7 +16,7 @@ mbs oms erp-order-find-logistics-follow-log [--country <string>] [--expressType 
 - Path: `/erpOrder/erpOrder/trackController/findLogisticsFollowLog`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

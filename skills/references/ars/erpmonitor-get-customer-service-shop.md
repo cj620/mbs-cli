@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs ars erpmonitor-get-customer-service-shop
 
 客服(店长/组员)店铺下拉查询：运营监控报表页面中，根据已选择的「店长(大酋长)」与「组员(店铺经理)」联动查询其名下店铺列表，返回店铺ID与店铺名称，用于渲染「店铺」多选下拉框(#shopList)。店长/组员下拉变更时(onchange)触发。
@@ -15,7 +16,7 @@ mbs ars erpmonitor-get-customer-service-shop [--bigChiefList <array>] [--shopMan
 - Path: `/erpmonitor/erpmonitor/smtShopKpi/getCustomerServiceShop`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

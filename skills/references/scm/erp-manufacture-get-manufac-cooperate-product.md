@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs scm erp-manufacture-get-manufac-cooperate-product
 
 厂商合作(候选)产品列表查询：根据厂商(供应商)ID分页查询该厂商向您提供的候选合作产品，返回产品图片、产品编号、产品名称、净重等信息，前端以缩略图卡片形式渲染并分页展示。
@@ -15,7 +16,7 @@ mbs scm erp-manufacture-get-manufac-cooperate-product --manufactureId <string> -
 - Path: `/erpManufacture/erpManufacture/manufactureExtendController/getManufacCooperateProduct`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

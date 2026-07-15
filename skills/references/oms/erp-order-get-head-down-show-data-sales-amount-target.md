@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-get-head-down-show-data-sales-amount-target
 
 启元市场部头部年度/月度目标展示数据查询：加载启元市场部月目标页面头部展示数据：年度目标及完成情况（实际/目标毛利额、完成率、预计完成率提点档位）、各月毛利额目标列表（目标/实际/完成率），并返回当年各月时间段记录（down）。前端据 headStatus 切换单一汇总视图与多平台下拉切换视图。
@@ -15,7 +16,7 @@ mbs oms erp-order-get-head-down-show-data-sales-amount-target --currentTime <str
 - Path: `/erpOrder/erpOrder/salesAmountTarget/getHeadDownShowData`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

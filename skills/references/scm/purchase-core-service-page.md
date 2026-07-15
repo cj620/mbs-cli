@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs scm purchase-core-service-page
 
 降本明细分页查询：降本优化报表「降本明细」页签的多条件分页查询：支持降本时间、入库时间区间、SPU、SKU、降本人、排序方式等筛选，返回降本明细列表（SPU/SKU/产品名/供应商/降本前后金额/降本差额/下降比率/累计降本金额）及总条数。
@@ -15,7 +16,7 @@ mbs scm purchase-core-service-page [--downCostStartDate <string>] [--downCostEnd
 - Path: `/gateway/purchase-core-service/down/cost/report/page`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

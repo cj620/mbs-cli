@@ -77,19 +77,23 @@ describe('isAllowedOrigin', () => {
 })
 
 describe('serve app', () => {
-  it('POST route forwards body to APIClient.post and wraps response', async () => {
+  it('POST route forwards body and query to APIClient.post and wraps response', async () => {
     const post = vi.fn().mockResolvedValue({ items: [{ id: 1 }] })
     const app = buildApp(manifest, async () => fakeClient(vi.fn(), post))
 
     const res = await app.inject({
       method: 'POST',
-      url: '/api/reports/search',
+      url: '/api/reports/search?traceId=abc',
       payload: { currentPage: 1, pageSize: 10 },
     })
 
     expect(res.statusCode).toBe(200)
     expect(JSON.parse(res.body)).toEqual({ ok: true, data: { items: [{ id: 1 }] } })
-    expect(post).toHaveBeenCalledWith('/gateway/report-service/reports/search', { currentPage: 1, pageSize: 10 })
+    expect(post).toHaveBeenCalledWith(
+      '/gateway/report-service/reports/search',
+      { currentPage: 1, pageSize: 10 },
+      { params: { traceId: 'abc' } },
+    )
   })
 
   it('GET route forwards path params + query', async () => {
@@ -235,14 +239,14 @@ describe('serve app', () => {
 
     const res = await app.inject({
       method: 'POST',
-      url: '/api/stream/rows',
+      url: '/api/stream/rows?traceId=abc',
       payload: { sql: 'select 1' },
     })
 
     expect(res.statusCode).toBe(200)
     expect(res.headers['content-type']).toContain('application/x-ndjson')
     expect(res.body).toBe('{"type":"row","value":1}\n')
-    expect(postStream).toHaveBeenCalledWith('/v1/stream/rows', { sql: 'select 1' })
+    expect(postStream).toHaveBeenCalledWith('/v1/stream/rows', { sql: 'select 1' }, { params: { traceId: 'abc' } })
   })
 
   it('proxy-all GET route forwards arbitrary upstream path and query', async () => {

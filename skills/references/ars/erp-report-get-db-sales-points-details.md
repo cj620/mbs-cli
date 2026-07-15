@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs ars erp-report-get-db-sales-points-details
 
 销售积分明细查询：销售积分榜单页面右侧「积分明细」数据查询：按月份与销售人员名单查询，返回每位销售人员的积分项目明细（姓名、积分项目、积分增减、时间），用于右侧明细表格滚动展示。
@@ -15,7 +16,7 @@ mbs ars erp-report-get-db-sales-points-details --months <string> [--salePersonLi
 - Path: `/erpReport/erpReport/pointsRanking/getDbSalesPointsDetails`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

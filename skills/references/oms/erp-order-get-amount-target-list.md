@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-get-amount-target-list
 
 市场部月度毛利额目标列表查询：按部门与时间区间查询市场部（人员维度）月度毛利额目标完成情况，返回人员/部门列表（本月/上月/下月/年度的目标额、完成率、环比、销售额/毛利率/毛利额）及一行汇总 sum；列表为树形懒加载首层数据。
@@ -15,7 +16,7 @@ mbs oms erp-order-get-amount-target-list --departmentId <number> --startTime <st
 - Path: `/erpOrder/erpOrder/salesAmountTarget/getAmountTargetList`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

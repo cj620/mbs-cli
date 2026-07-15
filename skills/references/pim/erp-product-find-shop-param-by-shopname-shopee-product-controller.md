@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-find-shop-param-by-shopname-shopee-product-controller
 
 查询店铺自动刊登参数(按店铺名)：Shopee 自动刊登页打开店铺刊登参数弹窗(showModal)时，按店铺名(shopname)查询该店铺已保存的自动刊登参数(站点/算价渠道/一二级分类/毛利率/折扣率/平台费率/库存/刊登数量/间隔/时间/捆绑/水印/托管等)，用于回显弹窗各控件。入参经 URL 查询串 shopname 传递，无请求体。
@@ -15,7 +16,7 @@ mbs pim erp-product-find-shop-param-by-shopname-shopee-product-controller --shop
 - Path: `/erpProduct/erpProduct/shopeeProductController/findShopParamByShopname`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

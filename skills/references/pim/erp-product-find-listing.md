@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-find-listing
 
 爆款listing列表查询：爆款listing榜单分页查询：按平台、店铺、店铺负责人、总监/经理/主管/店长、店铺名、SPU、开发时间区间、发布时间区间、排序方式等条件筛选，返回 listing 行及分页汇总（total/totalPages）。
@@ -15,7 +16,7 @@ mbs pim erp-product-find-listing [--reserve11 <string>] [--shopName <string>] [-
 - Path: `/erpProduct/erpProduct/listingController/findListing`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs fars erpaccount-get-sales-level-reportkf
 
 销售层级报表(客服版 kf)查询：仪表盘商品图表页(productChart)在 flag==2(客服版)分支调用：按 SKU类型、所选统计指标、基准日期与前后30天方向，返回 ECharts 折线图所需的 X 轴类目数据与多系列数据，用于渲染近30天趋势图。
@@ -15,7 +16,7 @@ mbs fars erpaccount-get-sales-level-reportkf [--skutypes <string>] [--selectOpti
 - Path: `/erpaccount/erpaccount/dashboard/getSalesLevelReportkf`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs ars erp-report-download-supplier
 
 供应商应付下载任务创建：在采购/供应商应付报表页，根据供应商名称、应付金额区间、入库时间区间等筛选条件，向后端提交一个异步下载任务。成功返回 code=200 时弹出创建成功提示，失败用 desc 文案提示。
@@ -15,7 +16,7 @@ mbs ars erp-report-download-supplier [--supplierName <string>] [--beginYingFuAmo
 - Path: `/erpReport/erpReport/SupplierPrimaryBatchController/downloadSupplier`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

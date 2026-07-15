@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-proposal-list
 
 运营优化建议(SPU)列表查询：库存/今日必做看板「优化」(optimiz/重新检测)Tab 的列表分页查询：按店铺名称、平台、店长、处理状态、itemId 等条件分页查询命中运营策略的 SPU，返回每条 SPU 的图片/标题/订单量/PV-UV/加购收藏/转化率/毛利率/评价评分/推送处理时间/处理状态、问题诊断规则(rule)与优化策略动作列表(actionList)。
@@ -15,7 +16,7 @@ mbs pim erp-product-proposal-list --page <number> [--shopNameList <array>] [--pl
 - Path: `/erpProduct/erpProduct/operateStrate/proposalList`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

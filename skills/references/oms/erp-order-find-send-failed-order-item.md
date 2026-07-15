@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-find-send-failed-order-item
 
 发货失败订单-商品明细查询：在“发货失败订单”面板中展开某一订单行时，按 orderId 查询该订单下的全部商品(SKU行)明细，返回图片、标题、SKU、产品等级、售价、销量、库存/在途、原价、开发员、成本价等字段，前端据此计算并展示毛利与毛利率。
@@ -15,7 +16,7 @@ mbs oms erp-order-find-send-failed-order-item --orderId <string>
 - Path: `/erpOrder/erpOrder/saleFussionOrder/findSendFailedOrderItem`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-find-smt-disabled-confirm
 
 SMT批量下架-下架确认列表查询：SMT(速卖通)批量下架页的列表分页查询：按店铺、创建时间区间、在线编号、SPU、下架状态、销量类型筛选，返回待下架/下架中/已下架的商品列表(含图片、店铺、负责人、商品ID、在线编号、销量、创建信息、下架状态/时间等)及分页汇总。
@@ -15,7 +16,7 @@ mbs pim erp-product-find-smt-disabled-confirm [--currentPage <number>] [--shopNa
 - Path: `/erpProduct/erpProduct/smtExportController/findSmtDisabledConfirm`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-get-shopowner-sales-pk-match
 
 店长销售PK赛榜单查询：大屏轮播看板按平台查询店长销售额PK赛榜单：传入统计日期(time，前端取昨日 yyyyMMdd)与平台(platform)，返回各二/三级部门、店长在指定平台的上月/本月/预计本月/预计增长销售额及平台排名、公司排名，用于大屏自动滚动轮播展示。
@@ -15,7 +16,7 @@ mbs oms erp-order-get-shopowner-sales-pk-match --time <string> --platform <strin
 - Path: `/erpOrder/erpOrder/pKmatchController/getShopownerSalesPkMatch`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

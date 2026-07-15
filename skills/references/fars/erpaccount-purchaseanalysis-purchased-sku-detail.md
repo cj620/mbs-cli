@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs fars erpaccount-purchaseanalysis-purchased-sku-detail
 
 已采购的SKU明细查询：采购分析看板「已采购的SKU」下钻明细：根据销量级别(typename)、状态(status)、开发员(oper3)三个查询条件，查询对应分组下的已采购SKU列表，返回 SKU、销量级别、状态、缺货量、在途量、开发员、采购员等字段，前端用 art-template 渲染为表格。
@@ -15,7 +16,7 @@ mbs fars erpaccount-purchaseanalysis-purchased-sku-detail --typename <string> [-
 - Path: `/erpaccount/erpaccount/dashboard/purchaseanalysisPurchasedSkuDetail`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

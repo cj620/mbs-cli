@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-get-optimal-purchase
 
 最优采购/预计到货信息查询：在店铺爆款监控列表中点击某行预计到货/日志入口时，按该行 ERP SKU 查询其最优采购方案下采购发货、采购到货、仓库签收等各环节的开始/完成/预警时间及整体预计到货时间，在预计到货弹窗以步骤表展示。
@@ -5,7 +6,7 @@
 ## 用法
 
 ```bash
-mbs pim erp-product-get-optimal-purchase --sku <string> --sku <string>
+mbs pim erp-product-get-optimal-purchase --skuQuery <string> --skuBody <string>
 ```
 
 ## API
@@ -15,14 +16,14 @@ mbs pim erp-product-get-optimal-purchase --sku <string> --sku <string>
 - Path: `/erpProduct/erpProduct/productDetails/getOptimalPurchase`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 
 | 参数 | API 字段 | 位置 | 类型 | 必填 | 默认值 | 说明 |
 |---|---|---|---|---|---|---|
-| `sku` | sku | query | string | 是 | - | URL查询串中的SKU，值=当前列表行ERP SKU(item.erpSku，经 sessionStorage('logsku') 中转) |
-| `sku` | sku | body | string | 是 | - | 请求体中的SKU，与query中的sku同值({ sku: sku })，冗余双传 |
+| `skuQuery` | sku | query | string | 是 | - | URL查询串中的SKU，值=当前列表行ERP SKU(item.erpSku，经 sessionStorage('logsku') 中转) |
+| `skuBody` | sku | body | string | 是 | - | 请求体中的SKU，与query中的sku同值({ sku: sku })，冗余双传 |
 
 ## 响应字段
 

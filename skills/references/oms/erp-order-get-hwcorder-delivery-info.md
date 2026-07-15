@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-get-hwcorder-delivery-info
 
 订单SKU标签/装箱单标签信息查询：订单详情页根据订单ID与标签类型(sku标签/装箱单标签)，查询该订单已上传的标签信息列表，用于在装运信息区渲染标签内容及删除入口。业务参数以URL查询串传递，无JSON请求体。
@@ -15,7 +16,7 @@ mbs oms erp-order-get-hwcorder-delivery-info --orderid <string> --labeltype <str
 - Path: `/erpOrder/erpOrder/orderNew/getHwcorderDeliveryInfo`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

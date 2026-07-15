@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs ars erpmonitor-hot-listing
 
 热销Listing列表查询：在线商品监控页「热销」标签页列表查询：按销售风向(上涨/下跌/不变)筛选，分页返回热销listing列表，含商品信息、店铺/负责人、售价、7/30/90天销量、浏览量、收藏量、销售风向、毛利率、退款风向、退款率等汇总字段(前端最多展示100条)。
@@ -15,7 +16,7 @@ mbs ars erpmonitor-hot-listing [--salesWind <string>] --currpage <number>
 - Path: `/erpmonitor/erpmonitor/managerHotProduct/hotListing`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

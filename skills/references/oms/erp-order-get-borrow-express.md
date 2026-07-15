@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-get-borrow-express
 
 可借用运单号查询：按排除平台、发货时间区间、交运时间区间、货运渠道、邮寄类型、目的国家等条件，分页查询可借用的运单号列表，返回运单号、国内运单号、发货时间、收件地址及渠道类型。
@@ -15,7 +16,7 @@ mbs oms erp-order-get-borrow-express [--starttime <string>] [--endtime <string>]
 - Path: `/erpOrder/erpOrder/borrowingNo/getBorrowExpress`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

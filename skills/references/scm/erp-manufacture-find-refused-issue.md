@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs scm erp-manufacture-find-refused-issue
 
 拒绝并新增（仅退款）纠纷方案：在“纠纷详情”页中，卖家点击“拒绝并新增仅退款方案”弹窗确定时调用：携带被拒绝的买家方案ID列表、卖家新增方案类型、退款金额、方案说明，提交后端处理；成功后弹出后端提示信息并刷新纠纷详情。
@@ -15,7 +16,7 @@ mbs scm erp-manufacture-find-refused-issue --buyerSolutionIdList <array> --addSo
 - Path: `/erpManufacture/erpManufacture/issueInfo/findRefusedIssue`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-get-enabel-publish-shop-by-site
 
 按站点查询可刊登店铺(Shopee)：Shopee「批量导入/生成 listing」弹窗中，用户在站点多选框选择一个或多个站点后，按所选站点列表查询这些站点下可用于刊登的店铺，返回店铺列表用于渲染「预刊登店铺」下拉选项。
@@ -15,7 +16,7 @@ mbs pim erp-product-get-enabel-publish-shop-by-site --siteList <array<string>>
 - Path: `/erpProduct/erpProduct/shopeeProductPublish/getEnabelPublishShopBySite`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

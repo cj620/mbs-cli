@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-get-big-chief3
 
 大酋长(销售主管/Leader)列表查询：根据员工类型获取“大酋长”(销售主管/Leader)列表，用于页面顶部“请选择大酋长”下拉选择框(ySelect)的选项渲染；返回 id/name 列表供后续按 Leader 查询组员等使用。
@@ -15,7 +16,7 @@ mbs oms erp-order-get-big-chief3 --employeeType <string> [--platformIds <array>]
 - Path: `/erpOrder/erpOrder/saleReport/getBigChief3`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

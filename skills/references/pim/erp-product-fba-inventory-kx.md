@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-fba-inventory-kx
 
 FBA库息（库存信息）查询：FBA产品状态报表中，点击某行 SKU 的“库息”按钮时，按 bindId/skuValue + 店铺名称分页查询该 SKU 的库息（库存周转）历史明细，返回时间、店铺、SKU、成本价、库存数、日均销量(DMS)、库息天数、创建/操作时间等列，并据 count/countPage 渲染分页。
@@ -15,7 +16,7 @@ mbs pim erp-product-fba-inventory-kx [--bindId <string>] [--skuValue <string>] [
 - Path: `/erpProduct/erpProduct/fbaProduct/fbaInventoryKx`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-mobile-get-leader-shop2-hot-product-listing
 
 组员店铺列表查询(getLeaderShop2)：订单查询(爆款)页"店铺"下拉数据源：根据所选大酋长(经理)、组员、平台及店铺名模糊关键字，查询并返回对应的可选店铺列表(店铺ID+店铺名)，渲染为店铺多选复选框。平台/组员选择变化或店铺名输入时自动触发。
@@ -15,7 +16,7 @@ mbs oms erp-mobile-get-leader-shop2-hot-product-listing [--bigChiefEmployeeId <s
 - Path: `/erpMobile/erpMobile/hotProductListing/getLeaderShop2`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

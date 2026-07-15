@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-check-tracking-listhwc
 
 海外仓跟踪单校验(新增前出库明细校验)：新增真实海外仓跟踪单弹窗点击校验时调用，按货件编号(groupId)与海外仓核验本次出库明细，返回每条FNSKU/马帮商品的出库量、重量、头程运费及异常信息；校验通过的obj被前端缓存供保存接口saveTrackingListHwc使用。
@@ -15,7 +16,7 @@ mbs pim erp-product-check-tracking-listhwc --groupId <string> [--headFreight <st
 - Path: `/erpProduct/erpProduct/hwcProduct/checkTrackingListhwc`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

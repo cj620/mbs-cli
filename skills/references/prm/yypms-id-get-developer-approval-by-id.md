@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs prm yypms-id-get-developer-approval-by-id
 
 开发审批详情查询（按ID）：根据开发任务/审批ID查询开发审批详情。前端在 AI 图片描述组件中，当未取到1688采集图片(getAlibabaAiProductImg)时，调用本接口作为回退(fallback)，从返回的 obj.pictureList 中解析供应商图片URL列表用于展示。
@@ -15,7 +16,7 @@ mbs prm yypms-id-get-developer-approval-by-id
 - Path: `/yypms/pms/developerMission/getDeveloperApprovalById/{id}`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

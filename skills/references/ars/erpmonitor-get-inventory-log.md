@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs ars erpmonitor-get-inventory-log
 
 调库日志查询：热销商品监控列表行操作「查看调库日志」时调用：根据 skuId/itemId/platformId/erpSku 定位某条 listing，返回其历史库存修改(调库)日志列表，前端以时间线按调库时间展示原库存、新库存、仓库及调库结果。
@@ -15,7 +16,7 @@ mbs ars erpmonitor-get-inventory-log --skuId <string> --itemId <string> --platfo
 - Path: `/erpmonitor/erpmonitor/hotProductMonitor/getInventoryLog`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-find-wish-pbof-itemid
 
 Wish按listing查询PB投放报表(findWishPBOfItemid)：Wish平台Product Boost(广告/推广)按 listing 维度的分页统计查询：依据交易时间区间、店长、店铺、产品ID等条件，按指定字段排序，返回每个 listing 的广告费(总/新品/老品)、广告销售额、ACOS、PB占比、刊登时间、要价、CPM、费用流量、订单成交、店铺店长、ERP成交额单量等汇总指标列表。
@@ -15,7 +16,7 @@ mbs oms erp-order-find-wish-pbof-itemid --startTime <string> --endTime <string> 
 - Path: `/erpOrder/erpOrder/wishProductBoost/findWishPBOfItemid`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

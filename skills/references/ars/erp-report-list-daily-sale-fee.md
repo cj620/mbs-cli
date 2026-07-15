@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs ars erp-report-list-daily-sale-fee
 
 订阅费导入记录列表查询：查询「订阅费/开号店铺成本/店铺商标成本」导入文件的解析记录列表：按操作人、操作时间区间、解析状态分页查询，返回文件名、费用类型、操作人、创建/更新时间、解析状态及导入结果等字段。
@@ -15,7 +16,7 @@ mbs ars erp-report-list-daily-sale-fee --fileType <number> [--oper <string>] [--
 - Path: `/erpReport/erpReport/dailySaleFee/list`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

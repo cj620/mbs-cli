@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs fars erp-fin-manage-data-parallel-tk-reference-refund
 
 凭证退款参考(账单反查表)查询：TikTok 平台「凭证退款参考」页面账单反查表分页查询：按流水号、店铺名称、所属公司过滤，返回退款金额/冲回金额/差值、凭证字、辅助核算、应收账款等账单反查行数据及总数。
@@ -15,7 +16,7 @@ mbs fars erp-fin-manage-data-parallel-tk-reference-refund --type <number> [--lid
 - Path: `/erpFinManageData/erpFinManageData/finance/parallelTkReferenceRefund`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

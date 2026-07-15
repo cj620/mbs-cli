@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-preview-task
 
 Shopee批量刊登-预览生成店铺商品行(previewTask)：Shopee商品批量刊登弹窗中，依据所选站点(siteList)与预刊登店铺(shopList)，后端预生成待刊登店铺商品行(含唯一标识、默认站点、店铺名)，前端渲染到批量导入表格供补填库存/利润率/折扣率/平台费率/价格渠道后提交刊登。
@@ -15,7 +16,7 @@ mbs pim erp-product-preview-task --siteList <array> [--shopList <array>]
 - Path: `/erpProduct/erpProduct/shopeeProductPublish/previewTask`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

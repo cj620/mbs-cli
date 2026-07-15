@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs fars erp-finance-get-finance-push-task-sell
 
 财务推送任务-销售导入日志查询：财务数据导入页面：展开某个推送任务行或导入过程中(每5秒轮询)调用，按期数(年份/周期)+任务ID查询该任务下的销售导入子任务列表，返回各子任务的数据周期、应导入数/成功数/失败数、进度、操作人、状态、操作时间，用于表格展开行渲染与进度刷新。
@@ -15,7 +16,7 @@ mbs fars erp-finance-get-finance-push-task-sell [--years <number>] [--cycle <num
 - Path: `/erpFinance/erpFinance/financePushTask/getFinancePushTaskSell`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

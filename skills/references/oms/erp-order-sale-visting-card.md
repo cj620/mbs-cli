@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-sale-visting-card
 
 销售名片·东南亚/赛道战况播报查询：首页战况播报模块查询。基础路径 /erpOrder/erpOrder/saleVistingCard/，含两种 GET 形态：getTrackByTrackDny(东南亚战况，无入参) 与 {type}/getTrackByTrack(指定赛道战况，赛道经路径参数 type 传入)。返回 obj 列表(平台/团队/销售额/毛利率/增量/奖金等)及 content 更新文案，前端用 art-template 渲染战况播报表格。
@@ -15,7 +16,7 @@ mbs oms erp-order-sale-visting-card [--type <string>]
 - Path: `/erpOrder/erpOrder/saleVistingCard/`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

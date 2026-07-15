@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-export-send-failed-order
 
 派送失败订单导出：订单看板「派送失败」标签页的导出功能：按店长、店铺、平台筛选条件（导出全部）或勾选的订单 orderids（导出选中）导出派送失败订单，后端以二进制流（Excel）返回，前端用 blob 下载为「派送失败{时间戳}.xls」。
@@ -15,7 +16,7 @@ mbs oms erp-order-export-send-failed-order [--shopManager <string>] [--shopid <s
 - Path: `/erpOrder/erpOrder/saleFussionOrder/exportSendFailedOrder`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

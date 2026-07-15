@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs fars erpaccount-find-logistics-provider-name-all
 
 物流商(物流渠道)名称分页查询：按物流商名称(模糊)查询物流渠道(物流商)列表：用于货运详情/物流时效监控页头部物流渠道下拉数据加载(不分页)，以及运营商及马帮渠道配置弹窗的分页列表(含分页与总数)。返回物流渠道行(渠道ID、物流商名称、物流商编码、是否国外、51Express渠道ID等)。
@@ -15,7 +16,7 @@ mbs fars erpaccount-find-logistics-provider-name-all --logisticsProviderName <st
 - Path: `/erpaccount/erpaccount/logisticsController/findLogisticsProviderNameAll`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

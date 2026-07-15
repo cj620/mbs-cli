@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs ars erpmonitor-shop-by-platform
 
 平台店铺/店铺负责人下拉查询：热销商品监控页初始化及平台切换时调用：按平台(platformId)查询该平台下的店铺列表与店铺负责人列表，返回结果分别渲染到店铺下拉(shopId/shopName)与店铺负责人下拉(saleLeader)。无 platformId 时返回全部平台的店铺/负责人。
@@ -15,7 +16,7 @@ mbs ars erpmonitor-shop-by-platform [--platformId <string>]
 - Path: `/erpmonitor/erpmonitor/hotProductMonitor/shopByPlatform`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-sku-country-platform-sale-info
 
 SKU国家/平台/刊登销量分布查询：SKU销量统计弹窗(sales-chart-sku 自定义组件)右侧三张柱状图的数据源：按指定SKU返回该SKU的平台销量分布(platform)、国家销量分布(country)、刊登量分布(publish)三组数据，每组含分类名称数组(title)与对应销量数组(saleNum)，前端分别渲染到右下、右上、中间三个 ECharts 柱状图。
@@ -15,7 +16,7 @@ mbs pim erp-product-sku-country-platform-sale-info --sku <string>
 - Path: `/erpProduct/erpProduct/productDetails/skuCountryPlatformSaleInfo`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

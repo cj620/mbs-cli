@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-team-number-drop-down1
 
 团队人员下拉(按集团公司)查询：按集团公司ID(groupCompanyId)、员工类型、公司/平台/组长等条件查询团队成员(员工)下拉列表。前端在创建海外仓SKU弹窗 onMounted 时分别以 groupCompanyId=1 与 groupCompanyId=33 各调一次，把返回数组分别缓存到 companyUserMap[1] / companyUserMap[33]，用于开发员(developer1/developer2)下拉选择，选项展示与取值均为成员姓名 name。
@@ -15,7 +16,7 @@ mbs oms erp-order-team-number-drop-down1 --employeeType <string> --companyIds <a
 - Path: `/erpOrder/erpOrder/teamDropDown/teamNumberDropDown1`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

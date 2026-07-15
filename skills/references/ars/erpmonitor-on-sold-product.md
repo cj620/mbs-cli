@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs ars erpmonitor-on-sold-product
 
 已售商品(SPU)监控列表查询：依据店铺、平台、统计日期分页查询该店铺已售出的平台商品(SPU)列表，返回平台SPU ID、平台/胤元SPU编号、商品名称、关键字、售出数量、上架时间与最后更新时间，供运营监控页面表格渲染。
@@ -15,7 +16,7 @@ mbs ars erpmonitor-on-sold-product --shopId <string> --platformId <string> --ana
 - Path: `/erpmonitor/erpmonitor/monitor/onSoldProduct`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

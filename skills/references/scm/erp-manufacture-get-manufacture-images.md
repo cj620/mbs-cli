@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs scm erp-manufacture-get-manufacture-images
 
 供应商(公司)图片库查询：根据供应商序号ID(manufactureId)查询该供应商的公司图片库图片列表，前端用于渲染“公司图片库”展示网格(contentTemplate1)及“编辑图片”弹窗网格(contentTemplate2)。上传图片/删除图片后会重新调用本接口刷新图片列表。
@@ -15,7 +16,7 @@ mbs scm erp-manufacture-get-manufacture-images --manufactureId <string>
 - Path: `/erpManufacture/erpManufacture/uploadFlieController/getManufactureImages`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

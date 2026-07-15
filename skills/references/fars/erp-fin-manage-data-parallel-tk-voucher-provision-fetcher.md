@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs fars erp-fin-manage-data-parallel-tk-voucher-provision-fetcher
 
 TikTok计提冲销凭证拉取(列表查询)：TikTok平台「计提冲销」凭证并行拉取的列表分页查询：按订单编号、结算单号、店铺名称、创建(付款)时间区间、所属公司等条件筛选，分页返回交易号、发货时间、店铺、平台费、物流费、币种、汇率、上传人、公司等字段。?type=1 为固定查询参数。
@@ -15,7 +16,7 @@ mbs fars erp-fin-manage-data-parallel-tk-voucher-provision-fetcher [--orderIds <
 - Path: `/erpFinManageData/erpFinManageData/finance/parallelTkVoucherProvisionFetcher`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

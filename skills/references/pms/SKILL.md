@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # pms - 技术中台服务域（包括open-ai、oss、翻译等公共服务）
 
 通过 `mbs pms` 命令查询技术中台服务域（包括open-ai、oss、翻译等公共服务）数据。

@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs prm erpsoldout-findinfringing
 
 侵权商品列表查询：按 SKU 列表查询侵权商品记录，分页返回侵权关键词、关联SKU、侵权平台、在售/下架成功/下架失败商品数、审核状态、提交/审核人、侵权图片等明细，用于侵权审核任务列表渲染与分页。
@@ -15,7 +16,7 @@ mbs prm erpsoldout-findinfringing [--skuList <array<string>>]
 - Path: `/erpsoldout/erpsoldout/infringing/findinfringing`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

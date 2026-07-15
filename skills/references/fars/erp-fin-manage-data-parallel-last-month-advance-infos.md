@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs fars erp-fin-manage-data-parallel-last-month-advance-infos
 
 eBay上月预收余额信息查询：eBay 平台「上月已收」页面的余额信息分页查询：按 ids、平台订单号、店铺名称、余额月份区间、公司等条件分页查询，返回订单金额/平台费/发货金额/账单退款/上月余额/余额等对账字段列表及总条数。
@@ -15,7 +16,7 @@ mbs fars erp-fin-manage-data-parallel-last-month-advance-infos [--shortBalanceMo
 - Path: `/erpFinManageData/erpFinManageData/ebayFinance/parallelLastMonthAdvanceInfos`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

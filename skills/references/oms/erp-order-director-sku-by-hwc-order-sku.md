@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-director-sku-by-hwc-order-sku
 
 转直邮发货-按海外仓订单SKU获取直邮SKU：订单详情页点击「转直邮发货」时调用：以当前订单未删除(flag!=3)商品列表为入参(每项含 sku/storage/orderId)，请求后端返回转直邮的 SKU 列表(res.data.obj)，写入 basedata.zhiyouSKUList 并在「转直邮发货设置」弹窗中展示「修改前SKU」，供录入「修改后SKU」后确认转单。
@@ -15,7 +16,7 @@ mbs oms erp-order-director-sku-by-hwc-order-sku --requestBody <array<unknown>>
 - Path: `/erpOrder/erpOrder/orderNew/directorSkuByHwcOrderSku`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

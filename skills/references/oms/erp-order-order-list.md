@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-order-list
 
 订单列表查询：订单中心列表多维度分页查询：按店铺/平台/订单状态/货运方式/自定义流程/关键词/时间区间/开发员/采购员/店长/经理/客服/销量级别/重量·价格·毛利·毛利率·剩余备货天数区间/退款/最晚到货等数十项条件,配合左侧标签(tab 0~11)分页返回订单及其商品明细(dbSellList)。
@@ -15,7 +16,7 @@ mbs oms erp-order-order-list [--manager <array>] [--orderResult <string>] [--pla
 - Path: `/erpOrder/erpOrder/orderNew/orderList`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

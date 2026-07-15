@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-get-order-group
 
 待采购汇总(按供应商/货运方式)查询：进入待采购汇总页或勾选/取消「不生成采购单」复选框时调用，依据 sessionStorage 中的订单ID集合查询缺货SKU，按供应商(manufacture)与货运方式(expresstype)两个维度返回缺货SKU件数、缺货订单量等汇总数据，并返回汇总提示文案。
@@ -15,7 +16,7 @@ mbs oms erp-order-get-order-group --orderids <string> --flag <number>
 - Path: `/erpOrder/erpOrder/orderDeliver/getOrderGroup`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

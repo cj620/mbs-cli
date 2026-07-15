@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-get-sku-mapping-by-sku-and-warehouse
 
 按SKU与海外仓查询海外仓映射关系：SKU详情页「配置海外仓映射关系」弹窗中，用户选择某个海外仓类型后调用本接口，根据当前 SKU + 海外仓类型查询该映射记录（直邮SKU/海外仓SKU/分销平台SKU/中转仓），用于回填编辑表单。返回的整条记录同时作为后续 updateSkuMapping 的原始值(orginInfo)。
@@ -15,7 +16,7 @@ mbs pim erp-product-get-sku-mapping-by-sku-and-warehouse --sku <string> --wareho
 - Path: `/erpProduct/erpProduct/productDetails/getSkuMappingBySkuAndWarehouse`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

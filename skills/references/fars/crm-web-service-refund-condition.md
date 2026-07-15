@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs fars crm-web-service-refund-condition
 
 订单退款条件查询（发起退款明细）：订单详情页点击“发起退款(send refund)”时调用，按订单ID查询该订单的可退款条件：退款币种、退款总额、可退款SKU明细及原始金额、可选退款理由列表，以及ERP/平台两侧的历史退款记录，用于回填发起退款弹窗。
@@ -15,7 +16,7 @@ mbs fars crm-web-service-refund-condition --orderId <string>
 - Path: `/gateway/crm-web-service/cancelOrder/1/refundCondition`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

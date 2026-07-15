@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs prm erpsoldout-get-pms-phishing-words-log-list
 
 钓鱼词操作日志列表查询：钓鱼词库列表页中，点击某一条钓鱼词记录“操作日志”列的“获取更多”链接时，按该记录ID查询其全部操作日志，返回操作时间/操作人/操作内容列表，前端以时间线(el-timeline)形式弹窗展示。
@@ -15,7 +16,7 @@ mbs prm erpsoldout-get-pms-phishing-words-log-list --id <string>
 - Path: `/erpsoldout/erpsoldout/infringing/getPmsPhishingWordsLogList`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

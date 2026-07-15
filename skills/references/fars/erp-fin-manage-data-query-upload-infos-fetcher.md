@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs fars erp-fin-manage-data-query-upload-infos-fetcher
 
 上传任务记录列表查询：财务「上传任务记录」分页查询：按所属公司/文件名/创建时间区间/任务状态/平台等条件筛选导入任务，返回任务记录列表（文件名、创建人、成功/失败总数、状态、文件大小、表格总数等）及总记录数，供前端表格分页展示。
@@ -15,7 +16,7 @@ mbs fars erp-fin-manage-data-query-upload-infos-fetcher --type <string> [--taskN
 - Path: `/erpFinManageData/erpFinManageData/finance/queryUploadInfosFetcher`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

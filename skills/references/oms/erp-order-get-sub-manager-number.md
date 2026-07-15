@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-get-sub-manager-number
 
 销售目标-下级主管(酋长)业绩数量查询：销售日报页面，点击展开某员工行时，按 employeeId+weekTag 查询其下级主管(酋长)的本周/上周/上上周业绩数量明细(weekList)，用于渲染下钻子表。请求参数全部以 URL query 传递(weekTag: 001本周/010上周/100上上周)。
@@ -15,7 +16,7 @@ mbs oms erp-order-get-sub-manager-number --employeeId <string> [--employeeName <
 - Path: `/erpOrder/erpOrder/salesTarget/getSubManagerNumber`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-list-product-by-listing-lazada-publish
 
 Lazada批量刊登-按Listing查询商品列表：Lazada批量刊登页商品列表分页查询：按刊登状态、商品属性、店铺、刊登人、站点、spu备注关键词、刊登时间区间等条件分页返回待刊登/已刊登SPU列表及子SKU明细。等待刊登Tab由search()调用、刊登完毕Tab由search2()调用，复用同一接口。
@@ -15,7 +16,7 @@ mbs pim erp-product-list-product-by-listing-lazada-publish [--status <string>] [
 - Path: `/erpProduct/erpProduct/lazadaPublish/listProductByListing`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

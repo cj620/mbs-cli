@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pms erp-task-get-explosion
 
 销量下降(爆款监控)列表查询：首页"开发必做"面板中"销量下降"页签的分页查询：按复核/处理状态(checkStatus)分页拉取销量持续下降的 SPU 任务列表，返回 SPU 编号、产品名、日销量、库存、毛利率、开发员、任务推送/截止日期、处理备注等字段，用于渲染 #salesDownTemplate 表格。
@@ -15,7 +16,7 @@ mbs pms erp-task-get-explosion [--checkStatus <string>] --page <number> --pageSi
 - Path: `/erpTask/erpTask/developMustDo/getExplosion`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

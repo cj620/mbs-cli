@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-find-no-inventory-order-forkf
 
 清仓停产暂售缺货订单列表查询：成品仪表盘(finishedGoods)「清停暂售缺货」页签的分页列表查询：按当前页码 currPageStr 分页拉取因清仓/停产/暂售导致缺货的待处理订单，返回总条数、总页数及订单行列表，用于 notprodContentTemplate 渲染表格。
@@ -15,7 +16,7 @@ mbs oms erp-order-find-no-inventory-order-forkf --currPageStr <string>
 - Path: `/erpOrder/erpOrder/saleFussionOrder/findNoInventoryOrderForkf`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

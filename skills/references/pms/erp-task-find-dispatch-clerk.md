@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pms erp-task-find-dispatch-clerk
 
 分派任务者统计查询：任务管理（我收到的任务）页面右侧「分派任务者」栏统计：按日期区间、处理结果、任务分类类型统计各分派人（任务创建人）名下的任务数量，返回分派人头像、账号及任务数，用于渲染分派人列表。
@@ -15,7 +16,7 @@ mbs pms erp-task-find-dispatch-clerk [--startdate <string>] [--enddate <string>]
 - Path: `/erpTask/erpTask/taskController/findDispatchClerk`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

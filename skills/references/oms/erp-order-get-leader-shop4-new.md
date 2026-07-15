@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-get-leader-shop4-new
 
 店长/店铺列表查询(getLeaderShop4New)：在「订单时间业绩/发货时间业绩」报表页中，根据所属平台、组员、大酋长(店长)、客服经理、公司等条件查询符合条件的店铺清单，用于店铺勾选弹框/店铺下拉的数据渲染。
@@ -15,7 +16,7 @@ mbs oms erp-order-get-leader-shop4-new [--platformIds <array>] [--employeeList <
 - Path: `/erpOrder/erpOrder/saleReport/getLeaderShop4New`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

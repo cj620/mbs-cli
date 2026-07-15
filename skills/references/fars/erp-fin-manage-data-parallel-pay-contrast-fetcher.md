@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs fars erp-fin-manage-data-parallel-pay-contrast-fetcher
 
 账-付-流并行对比数据查询：TikTok「账-付-流核对」表分页查询：按付款单号、结算单号、店铺名称、付款时间、流水时间、问题反馈(一级/二级)、所属公司等条件过滤，返回账单(结)、付款(付)、流水(流)三表并行对比的明细行与差值/反馈字段及总记录数。
@@ -15,7 +16,7 @@ mbs fars erp-fin-manage-data-parallel-pay-contrast-fetcher [--paymentIds <array>
 - Path: `/erpFinManageData/erpFinManageData/finance/parallelPayContrastFetcher`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

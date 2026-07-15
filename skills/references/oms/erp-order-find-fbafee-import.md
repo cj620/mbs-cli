@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-find-fbafee-import
 
 FBA费用导入记录查询：财务报表-FBA费用导入记录分页查询：按页码分页拉取FBA费用导入记录列表，返回店铺、费用产生时间、费用类型、站点、导入状态、结果描述、创建人/创建时间及源文件地址等信息，供前端表格渲染与分页展示。
@@ -15,7 +16,7 @@ mbs oms erp-order-find-fbafee-import --page <number> --pageSize <number>
 - Path: `/erpOrder/erpOrder/fbaReport/findFBAFeeImport`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

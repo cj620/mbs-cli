@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-get-product-info-sku
 
 商品详情-按SKU查询商品基本信息：移动端「产品详情」页加载时，按 URL 上的 SKU 查询该商品的基本信息（名称、SPU/SKU、售价、售卖状态/等级、销量、毛利率/退款率、重量、库存、颜色尺码、包装、仓库仓位、开发员/采购员、申报名、备注等），返回数组(前端取第 0 个元素)渲染基本信息卡片。
@@ -15,7 +16,7 @@ mbs pim erp-product-get-product-info-sku --sku <string>
 - Path: `/erpProduct/erpProduct/productDetails/getProductInfoSku`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

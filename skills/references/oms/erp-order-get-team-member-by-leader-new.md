@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-get-team-member-by-leader-new
 
 按店长查询团队成员(店长列表)：库存看板/必刊登「优化建议」筛选区，根据平台筛选条件查询团队成员(店长)列表，用于渲染店长下拉选择器(el-select)。Vue 组件 #shopvue 初始化及平台变更时调用，返回列表渲染为店长下拉项。
@@ -15,7 +16,7 @@ mbs oms erp-order-get-team-member-by-leader-new [--bigChief <array>] [--companyI
 - Path: `/erpOrder/erpOrder/saleReport/getTeamMemberByLeaderNew`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

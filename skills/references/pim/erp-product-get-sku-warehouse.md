@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-get-sku-warehouse
 
 查询SKU可配置海外仓类型列表：SKU详情页点击“配置海外仓映射关系”时，按 SKU 查询其可选的海外仓类型列表，用于弹窗中“海外仓类型”下拉选择框。返回值为海外仓类型字符串数组，前端 el-select 直接用每个字符串同时作为 label 和 value 渲染。
@@ -15,7 +16,7 @@ mbs pim erp-product-get-sku-warehouse --sku <string>
 - Path: `/erpProduct/erpProduct/productDetails/getSkuWarehouse`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

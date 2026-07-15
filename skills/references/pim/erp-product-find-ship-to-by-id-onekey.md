@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-find-ship-to-by-id-onekey
 
 一键提价-查看发往地(收货地)列表：Speedmaster(SMT)一键提价页面，点击列表行「查看」按钮时调用：根据商品记录ID(id)与子SKU(skuId)查询该商品对应的发往地/收货地列表，前端弹出 #lookModal 并把返回的 obj.data 数组逐项渲染到 shoptoTemplate 表格中。
@@ -15,7 +16,7 @@ mbs pim erp-product-find-ship-to-by-id-onekey --id <string> --skuId <string>
 - Path: `/erpProduct/erpProduct/smtProductController/findShipToByIdOnekey`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

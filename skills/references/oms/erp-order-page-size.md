@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-page-size
 
 销售人均发货毛利额增长排行榜查询：大屏「人均发货毛利额增长榜」榜单数据查询：按页码/每页条数分页（路径参数），按榜单类型 type 取数，返回排行榜列表（名次、小组人数、姓名、人均毛利额增长、预测月业绩、毛利率、预估奖金）及总页数，前端用 art-template 模板渲染表格并定时轮询滚动。
@@ -15,7 +16,7 @@ mbs oms erp-order-page-size --type <string>
 - Path: `/erpOrder/erpOrder/saleVistingCard/getSaleTrackNew/{page}/{pageSize}`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

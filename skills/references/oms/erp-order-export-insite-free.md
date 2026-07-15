@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-export-insite-free
 
 站内推广费/费项差异核对 导出：差异核对页 findDifference 点击导出，以当前查询条件 params 为请求体，导出指定费项类型的订单/批次费项差异明细 Excel；请求体复用 localStorage params（由 dailyorderTimeReport.html 写入）并追加 oneDay/type/pageSize；响应为二进制 Excel 文件流。
@@ -15,7 +16,7 @@ mbs oms erp-order-export-insite-free [--employeeType <string>] [--startTime <str
 - Path: `/erpOrder/erpOrder/saleReport/exportInsiteFree`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

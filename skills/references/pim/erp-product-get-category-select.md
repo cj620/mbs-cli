@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-get-category-select
 
 类目全类搜索(下拉联想)：商品类目管理页顶部「全类搜索」输入框的远程联想接口：用户输入类目名称关键词(防抖500ms)后，按关键词模糊匹配返回类目候选列表，供 el-select 下拉展示；选中后用于回填面包屑层级并跳转加载该类目的数据。
@@ -15,7 +16,7 @@ mbs pim erp-product-get-category-select --keyword <string>
 - Path: `/erpProduct/erpProduct/categoryController/getCategorySelect`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

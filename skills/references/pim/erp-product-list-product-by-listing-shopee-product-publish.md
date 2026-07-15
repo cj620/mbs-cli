@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-list-product-by-listing-shopee-product-publish
 
 Shopee刊登商品列表查询(按Listing)：Shopee商品刊登管理页面列表查询：按刊登状态(等待刊登/刊登完毕)、商品属性、店铺、刊登人、站点、SPU、批量备注、风险预警、刊登时间区间等条件分页查询，返回商品(含子SKU)刊登信息列表、总数与总页数。
@@ -15,7 +16,7 @@ mbs pim erp-product-list-product-by-listing-shopee-product-publish [--status <st
 - Path: `/erpProduct/erpProduct/shopeeProductPublish/listProductByListing`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

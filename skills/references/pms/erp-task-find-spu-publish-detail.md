@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pms erp-task-find-spu-publish-detail
 
 SPU刊登报表明细查询：按 SPU编号/开发员/提交售卖时间/品牌或推荐人/出单量区间 分页查询 SPU 刊登报表明细，返回每个 SPU 在 eBay、wish、amazon、aliexpress、joom、mail.ru、zoodmall、shopee、其他 共9个平台的实际刊登量、放弃刊登量、出单量，以及平台标记完成量、放弃刊登量、出单量等汇总字段。
@@ -15,7 +16,7 @@ mbs pms erp-task-find-spu-publish-detail --currentPage <number> [--spu <string>]
 - Path: `/erpTask/erpTask/spuController/findSpuPublishDetail`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-find-difference-lazada-publish-fee
 
 Lazada刊登费差异(站内费用)列表查询：查询Lazada刊登费差异(站内RMB费用)对账列表：按费用时间区间分页查询，返回订单/交易编号、店铺、店长、站内RMB费用、费用时间等明细及总条数、总页数，用于差异费用核对展示。
@@ -15,7 +16,7 @@ mbs oms erp-order-find-difference-lazada-publish-fee --pageSize <number> --page 
 - Path: `/erpOrder/erpOrder/saleReport/findDifferenceLazadaPublishFee`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

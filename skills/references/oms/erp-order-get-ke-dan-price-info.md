@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-get-ke-dan-price-info
 
 客单价报表查询(国家/品类)：销售客单价报表：按时间区间、平台、排序及总监/经理/店长/店铺/国家/品类/邮寄方式等筛选，查询各客单价分组的收入、支出、订单数量、利润与毛利率明细行及合计行；前端用于渲染明细表格与收入/利润柱状图。
@@ -15,7 +16,7 @@ mbs oms erp-order-get-ke-dan-price-info [--keDanPriceType <string>] [--employeeT
 - Path: `/erpOrder/erpOrder/saleReport/getKeDanPriceInfo`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

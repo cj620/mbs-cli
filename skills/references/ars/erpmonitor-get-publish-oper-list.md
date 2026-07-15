@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs ars erpmonitor-get-publish-oper-list
 
 刊登人下拉列表查询：热销商品监控(在线列表)页面「刊登人」下拉框数据源：根据平台、总监、经理等团队维度过滤，返回可选刊登人(id/name)列表，供顶部筛选区 publisher 选择器渲染。
@@ -15,7 +16,7 @@ mbs ars erpmonitor-get-publish-oper-list --employeeType <string> [--companyId <a
 - Path: `/erpmonitor/erpmonitor/hotProductMonitor/getPublishOperList`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

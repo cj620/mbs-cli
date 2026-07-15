@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs fars yyfms-get-account-cost-list
 
 账户费用(对账)列表查询：Payoneer 账户费用对账列表分页查询：按币种、起止日期、邮箱、描述等条件查询账户收支流水（账户类型、金额、收入/支出、人民币折算、余额、来源/目标、日期等），返回流水列表及总记录数，供页面表格展示与分页。
@@ -15,7 +16,7 @@ mbs fars yyfms-get-account-cost-list [--currency <string>] [--startDate <string>
 - Path: `/yyfms/fms/accountcostexport/getAccountCostList`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-get-product-type-tab
 
 亚马逊自动刊登-获取产品类型(类目)标签页：亚马逊自动刊登待确认页面顶部「类目标签栏」数据获取：按所选店铺(shopIds)与刊登状态(status)统计各产品类型(一级类目)的待处理数量，返回类目列表，前端用 categoryListTemplate 渲染为可点击的标签页(tab)，点击后按 productType/templateId 二次筛选列表。
@@ -15,7 +16,7 @@ mbs pim erp-product-get-product-type-tab [--shopIds <array>] [--status <string>]
 - Path: `/erpProduct/erpProduct/amazonProductPublish/getProductTypeTab`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

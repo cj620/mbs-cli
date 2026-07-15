@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-find-distribution-order
 
 分销订单(自建商品订单)列表查询：采购桌面「自建商品」标签页的分销订单分页列表查询：按店铺、店长筛选并分页拉取分销订单，返回订单总数、总页数及订单行（订单号、状态、分销平台、店铺、币种/金额、客户国家、下单/建单时间、运费、交易号等），由 art-template buildContentTemplate 渲染表格。
@@ -15,7 +16,7 @@ mbs oms erp-order-find-distribution-order [--currPage <number>] [--shopid <strin
 - Path: `/erpOrder/erpOrder/saleFussionOrder/findDistributionOrder`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

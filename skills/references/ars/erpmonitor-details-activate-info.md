@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs ars erpmonitor-details-activate-info
 
 TikTok Listing 批量上/下架(detailsActivateInfo)：店铺爆款监控页选中若干 TikTok(platformId=120) listing 后，批量提交上架(operType=1)或下架(operType=2)。前端把勾选行完整对象数组随操作类型一并 POST 给后端，后端据 code/desc 返回处理结果并前端弹窗提示。
@@ -15,7 +16,7 @@ mbs ars erpmonitor-details-activate-info --operType <number> --esProductSKUList 
 - Path: `/erpmonitor/erpmonitor/hotProductMonitor/detailsActivateInfo`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

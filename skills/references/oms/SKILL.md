@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # oms - 订单系统
 
 通过 `mbs oms` 命令查询订单系统数据。

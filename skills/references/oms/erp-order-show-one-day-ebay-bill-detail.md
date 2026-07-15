@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-show-one-day-ebay-bill-detail
 
 某一天eBay账单明细查询：日销报表下钻：根据父页面筛选条件(员工类型/时间区间/平台/分类/店铺/员工/大主管)+指定某一天(currentdate)，分页查询该日 eBay 账单明细，并返回总条数与总页数供前端分页与展示。
@@ -15,7 +16,7 @@ mbs oms erp-order-show-one-day-ebay-bill-detail [--employeeType <string>] [--sta
 - Path: `/erpOrder/erpOrder/saleReport/showOneDayEbayBillDetail`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

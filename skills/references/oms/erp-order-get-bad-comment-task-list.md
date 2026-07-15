@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-get-bad-comment-task-list
 
 差评任务列表查询：客户评价(差评)处理列表分页查询：按订单编号、店铺/店长/客服/站点、店铺等级、回复状态、评价时间、回复次数、排序方式等条件，分 status(待处理/已处理/成功删除) 查询差评任务列表，返回订单、店铺、评价及回复时间等字段，供 customerRating 页面三个 Tab 渲染。
@@ -15,7 +16,7 @@ mbs oms erp-order-get-bad-comment-task-list --page <number> --pageSize <number> 
 - Path: `/erpOrder/erpOrder/badCommentTask/getBadCommentTaskList`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

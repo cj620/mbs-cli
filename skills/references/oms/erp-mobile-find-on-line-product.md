@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-mobile-find-on-line-product
 
 查看线上(侵权)商品列表查询：移动端马帮ERP「查看线上商品」页：按商品ID与关键词(sku/店铺)分页查询线上侵权商品列表，返回商品标题、SKU、侵权关键词及移除状态、店铺、刊登时间等，支持「加载更多」分页。
@@ -15,7 +16,7 @@ mbs oms erp-mobile-find-on-line-product --currPage <number> [--id <string>] [--s
 - Path: `/erpMobile/erpMobile/infringing/findOnLineProduct`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

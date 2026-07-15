@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-get-spu-sales-status
 
 SPU各平台销售状况查询：在SPU管理列表的“毛利率”单元格鼠标悬浮时触发，按SKU查询该商品在各销售平台的销售额、毛利、退款、广告费汇总，渲染为气泡内的平台明细表格。
@@ -15,7 +16,7 @@ mbs pim erp-product-get-spu-sales-status --sku <string>
 - Path: `/erpProduct/erpProduct/product/getSpuSalesStatus`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

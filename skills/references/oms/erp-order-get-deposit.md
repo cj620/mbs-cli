@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-get-deposit
 
 押款金额查询：按所属平台、店铺、结束月份查询对应账期的押款金额，返回的押款金额写入发货时间业绩报表的“押款金额”列（.amountNum）展示。
@@ -15,7 +16,7 @@ mbs oms erp-order-get-deposit [--platformNames <array>] [--shopName <array>] [--
 - Path: `/erpOrder/erpOrder/saleReport/getDeposit`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

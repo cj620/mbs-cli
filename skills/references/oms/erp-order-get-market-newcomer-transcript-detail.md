@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-get-market-newcomer-transcript-detail
 
 营销新人成绩单-业绩/店铺状态明细查询：营销新人成绩单详情页「业绩明细」与「店铺状态明细」两块表格的数据来源。按员工姓名查询该新人各入职阶段的刊登/出单/动销/毛利/销售额等业绩汇总，以及各时间节点的店铺数量/黑马/健康/疲软/等级变化等店铺状态汇总，返回按阶段排列的明细列表。
@@ -15,7 +16,7 @@ mbs oms erp-order-get-market-newcomer-transcript-detail --employeeName <string>
 - Path: `/erpOrder/erpOrder/newComerTranscript/getMarketNewcomerTranscriptDetail`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

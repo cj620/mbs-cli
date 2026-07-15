@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs ars erpmonitor-hot-product-with-sku
 
 热销商品SKU销售详情查询(hotProductWithSku)：单产品分析页加载/排序时调用：按店铺(shopId)+商品(itemId)查询该店铺下该 listing 关联各 SKU 的销售详情，返回 SKU 商品信息、30天销售额/销量/平均成交价、待发货、库存/在途、重量、商品属性、成本/毛利、毛利率/退款率、7/30/90天销量、开发员等，渲染至「SKU销售详情」表格。
@@ -15,7 +16,7 @@ mbs ars erpmonitor-hot-product-with-sku --shopId <string> [--orderWay <string>] 
 - Path: `/erpmonitor/erpmonitor/hotProductMonitor/hotProductWithSku`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

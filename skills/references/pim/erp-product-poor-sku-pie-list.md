@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-poor-sku-pie-list
 
 不良库存饼图(末次采购/滞销)分析数据查询：根据当前页表格的 SKU 列表，批量查询每个 SKU 末次入库成功采购单往前推 30/60/90 天的入库采购分析明细（备货人/数量/金额/入库时间）。前端用其计算末次采购分析(备货人、备货数量、备货金额、距今天数)及不良库存分析(占比最高备货人、占比)，并在查看分析表抽屉中渲染 30/60/90 天饼图。
@@ -15,7 +16,7 @@ mbs pim erp-product-poor-sku-pie-list --fielde741ce4d <array<string>>
 - Path: `/erpProduct/erpProduct/indonesia/poorSkuPieList`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

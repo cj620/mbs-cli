@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-picture-search-product-by-url
 
 以图搜款(按图片URL搜索相似SKU)：在 SPU 管理列表商品图片上点击「搜索相似SKU」放大镜图标，将该商品主图URL提交后端做以图搜图，返回匹配到的相似商品SKU集合；前端把结果写入 localStorage(arrSkus)，再跳转 SPU 管理页(flag=6)，以批量SKU(batchSku)方式回填搜索框并重新查询，从而展示所有相似款。
@@ -15,7 +16,7 @@ mbs pim erp-product-picture-search-product-by-url --url <string>
 - Path: `/erpProduct/erpProduct/productDetails/pictureSearchProductByUrl`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

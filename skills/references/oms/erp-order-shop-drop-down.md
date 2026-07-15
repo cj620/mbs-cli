@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-shop-drop-down
 
 店铺下拉列表查询：根据平台、总监/经理/店长、客户经理、运营状态、海外仓、店铺排名、店铺名称关键字等条件分页查询店铺下拉列表；后端会把入参的总监/经理/主管换算成店长再过滤，并按登录人名下组员限定数据范围。
@@ -15,7 +16,7 @@ mbs oms erp-order-shop-drop-down [--platformIds <array>] [--managers <array>] [-
 - Path: `/erpOrder/erpOrder/teamDropDown/shopDropDown`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

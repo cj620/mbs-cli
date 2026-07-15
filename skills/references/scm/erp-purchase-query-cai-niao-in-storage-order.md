@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs scm erp-purchase-query-cai-niao-in-storage-order
 
 菜鸟入库单列表查询：优选仓菜鸟入库单分页列表查询：按单据类型(采购入库单/退货入库单)、时间区间、入库单编号、SKU、店铺、状态筛选，返回入库单行(FOC单号、优选SKU、申请/已入数、各仓库存、销量、直邮信息、采购情况、状态、操作日志等)及是否有操作权限。
@@ -15,7 +16,7 @@ mbs scm erp-purchase-query-cai-niao-in-storage-order [--createTimeEnd <string>] 
 - Path: `/erpPurchase/erpPurchase/caiNiao/queryCaiNiaoInStorageOrder`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

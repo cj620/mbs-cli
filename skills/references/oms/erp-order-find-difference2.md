@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-find-difference2
 
 销售报表-差异费项明细查询(findDifference2)：日订单时段报表中点击某日某费项差异数字时弹窗调用，按上级报表筛选条件 + 单日日期(oneDay) + 费项类型(type) 分页查询该费项的逐订单/批次差异明细，返回订单号、店铺、店长、对应费项金额、费项说明与插入时间。
@@ -15,7 +16,7 @@ mbs oms erp-order-find-difference2 [--employeeType <string>] [--startTime <strin
 - Path: `/erpOrder/erpOrder/saleReport/findDifference2`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

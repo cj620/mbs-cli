@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-get-xn-sku-savenum
 
 获取SKU特供虚拟仓库存设置：SKU详情页加载时查询当前SKU的「特供虚拟仓」设置：是否开启特供虚拟仓、保底库存值，用于回显复选框与保底库存输入框；无权限时返回字符串"没有权限"并隐藏整块设置区。
@@ -15,7 +16,7 @@ mbs pim erp-product-get-xn-sku-savenum --sku <string>
 - Path: `/erpProduct/erpProduct/productDetails/getXnSkuSavenum`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

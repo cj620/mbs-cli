@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-shop-id
 
 获取店铺刊登大类(一级类目)列表：亚马逊自动刊登配置弹窗(showModal)打开时，按店铺ID查询该店铺可选的刊登「大类(一级类目)」名称列表，用于渲染 #firstCategory 多选下拉(select2)。店铺ID以路径参数形式传入。
@@ -15,7 +16,7 @@ mbs pim erp-product-shop-id
 - Path: `/erpProduct/erpProduct/amazonProductPublish/getFirstCategory/{shopId}`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

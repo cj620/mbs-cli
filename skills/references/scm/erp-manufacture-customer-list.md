@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs scm erp-manufacture-customer-list
 
 客户(CRM)列表查询：CRM 客户列表分页查询：支持按客户名称模糊、所属销售、订单数量区间、订单总金额区间、累计毛利额区间、是否有跟进日志、最新跟进日志时间区间、是否已录入客户信息等条件筛选，并按下单时间/订单数量/订单总金额/客单价/毛利率/累计毛利额排序，返回客户列表及其订单、毛利、退款、跟进等汇总字段。
@@ -15,7 +16,7 @@ mbs scm erp-manufacture-customer-list [--search <string>] [--sales <array>] [--i
 - Path: `/erpManufacture/erpManufacture/customer/customerList`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

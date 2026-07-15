@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-get-newcomer-list
 
 新人成绩单-新人列表查询：新人成绩单审核页面的新人列表分页查询：按审核人员类型(待审核/历史审核)、人员类型(销售/开发)、HRBP、审核状态、组员(员工姓名)等条件分页查询新人列表，返回新人头像、姓名、入职时间、指导人、HRBP、成绩单描述、部门、审核状态等字段，并附带分页汇总信息。
@@ -15,7 +16,7 @@ mbs oms erp-order-get-newcomer-list --currentPage <number> [--isReviewed <string
 - Path: `/erpOrder/erpOrder/newComerTranscript/getNewcomerList`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

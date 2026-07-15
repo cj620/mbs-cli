@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-find-no-inventory-order-new
 
 清仓停产(无货)订单列表查询：仪表盘订单中心“清停暂收/清仓停产”页签：按店铺、店长筛选，分页查询马帮内清仓停产不再采购但线上仍出单的“无货”订单，返回订单列表(订单编号、状态、延迟天数、店铺、客户、金额、时间、运费、交易单号、备注等)及总条数/总页数。
@@ -15,7 +16,7 @@ mbs oms erp-order-find-no-inventory-order-new [--currPage <number>] [--shopid <s
 - Path: `/erpOrder/erpOrder/saleFussionOrder/findNoInventoryOrderNEW`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

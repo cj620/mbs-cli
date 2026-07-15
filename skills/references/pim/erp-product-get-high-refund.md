@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-get-high-refund
 
 高退款率产品列表查询：违规产品登记页(registrationForm)第三个标签页「高退款率产品」的分页列表查询：按开发员、采购员、SKU、开发时间区间筛选，返回高退款率(异常编号固定 WG51)的 SKU 列表及毛利率/退款率/销量等汇总字段。由页面 search3()/getProductIllegal3() 调用。
@@ -15,7 +16,7 @@ mbs pim erp-product-get-high-refund [--endDate2 <string>] [--buyer <string>] [--
 - Path: `/erpProduct/erpProduct/product/getHighRefund`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

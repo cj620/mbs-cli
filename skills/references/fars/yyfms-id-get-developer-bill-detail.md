@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs fars yyfms-id-get-developer-bill-detail
 
 开发员账单详情查询：按账单ID查询某开发员账期账单详情，返回结算汇总(settlement)、账单总额(bill)、账期起止、收入明细列表(incomeList)、支出明细列表(disburseList)；前端按岗位渲染不同的过程管理与最终绩效模块。
@@ -15,7 +16,7 @@ mbs fars yyfms-id-get-developer-bill-detail
 - Path: `/yyfms/fms/settlement/getDeveloperBillDetail/{id}`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

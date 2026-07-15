@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs ars erpflowmonitor-get-shop-data-monitor
 
 店铺流量监控-平台流量看板数据查询：店铺流量监控页「平台流量看板」按平台/大酋长/组员/店铺维度，统计近 1/7/30 天店铺整体流量指标(访客数UV、访问次数PV、人均访问次数、访问时长、被访问产品数、订单量及各指标环比上期变化率)，用于渲染顶部 7 个指标卡。
@@ -15,7 +16,7 @@ mbs ars erpflowmonitor-get-shop-data-monitor [--bigChief <array>] [--employeeNam
 - Path: `/erpflowmonitor/erpflowmonitor/ebayDataMonitor/getShopDataMonitor`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

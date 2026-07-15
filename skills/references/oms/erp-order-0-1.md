@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-0-1
 
 获取大酋长列表：手动刊登相关数据统计页初始化时调用，获取「大酋长」下拉选择框的数据源。返回大酋长（团队负责人）列表，每项含 id 与 name，前端用 art-template 渲染为 #bigChief 下拉框的 option（value=id，文本=name）。选中后联动 getTeamMemberByLeader 拉取组员。
@@ -15,7 +16,7 @@ mbs oms erp-order-0-1 --p1 <number> --p2 <number>
 - Path: `/erpOrder/erpOrder/saleReport/getBigChief2/1/0`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

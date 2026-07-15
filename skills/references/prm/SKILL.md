@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # prm - 负责将商品信息上传到指定平台
 
 通过 `mbs prm` 命令查询负责将商品信息上传到指定平台数据。

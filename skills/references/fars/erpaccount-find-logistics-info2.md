@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs fars erpaccount-find-logistics-info2
 
 物流订单信息查询：电商订单物流信息分页查询：按订单名称/客户、客户预留(自选物流)、货运方式、时间区间筛选，分页返回订单列表(订单编号、状态、店铺、金额、国家、物流单号、交易号、平台订单号等)及总条数/总页数。
@@ -15,7 +16,7 @@ mbs fars erpaccount-find-logistics-info2 [--name <string>] [--customerreserve2 <
 - Path: `/erpaccount/erpaccount/logisticsController/findLogisticsInfo2`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

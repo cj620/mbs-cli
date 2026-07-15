@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs prm erp-publish-find-shopee-autopublish-spu
 
 Shopee自动刊登SPU列表查询：Shopee 自动刊登管理页右侧 SPU 列表分页查询：按目标店铺、刊登状态、SPU关键词、产品状态、销量级别、站点等条件筛选，返回待刊登/刊登中/已刊登的 SPU 列表（含每个 SPU 下的 SKU 明细、价格、库存、刊登状态等），并返回总数与总页数用于分页。
@@ -15,7 +16,7 @@ mbs prm erp-publish-find-shopee-autopublish-spu --currentPage <number> --pageSiz
 - Path: `/erpPublish/erpPublish/shopeeProductController/findShopeeAutopublishSpu`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

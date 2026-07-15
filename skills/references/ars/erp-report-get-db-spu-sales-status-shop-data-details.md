@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs ars erp-report-get-db-spu-sales-status-shop-data-details
 
 SPU店铺销售状态店铺数据明细(退款明细)查询：SKU业绩页中点击某行退款金额时，按所选月份/平台/总监/经理/主管/店长及SKU筛选条件，分页查询该SKU+平台维度下的退款订单明细列表，渲染于退款详情抽屉表格。
@@ -15,7 +16,7 @@ mbs ars erp-report-get-db-spu-sales-status-shop-data-details [--monthsList <arra
 - Path: `/erpReport/erpReport/feeReport/getDbSpuSalesStatusShopDataDetails`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

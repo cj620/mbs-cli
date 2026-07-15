@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs ars erpmonitor-find-shops-by-shop-manager-fanno-reviseprice-confirm
 
 根据店铺负责人查询店铺列表：fanno提价页"生成提价商品信息"弹窗中，选择"店铺负责人"后联动触发；以负责人(员工名)列表为入参，查询其名下的店铺，返回店铺名称集合用于填充"店铺"多选下拉框。
@@ -15,7 +16,7 @@ mbs ars erpmonitor-find-shops-by-shop-manager-fanno-reviseprice-confirm --shopMa
 - Path: `/erpmonitor/erpmonitor/fannoRevisepriceConfirm/findShopsByShopManager`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

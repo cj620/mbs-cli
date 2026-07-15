@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs fars erp-finance-page
 
 供应商回款·出库单分页查询：供应商回款（退货/回款）管理页的出库单分页列表查询：按回款状态、出库单号、运单号、订单状态、创建人、供应商旺旺号、建单/发货/回款时间区间、回款方式、公司、采购员、供应商类型、填写人、仓库等条件分页查询，返回分页对象(total/totalPages/rows)及金额汇总对象(total)。
@@ -15,7 +16,7 @@ mbs fars erp-finance-page [--paymentStatus <string>] [--warehouse <string>] [--o
 - Path: `/erpFinance/erpFinance/manufacture/payment/get/order/page`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

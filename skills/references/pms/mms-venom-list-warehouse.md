@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pms mms-venom-list-warehouse
 
 Temu 供应商销售管理-仓库(备货)库存列表查询：Temu 商家后台备货/库存分页列表查询：按店铺(mallid 头)、是否缺货、调价近N天、最大剩余库存数分页拉取 SKC 明细，返回缺货/售罄/即将售罄等汇总统计及每个 SKC 的 SKU 数量明细、多仓库存信息、价格与备货建议。
@@ -15,7 +16,7 @@ mbs pms mms-venom-list-warehouse --isLack <number> --priceAdjustRecentDays <numb
 - Path: `/mms/venom/api/supplier/sales/management/listWarehouse`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

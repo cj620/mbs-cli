@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs ars erpmonitor-list-product-by-listing-shopify-convent-sku
 
 刊登商品列表查询（按刊登状态分页）：Shopify刊登管理页的商品刊登记录分页列表查询：按刊登状态（刊登中/刊登完毕/刊登成功/刊登失败）与页码分页拉取，返回 SPU 刊登记录列表（含主图、加密SPU、标题、分类、刊登店铺/人/状态/时间）及其下的 SKU 变体明细（加密SKU、原价、售卖价、库存等）。
@@ -15,7 +16,7 @@ mbs ars erpmonitor-list-product-by-listing-shopify-convent-sku --status <string>
 - Path: `/erpmonitor/erpmonitor/shopifyConventSku/listProductByListing`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

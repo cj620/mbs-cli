@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs pim erp-product-poor-sku-list
 
 国内不良库存SKU列表查询：国内/海外仓不良库存SKU分页查询：按SKU、海外仓类型、直邮类型、销量级别、产品状态、开发员(开发组员)、采购员等条件筛选，返回不良库存SKU列表及SKU/SPU总数与各项汇总。
@@ -15,7 +16,7 @@ mbs pim erp-product-poor-sku-list --pageSize <number> --pageNum <number> [--skuL
 - Path: `/erpProduct/erpProduct/indonesia/poorSkuList`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

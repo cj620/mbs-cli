@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs fars erpaccount-find-express-code51-all
 
 物流商(51渠道)列表查询：查询51渠道物流商(express code51)列表：支持按物流商名称、物流商编码过滤并分页。前端两处复用——物流商下拉数据源(getcustmer，仅传 courierCode 取全量)与时效配置弹窗列表(searchtraffic，传 page/pageSize/logisticsProviderName 分页查询)，返回物流商及其时效限制配置(limitJsonList)。
@@ -15,7 +16,7 @@ mbs fars erpaccount-find-express-code51-all [--page <number>] [--pageSize <numbe
 - Path: `/erpaccount/erpaccount/logisticsController/findExpressCode51All`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

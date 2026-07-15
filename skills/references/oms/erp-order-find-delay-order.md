@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-find-delay-order
 
 查询可借用运单号(延迟订单)：根据输入的交易单号(可多个逗号分隔,一次最多500个)查询延迟订单及其可借用的运单号(最多三个候选),返回订单基础信息、延迟天数、渠道、国家及每个候选运单号的快递类型/原运费/原店铺/原订单号,供前端选择并'提前上网'借用。
@@ -15,7 +16,7 @@ mbs oms erp-order-find-delay-order --tradeIdStr <string>
 - Path: `/erpOrder/erpOrder/ERPOrder/findDelayOrder`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

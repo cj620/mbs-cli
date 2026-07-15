@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-get-sales-target-shop
 
 月业绩目标-店铺/组员下钻查询：月业绩目标页面点击行前的展开箭头时，按店长/平台下钻查询其下级（店铺或组员）的月业绩目标、环比涨跌、本月/上月实际销售额、毛利率、毛利额、实际完成率及下月目标等明细，结果渲染为子表格。targetType 固定为 2（月目标）。
@@ -15,7 +16,7 @@ mbs oms erp-order-get-sales-target-shop --targetType <string> [--week <string>] 
 - Path: `/erpOrder/erpOrder/salesTarget/getSalesTargetShop`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

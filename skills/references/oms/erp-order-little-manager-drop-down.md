@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-little-manager-drop-down
 
 主管(小经理)下拉列表查询：人销售报表页面顶部筛选区的「主管」下拉框数据源。根据所选人员类别(订单/发货时间业绩)、公司、平台、总监、经理等上级条件，联动查询其下属主管(小经理)列表，返回 {id,name} 数组供 el-select 渲染主管选项。
@@ -15,7 +16,7 @@ mbs oms erp-order-little-manager-drop-down [--employeeType <string>] [--companyI
 - Path: `/erpOrder/erpOrder/teamDropDown/littleManagerDropDown`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

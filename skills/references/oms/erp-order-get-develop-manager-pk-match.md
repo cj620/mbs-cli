@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-get-develop-manager-pk-match
 
 开发经理PK赛数据查询：大屏「经理擂台」PK 播报数据查询：按指定日期(默认昨天)与平台拉取各部门经理的爆款SKU数量、百元动销率及其排名榜单，前端 Element-Plus 表格滚动播报，超过21条滚动后跳转开发员榜单页。
@@ -15,7 +16,7 @@ mbs oms erp-order-get-develop-manager-pk-match --time <string> --platform <strin
 - Path: `/erpOrder/erpOrder/pKmatchController/getDevelopManagerPkMatch`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 

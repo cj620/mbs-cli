@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # fars - 财务系统
 
 通过 `mbs fars` 命令查询财务系统数据。

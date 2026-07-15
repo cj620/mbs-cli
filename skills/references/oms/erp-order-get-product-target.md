@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->
 # mbs oms erp-order-get-product-target
 
 业绩目标-按商品(开发员/大组长)月度目标查询：进入“新增业绩目标”页面时加载业绩目标数据：返回本人(大组长)目标行集合 bigChief、组员目标行集合 sales(含“汇总”行)、是否可编辑档标识 isLast、以及可切换查看的历史目标时段 timeSlot。每行包含本月实际完成、本月目标三档、下月目标三档。week=0 时为本月并可编辑下月目标，week>0 时查看对应历史时段(只读)。入参均为 URL Query，无请求体。
@@ -15,7 +16,7 @@ mbs oms erp-order-get-product-target --targetType <string> --week <number>
 - Path: `/erpOrder/erpOrder/salesTarget/getProductTarget`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+- Manifest hash: `bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484`
 
 ## 参数
 
