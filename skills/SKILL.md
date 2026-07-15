@@ -31,8 +31,13 @@ metadata:
 | test / whoami / auth status / authentication | `test` | [references/test/SKILL.md](references/test/SKILL.md) |
 | 更新 / 升级 / 版本 / 有新版本 / update / upgrade / version / check update | `update` | [references/update/SKILL.md](references/update/SKILL.md) |
 | <!-- AUTO-GENERATED API MODULES START --> |  |  |
-| 在线listing / 商品 / product | `product` | [references/product/SKILL.md](references/product/SKILL.md) |
-| 店铺健康 / 账号健康 / 亚马逊 / amazon / shops / 合规 | `crm` | [references/crm/SKILL.md](references/crm/SKILL.md) |
+| 数据、分析、报表 | `ars` | [references/ars/SKILL.md](references/ars/SKILL.md) |
+| 财务 | `fars` | [references/fars/SKILL.md](references/fars/SKILL.md) |
+| 订单 | `oms` | [references/oms/SKILL.md](references/oms/SKILL.md) |
+| 商品 | `pim` | [references/pim/SKILL.md](references/pim/SKILL.md) |
+| open-ai / oss / translation | `pms` | [references/pms/SKILL.md](references/pms/SKILL.md) |
+| 刊登、publish | `prm` | [references/prm/SKILL.md](references/prm/SKILL.md) |
+| 供应链 | `scm` | [references/scm/SKILL.md](references/scm/SKILL.md) |
 | <!-- AUTO-GENERATED API MODULES END --> |  |  |
 
 

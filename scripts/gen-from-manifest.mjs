@@ -316,23 +316,33 @@ function renderCommand(mod, action, source, hash) {
   const flagParams = actionParams.filter((param) => param.in !== 'path')
   const imports = [`import { ${argParams.length > 0 ? 'Args, ' : ''}Flags } from '@oclif/core'`, "import { MBSCommand } from '@mb-it-org/shared'"]
   const className = `${toClassName(mod.domain)}${toClassName(action.name)}`
-  const flags = renderFlags(flagParams.filter((param) => param.constValue === undefined))
+  const flags = renderFlags(uniqueParamsByName(flagParams.filter((param) => param.constValue === undefined)))
   const args = renderArgs(argParams)
   const pathExpr = renderPathExpression(joinPaths(action.pathPrefix || mod.pathPrefix, action.path), argParams)
-  const requestParams = action.method === 'GET' ? renderParamObject(flagParams.filter((param) => param.in === 'query')) : ''
+  const requestParams = renderParamObject(flagParams.filter((param) => param.in === 'query'))
   const requestBody = renderParamObject(flagParams.filter((param) => param.in !== 'query'))
+  const requestOptions = flagParams.some((param) => param.in === 'query') ? `, { params: ${requestParams} }` : ''
   const arrayHelper = flagParams.some((param) => param.type === 'array' && param.constValue === undefined)
     ? "\n    const toArray = (value: string | undefined, itemType = 'string'): unknown[] | undefined => {\n      if (value === undefined) return undefined\n      const items = value.split(',').map((item) => item.trim()).filter(Boolean)\n      if (itemType === 'integer' || itemType === 'number') return items.map((item) => Number(item))\n      return items\n    }\n"
     : ''
   const request =
     action.responseMode === 'ndjson'
-      ? `const stream = await this.client.postStream(${pathExpr}, ${requestBody})\n    for await (const chunk of stream) process.stdout.write(Buffer.isBuffer(chunk) ? chunk : String(chunk))`
+      ? `const stream = await this.client.postStream(${pathExpr}, ${requestBody}${requestOptions})\n    for await (const chunk of stream) process.stdout.write(Buffer.isBuffer(chunk) ? chunk : String(chunk))`
       : action.method === 'GET'
         ? `const data = await this.client.get(${pathExpr}, { params: ${requestParams} })`
-        : `const data = await this.client.post(${pathExpr}, ${requestBody})`
+        : `const data = await this.client.post(${pathExpr}, ${requestBody}${requestOptions})`
   const output = action.responseMode === 'ndjson' ? '' : '\n    this.output(data)'
 
   return `// AUTO-GENERATED FROM audit manifest. DO NOT EDIT.\n// Source: ${source}\n// Manifest: ${manifest.manifestVersion} @ ${hash}\n${imports.join('\n')}\n\nexport default class ${className} extends MBSCommand {\n  static description = '${escapeTs(action.description)}'\n${flags}${args}\n  async run(): Promise<void> {\n    const { ${argParams.length > 0 ? 'args, ' : ''}flags } = await this.parse(${className})\n${arrayHelper}\n    ${request}${output}\n  }\n}\n`
+}
+
+function uniqueParamsByName(params) {
+  const unique = new Map()
+  for (const param of params) {
+    const current = unique.get(param.name)
+    unique.set(param.name, current ? { ...current, required: current.required || param.required } : param)
+  }
+  return [...unique.values()]
 }
 
 function renderFlags(params) {

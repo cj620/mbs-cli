@@ -1,0 +1,18 @@
+// AUTO-GENERATED FROM audit manifest. DO NOT EDIT.
+// Source: manifests/mbs-api-manifest.json
+// Manifest: 2026-05-20T00:00:00+08:00 @ c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79
+import { Flags } from '@oclif/core'
+import { MBSCommand } from '@mb-it-org/shared'
+
+export default class OmsErpOrderFindSmtAdCampaignWeeks extends MBSCommand {
+  static description = 'SMT广告报表-周期(周)列表查询：SMT(速卖通)广告报表页加载时获取可选「周期(周)」下拉列表，并据 isSelect 标记默认选中的当前周；前端用于初始化周期多选框及默认筛选周。'
+
+  static flags = {}
+
+  async run(): Promise<void> {
+    const { flags } = await this.parse(OmsErpOrderFindSmtAdCampaignWeeks)
+
+    const data = await this.client.get('/erpOrder/erpOrder/eabyAdCampaignFee/findSmtAdCampaignWeeks', { params: {} })
+    this.output(data)
+  }
+}

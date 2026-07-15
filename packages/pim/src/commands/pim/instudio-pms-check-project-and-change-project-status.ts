@@ -1,0 +1,22 @@
+// AUTO-GENERATED FROM audit manifest. DO NOT EDIT.
+// Source: manifests/mbs-api-manifest.json
+// Manifest: 2026-05-20T00:00:00+08:00 @ c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79
+import { Flags } from '@oclif/core'
+import { MBSCommand } from '@mb-it-org/shared'
+
+export default class PimInstudioPmsCheckProjectAndChangeProjectStatus extends MBSCommand {
+  static description = '校验项目变更项目状态：校验项目变更项目状态(源码无注释,按方法名推断)'
+
+  static flags = {
+    projectId: Flags.string({ description: '项目ID（字段名推断,语义待核实）' }),
+    verifyStatus: Flags.string({ description: '验证状态（字段名推断,语义待核实）' }),
+    reason: Flags.string({ description: '原因（字段名推断,语义待核实）' }),
+  }
+
+  async run(): Promise<void> {
+    const { flags } = await this.parse(PimInstudioPmsCheckProjectAndChangeProjectStatus)
+
+    const data = await this.client.post('/yypms/pms/hwcDevelopmentProject/checkProjectAndChangeProjectStatus', { "projectId": flags.projectId, "verifyStatus": flags.verifyStatus, "reason": flags.reason })
+    this.output(data)
+  }
+}

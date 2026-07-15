@@ -1,0 +1,65 @@
+# mbs pim instudio-pms-saler
+
+广告预警信息：广告预警信息
+
+## 用法
+
+```bash
+mbs pim instudio-pms-saler
+```
+
+## API
+
+- Service: `instudio-pms`
+- Method: `GET`
+- Path: `/yypms/pms/middlePanel/advertisingWarning/detail/{times}/{status}/{platform}/{saler}`
+- Schema version: `1`
+- Manifest version: `2026-05-20T00:00:00+08:00`
+- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+
+## 参数
+
+| 参数 | API 字段 | 位置 | 类型 | 必填 | 默认值 | 说明 |
+|---|---|---|---|---|---|---|
+| `times` | times | path | string | 是 | - | 次数（字段名推断,语义待核实） |
+| `status` | status | path | integer | 是 | - | 状态（字段名推断,语义待核实） |
+| `platform` | platform | path | string | 是 | - | 平台（字段名推断,语义待核实） |
+| `saler` | saler | path | string | 是 | - | Saler（字段名推断,语义待核实） |
+
+## 响应字段
+
+| 路径 | 类型 | 说明 | 用途 |
+|---|---|---|---|
+| `code` | integer | 错误代码。前端使用：否 | - |
+| `desc` | string | 错误类型。前端使用：否 | - |
+| `obj` | object | 列表信息。前端使用：是（条件判断，行号待核实） | - |
+| `obj.obj.chiefInfo` | string | 主管信息（前端推断字段）。前端使用：是（前端推断，行号待核实） | - |
+| `obj.obj.times` | string | 次数（前端推断字段）。前端使用：是（前端推断，行号待核实） | - |
+| `obj.obj.platform` | string | 平台（前端推断字段）。前端使用：是（前端推断，行号待核实） | - |
+| `obj.obj.shopManager` | string | 店铺管理（前端推断字段）。前端使用：是（前端推断，行号待核实） | - |
+| `obj.obj.shopName` | string | 店铺名称（前端推断字段）。前端使用：是（前端推断，行号待核实） | - |
+| `obj.obj.advertisingName` | string | 广告名称（前端推断字段）。前端使用：是（前端推断，行号待核实） | - |
+| `obj.obj.itemId` | string | 条目ID（前端推断字段）。前端使用：是（前端推断，行号待核实） | - |
+| `obj.obj.sku` | string | SKU（前端推断字段）。前端使用：是（前端推断，行号待核实） | - |
+| `obj.obj.acos` | string | ACOS（前端推断字段）。前端使用：是（前端推断，行号待核实） | - |
+| `obj.obj.advertisingFee` | string | 广告费用（前端推断字段）。前端使用：是（前端推断，行号待核实） | - |
+| `obj.obj.advertisingSaleAmount` | string | 广告销售金额（前端推断字段）。前端使用：是（前端推断，行号待核实） | - |
+| `obj.obj.totalAcos` | string | 总数ACOS（前端推断字段）。前端使用：是（前端推断，行号待核实） | - |
+| `obj.obj.totalAdvertisingFee` | string | 总数广告费用（前端推断字段）。前端使用：是（前端推断，行号待核实） | - |
+| `obj.obj.totalAdvertisingSaleAmount` | string | 总数广告销售金额（前端推断字段）。前端使用：是（前端推断，行号待核实） | - |
+| `obj.obj.sevenExposureNum` | string | 7天Exposure数量（前端推断字段）。前端使用：是（前端推断，行号待核实） | - |
+| `obj.obj.sevenClickNum` | string | 7天点击数量（前端推断字段）。前端使用：是（前端推断，行号待核实） | - |
+| `obj.obj.totalExposureNum` | string | 总数Exposure数量（前端推断字段）。前端使用：是（前端推断，行号待核实） | - |
+| `obj.obj.totalClickNum` | string | 总数点击数量（前端推断字段）。前端使用：是（前端推断，行号待核实） | - |
+| `obj.obj.totalDeliverOrderNum` | string | 总数配送订单数量（前端推断字段）。前端使用：是（前端推断，行号待核实） | - |
+| `obj.obj.advertisingActiveDays` | string | 广告有效天数（前端推断字段）。前端使用：是（前端推断，行号待核实） | - |
+| `obj.obj.spu` | string | SPU（前端推断字段）。前端使用：是（前端推断，行号待核实） | - |
+| `obj.obj.lastPullTime` | string | 最近拉取时间（前端推断字段）。前端使用：是（前端推断，行号待核实） | - |
+| `obj.obj.firstPullTime` | string | 首个拉取时间（前端推断字段）。前端使用：是（前端推断，行号待核实） | - |
+| `content` | string | 内容。前端使用：否 | - |
+
+
+## 调用规则
+
+- 缺少必填参数时先询问用户。
+- 不要自行编造参数值。

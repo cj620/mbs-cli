@@ -1,8 +1,0 @@
-{
-  "owner": "mbs-audit-manifest",
-  "domain": "crm",
-  "source": "manifests/mbs-api-manifest.json",
-  "schemaVersion": "1",
-  "manifestVersion": "2026-05-20T00:00:00+08:00",
-  "hash": "677e0eeeae32d1dfa49b8592ad87f57652fe790be7715a8400b6daf2777d14fb"
-}

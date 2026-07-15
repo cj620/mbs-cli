@@ -1,0 +1,8 @@
+{
+  "owner": "mbs-audit-manifest",
+  "domain": "ars",
+  "source": "manifests/mbs-api-manifest.json",
+  "schemaVersion": "1",
+  "manifestVersion": "2026-05-20T00:00:00+08:00",
+  "hash": "c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79"
+}

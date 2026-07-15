@@ -15,6 +15,7 @@ export interface GetOptions {
 
 export interface PostOptions {
   pathPrefix?: string;
+  params?: AxiosRequestConfig["params"];
 }
 
 /**
@@ -86,7 +87,12 @@ export class APIClient {
     options?: PostOptions,
   ): Promise<T> {
     const url = options?.pathPrefix ? options.pathPrefix + path : path;
-    return await this.withRetry(() => this.instance.post<T>(url, body).then((r) => r.data));
+    return await this.withRetry(() => {
+      const request = options?.params
+        ? this.instance.post<T>(url, body, { params: options.params })
+        : this.instance.post<T>(url, body);
+      return request.then((r) => r.data);
+    });
   }
 
   async postStream(
@@ -100,6 +106,7 @@ export class APIClient {
         .post<Readable>(url, body, {
           responseType: "stream",
           headers: { Accept: "application/x-ndjson" },
+          ...(options?.params ? { params: options.params } : {}),
         })
         .then((r) => r.data),
     );

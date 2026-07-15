@@ -1,0 +1,40 @@
+# mbs oms erp-mobile-find-shop
+
+店铺名称列表查询：订单详情页加载时调用，查询当前用户可见的店铺列表，用于渲染左侧导航「店铺」子菜单（每项可跳转到对应店铺的订单列表）。无请求参数，返回店铺ID与店铺名称。
+
+## 用法
+
+```bash
+mbs oms erp-mobile-find-shop
+```
+
+## API
+
+- Service: `erpMobile`
+- Method: `POST`
+- Path: `/erpMobile/erpMobile/pushController/findShop`
+- Schema version: `1`
+- Manifest version: `2026-05-20T00:00:00+08:00`
+- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+
+## 参数
+
+| 参数 | API 字段 | 位置 | 类型 | 必填 | 默认值 | 说明 |
+|---|---|---|---|---|---|---|
+| - | - | - | - | - | - | - |
+
+## 响应字段
+
+| 路径 | 类型 | 说明 | 用途 |
+|---|---|---|---|
+| `code` | number | 响应状态码,200=成功（统一响应外层字段，本回调未显式读取）(待人工确认) | - |
+| `desc` | string | 响应提示信息（统一响应外层字段，本回调未显式读取）(待人工确认) | - |
+| `obj[]` | array | 店铺列表（success 中以 data.obj 作为列表渲染左侧菜单） | - |
+| `obj[][0]` | string | 店铺ID（模板 v.sid，拼接到 orderFrom.html?shoptypeid={sid} 跳转店铺订单列表） | - |
+| `obj[][1]` | string | 店铺名称（模板 v.name，菜单显示文本） | - |
+
+
+## 调用规则
+
+- 缺少必填参数时先询问用户。
+- 不要自行编造参数值。

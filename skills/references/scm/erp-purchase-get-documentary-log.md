@@ -1,0 +1,41 @@
+# mbs scm erp-purchase-get-documentary-log
+
+采购开发-查看跟进日志：在 SKU 详情页点击“查看跟进日志”时，按批次分组ID(groupId) 查询该批次的采购/供应商跟进日志列表，返回每条日志的时间、跟进明细、操作员，渲染到跟进日志弹窗表格。
+
+## 用法
+
+```bash
+mbs scm erp-purchase-get-documentary-log --groupId <string>
+```
+
+## API
+
+- Service: `erpPurchase`
+- Method: `POST`
+- Path: `/erpPurchase/erpPurchase/purchaseDevelop/getDocumentaryLog`
+- Schema version: `1`
+- Manifest version: `2026-05-20T00:00:00+08:00`
+- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+
+## 参数
+
+| 参数 | API 字段 | 位置 | 类型 | 必填 | 默认值 | 说明 |
+|---|---|---|---|---|---|---|
+| `groupId` | groupId | query | string | 是 | - | 批次分组ID(跟进日志所属批次号)。来源：getDocumentaryLog(groupid) 入参，同步写入隐藏域 #piciNum；以 URL 查询参数形式传递 |
+
+## 响应字段
+
+| 路径 | 类型 | 说明 | 用途 |
+|---|---|---|---|
+| `code` | number | 响应状态码,200=成功(系统统一结构,回调未显式判断) | - |
+| `desc` | string | 响应提示信息(系统统一结构) | - |
+| `obj[]` | array | 跟进日志列表(前端取为 list 渲染) | - |
+| `obj[][0]` | string | 跟进时间(模板表头“时间”，{{v.t}}) | - |
+| `obj[][1]` | string | 跟进明细/跟进内容(模板表头“跟进明细”，{{v.m}}) | - |
+| `obj[][2]` | string | 操作员(模板表头“操作员”，{{v.o}}) | - |
+
+
+## 调用规则
+
+- 缺少必填参数时先询问用户。
+- 不要自行编造参数值。

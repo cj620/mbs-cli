@@ -15,26 +15,57 @@ importers:
         specifier: ^3.25.76
         version: 3.25.76
 
+  packages/ars:
+    dependencies:
+      '@mb-it-org/shared':
+        specifier: workspace:*
+        version: link:../shared
+      '@oclif/core':
+        specifier: ^4.10.5
+        version: 4.10.5
+    devDependencies:
+      '@types/node':
+        specifier: ^20.0.0
+        version: 20.19.39
+      typescript:
+        specifier: ^5.4.0
+        version: 5.9.3
+
   packages/cli:
     dependencies:
       '@inquirer/prompts':
         specifier: ^8.4.1
         version: 8.4.1(@types/node@20.19.39)
-      '@mb-it-org/crm':
+      '@mb-it-org/ars':
         specifier: workspace:*
-        version: link:../crm
+        version: link:../ars
       '@mb-it-org/doris':
         specifier: workspace:*
         version: link:../doris
       '@mb-it-org/export':
         specifier: workspace:*
         version: link:../export
+      '@mb-it-org/fars':
+        specifier: workspace:*
+        version: link:../fars
+      '@mb-it-org/oms':
+        specifier: workspace:*
+        version: link:../oms
       '@mb-it-org/org':
         specifier: workspace:*
         version: link:../org
-      '@mb-it-org/product':
+      '@mb-it-org/pim':
         specifier: workspace:*
-        version: link:../product
+        version: link:../pim
+      '@mb-it-org/pms':
+        specifier: workspace:*
+        version: link:../pms
+      '@mb-it-org/prm':
+        specifier: workspace:*
+        version: link:../prm
+      '@mb-it-org/scm':
+        specifier: workspace:*
+        version: link:../scm
       '@mb-it-org/shared':
         specifier: workspace:*
         version: link:../shared
@@ -63,22 +94,6 @@ importers:
       vitest:
         specifier: ^1.6.1
         version: 1.6.1(@types/node@20.19.39)
-
-  packages/crm:
-    dependencies:
-      '@mb-it-org/shared':
-        specifier: workspace:*
-        version: link:../shared
-      '@oclif/core':
-        specifier: ^4.10.5
-        version: 4.10.5
-    devDependencies:
-      '@types/node':
-        specifier: ^20.0.0
-        version: 20.19.39
-      typescript:
-        specifier: ^5.4.0
-        version: 5.9.3
 
   packages/doris:
     dependencies:
@@ -118,6 +133,38 @@ importers:
         specifier: ^1.6.1
         version: 1.6.1(@types/node@20.19.39)
 
+  packages/fars:
+    dependencies:
+      '@mb-it-org/shared':
+        specifier: workspace:*
+        version: link:../shared
+      '@oclif/core':
+        specifier: ^4.10.5
+        version: 4.10.5
+    devDependencies:
+      '@types/node':
+        specifier: ^20.0.0
+        version: 20.19.39
+      typescript:
+        specifier: ^5.4.0
+        version: 5.9.3
+
+  packages/oms:
+    dependencies:
+      '@mb-it-org/shared':
+        specifier: workspace:*
+        version: link:../shared
+      '@oclif/core':
+        specifier: ^4.10.5
+        version: 4.10.5
+    devDependencies:
+      '@types/node':
+        specifier: ^20.0.0
+        version: 20.19.39
+      typescript:
+        specifier: ^5.4.0
+        version: 5.9.3
+
   packages/org:
     dependencies:
       '@mb-it-org/shared':
@@ -134,7 +181,55 @@ importers:
         specifier: ^5.4.0
         version: 5.9.3
 
-  packages/product:
+  packages/pim:
+    dependencies:
+      '@mb-it-org/shared':
+        specifier: workspace:*
+        version: link:../shared
+      '@oclif/core':
+        specifier: ^4.10.5
+        version: 4.10.5
+    devDependencies:
+      '@types/node':
+        specifier: ^20.0.0
+        version: 20.19.39
+      typescript:
+        specifier: ^5.4.0
+        version: 5.9.3
+
+  packages/pms:
+    dependencies:
+      '@mb-it-org/shared':
+        specifier: workspace:*
+        version: link:../shared
+      '@oclif/core':
+        specifier: ^4.10.5
+        version: 4.10.5
+    devDependencies:
+      '@types/node':
+        specifier: ^20.0.0
+        version: 20.19.39
+      typescript:
+        specifier: ^5.4.0
+        version: 5.9.3
+
+  packages/prm:
+    dependencies:
+      '@mb-it-org/shared':
+        specifier: workspace:*
+        version: link:../shared
+      '@oclif/core':
+        specifier: ^4.10.5
+        version: 4.10.5
+    devDependencies:
+      '@types/node':
+        specifier: ^20.0.0
+        version: 20.19.39
+      typescript:
+        specifier: ^5.4.0
+        version: 5.9.3
+
+  packages/scm:
     dependencies:
       '@mb-it-org/shared':
         specifier: workspace:*

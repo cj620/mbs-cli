@@ -1,0 +1,47 @@
+import { Plugin } from '@oclif/core'
+
+import './commands/pms/aieditor-fontborders.js'
+import './commands/pms/app-apihost-query-all.js'
+import './commands/pms/erpaccount-last-logininfo.js'
+import './commands/pms/erp-order-get-remind-msg.js'
+import './commands/pms/erp-order-get-track-by-track-dny.js'
+import './commands/pms/yyecm-getsaleskpi.js'
+import './commands/pms/erp-task-get-sku-info-by-spu.js'
+import './commands/pms/erp-order-show-button.js'
+import './commands/pms/erpsoldout-find-infring-product-num.js'
+import './commands/pms/erp-log-find-log-exception-information.js'
+import './commands/pms/erp-task-check-today-result.js'
+import './commands/pms/erp-task-find-photograph-mission.js'
+import './commands/pms/erp-task-get-clear-details2.js'
+import './commands/pms/erp-task-get-clear-details.js'
+import './commands/pms/erp-task-get-delay-task.js'
+import './commands/pms/erp-task-spu.js'
+import './commands/pms/erp-task-get-explosion.js'
+import './commands/pms/erp-task-get-product-illegal.js'
+import './commands/pms/erp-task-find-listing-review-task.js'
+import './commands/pms/erp-task-get-four-day-time.js'
+import './commands/pms/erp-task-get-review-listing-detail-by-oper.js'
+import './commands/pms/erp-task-review-listing-list.js'
+import './commands/pms/erp-task-write-review-listing-detail.js'
+import './commands/pms/erp-task-find-spu-publish-detail.js'
+import './commands/pms/erp-task-find-category.js'
+import './commands/pms/erp-task-find-direction.js'
+import './commands/pms/erp-task-find-dispatch-clerk.js'
+import './commands/pms/erp-task-find-task.js'
+import './commands/pms/erp-task-get-leave-message.js'
+import './commands/pms/fengniao-bridge-service-translate-editor.js'
+import './commands/pms/record-controller-get-recording.js'
+import './commands/pms/record-controller-list-recordings.js'
+import './commands/pms/center-message-service-query-notice-page.js'
+import './commands/pms/center-message-service-read.js'
+import './commands/pms/crm-web-service-get-ebay-mail-notice.js'
+import './commands/pms/mms-venom-list-warehouse.js'
+
+export default class PmsPlugin extends Plugin {
+  static readonly topic = 'pms'
+  static readonly description = '技术中台服务域（包括open-ai、oss、翻译等公共服务）'
+
+  async loadCommands(): Promise<void> {
+    // Commands are auto-loaded via the glob pattern in package.json
+  }
+}

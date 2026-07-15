@@ -1,0 +1,72 @@
+# mbs pim instudio-pms-get-ozon-singlepublish-info-by-id
+
+获取刊登信息ById：获取刊登信息ById
+
+## 用法
+
+```bash
+mbs pim instudio-pms-get-ozon-singlepublish-info-by-id [--id <integer>] [--listId <integer>] [--shopname <string>] [--shopManager <string>] [--title <string>] [--description <string>] [--descriptionStr <string>] [--descriptionJson <string>] [--erpSpu <string>] [--erpSkuList <array<string>>] [--publishSpu <string>] [--vat <string>] [--weight <number>] [--weightUnit <string>] [--depth <integer>] [--width <integer>] [--height <integer>] [--dimensionUnit <string>] [--productCategory <string>] [--productCategoryShow <string>] [--productCategoryAll <string>] [--vType <integer>] [--vNum <integer>] [--attributeList <array<object>>] [--publicAttributeList <array<object>>] [--publicAttributeStr <string>] [--mainPic <string>] [--productUrl <string>] [--mainPicList <array<string>>] [--videoUrl <string>] [--videoCover <string>] [--warehouse <string>] [--warehouseId <string>] [--ozonSinglepublishSku <array<object>>]
+```
+
+## API
+
+- Service: `instudio-pms`
+- Method: `POST`
+- Path: `/yypms/pms/ozonSinglepublishInfoController/getOzonSinglepublishInfoById`
+- Schema version: `1`
+- Manifest version: `2026-05-20T00:00:00+08:00`
+- Manifest hash: `c43f9cf4f1a09260a0eba9565b587654ece4f69a9fa7c9f1cb2929c686a84b79`
+
+## 参数
+
+| 参数 | API 字段 | 位置 | 类型 | 必填 | 默认值 | 说明 |
+|---|---|---|---|---|---|---|
+| `id` | id | body | integer | 否 | - | ID（字段名推断,语义待核实） |
+| `listId` | listId | body | integer | 否 | - | 列表ID（字段名推断,语义待核实） |
+| `shopname` | shopname | body | string | 否 | - | 店铺 |
+| `shopManager` | shopManager | body | string | 否 | - | 店铺负责人 |
+| `title` | title | body | string | 否 | - | 标题 |
+| `description` | description | body | string | 否 | - | 描述 |
+| `descriptionStr` | descriptionStr | body | string | 否 | - | 描述 |
+| `descriptionJson` | descriptionJson | body | string | 否 | - | 描述Json |
+| `erpSpu` | erpSpu | body | string | 否 | - | 马帮spu |
+| `erpSkuList` | erpSkuList | body | array<string> | 否 | - | 马帮sku |
+| `publishSpu` | publishSpu | body | string | 否 | - | 刊登spu |
+| `vat` | vat | body | string | 否 | - | vat税 |
+| `weight` | weight | body | number | 否 | - | 重量 |
+| `weightUnit` | weightUnit | body | string | 否 | - | 重量单位 |
+| `depth` | depth | body | integer | 否 | - | 深度 |
+| `width` | width | body | integer | 否 | - | 宽度 |
+| `height` | height | body | integer | 否 | - | 高度 |
+| `dimensionUnit` | dimensionUnit | body | string | 否 | - | 尺寸单位 |
+| `productCategory` | productCategory | body | string | 否 | - | 产品分类 |
+| `productCategoryShow` | productCategoryShow | body | string | 否 | - | 页面显示 |
+| `productCategoryAll` | productCategoryAll | body | string | 否 | - | 页面显示 |
+| `vType` | vType | body | integer | 否 | - | 类型（字段名推断,语义待核实） |
+| `vNum` | vNum | body | integer | 否 | - | 数量（字段名推断,语义待核实） |
+| `attributeList` | attributeList | body | array<object> | 否 | - | 属性 |
+| `publicAttributeList` | publicAttributeList | body | array<object> | 否 | - | 公有属性 |
+| `publicAttributeStr` | publicAttributeStr | body | string | 否 | - | 公有属性 |
+| `mainPic` | mainPic | body | string | 否 | - | 主图 |
+| `productUrl` | productUrl | body | string | 否 | - | 产品链接 |
+| `mainPicList` | mainPicList | body | array<string> | 否 | - | 主图片列表（字段名推断,语义待核实） |
+| `videoUrl` | videoUrl | body | string | 否 | - | 视频链接 |
+| `videoCover` | videoCover | body | string | 否 | - | 视频封面 |
+| `warehouse` | warehouse | body | string | 否 | - | 仓库（字段名推断,语义待核实） |
+| `warehouseId` | warehouseId | body | string | 否 | - | 仓库ID（字段名推断,语义待核实） |
+| `ozonSinglepublishSku` | ozonSinglepublishSku | body | array<object> | 否 | - | sku |
+
+## 响应字段
+
+| 路径 | 类型 | 说明 | 用途 |
+|---|---|---|---|
+| `code` | integer | 错误代码。前端使用：待核实 | - |
+| `desc` | string | 错误类型。前端使用：待核实 | - |
+| `obj` | object | 列表信息。前端使用：待核实 | - |
+| `content` | string | 内容。前端使用：待核实 | - |
+
+
+## 调用规则
+
+- 缺少必填参数时先询问用户。
+- 不要自行编造参数值。

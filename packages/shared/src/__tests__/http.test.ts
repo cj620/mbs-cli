@@ -44,6 +44,25 @@ describe('APIClient', () => {
     expect(instance.post).toHaveBeenCalledWith('/v1/export', { from: '2026-01-01' })
   })
 
+  it('sends POST query params together with the body', async () => {
+    const instance = {
+      get: vi.fn(),
+      post: vi.fn().mockResolvedValue({ data: { code: 0, data: {} } }),
+      request: vi.fn(),
+      interceptors: { response: { use: vi.fn() } },
+    }
+    mockAxios.create = vi.fn().mockReturnValue(instance)
+
+    const c = new APIClient('http://api.example.com', 'SESSION=abc123', vi.fn())
+    await c.post('/v1/orders', { sku: 'SKU-1' }, { params: { sku: 'SKU-1' } })
+
+    expect(instance.post).toHaveBeenCalledWith(
+      '/v1/orders',
+      { sku: 'SKU-1' },
+      { params: { sku: 'SKU-1' } },
+    )
+  })
+
   it('sends streaming POST with NDJSON headers', async () => {
     const stream = { on: vi.fn() }
     const instance = {
