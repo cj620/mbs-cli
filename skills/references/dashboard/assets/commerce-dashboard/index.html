@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="dark">
+    <link rel="icon" href="data:,">
+    <title>MBS 跨境电商数据洞察</title>
+    <link rel="stylesheet" href="./styles.css">
+    <!-- Internal MBS implementation based on the locally supplied BigDataView template 011. -->
+    <script defer src="./vendor/echarts.min.js"></script>
+    <script defer src="./data.js"></script>
+    <script defer src="./app.js"></script>
+  </head>
+  <body>
+    <div id="loading" class="loading" role="status" aria-live="polite">
+      <span class="spinner" aria-hidden="true"></span>
+      <span>正在加载分析结果…</span>
+    </div>
+
+    <header class="dashboard-header">
+      <div class="header-context">
+        <span class="live-dot" aria-hidden="true"></span>
+        <span id="scope-label">全部平台 · 全部店群</span>
+      </div>
+      <div class="header-title">
+        <p id="subtitle">多平台 · 店群 · 铺货业务</p>
+        <h1 id="dashboard-title">MBS 跨境电商数据洞察</h1>
+      </div>
+      <div class="header-time">
+        <time id="clock" aria-label="当前时间">--</time>
+        <span id="updated-at">数据更新时间 --</span>
+      </div>
+    </header>
+
+    <section class="filter-bar" aria-label="看板筛选条件">
+      <label>
+        <span>平台</span>
+        <select id="platform-filter" data-filter="platform"></select>
+      </label>
+      <label>
+        <span>站点</span>
+        <select id="site-filter" data-filter="site"></select>
+      </label>
+      <label>
+        <span>店群</span>
+        <select id="portfolio-filter" data-filter="portfolio"></select>
+      </label>
+      <button id="refresh-button" type="button">刷新数据</button>
+      <p id="filter-summary">当前范围：全部数据</p>
+    </section>
+
+    <div id="error-panel" class="error-panel hidden" role="alert">
+      <strong>数据加载失败</strong>
+      <span id="error-message"></span>
+      <button id="retry-button" type="button">重试</button>
+    </div>
+
+    <main id="dashboard" class="dashboard-grid" aria-busy="true">
+      <section class="column column-left" aria-label="排名与贡献">
+        <article class="panel ranking-panel">
+          <header class="panel-title">
+            <h2 id="ranking-title">平台 / 店群排名</h2>
+            <span>按核心指标降序</span>
+          </header>
+          <div id="ranking-list" class="ranking-list"></div>
+        </article>
+
+        <article class="panel chart-panel">
+          <header class="panel-title">
+            <h2 id="contribution-title">平台贡献结构</h2>
+            <span id="contribution-summary"></span>
+          </header>
+          <div id="contribution-chart" class="chart" role="img" aria-label="平台贡献结构图"></div>
+        </article>
+      </section>
+
+      <section class="column column-center" aria-label="核心指标与趋势">
+        <article class="hero-panel">
+          <div class="primary-kpi">
+            <span id="primary-label">核心指标</span>
+            <strong><span id="primary-value">--</span><small id="primary-unit"></small></strong>
+            <p id="primary-delta">--</p>
+          </div>
+          <div id="secondary-kpis" class="secondary-kpis"></div>
+        </article>
+
+        <article class="panel chart-panel main-trend-panel">
+          <header class="panel-title">
+            <h2 id="performance-title">经营与铺货趋势</h2>
+            <span id="performance-summary"></span>
+          </header>
+          <div id="performance-chart" class="chart" role="img" aria-label="经营与铺货趋势图"></div>
+        </article>
+
+        <article class="panel chart-panel">
+          <header class="panel-title">
+            <h2 id="trend-title">核心指标趋势与异常</h2>
+            <span id="trend-summary"></span>
+          </header>
+          <div id="trend-chart" class="chart" role="img" aria-label="核心指标趋势与异常图"></div>
+        </article>
+      </section>
+
+      <section class="column column-right" aria-label="对比、异常与构成">
+        <article class="panel chart-panel comparison-panel">
+          <header class="panel-title">
+            <h2 id="comparison-title">平台表现对比</h2>
+            <span id="comparison-summary"></span>
+          </header>
+          <div id="comparison-chart" class="chart" role="img" aria-label="平台表现对比图"></div>
+        </article>
+
+        <article class="panel table-panel">
+          <header class="panel-title">
+            <h2 id="table-title">需要关注的店铺 / Listing</h2>
+            <span id="table-summary"></span>
+          </header>
+          <div class="table-scroll">
+            <table>
+              <thead id="detail-head"></thead>
+              <tbody id="detail-body"></tbody>
+            </table>
+          </div>
+        </article>
+
+        <article class="panel chart-panel distribution-panel">
+          <header class="panel-title">
+            <h2 id="distribution-title">Listing 状态构成</h2>
+            <span id="distribution-summary"></span>
+          </header>
+          <div id="distribution-chart" class="chart" role="img" aria-label="Listing 状态构成图"></div>
+        </article>
+      </section>
+    </main>
+
+    <section id="empty-state" class="empty-state hidden" aria-live="polite">
+      <h2>当前范围没有可展示的数据</h2>
+      <p>请调整筛选条件，或确认分析任务已经返回指标和序列。</p>
+    </section>
+  </body>
+</html>
