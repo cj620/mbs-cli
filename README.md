@@ -137,6 +137,7 @@ mbs skills show --file references/global.md       # 全局参考（必读）
 mbs skills show --file references/org/SKILL.md    # 涉及组织架构
 mbs skills show --file references/crm/SKILL.md    # 涉及店铺健康
 mbs skills show --file references/database/SKILL.md  # 涉及数据库/SQL
+mbs skills show --file references/dashboard/SKILL.md # 涉及数据分析、专题页或看板
 ```
 
 **方式 C（仓库在本机）**：直接读源文件 [`skills/SKILL.md`](skills/SKILL.md) / [`skills/references/global.md`](skills/references/global.md)。
@@ -302,6 +303,7 @@ mbs serve --project-apis
 | 查看版本与更新 | `mbs version` / `mbs update` |
 | 查看 skill 目录 | `mbs skills path` |
 | 查看 skill 内容 | `mbs skills show --file references/database/SKILL.md` |
+| 查看数据分析与看板 skill | `mbs skills show --file references/dashboard/SKILL.md` |
 | 开发者探索只读 API | `mbs raw GET /path --params '{"key":"value"}'` |
 | 本地 project API 网关 | `mbs serve --project-apis` |
 | 任意只读上游代理 | `mbs serve --proxy-all` |

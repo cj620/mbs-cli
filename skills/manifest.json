@@ -64,7 +64,7 @@
         "可操作库表",
         "权限库表",
         "表结构",
-        "数据分析",
+        "数据查询",
         "日销",
         "日报",
         "销售报表",
@@ -86,6 +86,25 @@
         "mbs doris schemas",
         "mbs doris show-create-table",
         "mbs doris query"
+      ]
+    },
+    {
+      "name": "dashboard",
+      "description": "跨境电商多平台、店群铺货业务的数据分析、专题页和长期看板",
+      "keywords": [
+        "数据分析展示",
+        "可视化",
+        "专题分析页",
+        "看板",
+        "大屏",
+        "dashboard",
+        "visualization",
+        "insight"
+      ],
+      "skill": "references/dashboard/SKILL.md",
+      "commands": [
+        "mbs serve --project-apis",
+        "mbs serve --manifest <file>"
       ]
     },
     {
