@@ -7,6 +7,8 @@ description: Use for cross-border e-commerce data analysis, visualization, one-o
 
 面向多平台、店群铺货业务完成取数、分析、洞察和页面呈现。始终通过 `mbs` 命令或本机 `mbs serve` 获取 MBS 数据，不直接请求上游 API，不读取 CLI 凭证，不执行写操作。
 
+所有分析结果和页面仅用于公司内部。默认在本机或受控内网交付；若用户要求公开部署，必须先停止并要求完成数据脱敏、安全和第三方授权审查。
+
 ## 第一步：确认交付范围
 
 用户已明确交付形态时直接进入对应流程。意图不明确时，只问一次：
@@ -34,7 +36,7 @@ description: Use for cross-border e-commerce data analysis, visualization, one-o
 
 ## 页面底座
 
-内置模板改造自本地 BigDataView 第 011 套源码，保留深蓝三栏大屏、中央核心指标和 ECharts 图表结构，移除了自动跳转、jQuery、公众号素材和硬编码业务数据。
+内置模板以本地 BigDataView 第 011 套源码为设计参考，重新实现深蓝三栏大屏、中央核心指标和 ECharts 图表结构，未打包来源项目中授权不明的图片、自动跳转、jQuery、公众号素材和硬编码业务数据。
 
 模板入口：`assets/commerce-dashboard/index.html`
 

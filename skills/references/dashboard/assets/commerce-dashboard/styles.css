@@ -25,9 +25,8 @@ body {
   margin: 0;
   color: var(--text);
   background:
-    linear-gradient(rgba(1, 14, 57, 0.72), rgba(1, 14, 57, 0.9)),
-    url("./images/bg.jpg") center / cover fixed,
-    var(--bg);
+    radial-gradient(circle at 50% -20%, rgba(31, 134, 255, 0.24), transparent 42%),
+    linear-gradient(180deg, #030e36 0%, #020b2a 52%, #011438 100%);
   font-size: 14px;
 }
 
@@ -78,7 +77,10 @@ button:focus-visible, select:focus-visible { outline: 3px solid var(--amber); ou
   align-items: center;
   gap: 20px;
   padding: 10px 24px 18px;
-  background: url("./images/head-bg.png") center / 100% 100% no-repeat;
+  background:
+    linear-gradient(90deg, transparent, rgba(30, 126, 255, 0.18) 35%, rgba(30, 126, 255, 0.18) 65%, transparent),
+    linear-gradient(180deg, rgba(4, 17, 62, 0.96), rgba(3, 12, 43, 0.88));
+  border-bottom: 1px solid rgba(35, 142, 255, 0.28);
 }
 
 .header-title { text-align: center; }

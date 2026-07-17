@@ -19,7 +19,9 @@ describe('dashboard skill bundle', () => {
     const database = manifest.modules.find((module) => module.name === 'database')
 
     expect(router).toContain('references/dashboard/SKILL.md')
+    expect(router).toContain('数据分析 / 数据分析展示')
     expect(dashboard?.skill).toBe('references/dashboard/SKILL.md')
+    expect(dashboard?.keywords).toContain('数据分析')
     expect(dashboard?.keywords).toContain('专题分析页')
     expect(database?.keywords).not.toContain('数据分析')
   })
@@ -33,6 +35,7 @@ describe('dashboard skill bundle', () => {
     expect(skill).toContain('Python')
     expect(skill).toContain('MBS CLI')
     expect(skill).toContain('assets/commerce-dashboard')
+    expect(skill).toContain('仅用于公司内部')
   })
 
   it('bundles a local, responsive dashboard with explicit UI states', () => {
@@ -52,7 +55,12 @@ describe('dashboard skill bundle', () => {
     expect(styles).toContain('@media')
     expect(data).toContain('示例数据')
 
-    for (const asset of ['images/bg.jpg', 'images/head-bg.png', 'vendor/echarts.min.js']) {
+    expect(styles).not.toContain('./images/')
+    expect(read('skills/references/dashboard/assets/commerce-dashboard/THIRD_PARTY_NOTICES.md')).toContain(
+      'Apache ECharts 4.0.4',
+    )
+
+    for (const asset of ['vendor/echarts.min.js', 'vendor/ECHARTS-LICENSE.txt']) {
       const assetPath = resolve(dashboardRoot, 'assets/commerce-dashboard', asset)
       expect(existsSync(assetPath)).toBe(true)
       expect(statSync(assetPath).size).toBeGreaterThan(0)

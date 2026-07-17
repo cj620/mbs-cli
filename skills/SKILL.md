@@ -1,6 +1,6 @@
 ---
 name: mbs
-description: "Use when working with MBS / 马帮 CLI for authentication, CLI version checks, CLI updates, or business data queries (org hierarchy, orders, procurement, products, operations, finance)."
+description: "Use when working with MBS / 马帮 CLI for authentication, CLI updates, business data queries, data analysis, visualization, one-off insight pages, dashboards, or data screens for cross-border e-commerce operations."
 metadata:
   requires:
     bins: ["mbs"]
@@ -27,7 +27,7 @@ metadata:
 |---|---|---|
 | 组织 / 平台 / 站点 / 总监 / 经理 / 主管 / 店长 / 员工 / org / platform / site / leader / manager | `org` | [references/org/SKILL.md](references/org/SKILL.md) |
 | 数据库 / 多数据源 / SQL / Doris / 可操作库表 / 权限库表 / 表结构 / 数据查询 / 日销 / 日报 / 销售报表 / daily sales / agent query | `database` | [references/database/SKILL.md](references/database/SKILL.md) |
-| 数据分析展示 / 可视化 / 专题分析页 / 看板 / 大屏 / dashboard / visualization / insight | `dashboard` | [references/dashboard/SKILL.md](references/dashboard/SKILL.md) |
+| 数据分析 / 数据分析展示 / 可视化 / 专题分析页 / 创建看板 / 看板 / 大屏 / dashboard / visualization / insight | `dashboard` | [references/dashboard/SKILL.md](references/dashboard/SKILL.md) |
 | 导出 / 导出 Excel / 导出报表 / 下载数据 / xlsx / export / download report | `export` | [references/export/SKILL.md](references/export/SKILL.md) |
 | test / whoami / auth status / authentication | `test` | [references/test/SKILL.md](references/test/SKILL.md) |
 | 更新 / 升级 / 版本 / 有新版本 / update / upgrade / version / check update | `update` | [references/update/SKILL.md](references/update/SKILL.md) |
