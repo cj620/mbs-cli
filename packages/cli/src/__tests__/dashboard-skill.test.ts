@@ -55,12 +55,17 @@ describe('dashboard skill bundle', () => {
     expect(styles).toContain('@media')
     expect(data).toContain('示例数据')
 
-    expect(styles).not.toContain('./images/')
+    expect(styles).not.toContain('./images/bg.jpg')
+    expect(styles).toContain('./images/head_bg.png')
     expect(read('skills/references/dashboard/assets/commerce-dashboard/THIRD_PARTY_NOTICES.md')).toContain(
       'Apache ECharts 4.0.4',
     )
 
-    for (const asset of ['vendor/echarts.min.js', 'vendor/ECHARTS-LICENSE.txt']) {
+    for (const asset of [
+      'images/head_bg.png',
+      'vendor/echarts.min.js',
+      'vendor/ECHARTS-LICENSE.txt',
+    ]) {
       const assetPath = resolve(dashboardRoot, 'assets/commerce-dashboard', asset)
       expect(existsSync(assetPath)).toBe(true)
       expect(statSync(assetPath).size).toBeGreaterThan(0)

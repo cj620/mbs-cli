@@ -333,6 +333,31 @@ mbs database query --sql "select * from orders limit 10" --host pg-main --databa
 
 ---
 
+## 数据分析与看板
+
+Dashboard skill 面向跨境电商多平台、店群和铺货业务，把 MBS 只读数据查询、本地 Python 分析与页面二创串成一套工作流。完整规则见 [skills/references/dashboard/SKILL.md](skills/references/dashboard/SKILL.md)。
+
+开始制作前，agent 先确认交付范围：
+
+| 模式 | 交付物 | 数据更新 |
+|------|--------|----------|
+| 数据分析结果 | 指标、图表、结论和口径说明 | 单次分析 |
+| 一次性专题分析页 | 围绕当前业务问题生成的独立页面 | 数据快照或手动刷新 |
+| 长期固定看板 | 可持续使用的内部业务看板 | 稳定只读接口或定时刷新 |
+
+页面模式使用内置通用底座：[commerce-dashboard/index.html](skills/references/dashboard/assets/commerce-dashboard/index.html)。Agent 必须先把整个 `commerce-dashboard/` 目录复制到新的输出目录，再根据实际业务修改副本：
+
+- 替换 `data.js` 中的标题、范围、指标、趋势、排名、异常和明细；
+- 根据业务问题增删或重排卡片和图表，不为了填满三栏布局编造指标；
+- 明确日期粒度、币种、组织范围、指标公式和对比周期；
+- 长期看板实现 `window.loadMbsDashboardData(filters)`，通过本机 `mbs serve` 的已审计只读路由加载数据；
+- 数据量超过 200 行，或需要聚合、同比环比、透视和异常检测时，优先交给本地 Python，只把压缩结果传给 agent 和页面；
+- 查询失败、认证失效或拿不到字段口径时立即停止，禁止猜字段、使用伪数据冒充查询结果或绕过 MBS 访问上游数据。
+
+模板和生成页面仅供公司内部使用，默认在本机或受控内网运行，不要向页面写入 Cookie、token、完整 SQL 或敏感原始明细。分析规则、Python 协作契约和可视化约束分别见 [analysis.md](skills/references/dashboard/analysis.md)、[python-service.md](skills/references/dashboard/python-service.md) 和 [visualization.md](skills/references/dashboard/visualization.md)。
+
+---
+
 ## 本地 HTTP 网关
 
 `mbs serve` 只绑定本机回环地址，默认 `127.0.0.1:7878`。它没有额外鉴权，本机进程都能访问，因此不要改成公网或局域网监听。
@@ -446,6 +471,8 @@ pnpm test
 | 文档 | 用途 |
 |------|------|
 | [skills/SKILL.md](skills/SKILL.md) | 业务模块路由与命令速查 |
+| [skills/references/dashboard/SKILL.md](skills/references/dashboard/SKILL.md) | 数据分析、专题页和长期看板工作流 |
+| [skills/references/dashboard/assets/commerce-dashboard/index.html](skills/references/dashboard/assets/commerce-dashboard/index.html) | 跨境电商看板通用页面底座 |
 | [AGENTS.md](AGENTS.md) | 开发本项目时的 AI agent 协作规范 |
 | [packages/cli/docs/serve.md](packages/cli/docs/serve.md) | `mbs serve` 本地 HTTP 网关说明 |
 | [packages/cli/docs/version-and-update.md](packages/cli/docs/version-and-update.md) | 版本与更新机制详解 |

@@ -36,7 +36,7 @@ description: Use for cross-border e-commerce data analysis, visualization, one-o
 
 ## 页面底座
 
-内置模板以本地 BigDataView 第 011 套源码为设计参考，重新实现深蓝三栏大屏、中央核心指标和 ECharts 图表结构，未打包来源项目中授权不明的图片、自动跳转、jQuery、公众号素材和硬编码业务数据。
+内置模板基于用户提供的本地 BigDataView 第 011 套源码改造，复用原头部背景图，正文使用深蓝 CSS 背景，并保留深蓝三栏大屏、中央核心指标和 ECharts 图表结构；已移除自动跳转、jQuery、公众号素材和硬编码业务数据。
 
 模板入口：`assets/commerce-dashboard/index.html`
 

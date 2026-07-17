@@ -9,4 +9,4 @@ The bundled `vendor/echarts.min.js` is the official `dist/echarts.min.js` artifa
 - License: Apache License 2.0
 - License copy: `vendor/ECHARTS-LICENSE.txt`
 
-The page layout uses the locally supplied BigDataView template 011 as a design reference. Images and other media from that project are not redistributed in this bundle.
+The page layout and `images/head_bg.png` are based on the locally supplied BigDataView template 011. They are bundled for the internal-use workflow authorized by the project owner.
