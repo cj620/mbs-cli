@@ -1,6 +1,6 @@
 {
   "name": "@mb-it-org/cli",
-  "version": "0.1.55",
+  "version": "0.1.56",
   "type": "module",
   "bin": {
     "mbs": "bin/run.js"
@@ -54,6 +54,7 @@
   "scripts": {
     "build": "tsc && node scripts/copy-skills.cjs",
     "dev": "tsc --watch",
+    "test:dashboard-layout": "node scripts/check-dashboard-layout.mjs",
     "test": "pnpm exec vitest run"
   },
   "dependencies": {
