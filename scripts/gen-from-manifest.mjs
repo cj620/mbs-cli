@@ -8,10 +8,13 @@ import { extractPathParams, parseAuditManifest } from './lib/manifest-schema.mjs
 const repoRoot = join(dirname(fileURLToPath(import.meta.url)), '..')
 const generatedBlockStart = '<!-- AUTO-GENERATED API MODULES START -->'
 const generatedBlockEnd = '<!-- AUTO-GENERATED API MODULES END -->'
+const findProtocolStart = '<!-- AUTO-GENERATED FIND-FIRST PROTOCOL START -->'
+const findProtocolEnd = '<!-- AUTO-GENERATED FIND-FIRST PROTOCOL END -->'
 const generatedOwner = 'mbs-audit-manifest'
 
 const args = parseArgs(process.argv.slice(2))
 const dryRun = Boolean(args['dry-run'])
+const skillIndexOnly = Boolean(args['skill-index-only'])
 const manifestInput = await loadManifest(args.file, process.env.MBS_AUDIT_MANIFEST_URL)
 const manifest = parseAuditManifest(JSON.parse(manifestInput.content))
 const sourceHash = createHash('sha256').update(manifestInput.content).digest('hex')
@@ -30,23 +33,31 @@ const staleGeneratedDomains = findStaleGeneratedDomains(generatedModules.map((mo
 
 for (const mod of generatedModules) {
   activeDomains.add(mod.domain)
-  syncDomainPackage(mod, manifestInput.source, sourceHash)
-  syncDomainSkills(mod, sourceHash)
-}
-
-syncCliPackageJson(generatedModules.map((mod) => mod.domain))
-syncSkillIndex(generatedModules)
-syncSkillManifest(generatedModules)
-syncServeManifest(activeModules, manifestInput.source, sourceHash)
-
-for (const mod of manifest.modules) {
-  if (mod.actions.every((action) => action.deprecated)) {
-    removeGeneratedDomain(mod.domain)
+  if (skillIndexOnly) {
+    syncDomainIndexSkill(mod)
+  } else {
+    syncDomainPackage(mod, manifestInput.source, sourceHash)
+    syncDomainSkills(mod, sourceHash)
   }
 }
-for (const domain of staleGeneratedDomains) {
-  removeGeneratedDomain(domain)
-  removePath(join(repoRoot, 'skills', 'references', domain))
+
+syncSkillIndex(generatedModules)
+syncSkillManifest(generatedModules)
+if (!skillIndexOnly) {
+  syncCliPackageJson(generatedModules.map((mod) => mod.domain))
+  syncServeManifest(activeModules, manifestInput.source, sourceHash)
+}
+
+if (!skillIndexOnly) {
+  for (const mod of manifest.modules) {
+    if (mod.actions.every((action) => action.deprecated)) {
+      removeGeneratedDomain(mod.domain)
+    }
+  }
+  for (const domain of staleGeneratedDomains) {
+    removeGeneratedDomain(domain)
+    removePath(join(repoRoot, 'skills', 'references', domain))
+  }
 }
 
 printSummary()
@@ -57,6 +68,8 @@ function parseArgs(argv) {
     const arg = argv[index]
     if (arg === '--dry-run') {
       parsed['dry-run'] = true
+    } else if (arg === '--skill-index-only') {
+      parsed['skill-index-only'] = true
     } else if (arg === '--file') {
       parsed.file = argv[index + 1]
       index += 1
@@ -227,7 +240,43 @@ function syncSkillIndex(modules) {
         ? `${withoutBlock.trimEnd()}\n${block}\n`
         : `${withoutBlock.slice(0, markerIndex)}${block}\n\n${withoutBlock.slice(markerIndex)}`
   }
-  writeFile(skillPath, next)
+  writeFile(skillPath, syncFindFirstProtocol(next))
+}
+
+function syncDomainIndexSkill(mod) {
+  const skillDir = join(repoRoot, 'skills', 'references', mod.domain)
+  const generatedBanner = '<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->\n'
+  writeFile(join(skillDir, 'SKILL.md'), `${generatedBanner}${renderModuleSkill(mod)}`)
+}
+
+function syncFindFirstProtocol(content) {
+  const protocol = `${findProtocolStart}
+## 接口发现流程
+
+1. 使用用户原始需求执行 \`mbs find "<query>"\`，需要时增加 \`--domain\` 或 \`--target-type\`。
+2. 检查候选分数和 hint；低置信、无结果或歧义时先补充业务域、对象或时间范围，不直接执行候选。
+3. 命中 \`workflow\` 时读取其 \`steps\`，逐步用每个 \`intentQuery\` 再次执行 \`mbs find --target-type api\`。
+4. 确认一个 \`api\` 候选后，只读取其 \`detailPath\`：\`mbs skills show --file <detailPath>\`。
+5. 补齐详情中列出的必填参数，再执行候选的只读 \`command\`。
+
+禁止通过 Glob、目录遍历或逐个读取来扫描 \`skills/references/\` 寻找接口；域级文档只用于了解业务域，接口发现必须先使用 \`mbs find\`。
+${findProtocolEnd}`
+  let next = content
+  const protocolPattern = new RegExp(`${escapeRegExp(findProtocolStart)}[\\s\\S]*?${escapeRegExp(findProtocolEnd)}`)
+  if (protocolPattern.test(next)) {
+    next = next.replace(protocolPattern, protocol)
+  } else {
+    next = next.replace('\n## 模块路由表', `\n${protocol}\n\n## 模块路由表`)
+  }
+  next = next.replace(
+    /\*\*第一步\*\*：根据用户意图关键词定位模块。\*\*第二步\*\*：读对应 SKILL\.md 获取命令详情。/,
+    '模块表用于了解业务域边界；业务接口仍须按上方流程先执行 `mbs find`。',
+  )
+  next = next.replace(
+    /## 意图路由规则[\s\S]*?(?=\n## 组织架构参数规则)/,
+    `## 意图路由规则\n\n1. **业务数据查询**：先执行 \`mbs find\`，不得先加载整个域的接口目录。\n2. **workflow 候选**：按 steps 的子意图继续 find API，由当前数据决定是否执行可选步骤。\n3. **api 候选**：确认后只读取该候选的单端点详情，再补参数并执行。\n4. **认证 / serve / 版本更新**：使用模块路由表中的专用文档。\n5. **远程召回不可用**：接受 find 的本地降级结果；无结果时补充查询条件，不扫描 references。\n\n`,
+  )
+  return next
 }
 
 function syncSkillManifest(modules) {
@@ -244,6 +293,17 @@ function syncSkillManifest(modules) {
     generated: true,
   }))
   current.modules = [...staticModules, ...generatedModules]
+  current.apiCards = modules.flatMap((mod) => mod.actions.map((action) => ({
+    id: action.name,
+    type: 'api',
+    name: action.name,
+    domain: mod.domain,
+    description: action.description,
+    command: `mbs ${mod.domain} ${action.name}`,
+    detailPath: `references/${mod.domain}/${action.name}.md`,
+    keywords: mod.keywords,
+    requiredParams: requiredParams(action),
+  })))
   writeFile(manifestPath, `${JSON.stringify(current, null, 2)}\n`)
 }
 
@@ -384,11 +444,7 @@ function renderPathExpression(path, argParams = []) {
 }
 
 function renderModuleSkill(mod) {
-  const commandRows = mod.actions
-    .map((action) => `| ${action.description} | \`mbs ${mod.domain} ${action.name}\` | ${requiredParams(action).join(', ') || '-'} |`)
-    .join('\n')
-  const detailLinks = mod.actions.map((action) => `- [${action.name}.md](${action.name}.md)`).join('\n')
-  return `# ${mod.domain} - ${mod.description}\n\n通过 \`mbs ${mod.domain}\` 命令查询${mod.description}数据。\n\n## 数据来源\n\n- Service: \`${mod.service || '-'}\`\n\n## 适用场景\n\n${mod.scenarios}\n\n## 意图匹配\n\n关键词：${mod.keywords.join(' / ')}\n\n## 命令一览\n\n| 意图 | 命令 | 必填参数 |\n|---|---|---|\n${commandRows}\n\n## 命令详情\n\n${detailLinks}\n\n## 参数规则\n\n- 执行前必须确认必填参数。\n- 不要猜测 ID、状态、日期范围或其他筛选条件。\n- 未覆盖的临时接口探索使用 \`mbs raw GET/POST <endpoint>\`。\n`
+  return `# ${mod.domain} - ${mod.description}\n\n## 业务域\n\n- 适用场景：${mod.scenarios || mod.description}\n- 关键词：${mod.keywords.join(' / ')}\n- Service：\`${mod.service || '-'}\`\n\n## 接口发现\n\n\`\`\`bash\nmbs find "<用户原始需求>" --domain ${mod.domain}\n\`\`\`\n\n从候选中确认目标接口后，只读取返回的 \`detailPath\`：\n\n\`\`\`bash\nmbs skills show --file references/${mod.domain}/<action>.md\n\`\`\`\n\n- 不在本文件中平铺或扫描全部 action。\n- 命中 workflow 时按 steps 的 \`intentQuery\` 继续检索 API。\n- 低置信、无结果或歧义时先补充条件。\n- 读取单接口详情并确认必填参数后，才执行返回的只读命令。\n`
 }
 
 function renderActionSkill(mod, action, hash) {
@@ -545,7 +601,7 @@ function withEnumDescription(description, enumValues) {
 }
 
 function requiredParams(action) {
-  return flattenActionParams(action).filter((param) => param.required && param.constValue === undefined).map((param) => `\`${param.name}\``)
+  return flattenActionParams(action).filter((param) => param.required && param.constValue === undefined).map((param) => param.name)
 }
 
 function renderParamObject(params) {

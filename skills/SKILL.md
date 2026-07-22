@@ -19,9 +19,21 @@ metadata:
 
 ---
 
+<!-- AUTO-GENERATED FIND-FIRST PROTOCOL START -->
+## 接口发现流程
+
+1. 使用用户原始需求执行 `mbs find "<query>"`，需要时增加 `--domain` 或 `--target-type`。
+2. 检查候选分数和 hint；低置信、无结果或歧义时先补充业务域、对象或时间范围，不直接执行候选。
+3. 命中 `workflow` 时读取其 `steps`，逐步用每个 `intentQuery` 再次执行 `mbs find --target-type api`。
+4. 确认一个 `api` 候选后，只读取其 `detailPath`：`mbs skills show --file <detailPath>`。
+5. 补齐详情中列出的必填参数，再执行候选的只读 `command`。
+
+禁止通过 Glob、目录遍历或逐个读取来扫描 `skills/references/` 寻找接口；域级文档只用于了解业务域，接口发现必须先使用 `mbs find`。
+<!-- AUTO-GENERATED FIND-FIRST PROTOCOL END -->
+
 ## 模块路由表
 
-**第一步**：根据用户意图关键词定位模块。**第二步**：读对应 SKILL.md 获取命令详情。
+模块表用于了解业务域边界；业务接口仍须按上方流程先执行 `mbs find`。
 
 | 用户意图关键词（中 / EN） | 模块 | 详细文档 |
 |---|---|---|
@@ -40,6 +52,7 @@ metadata:
 | 刊登、publish | `prm` | [references/prm/SKILL.md](references/prm/SKILL.md) |
 | 供应链 | `scm` | [references/scm/SKILL.md](references/scm/SKILL.md) |
 | <!-- AUTO-GENERATED API MODULES END --> |  |  |
+
 
 
 
@@ -127,10 +140,12 @@ metadata:
 
 ## 意图路由规则
 
-1. **业务数据查询**：查模块路由表 → 命中 1 个模块则读其 SKILL.md → 执行命令
-2. **命中 0 或 ≥ 2 个模块**：触发消歧协议（见上方）
-3. **认证 / serve**：直接看 [references/global.md](references/global.md)。**版本 / 更新**：查路由表 `update` 模块 → [references/update/SKILL.md](references/update/SKILL.md)
-4. **找不到对应模块**：告知用户该模块尚未封装；只有用户明确要求探索原始接口时，才使用开发专用的 `mbs raw GET/POST <endpoint>`
+1. **业务数据查询**：先执行 `mbs find`，不得先加载整个域的接口目录。
+2. **workflow 候选**：按 steps 的子意图继续 find API，由当前数据决定是否执行可选步骤。
+3. **api 候选**：确认后只读取该候选的单端点详情，再补参数并执行。
+4. **认证 / serve / 版本更新**：使用模块路由表中的专用文档。
+5. **远程召回不可用**：接受 find 的本地降级结果；无结果时补充查询条件，不扫描 references。
+
 
 ## 组织架构参数规则（重要）
 
