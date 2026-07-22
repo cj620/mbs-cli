@@ -15,7 +15,7 @@ mbs product erp-monitor-hot-product-all-listing [--platformId <integer>] [--shop
 - Path: `/erpmonitor/erpmonitor/hotProductMonitor/hotProductAllListing`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `677e0eeeae32d1dfa49b8592ad87f57652fe790be7715a8400b6daf2777d14fb`
+- Manifest hash: `e4084006f47bd5ad48408ee2ec3af402e3ab27bf3853c7c78463268e0573f582`
 
 ## 参数
 
@@ -30,10 +30,10 @@ mbs product erp-monitor-hot-product-all-listing [--platformId <integer>] [--shop
 | `costPriceMax` | costPriceMax | body | number | 否 | - | 成本价上限（注意DTO注释把Max/Min写反，以代码为准）。查询条件为 ES maxCostPrice < 该值 |
 | `costPriceMin` | costPriceMin | body | number | 否 | - | 成本价下限。查询条件为 ES minCostPrice > 该值 |
 | `managerShopIds` | managerShopIds | body | array<integer> | 否 | - | 登录人(销售部)管理的店铺ID列表。服务端在setHotProductListShopParams中按登录人自动注入，前端无需传；销售部账号若名下无店铺直接返回code=500'销售名下没有店铺，没有权限查看' |
-| `director` | director | body | array<integer> | 否 | - | 总监(员工ID)多选，用于按组织架构圈定店铺集合(getShopListByParams)，结果写入finalShopNameList。可独立传入；已知总监ID时无需先查询或传入经理、主管、店长ID |
-| `manager` | manager | body | array<integer> | 否 | - | 经理(员工ID)多选，用途同director；可独立传入，不要求先获取下级主管、店长或员工ID |
-| `littleLeaders` | littleLeaders | body | array<integer> | 否 | - | 主管(员工ID)多选，用途同director；可独立传入，不要求先获取下级店长或员工ID |
-| `shopManager` | shopManager | body | array<integer> | 否 | - | 店长(员工ID)多选，用途同director；可直接传入已知店长ID |
+| `director` | director | body | array<integer> | 否 | - | 总监(员工ID)多选，用于按组织架构圈定店铺集合(getShopListByParams)，结果写入finalShopNameList |
+| `manager` | manager | body | array<integer> | 否 | - | 经理(员工ID)多选，用途同director |
+| `littleLeaders` | littleLeaders | body | array<integer> | 否 | - | 主管(员工ID)多选，用途同director |
+| `shopManager` | shopManager | body | array<integer> | 否 | - | 店长(员工ID)多选，用途同director |
 | `shopNames` | shopNames | body | array<string> | 否 | - | 店铺名称多选。传入后服务端结合isopenshop/operatestatus过滤店铺运营状态，结果写入finalShopNameList；过滤后为空返回code=500'未查询到店铺，请确认所选店铺的运营状态' |
 | `allPlatformId` | allPlatformId | body | array<string> | 否 | - | 登录人有权限的全部平台ID。服务端按登录人(销售部)自动注入；未配置平台返回code=500'当前登录人未设置平台，请设置后再查看'。前端无需传 |
 | `finalShopNameList` | finalShopNameList | body | array<string> | 否 | - | 最终生效的店铺名集合(ES termsQuery shopName)。服务端根据shopNames/组织条件/店铺状态计算注入，前端无需传 |

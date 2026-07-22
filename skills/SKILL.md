@@ -34,7 +34,9 @@ metadata:
 | <!-- AUTO-GENERATED API MODULES START --> |  |  |
 | 在线listing / 商品 / product | `product` | [references/product/SKILL.md](references/product/SKILL.md) |
 | 店铺健康 / 账号健康 / 亚马逊 / amazon / shops / 合规 | `crm` | [references/crm/SKILL.md](references/crm/SKILL.md) |
+| 商品 | `pim` | [references/pim/SKILL.md](references/pim/SKILL.md) |
 | <!-- AUTO-GENERATED API MODULES END --> |  |  |
+
 
 
 

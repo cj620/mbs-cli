@@ -15,7 +15,7 @@ mbs product erp-product-product [--categoryId <string>] [--levelNum <number>] [-
 - Path: `/erpProduct/erpProduct/product/product`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `677e0eeeae32d1dfa49b8592ad87f57652fe790be7715a8400b6daf2777d14fb`
+- Manifest hash: `e4084006f47bd5ad48408ee2ec3af402e3ab27bf3853c7c78463268e0573f582`
 
 ## 参数
 

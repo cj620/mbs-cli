@@ -1,6 +1,6 @@
 // AUTO-GENERATED FROM audit manifest. DO NOT EDIT.
 // Source: manifests/mbs-api-manifest.json
-// Manifest: 2026-05-20T00:00:00+08:00 @ 677e0eeeae32d1dfa49b8592ad87f57652fe790be7715a8400b6daf2777d14fb
+// Manifest: 2026-05-20T00:00:00+08:00 @ e4084006f47bd5ad48408ee2ec3af402e3ab27bf3853c7c78463268e0573f582
 import type { AuditManifest } from './router.js'
 
 export const projectManifest = {
@@ -38,6 +38,28 @@ export const projectManifest = {
           "description": "获取店铺账号健康信息：获取所有 Amazon 店铺的账号健康信息（账号状况评级、政策合规、各类违规投诉计数、订单缺陷率/迟发率/有效追踪率等运营指标）。数据由 RPA 自动采集，附带健康页截图。",
           "method": "GET",
           "path": "/crm-web-service/rpa/getAmazonAccHealthInfo",
+          "pathPrefix": "",
+          "responseMode": "json"
+        }
+      ]
+    },
+    {
+      "domain": "pim",
+      "pathPrefix": "",
+      "actions": [
+        {
+          "name": "instudio-pms-get-shop-manager-ranking-list",
+          "description": "获取销售的中台排行数据：获取销售的中台排行数据",
+          "method": "POST",
+          "path": "/yypms/pms/middlePanel/getShopManagerRankingList",
+          "pathPrefix": "",
+          "responseMode": "json"
+        },
+        {
+          "name": "instudio-pms-list",
+          "description": "开发中台的列表数据：开发中台的列表数据",
+          "method": "POST",
+          "path": "/yypms/pms/skuManager/list",
           "pathPrefix": "",
           "responseMode": "json"
         }

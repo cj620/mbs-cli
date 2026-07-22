@@ -173,6 +173,19 @@
         "mbs crm crm-web-service-get-amazon-acc-health-info"
       ],
       "generated": true
+    },
+    {
+      "name": "pim",
+      "description": "商品管理",
+      "keywords": [
+        "商品"
+      ],
+      "skill": "references/pim/SKILL.md",
+      "commands": [
+        "mbs pim instudio-pms-get-shop-manager-ranking-list",
+        "mbs pim instudio-pms-list"
+      ],
+      "generated": true
     }
   ]
 }

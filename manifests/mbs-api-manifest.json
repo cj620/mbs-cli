@@ -66,28 +66,28 @@
                 },
                 "director": {
                   "type": "array",
-                  "description": "总监(员工ID)多选，用于按组织架构圈定店铺集合(getShopListByParams)，结果写入finalShopNameList。可独立传入；已知总监ID时无需先查询或传入经理、主管、店长ID",
+                  "description": "总监(员工ID)多选，用于按组织架构圈定店铺集合(getShopListByParams)，结果写入finalShopNameList",
                   "items": {
                     "type": "integer"
                   }
                 },
                 "manager": {
                   "type": "array",
-                  "description": "经理(员工ID)多选，用途同director；可独立传入，不要求先获取下级主管、店长或员工ID",
+                  "description": "经理(员工ID)多选，用途同director",
                   "items": {
                     "type": "integer"
                   }
                 },
                 "littleLeaders": {
                   "type": "array",
-                  "description": "主管(员工ID)多选，用途同director；可独立传入，不要求先获取下级店长或员工ID",
+                  "description": "主管(员工ID)多选，用途同director",
                   "items": {
                     "type": "integer"
                   }
                 },
                 "shopManager": {
                   "type": "array",
-                  "description": "店长(员工ID)多选，用途同director；可直接传入已知店长ID",
+                  "description": "店长(员工ID)多选，用途同director",
                   "items": {
                     "type": "integer"
                   }
@@ -1217,6 +1217,731 @@
             "required": [
               "code",
               "data"
+            ]
+          },
+          "deprecated": false
+        }
+      ]
+    },
+    {
+      "domain": "pim",
+      "description": "商品管理",
+      "keywords": [
+        "商品"
+      ],
+      "scenarios": "商品",
+      "actions": [
+        {
+          "name": "instudio-pms-get-shop-manager-ranking-list",
+          "description": "获取销售的中台排行数据：获取销售的中台排行数据",
+          "service": "instudio-pms",
+          "method": "POST",
+          "path": "/yypms/pms/middlePanel/getShopManagerRankingList",
+          "request": {
+            "body": {
+              "type": "object",
+              "properties": {
+                "times": {
+                  "type": "string",
+                  "description": "年月"
+                },
+                "platformName": {
+                  "type": "string",
+                  "description": "平台名称"
+                },
+                "platformNameList": {
+                  "type": "array",
+                  "description": "平台名称列表（字段名推断,语义待核实）",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "bigChief": {
+                  "type": "string",
+                  "description": "大酋长"
+                },
+                "teamNumber": {
+                  "type": "string",
+                  "description": "组员"
+                },
+                "shopName": {
+                  "type": "string",
+                  "description": "店铺名称"
+                },
+                "grade": {
+                  "type": "integer",
+                  "description": "-1 差, 0一般, 1优秀"
+                },
+                "warningIndexs": {
+                  "type": "array",
+                  "description": "警戒指标 选中, 显示对应指标触发警戒的, 如果选择多个 or的关系",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "shopManagers": {
+                  "type": "array",
+                  "description": "店铺Managers（字段名推断,语义待核实）",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "page": {
+                  "type": "integer",
+                  "description": "页码（字段名推断,语义待核实）"
+                },
+                "pageSize": {
+                  "type": "integer",
+                  "description": "每页条数（字段名推断,语义待核实）"
+                },
+                "startIndex": {
+                  "type": "integer",
+                  "description": "开始索引（字段名推断,语义待核实）"
+                },
+                "customerServiceList": {
+                  "type": "array",
+                  "description": "客户服务列表（字段名推断,语义待核实）",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "shopNameList": {
+                  "type": "array",
+                  "description": "店铺名称列表（字段名推断,语义待核实）",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "smallScore": {
+                  "type": "integer",
+                  "description": "Small评分（字段名推断,语义待核实）"
+                },
+                "bigScore": {
+                  "type": "integer",
+                  "description": "BIG评分（字段名推断,语义待核实）"
+                },
+                "score": {
+                  "type": "object",
+                  "description": "评分（字段名推断,语义待核实）"
+                },
+                "shopManager": {
+                  "type": "string",
+                  "description": "店铺管理（字段名推断,语义待核实）"
+                },
+                "chartType": {
+                  "type": "string",
+                  "description": "sales 销售额, profitAmount 毛利额, profitRate 毛利率, refundRate 退款率, stockoutRate 缺货率, cancellationRate 作废率"
+                },
+                "position": {
+                  "type": "integer",
+                  "description": "0 组员 1 经理 2 总监 3 平台(换表)"
+                },
+                "operateStatus": {
+                  "type": "integer",
+                  "description": "1 运营中 、2暂停运营、3永久关闭中"
+                },
+                "managerEmployeeList": {
+                  "type": "array",
+                  "description": "管理员工列表（字段名推断,语义待核实）",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "sqlList": {
+                  "type": "array",
+                  "description": "SQL列表（字段名推断,语义待核实）",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "grades": {
+                  "type": "array",
+                  "description": "Grades（字段名推断,语义待核实）",
+                  "items": {
+                    "type": "integer"
+                  }
+                },
+                "keyWord": {
+                  "type": "string",
+                  "description": "键词（字段名推断,语义待核实）"
+                },
+                "keyWordList": {
+                  "type": "array",
+                  "description": "键词列表（字段名推断,语义待核实）",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "platformIds": {
+                  "type": "array",
+                  "description": "平台ID列表（字段名推断,语义待核实）",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "bigChiefList": {
+                  "type": "array",
+                  "description": "BIG主管列表（字段名推断,语义待核实）",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "employeeList": {
+                  "type": "array",
+                  "description": "员工列表（字段名推断,语义待核实）",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "customerServiceMgr": {
+                  "type": "string",
+                  "description": "客户服务管理（字段名推断,语义待核实）"
+                },
+                "shopNames": {
+                  "type": "array",
+                  "description": "店铺名称列表（字段名推断,语义待核实）",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "lastTimes": {
+                  "type": "string",
+                  "description": "最近次数（字段名推断,语义待核实）"
+                },
+                "directors": {
+                  "type": "array",
+                  "description": "总监",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "managers": {
+                  "type": "array",
+                  "description": "经理",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "shopManagerIds": {
+                  "type": "array",
+                  "description": "店长id",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "sites": {
+                  "type": "array",
+                  "description": "Sites（字段名推断,语义待核实）",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "shopManagerStar": {
+                  "type": "array",
+                  "description": "人员维度星级",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "tableName": {
+                  "type": "string",
+                  "description": "表名称（字段名推断,语义待核实）"
+                },
+                "skuOperList": {
+                  "type": "array",
+                  "description": "SKU操作列表（字段名推断,语义待核实）",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "openShopStartTime": {
+                  "type": "string",
+                  "description": "开启店铺开始时间（字段名推断,语义待核实）"
+                },
+                "openShopEndTime": {
+                  "type": "string",
+                  "description": "开启店铺结束时间（字段名推断,语义待核实）"
+                },
+                "qualifyTotalAmountFlag": {
+                  "type": "integer",
+                  "description": "Qualify总金额标志（字段名推断,语义待核实）"
+                },
+                "qualifyfhmaoliFlag": {
+                  "type": "integer",
+                  "description": "Qualifyfhmaoli标志（字段名推断,语义待核实）"
+                },
+                "firstMonthFlag": {
+                  "type": "integer",
+                  "description": "首个月份标志（字段名推断,语义待核实）"
+                },
+                "submitStrategy": {
+                  "type": "boolean",
+                  "description": "true --> 已提交"
+                },
+                "shopModel": {
+                  "type": "string",
+                  "description": "店铺模式"
+                },
+                "categoryId": {
+                  "type": "string",
+                  "description": "店铺分类"
+                },
+                "companyId": {
+                  "type": "string",
+                  "description": "公司id"
+                },
+                "companyIdSpecial": {
+                  "type": "string",
+                  "description": "公司ID特殊（字段名推断,语义待核实）"
+                },
+                "companyIdEmp": {
+                  "type": "array",
+                  "description": "公司下的人员",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "companyIdSpecialEmp": {
+                  "type": "array",
+                  "description": "公司下的人员",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "categoryShopList": {
+                  "type": "array",
+                  "description": "目前是在导出的时候会用到这个字段。",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "specialSumRanking": {
+                  "type": "boolean",
+                  "description": "是否为 需要汇总的排行。。"
+                },
+                "exportTitleList": {
+                  "type": "array",
+                  "description": "需要导出的标题头",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "exportTimeList": {
+                  "type": "array",
+                  "description": "导出使用的时间字段",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "sales": {
+                  "type": "object",
+                  "description": "销售（字段名推断,语义待核实）"
+                },
+                "profitAmount": {
+                  "type": "object",
+                  "description": "利润金额（字段名推断,语义待核实）"
+                },
+                "profitRate": {
+                  "type": "object",
+                  "description": "利润比率（字段名推断,语义待核实）"
+                },
+                "operatMaoLiProfitAmountRate": {
+                  "type": "object",
+                  "description": "OperatMAOLI利润金额比率（字段名推断,语义待核实）"
+                },
+                "orderQuantity": {
+                  "type": "object",
+                  "description": "订单数量（字段名推断,语义待核实）"
+                },
+                "onlineQuantity": {
+                  "type": "object",
+                  "description": "在线数量（字段名推断,语义待核实）"
+                },
+                "manualPublish": {
+                  "type": "object",
+                  "description": "手动刊登（字段名推断,语义待核实）"
+                },
+                "batchPublish": {
+                  "type": "object",
+                  "description": "批次刊登（字段名推断,语义待核实）"
+                },
+                "activitySaleRate": {
+                  "type": "object",
+                  "description": "活动销售比率（字段名推断,语义待核实）"
+                },
+                "refundRate": {
+                  "type": "object",
+                  "description": "退款比率（字段名推断,语义待核实）"
+                },
+                "stockoutRate": {
+                  "type": "object",
+                  "description": "Stockout比率（字段名推断,语义待核实）"
+                },
+                "cancellationRate": {
+                  "type": "object",
+                  "description": "Cancellation比率（字段名推断,语义待核实）"
+                },
+                "tort": {
+                  "type": "object",
+                  "description": "侵权（字段名推断,语义待核实）"
+                },
+                "deduction": {
+                  "type": "object",
+                  "description": "Deduction（字段名推断,语义待核实）"
+                },
+                "fine": {
+                  "type": "object",
+                  "description": "FINE（字段名推断,语义待核实）"
+                },
+                "trap": {
+                  "type": "object",
+                  "description": "TRAP（字段名推断,语义待核实）"
+                },
+                "cash": {
+                  "type": "object",
+                  "description": "CASH（字段名推断,语义待核实）"
+                },
+                "evaluate": {
+                  "type": "object",
+                  "description": "Evaluate（字段名推断,语义待核实）"
+                },
+                "publishProfitRateOnSeven": {
+                  "type": "object",
+                  "description": "刊登利润比率7天（字段名推断,语义待核实）"
+                },
+                "newGoodsSalesRate": {
+                  "type": "object",
+                  "description": "新货品销售比率（字段名推断,语义待核实）"
+                },
+                "addedListingOnDay": {
+                  "type": "object",
+                  "description": "Added刊登天（字段名推断,语义待核实）"
+                }
+              }
+            }
+          },
+          "response": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "integer",
+                "description": "错误代码。前端使用：否"
+              },
+              "desc": {
+                "type": "string",
+                "description": "错误类型。前端使用：否"
+              },
+              "obj": {
+                "type": "object",
+                "description": "列表信息。前端使用：否",
+                "properties": {
+                  "obj.companyid": {
+                    "type": "string",
+                    "description": "Companyid（前端推断字段）。前端使用：是（前端推断，行号待核实）"
+                  },
+                  "obj.companyname": {
+                    "type": "string",
+                    "description": "Companyname（前端推断字段）。前端使用：是（前端推断，行号待核实）"
+                  },
+                  "obj.id": {
+                    "type": "string",
+                    "description": "ID（前端推断字段）。前端使用：是（前端推断，行号待核实）"
+                  },
+                  "obj.name": {
+                    "type": "string",
+                    "description": "名称（前端推断字段）。前端使用：是（前端推断，行号待核实）"
+                  },
+                  "obj.split": {
+                    "type": "string",
+                    "description": "拆分（前端推断字段）。前端使用：是（前端推断，行号待核实）"
+                  },
+                  "obj.value": {
+                    "type": "string",
+                    "description": "值（前端推断字段）。前端使用：是（前端推断，行号待核实）"
+                  }
+                }
+              },
+              "content": {
+                "type": "string",
+                "description": "内容。前端使用：否"
+              }
+            },
+            "required": [
+              "code",
+              "desc"
+            ]
+          },
+          "deprecated": false
+        },
+        {
+          "name": "instudio-pms-list",
+          "description": "开发中台的列表数据：开发中台的列表数据",
+          "service": "instudio-pms",
+          "method": "POST",
+          "path": "/yypms/pms/skuManager/list",
+          "request": {
+            "body": {
+              "type": "object",
+              "properties": {
+                "skuOper": {
+                  "type": "string",
+                  "description": "开发姓名"
+                },
+                "times": {
+                  "type": "string",
+                  "description": "时间 (yyyy-MM)"
+                },
+                "position": {
+                  "type": "integer",
+                  "description": "职位"
+                },
+                "skuOperList": {
+                  "type": "array",
+                  "description": "开发员",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "page": {
+                  "type": "integer",
+                  "description": "页码"
+                },
+                "pageSize": {
+                  "type": "integer",
+                  "description": "页容量"
+                },
+                "directors": {
+                  "type": "array",
+                  "description": "总监",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "managers": {
+                  "type": "array",
+                  "description": "经理",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "shopManagerIds": {
+                  "type": "array",
+                  "description": "店长id",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "startIndex": {
+                  "type": "integer",
+                  "description": "开始索引（字段名推断,语义待核实）"
+                },
+                "area": {
+                  "type": "string",
+                  "description": "区域（字段名推断,语义待核实）"
+                },
+                "areaSpecial": {
+                  "type": "string",
+                  "description": "启元人只能看启元的"
+                },
+                "companyId": {
+                  "type": "integer",
+                  "description": "公司ID（字段名推断,语义待核实）"
+                },
+                "permissionsOperList": {
+                  "type": "array",
+                  "description": "开发员",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "evaluate": {
+                  "type": "object",
+                  "description": "综合得分排序字段"
+                },
+                "sales": {
+                  "type": "object",
+                  "description": "销售额排序字段"
+                },
+                "profitAmount": {
+                  "type": "object",
+                  "description": "毛利额排序字段"
+                },
+                "newGoodsSales": {
+                  "type": "object",
+                  "description": "新品销售额排序字段"
+                },
+                "hundredTurnOverRate": {
+                  "type": "object",
+                  "description": "百元动销率排序字段"
+                },
+                "profitRate": {
+                  "type": "object",
+                  "description": "毛利率排序字段"
+                },
+                "refundRate": {
+                  "type": "object",
+                  "description": "退款率排序字段"
+                },
+                "inventoryAmount": {
+                  "type": "object",
+                  "description": "库存金额排序字段"
+                },
+                "developmentNum": {
+                  "type": "object",
+                  "description": "spu开发量排序字段"
+                },
+                "totalOutOfStockRate": {
+                  "type": "object",
+                  "description": "总缺货率排序字段"
+                },
+                "newGoodsOutOfStockRate": {
+                  "type": "object",
+                  "description": "新品缺货率排序字段"
+                },
+                "turnOverRate": {
+                  "type": "object",
+                  "description": "动销率排序字段"
+                },
+                "averageCostPrice": {
+                  "type": "object",
+                  "description": "平均成本价排序字段"
+                },
+                "averageCustomUnitPrice": {
+                  "type": "object",
+                  "description": "平均客单价排序字段"
+                },
+                "newGoodsAverageOnlineNum": {
+                  "type": "object",
+                  "description": "新品平均在线量排序字段"
+                },
+                "targetProfit": {
+                  "type": "object",
+                  "description": "目标发货毛利额"
+                },
+                "profitFinishRate": {
+                  "type": "object",
+                  "description": "目标发货毛利额完成率"
+                },
+                "newNegativeRate": {
+                  "type": "object",
+                  "description": "新品差评率"
+                },
+                "newRefundFee": {
+                  "type": "object",
+                  "description": "新品退款金额"
+                },
+                "tortRejectNum": {
+                  "type": "object",
+                  "description": "侵权驳回数"
+                },
+                "fhRefund": {
+                  "type": "object",
+                  "description": "当月退款金额"
+                },
+                "chartType": {
+                  "type": "string",
+                  "description": "趋势图字段"
+                },
+                "gtInductionTime": {
+                  "type": "string",
+                  "description": "入职时间大于"
+                },
+                "ltInductionTime": {
+                  "type": "string",
+                  "description": "入职时间小于"
+                },
+                "newGoodsSalesThirty": {
+                  "type": "object",
+                  "description": "近3月新品GMV"
+                },
+                "newGoodsSalesThirtyRatio": {
+                  "type": "object",
+                  "description": "近3月新品率"
+                },
+                "newGoodsSendProfit": {
+                  "type": "object",
+                  "description": "近3月新品毛利"
+                },
+                "currentProfitSelfBuild": {
+                  "type": "object",
+                  "description": "当月自建毛利"
+                },
+                "newGoodSaleRanking": {
+                  "type": "object",
+                  "description": "排名"
+                },
+                "hideSkuOperList": {
+                  "type": "array",
+                  "description": "隐藏开发员",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "warningIndexList": {
+                  "type": "array",
+                  "description": "警戒指标 选中, 显示对应指标触发警戒的, 如果选择多个 or的关系",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "exportTitleList": {
+                  "type": "array",
+                  "description": "需要导出的标题头",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "exportTimeList": {
+                  "type": "array",
+                  "description": "导出使用的时间字段",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "response": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "integer",
+                "description": "错误代码。前端使用：否"
+              },
+              "desc": {
+                "type": "string",
+                "description": "错误类型。前端使用：否"
+              },
+              "obj": {
+                "type": "object",
+                "description": "列表信息。前端使用：否",
+                "properties": {
+                  "obj.id": {
+                    "type": "string",
+                    "description": "ID（前端推断字段）。前端使用：是（前端推断，行号待核实）"
+                  },
+                  "obj.name": {
+                    "type": "string",
+                    "description": "名称（前端推断字段）。前端使用：是（前端推断，行号待核实）"
+                  },
+                  "obj.employee_id": {
+                    "type": "string",
+                    "description": "员工ID（前端推断字段）。前端使用：是（前端推断，行号待核实）"
+                  },
+                  "obj.companyname": {
+                    "type": "string",
+                    "description": "Companyname（前端推断字段）。前端使用：是（前端推断，行号待核实）"
+                  }
+                }
+              },
+              "content": {
+                "type": "string",
+                "description": "内容。前端使用：否"
+              }
+            },
+            "required": [
+              "code",
+              "desc"
             ]
           },
           "deprecated": false

@@ -90,7 +90,7 @@ function syncDomainPackage(mod, source, hash) {
   let exists = existsSync(domainDir)
 
   if (exists && !existsSync(markerPath)) {
-    if (isDirectoryEmptyDeep(domainDir)) {
+    if (isDirectoryEmptyOrBuildArtifacts(domainDir)) {
       removePath(domainDir)
       exists = false
     } else {
@@ -684,12 +684,13 @@ function removeStaleFiles(dir, activeFiles, suffix) {
   }
 }
 
-function isDirectoryEmptyDeep(dir) {
+function isDirectoryEmptyOrBuildArtifacts(dir) {
   for (const entry of readdirSync(dir, { withFileTypes: true })) {
     const entryPath = join(dir, entry.name)
     if (entry.isDirectory()) {
-      if (!isDirectoryEmptyDeep(entryPath)) return false
-    } else {
+      if (entry.name === 'dist' || entry.name === 'node_modules') continue
+      if (!isDirectoryEmptyOrBuildArtifacts(entryPath)) return false
+    } else if (entry.name !== 'tsconfig.tsbuildinfo' && entry.name !== 'oclif.manifest.json') {
       return false
     }
   }

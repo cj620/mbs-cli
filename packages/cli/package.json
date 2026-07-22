@@ -19,6 +19,7 @@
       "@mb-it-org/doris",
       "@mb-it-org/export",
       "@mb-it-org/org",
+      "@mb-it-org/pim",
       "@mb-it-org/product",
       "@mb-it-org/test"
     ],
@@ -58,6 +59,7 @@
     "@mb-it-org/doris": "workspace:*",
     "@mb-it-org/export": "workspace:*",
     "@mb-it-org/org": "workspace:*",
+    "@mb-it-org/pim": "workspace:*",
     "@mb-it-org/product": "workspace:*",
     "@mb-it-org/shared": "workspace:*",
     "@mb-it-org/test": "workspace:*",

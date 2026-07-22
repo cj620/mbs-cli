@@ -1,6 +1,6 @@
 // AUTO-GENERATED FROM audit manifest. DO NOT EDIT.
 // Source: manifests/mbs-api-manifest.json
-// Manifest: 2026-05-20T00:00:00+08:00 @ 677e0eeeae32d1dfa49b8592ad87f57652fe790be7715a8400b6daf2777d14fb
+// Manifest: 2026-05-20T00:00:00+08:00 @ e4084006f47bd5ad48408ee2ec3af402e3ab27bf3853c7c78463268e0573f582
 import { Flags } from '@oclif/core'
 import { MBSCommand } from '@mb-it-org/shared'
 
