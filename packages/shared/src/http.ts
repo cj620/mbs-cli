@@ -27,19 +27,21 @@ const API_CODE_HANDLERS: Record<number, () => Error> = {
   109: () => new PermissionError(),
   403: () => new PermissionError(),
   401: () => new NotAuthenticatedError(),
-  500: () => new NotAuthenticatedError(),
 };
 
 export class APIClient {
   private readonly instance: AxiosInstance;
   private readonly refreshAuth: () => Promise<string>;
+  private readonly authorize?: () => Promise<string>;
 
   constructor(
     baseURL: string,
     cookie: string,
     refreshAuth: () => Promise<string>,
+    authorize?: () => Promise<string>,
   ) {
     this.refreshAuth = refreshAuth;
+    this.authorize = authorize;
     this.instance = axios.create({
       baseURL,
       headers: { Cookie: cookie, "client-type": "cli" },
@@ -54,6 +56,10 @@ export class APIClient {
       if (handler) throw handler();
 
       throw new MBSError(raw.msg ?? `API error (code: ${raw.code})`);
+    }, (error: unknown) => {
+      const status = (error as { response?: { status?: number } }).response?.status;
+      if (status === 401) return Promise.reject(new NotAuthenticatedError());
+      return Promise.reject(error);
     });
   }
 
@@ -62,6 +68,9 @@ export class APIClient {
   }
 
   private async withRetry<T>(request: () => Promise<T>): Promise<T> {
+    if (this.authorize) {
+      this.updateCookie(await this.authorize());
+    }
     try {
       return await request();
     } catch (err) {

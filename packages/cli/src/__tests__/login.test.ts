@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-const mockSetKey = vi.fn()
-const mockGetAuthContext = vi.fn()
+const mockEstablishAuthSession = vi.fn()
+const mockAcquireLoginClaim = vi.fn()
 const mockLaunch = vi.fn()
 
 vi.mock('@mb-it-org/shared', () => ({
@@ -12,8 +12,8 @@ vi.mock('@mb-it-org/shared', () => ({
   KEY_PARAM: 'key',
   LOGIN_TIMEOUT_MS: 5_000,
   withCliPathPrefix: (apiUrl: string, path = '') => `${apiUrl}/cli${path}`,
-  setKey: mockSetKey,
-  getAuthContext: mockGetAuthContext,
+  establishAuthSession: mockEstablishAuthSession,
+  acquireLoginClaim: mockAcquireLoginClaim,
 }))
 
 vi.mock('playwright-core', () => ({
@@ -25,8 +25,9 @@ vi.mock('playwright-core', () => ({
 describe('login command', () => {
   beforeEach(() => {
     vi.resetModules()
-    mockSetKey.mockReset()
-    mockGetAuthContext.mockReset()
+    mockEstablishAuthSession.mockReset()
+    mockAcquireLoginClaim.mockReset()
+    mockAcquireLoginClaim.mockReturnValue(() => undefined)
     mockLaunch.mockReset()
   })
 
@@ -54,11 +55,11 @@ describe('login command', () => {
     return { browser, page }
   }
 
-  it('prefers the system Chrome channel, captures the login key, and prints success JSON', async () => {
+  it('prefers the system Chrome channel, commits the authenticated session, and prints success JSON', async () => {
     const { browser, page } = createBrowser()
 
     mockLaunch.mockResolvedValue(browser)
-    mockGetAuthContext.mockResolvedValue({ userInfo: { name: '张三' } })
+    mockEstablishAuthSession.mockResolvedValue({ userInfo: { name: 'test user' } })
 
     const { default: Login } = await import('../commands/login.js')
     const log = vi.fn()
@@ -73,8 +74,7 @@ describe('login command', () => {
     expect(mockLaunch).toHaveBeenCalledTimes(1)
     expect(mockLaunch).toHaveBeenCalledWith({ channel: 'chrome', headless: false })
     expect(page.goto).toHaveBeenCalledWith('https://example.com/cli/login')
-    expect(mockSetKey).toHaveBeenCalledWith('test-key')
-    expect(mockGetAuthContext).toHaveBeenCalled()
+    expect(mockEstablishAuthSession).toHaveBeenCalledWith('test-key')
     expect(log).toHaveBeenLastCalledWith(JSON.stringify({ ok: true, data: { message: 'Authenticated successfully' } }))
     expect(exit).not.toHaveBeenCalled()
     expect(browser.close).toHaveBeenCalled()
@@ -87,7 +87,7 @@ describe('login command', () => {
       .mockRejectedValueOnce(new Error('chrome launch failed'))
       .mockRejectedValueOnce(new Error('edge launch failed'))
       .mockResolvedValueOnce(browser)
-    mockGetAuthContext.mockResolvedValue({ userInfo: { name: '张三' } })
+    mockEstablishAuthSession.mockResolvedValue({ userInfo: { name: 'test user' } })
 
     const { default: Login } = await import('../commands/login.js')
     const log = vi.fn()
@@ -102,8 +102,7 @@ describe('login command', () => {
     expect(mockLaunch).toHaveBeenNthCalledWith(1, { channel: 'chrome', headless: false })
     expect(mockLaunch).toHaveBeenNthCalledWith(2, { channel: 'msedge', headless: false })
     expect(mockLaunch).toHaveBeenNthCalledWith(3, { headless: false })
-    expect(mockSetKey).toHaveBeenCalledWith('test-key')
-    expect(mockGetAuthContext).toHaveBeenCalled()
+    expect(mockEstablishAuthSession).toHaveBeenCalledWith('test-key')
     expect(log).toHaveBeenLastCalledWith(JSON.stringify({ ok: true, data: { message: 'Authenticated successfully' } }))
     expect(exit).not.toHaveBeenCalled()
     expect(browser.close).toHaveBeenCalled()
@@ -133,5 +132,21 @@ describe('login command', () => {
       }),
     )
     expect(exit).toHaveBeenCalledWith(1)
+  })
+
+  it('does not open another browser while login is already in progress', async () => {
+    mockAcquireLoginClaim.mockReturnValue(null)
+    const { default: Login } = await import('../commands/login.js')
+    const log = vi.fn()
+    const exit = vi.fn()
+
+    await Login.prototype.run.call({
+      parse: vi.fn(async () => ({ flags: { password: false } })),
+      log,
+      exit,
+    })
+
+    expect(mockLaunch).not.toHaveBeenCalled()
+    expect(exit).toHaveBeenCalledWith(2)
   })
 })

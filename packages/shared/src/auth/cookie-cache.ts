@@ -3,20 +3,37 @@ import { readFileSync, writeFileSync, mkdirSync, existsSync, unlinkSync } from '
 import { join } from 'node:path'
 import { getConfigDir } from '../config.js'
 import { COOKIE_TTL_MS } from './constants.js'
+import type { SessionExpirationReason } from './session-policy.js'
 
 interface CookieCache {
-  cookie: string
-  cookieSavedAt: string
+  cookie: string | null
+  cookieSavedAt: string | null
   userInfo: import('./context.js').UserInfo | null
+  session?: AuthSessionState
+}
+
+export interface AuthSessionState {
+  verifiedAt: number
+  lastActivityAt: number
+  expirationReason?: SessionExpirationReason
 }
 
 const getCachePath = () => join(getConfigDir(), 'credentials.json')
 
-export function readCookie(): string | null {
+function readCache(): CookieCache | null {
   const path = getCachePath()
   if (!existsSync(path)) return null
+  return JSON.parse(readFileSync(path, 'utf8')) as CookieCache
+}
 
-  const cache = JSON.parse(readFileSync(path, 'utf8')) as CookieCache
+function writeCache(cache: CookieCache): void {
+  mkdirSync(getConfigDir(), { recursive: true })
+  writeFileSync(getCachePath(), JSON.stringify(cache, null, 2), { encoding: 'utf8', mode: 0o600 })
+}
+
+export function readCookie(): string | null {
+  const cache = readCache()
+  if (!cache?.cookie || !cache.cookieSavedAt) return null
   const age = Date.now() - new Date(cache.cookieSavedAt).getTime()
   if (age > COOKIE_TTL_MS) return null
 
@@ -24,10 +41,8 @@ export function readCookie(): string | null {
 }
 
 export function readUserInfo(): import('./context.js').UserInfo | null {
-  const path = getCachePath()
-  if (!existsSync(path)) return null
-
-  const cache = JSON.parse(readFileSync(path, 'utf8')) as CookieCache
+  const cache = readCache()
+  if (!cache?.cookie || !cache.cookieSavedAt) return null
   const age = Date.now() - new Date(cache.cookieSavedAt).getTime()
   if (age > COOKIE_TTL_MS) return null
 
@@ -35,13 +50,56 @@ export function readUserInfo(): import('./context.js').UserInfo | null {
 }
 
 export function writeCookieAndUserInfo(cookie: string, userInfo: import('./context.js').UserInfo): void {
-  mkdirSync(getConfigDir(), { recursive: true })
-  const cache: CookieCache = {
+  const existing = readCache()
+  writeCache({
     cookie,
     cookieSavedAt: new Date().toISOString(),
     userInfo,
-  }
-  writeFileSync(getCachePath(), JSON.stringify(cache, null, 2), 'utf8')
+    ...(existing?.session ? { session: existing.session } : {}),
+  })
+}
+
+export function writeAuthenticatedSession(
+  cookie: string,
+  userInfo: import('./context.js').UserInfo,
+  session: AuthSessionState,
+): void {
+  writeCache({
+    cookie,
+    cookieSavedAt: new Date().toISOString(),
+    userInfo,
+    session,
+  })
+}
+
+export function readAuthSession(): AuthSessionState | null {
+  return readCache()?.session ?? null
+}
+
+export function touchAuthSession(now = Date.now()): void {
+  const cache = readCache()
+  if (!cache?.session || cache.session.expirationReason) return
+  writeCache({
+    ...cache,
+    session: {
+      ...cache.session,
+      lastActivityAt: Math.max(cache.session.lastActivityAt, now),
+    },
+  })
+}
+
+export function expireAuthSession(reason: SessionExpirationReason): void {
+  const cache = readCache()
+  if (!cache?.session) return
+  writeCache({
+    cookie: null,
+    cookieSavedAt: null,
+    userInfo: null,
+    session: {
+      ...cache.session,
+      expirationReason: reason,
+    },
+  })
 }
 
 export function clearCookie(): void {
@@ -50,8 +108,7 @@ export function clearCookie(): void {
 }
 
 export function readCacheTimestamp(): string | null {
-  const path = getCachePath()
-  if (!existsSync(path)) return null
-  const cache = JSON.parse(readFileSync(path, 'utf8')) as CookieCache
+  const cache = readCache()
+  if (!cache) return null
   return cache.cookieSavedAt ?? null
 }

@@ -1,7 +1,7 @@
 // packages/cli/src/commands/login.ts
 import { Command, Flags } from '@oclif/core'
 import { chromium } from 'playwright-core'
-import { setKey, getAuthContext, getConfig, withCliPathPrefix, LOGIN_PATH, LOGIN_PATH_PASSWORD, ERPLOGIN_PATH, KEY_PARAM, LOGIN_TIMEOUT_MS } from '@mb-it-org/shared'
+import { acquireLoginClaim, establishAuthSession, getConfig, withCliPathPrefix, LOGIN_PATH, LOGIN_PATH_PASSWORD, ERPLOGIN_PATH, KEY_PARAM, LOGIN_TIMEOUT_MS } from '@mb-it-org/shared'
 
 const MISSING_BROWSER_MESSAGE = 'No supported browser runtime is available'
 const MISSING_BROWSER_HINT = 'Make sure Chrome or Edge is installed and available, then try `mbs login` again. Only install an extra browser runtime if the system browsers cannot be used.'
@@ -54,6 +54,19 @@ export default class Login extends Command {
 
   async run(): Promise<void> {
     const { flags } = await this.parse(Login)
+    const releaseLoginClaim = acquireLoginClaim()
+    if (!releaseLoginClaim) {
+      this.log(JSON.stringify({
+        ok: false,
+        error: {
+          type: 'auth',
+          message: 'Authentication is already in progress',
+          hint: 'Wait for the existing mbs login command to finish',
+        },
+      }))
+      this.exit(2)
+      return
+    }
     const { apiUrl } = getConfig()
     const loginUrl = withCliPathPrefix(apiUrl, flags.password ? LOGIN_PATH_PASSWORD : LOGIN_PATH)
     this.log('Opening browser for authentication...')
@@ -75,9 +88,11 @@ export default class Login extends Command {
             },
           }),
         )
+        releaseLoginClaim()
         this.exit(1)
         return
       }
+      releaseLoginClaim()
       throw error
     }
 
@@ -106,12 +121,11 @@ export default class Login extends Command {
         void page.goto(loginUrl)
       })
 
-      await setKey(key)
-      // Immediately fetch and cache cookie + userInfo
-      await getAuthContext()
+      await establishAuthSession(key)
       this.log(JSON.stringify({ ok: true, data: { message: 'Authenticated successfully' } }))
     } finally {
       await browser.close()
+      releaseLoginClaim()
     }
   }
 }

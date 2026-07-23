@@ -5,6 +5,7 @@ import {
   NotAuthenticatedError,
   forceRefreshAuthContext,
   getAuthContext,
+  getRequestAuthContext,
   getConfig,
   getWhoamiStatus,
 } from '@mb-it-org/shared'
@@ -220,7 +221,7 @@ export default class Serve extends Command {
       const { cookie } = await getAuthContext()
       const { apiUrl } = getConfig()
       const refresh = async (): Promise<string> => (await forceRefreshAuthContext()).cookie
-      client = new APIClient(apiUrl, cookie, refresh)
+      client = new APIClient(apiUrl, cookie, refresh, async () => (await getRequestAuthContext()).cookie)
       return client
     }
 

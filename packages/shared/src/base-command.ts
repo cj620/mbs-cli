@@ -4,7 +4,7 @@
  */
 // packages/skill-shared/src/base-command.ts
 import { Command } from "@oclif/core";
-import { getAuthContext, forceRefreshAuthContext } from "./auth/index.js";
+import { getAuthContext, getRequestAuthContext, forceRefreshAuthContext } from "./auth/index.js";
 import { getConfig } from "./config.js";
 import { APIClient } from "./http.js";
 import { NotAuthenticatedError, MBSError, PermissionError } from "./errors.js";
@@ -30,7 +30,10 @@ export abstract class MBSCommand extends Command {
     // forwards to the right business microservice. Command paths stay bare
     // (service-relative); the prefix is applied here in one place.
     const baseUrl = `${apiUrl.replace(/\/+$/, "")}${API_GATEWAY_PREFIX}`;
-    this.client = new APIClient(baseUrl, cookie, refreshAuth);
+    this.client = new APIClient(baseUrl, cookie, refreshAuth, async () => {
+      const { cookie: currentCookie } = await getRequestAuthContext();
+      return currentCookie;
+    });
   }
 
   protected output(data: unknown, meta?: Record<string, unknown>): void {
@@ -48,7 +51,11 @@ export abstract class MBSCommand extends Command {
       this.log(
         JSON.stringify({
           ok: false,
-          error: { type: err.type, message: err.message, hint: err.hint },
+          error: {
+            type: err.type,
+            message: err.message,
+            hint: err.hint,
+          },
         }),
       );
       this.exit(2);

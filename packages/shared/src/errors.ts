@@ -9,6 +9,21 @@ export class NotAuthenticatedError extends Error {
   }
 }
 
+export class ReauthenticationRequiredError extends NotAuthenticatedError {
+  readonly reason: 'idle_timeout' | 'absolute_timeout' | 'revoked'
+
+  constructor(reason: 'idle_timeout' | 'absolute_timeout' | 'revoked') {
+    super()
+    this.reason = reason
+    this.message = reason === 'idle_timeout'
+      ? 'Authentication expired after inactivity'
+      : reason === 'absolute_timeout'
+        ? 'Authentication expired after 24 hours'
+        : 'Authentication was revoked'
+    this.name = 'ReauthenticationRequiredError'
+  }
+}
+
 export class MBSError extends Error {
   constructor(
     message: string,

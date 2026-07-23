@@ -1,6 +1,6 @@
 // packages/cli/src/commands/logout.ts
 import { Command } from '@oclif/core'
-import { deleteKey, clearCookie } from '@mb-it-org/shared'
+import { logoutAuthSession } from '@mb-it-org/shared'
 
 export default class Logout extends Command {
   static description = 'Log out and clear stored credentials'
@@ -9,8 +9,7 @@ export default class Logout extends Command {
 
   async run(): Promise<void> {
     await this.parse(Logout)
-    await deleteKey()
-    clearCookie()
+    await logoutAuthSession()
     this.log(JSON.stringify({ ok: true, data: { message: 'Logged out successfully' } }))
   }
 }

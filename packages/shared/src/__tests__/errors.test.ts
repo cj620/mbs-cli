@@ -1,6 +1,6 @@
 // packages/skill-shared/src/__tests__/errors.test.ts
 import { describe, it, expect } from 'vitest'
-import { NotAuthenticatedError, MBSError, PermissionError } from '../errors.js'
+import { MBSError, NotAuthenticatedError, PermissionError, ReauthenticationRequiredError } from '../errors.js'
 
 describe('NotAuthenticatedError', () => {
   it('has type "auth" and a hint', () => {
@@ -9,6 +9,16 @@ describe('NotAuthenticatedError', () => {
     expect(err.hint).toBe('Run mbs login to authenticate')
     expect(err.message).toBe('Not authenticated')
     expect(err instanceof Error).toBe(true)
+  })
+})
+
+describe('ReauthenticationRequiredError', () => {
+  it('preserves the expiration reason for a structured auth response', () => {
+    const error = new ReauthenticationRequiredError('idle_timeout')
+
+    expect(error.type).toBe('auth')
+    expect(error.reason).toBe('idle_timeout')
+    expect(error.message).toBe('Authentication expired after inactivity')
   })
 })
 

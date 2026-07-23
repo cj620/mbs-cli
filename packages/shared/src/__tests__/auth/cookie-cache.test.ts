@@ -3,7 +3,14 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { mkdtempSync, rmSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { readCookie, readUserInfo, writeCookieAndUserInfo, clearCookie } from '../../auth/cookie-cache.js'
+import {
+  clearCookie,
+  readAuthSession,
+  readCookie,
+  readUserInfo,
+  writeAuthenticatedSession,
+  writeCookieAndUserInfo,
+} from '../../auth/cookie-cache.js'
 import { COOKIE_TTL_MS } from '../../auth/constants.js'
 
 let tmpDir: string
@@ -76,5 +83,17 @@ describe('cookie-cache', () => {
     clearCookie()
     expect(readCookie()).toBeNull()
     expect(readUserInfo()).toBeNull()
+  })
+
+  it('preserves verification timestamps when a refreshed cookie is written', () => {
+    writeAuthenticatedSession('SESSION=first', mockUserInfo, {
+      verifiedAt: 100,
+      lastActivityAt: 200,
+    })
+
+    writeCookieAndUserInfo('SESSION=refreshed', mockUserInfo)
+
+    expect(readCookie()).toBe('SESSION=refreshed')
+    expect(readAuthSession()).toEqual({ verifiedAt: 100, lastActivityAt: 200 })
   })
 })
