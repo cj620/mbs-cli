@@ -5,6 +5,7 @@ import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 
 import {
+  beginCliUpdate,
   findOtherActiveCliProcesses,
   registerCliProcess,
 } from '../cli-process.js'
@@ -12,7 +13,8 @@ import {
 describe('CLI process registry', () => {
   it('reports another active mbs process until it exits', () => {
     const directory = mkdtempSync(join(tmpdir(), 'mbs-active-process-'))
-    const unregister = registerCliProcess('serve --project-apis', { directory })
+    const unregister = registerCliProcess({ directory })
+    expect(unregister).not.toBeNull()
 
     try {
       expect(
@@ -24,11 +26,10 @@ describe('CLI process registry', () => {
       ).toEqual([
         {
           pid: process.pid,
-          command: 'serve --project-apis',
         },
       ])
 
-      unregister()
+      unregister?.()
 
       expect(
         findOtherActiveCliProcesses({
@@ -38,14 +39,15 @@ describe('CLI process registry', () => {
         }),
       ).toEqual([])
     } finally {
-      unregister()
+      unregister?.()
       rmSync(directory, { recursive: true, force: true })
     }
   })
 
   it('removes markers left by processes that are no longer running', () => {
     const directory = mkdtempSync(join(tmpdir(), 'mbs-stale-process-'))
-    const unregister = registerCliProcess('serve', { directory })
+    const unregister = registerCliProcess({ directory })
+    expect(unregister).not.toBeNull()
 
     try {
       expect(
@@ -63,7 +65,20 @@ describe('CLI process registry', () => {
         }),
       ).toEqual([])
     } finally {
-      unregister()
+      unregister?.()
+      rmSync(directory, { recursive: true, force: true })
+    }
+  })
+
+  it('blocks new CLI processes for the full update window', () => {
+    const directory = mkdtempSync(join(tmpdir(), 'mbs-update-window-'))
+    const finishUpdate = beginCliUpdate({ directory })
+    expect(finishUpdate).not.toBeNull()
+
+    try {
+      expect(registerCliProcess({ directory })).toBeNull()
+    } finally {
+      finishUpdate?.()
       rmSync(directory, { recursive: true, force: true })
     }
   })

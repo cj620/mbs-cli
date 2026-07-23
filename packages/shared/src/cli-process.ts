@@ -2,54 +2,50 @@ import { mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'nod
 import { join } from 'node:path'
 
 import { getConfigDir } from './config.js'
+import {
+  acquireFileClaim,
+  hasActiveFileClaim,
+  isProcessRunning,
+} from './file-claim.js'
+
+const UPDATE_CLAIM_TTL_MS = 30 * 60 * 1000
 
 export interface ActiveCliProcess {
   pid: number
-  command: string
-}
-
-interface ProcessMarker extends ActiveCliProcess {
-  startedAt: string
 }
 
 function getProcessDirectory(): string {
   return join(getConfigDir(), 'active-processes')
 }
 
-function defaultIsProcessRunning(pid: number): boolean {
-  try {
-    process.kill(pid, 0)
-    return true
-  } catch (error) {
-    return (
-      typeof error === 'object' &&
-      error !== null &&
-      'code' in error &&
-      String(error.code) === 'EPERM'
-    )
-  }
-}
-
-export function registerCliProcess(
-  command: string,
-  {
-    directory = getProcessDirectory(),
-    pid = process.pid,
-  }: {
-    directory?: string
-    pid?: number
-  } = {},
-): () => void {
-  const markerPath = join(directory, `${pid}.json`)
+export function registerCliProcess({
+  directory = getProcessDirectory(),
+  pid = process.pid,
+  isProcessRunning: ownerIsRunning = isProcessRunning,
+}: {
+  directory?: string
+  pid?: number
+  isProcessRunning?: (pid: number) => boolean
+} = {}): (() => void) | null {
   try {
     mkdirSync(directory, { recursive: true })
-    writeFileSync(
-      markerPath,
-      JSON.stringify({ pid, command, startedAt: new Date().toISOString() } satisfies ProcessMarker),
-      'utf8',
-    )
+    if (hasActiveFileClaim({
+      directory,
+      prefix: 'update',
+      ttlMs: UPDATE_CLAIM_TTL_MS,
+      ownerIsRunning,
+    })) {
+      return null
+    }
   } catch {
-    return () => undefined
+    return null
+  }
+
+  const markerPath = join(directory, `process-${pid}.json`)
+  try {
+    writeFileSync(markerPath, JSON.stringify({ pid }), 'utf8')
+  } catch {
+    return null
   }
 
   let active = true
@@ -66,7 +62,7 @@ export function registerCliProcess(
 export function findOtherActiveCliProcesses({
   directory = getProcessDirectory(),
   excludePid = process.pid,
-  isProcessRunning = defaultIsProcessRunning,
+  isProcessRunning: processIsRunning = isProcessRunning,
 }: {
   directory?: string
   excludePid?: number
@@ -74,7 +70,7 @@ export function findOtherActiveCliProcesses({
 } = {}): ActiveCliProcess[] {
   let entries: string[]
   try {
-    entries = readdirSync(directory).filter((entry) => entry.endsWith('.json'))
+    entries = readdirSync(directory).filter((entry) => entry.startsWith('process-'))
   } catch {
     return []
   }
@@ -83,25 +79,42 @@ export function findOtherActiveCliProcesses({
   for (const entry of entries) {
     const markerPath = join(directory, entry)
     try {
-      const marker = JSON.parse(readFileSync(markerPath, 'utf8')) as Partial<ProcessMarker>
-      if (
-        typeof marker.pid !== 'number' ||
-        !Number.isInteger(marker.pid) ||
-        typeof marker.command !== 'string'
-      ) {
+      const marker = JSON.parse(readFileSync(markerPath, 'utf8')) as { pid?: number }
+      if (typeof marker.pid !== 'number' || !Number.isInteger(marker.pid)) {
         rmSync(markerPath, { force: true })
         continue
       }
       if (marker.pid === excludePid) continue
-      if (!isProcessRunning(marker.pid)) {
+      if (!processIsRunning(marker.pid)) {
         rmSync(markerPath, { force: true })
         continue
       }
-      active.push({ pid: marker.pid, command: marker.command })
+      active.push({ pid: marker.pid })
     } catch {
       rmSync(markerPath, { force: true })
     }
   }
 
   return active.sort((left, right) => left.pid - right.pid)
+}
+
+export function beginCliUpdate({
+  directory = getProcessDirectory(),
+  pid = process.pid,
+  now = new Date(),
+  isProcessRunning: ownerIsRunning = isProcessRunning,
+}: {
+  directory?: string
+  pid?: number
+  now?: Date
+  isProcessRunning?: (pid: number) => boolean
+} = {}): (() => void) | null {
+  return acquireFileClaim({
+    directory,
+    prefix: 'update',
+    ttlMs: UPDATE_CLAIM_TTL_MS,
+    pid,
+    now,
+    ownerIsRunning,
+  })
 }

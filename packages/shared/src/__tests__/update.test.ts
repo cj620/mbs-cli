@@ -111,6 +111,30 @@ describe('checkLatestNpmVersion', () => {
       rmSync(tempDir, { recursive: true, force: true })
     }
   })
+
+  it('skips the network check when the throttle state cannot be persisted', async () => {
+    const tempDir = mkdtempSync(join(tmpdir(), 'mbs-update-readonly-'))
+    const blockedDirectory = join(tempDir, 'not-a-directory')
+    writeFileSync(blockedDirectory, 'blocked', 'utf8')
+    const fetchImpl = vi.fn()
+
+    try {
+      await expect(
+        checkLatestNpmVersion({
+          fetchImpl,
+          ifDue: true,
+          now: new Date('2026-07-23T08:00:00.000Z'),
+          statePath: join(blockedDirectory, 'update-check.json'),
+        }),
+      ).resolves.toEqual({
+        latest: null,
+        checkPerformed: false,
+      })
+      expect(fetchImpl).not.toHaveBeenCalled()
+    } finally {
+      rmSync(tempDir, { recursive: true, force: true })
+    }
+  })
 })
 
 describe('detectInstalledUpdateSource', () => {

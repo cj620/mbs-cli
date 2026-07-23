@@ -1,15 +1,18 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 const {
+  mockBeginCliUpdate,
   mockFetchLatestNpmVersion,
   mockFindOtherActiveCliProcesses,
 } = vi.hoisted(() => ({
+  mockBeginCliUpdate: vi.fn(),
   mockFetchLatestNpmVersion: vi.fn(),
   mockFindOtherActiveCliProcesses: vi.fn(),
 }))
 
 vi.mock('@mb-it-org/shared', async (importOriginal) => ({
   ...(await importOriginal<typeof import('@mb-it-org/shared')>()),
+  beginCliUpdate: mockBeginCliUpdate,
   fetchLatestNpmVersion: mockFetchLatestNpmVersion,
   findOtherActiveCliProcesses: mockFindOtherActiveCliProcesses,
 }))
@@ -19,12 +22,15 @@ describe('update command', () => {
     vi.resetModules()
     mockFetchLatestNpmVersion.mockReset()
     mockFindOtherActiveCliProcesses.mockReset()
+    mockBeginCliUpdate.mockReset()
   })
 
   it('refuses to update while another mbs process is active', async () => {
     mockFindOtherActiveCliProcesses.mockReturnValue([
-      { pid: 4321, command: 'serve --project-apis' },
+      { pid: 4321 },
     ])
+    const finishUpdate = vi.fn()
+    mockBeginCliUpdate.mockReturnValue(finishUpdate)
 
     const { default: Update } = await import('../commands/update.js')
     const log = vi.fn()
@@ -43,10 +49,11 @@ describe('update command', () => {
         error: {
           type: 'validation',
           message: 'Cannot update CLI while another mbs process is running',
-          hint: 'Stop PID 4321 (serve --project-apis), then run mbs update again',
+          hint: 'Stop PID 4321, then run mbs update again',
         },
       }),
     )
     expect(exit).toHaveBeenCalledWith(1)
+    expect(finishUpdate).toHaveBeenCalled()
   })
 })

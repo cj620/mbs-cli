@@ -1,6 +1,7 @@
 import { Command } from '@oclif/core'
 import {
   MBSError,
+  beginCliUpdate,
   fetchLatestNpmVersion,
   findOtherActiveCliProcesses,
 } from '@mb-it-org/shared'
@@ -57,17 +58,24 @@ export default class Update extends Command {
     await this.parse(Update)
     const currentVersion = getCurrentVersion()
     const installDir = getCurrentInstallDir()
+    let finishUpdate: (() => void) | undefined
 
     try {
+      finishUpdate = beginCliUpdate() ?? undefined
+      if (!finishUpdate) {
+        throw new MBSError(
+          'Another CLI update is already in progress',
+          'validation',
+          'Wait for the current update to finish, then run mbs update again',
+        )
+      }
+
       const [activeProcess] = findOtherActiveCliProcesses()
       if (activeProcess) {
-        const processLabel = activeProcess.command
-          ? `${activeProcess.pid} (${activeProcess.command})`
-          : String(activeProcess.pid)
         throw new MBSError(
           'Cannot update CLI while another mbs process is running',
           'validation',
-          `Stop PID ${processLabel}, then run mbs update again`,
+          `Stop PID ${activeProcess.pid}, then run mbs update again`,
         )
       }
 
@@ -118,6 +126,8 @@ export default class Update extends Command {
       }
 
       throw error
+    } finally {
+      finishUpdate?.()
     }
   }
 }

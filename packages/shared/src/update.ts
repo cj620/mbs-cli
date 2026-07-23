@@ -1,17 +1,23 @@
-import { existsSync, mkdirSync, readFileSync, renameSync, rmSync, writeFileSync } from 'node:fs'
+import {
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  renameSync,
+  rmSync,
+  writeFileSync,
+} from 'node:fs'
 import { dirname, join } from 'node:path'
 import { getConfigDir } from './config.js'
 import { MBSError } from './errors.js'
+import { acquireFileClaim } from './file-claim.js'
 
 const UPDATE_CHECK_INTERVAL_MS = 2 * 60 * 60 * 1000
-const UPDATE_CHECK_LOCK_TTL_MS = 5 * 60 * 1000
+const UPDATE_CHECK_CLAIM_TTL_MS = 5 * 60 * 1000
 
 interface UpdateCheckState {
   checkedAt: string
   latest: string | null
 }
-
-type LockResult = (() => void) | null | undefined
 
 export interface LatestVersionCheckResult {
   latest: string | null
@@ -61,55 +67,16 @@ function isUpdateCheckDue(
   return elapsed < 0 || elapsed >= UPDATE_CHECK_INTERVAL_MS
 }
 
-function acquireUpdateCheckLock(lockPath: string, now: Date): LockResult {
-  try {
-    mkdirSync(dirname(lockPath), { recursive: true })
-  } catch {
-    return undefined
-  }
-
-  for (let attempt = 0; attempt < 2; attempt += 1) {
-    try {
-      writeFileSync(
-        lockPath,
-        JSON.stringify({ createdAt: now.toISOString(), pid: process.pid }),
-        { encoding: 'utf8', flag: 'wx' },
-      )
-      return () => rmSync(lockPath, { force: true })
-    } catch (error) {
-      const code =
-        typeof error === 'object' && error !== null && 'code' in error
-          ? String(error.code)
-          : ''
-      if (code !== 'EEXIST') return undefined
-
-      try {
-        const lock = JSON.parse(readFileSync(lockPath, 'utf8')) as { createdAt?: string }
-        const age = now.getTime() - new Date(lock.createdAt ?? '').getTime()
-        if (!Number.isFinite(age) || age < 0 || age >= UPDATE_CHECK_LOCK_TTL_MS) {
-          rmSync(lockPath, { force: true })
-          continue
-        }
-      } catch {
-        rmSync(lockPath, { force: true })
-        continue
-      }
-
-      return null
-    }
-  }
-
-  return null
-}
-
-function writeUpdateCheckState(statePath: string, state: UpdateCheckState): void {
+function writeUpdateCheckState(statePath: string, state: UpdateCheckState): boolean {
   const tempPath = `${statePath}.${process.pid}.${Date.now()}.tmp`
   try {
     mkdirSync(dirname(statePath), { recursive: true })
     writeFileSync(tempPath, JSON.stringify(state), 'utf8')
     renameSync(tempPath, statePath)
+    return true
   } catch {
     rmSync(tempPath, { force: true })
+    return false
   }
 }
 
@@ -211,17 +178,30 @@ export async function checkLatestNpmVersion({
     return { latest: state?.latest ?? null, checkPerformed: false }
   }
 
-  const releaseLock = ifDue
-    ? acquireUpdateCheckLock(`${statePath}.lock`, now)
+  const releaseClaim = ifDue
+    ? acquireFileClaim({
+        directory: `${statePath}.claims`,
+        prefix: 'check',
+        ttlMs: UPDATE_CHECK_CLAIM_TTL_MS,
+        now,
+      })
     : undefined
-  if (releaseLock === null) {
+  if (ifDue && !releaseClaim) {
     return { latest: state?.latest ?? null, checkPerformed: false }
   }
 
   try {
-    if (ifDue && releaseLock) {
+    if (ifDue) {
       state = readUpdateCheckState(statePath)
       if (!isUpdateCheckDue(state, now)) {
+        return { latest: state?.latest ?? null, checkPerformed: false }
+      }
+      if (
+        !writeUpdateCheckState(statePath, {
+          checkedAt: now.toISOString(),
+          latest: state?.latest ?? null,
+        })
+      ) {
         return { latest: state?.latest ?? null, checkPerformed: false }
       }
     }
@@ -236,7 +216,7 @@ export async function checkLatestNpmVersion({
     writeUpdateCheckState(statePath, { checkedAt: now.toISOString(), latest })
     return { latest, checkPerformed: true }
   } finally {
-    releaseLock?.()
+    releaseClaim?.()
   }
 }
 
