@@ -7,14 +7,13 @@ import { describe, expect, it } from 'vitest'
 import { acquireFileClaim } from '../file-claim.js'
 
 describe('file claim', () => {
-  it('allows a safe takeover after the previous unique claim expires', () => {
+  it('allows a safe takeover after the previous owner exits', () => {
     const directory = mkdtempSync(join(tmpdir(), 'mbs-file-claim-'))
-    const startedAt = new Date('2026-07-23T08:00:00.000Z')
     const releaseFirst = acquireFileClaim({
       directory,
       prefix: 'check',
-      ttlMs: 1_000,
-      now: startedAt,
+      pid: 101,
+      ownerIsRunning: (pid) => pid === 101,
     })
     expect(releaseFirst).not.toBeNull()
 
@@ -22,8 +21,8 @@ describe('file claim', () => {
       const releaseSecond = acquireFileClaim({
         directory,
         prefix: 'check',
-        ttlMs: 1_000,
-        now: new Date(startedAt.getTime() + 1_001),
+        pid: 202,
+        ownerIsRunning: (pid) => pid === 202,
       })
       expect(releaseSecond).not.toBeNull()
       releaseSecond?.()

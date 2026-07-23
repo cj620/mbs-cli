@@ -77,6 +77,13 @@ describe('CLI process registry', () => {
 
     try {
       expect(registerCliProcess({ directory })).toBeNull()
+      expect(
+        findOtherActiveCliProcesses({
+          directory,
+          excludePid: 0,
+          isProcessRunning: () => true,
+        }),
+      ).toEqual([])
     } finally {
       finishUpdate?.()
       rmSync(directory, { recursive: true, force: true })

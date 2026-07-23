@@ -12,8 +12,6 @@ import { MBSError } from './errors.js'
 import { acquireFileClaim } from './file-claim.js'
 
 const UPDATE_CHECK_INTERVAL_MS = 2 * 60 * 60 * 1000
-const UPDATE_CHECK_CLAIM_TTL_MS = 5 * 60 * 1000
-
 interface UpdateCheckState {
   checkedAt: string
   latest: string | null
@@ -182,8 +180,6 @@ export async function checkLatestNpmVersion({
     ? acquireFileClaim({
         directory: `${statePath}.claims`,
         prefix: 'check',
-        ttlMs: UPDATE_CHECK_CLAIM_TTL_MS,
-        now,
       })
     : undefined
   if (ifDue && !releaseClaim) {

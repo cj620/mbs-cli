@@ -3,7 +3,6 @@ import { mkdirSync, readFileSync, readdirSync, renameSync, rmSync, writeFileSync
 import { join } from 'node:path'
 
 interface Claim {
-  createdAt: string
   pid: number
 }
 
@@ -24,14 +23,10 @@ export function isProcessRunning(pid: number): boolean {
 function activeClaims({
   directory,
   prefix,
-  ttlMs,
-  now,
   ownerIsRunning,
 }: {
   directory: string
   prefix: string
-  ttlMs: number
-  now: Date
   ownerIsRunning: (pid: number) => boolean
 }): string[] {
   let entries: string[]
@@ -45,12 +40,8 @@ function activeClaims({
     const claimPath = join(directory, entry)
     try {
       const claim = JSON.parse(readFileSync(claimPath, 'utf8')) as Partial<Claim>
-      const age = now.getTime() - new Date(claim.createdAt ?? '').getTime()
       if (
         typeof claim.pid !== 'number' ||
-        !Number.isFinite(age) ||
-        age < 0 ||
-        age >= ttlMs ||
         !ownerIsRunning(claim.pid)
       ) {
         rmSync(claimPath, { force: true })
@@ -67,55 +58,47 @@ function activeClaims({
 export function hasActiveFileClaim({
   directory,
   prefix,
-  ttlMs,
-  now = new Date(),
   ownerIsRunning = isProcessRunning,
 }: {
   directory: string
   prefix: string
-  ttlMs: number
-  now?: Date
   ownerIsRunning?: (pid: number) => boolean
 }): boolean {
-  return activeClaims({ directory, prefix, ttlMs, now, ownerIsRunning }).length > 0
+  return activeClaims({ directory, prefix, ownerIsRunning }).length > 0
 }
 
 export function acquireFileClaim({
   directory,
   prefix,
-  ttlMs,
   pid = process.pid,
-  now = new Date(),
   ownerIsRunning = isProcessRunning,
 }: {
   directory: string
   prefix: string
-  ttlMs: number
   pid?: number
-  now?: Date
   ownerIsRunning?: (pid: number) => boolean
 }): (() => void) | null {
   try {
     mkdirSync(directory, { recursive: true })
-    activeClaims({ directory, prefix, ttlMs, now, ownerIsRunning })
+    activeClaims({ directory, prefix, ownerIsRunning })
   } catch {
     return null
   }
 
-  const token = `${now.getTime()}-${pid}-${randomUUID()}`
+  const token = `${Date.now()}-${pid}-${randomUUID()}`
   const candidateName = `${prefix}-${token}.candidate.json`
   const candidatePath = join(directory, candidateName)
   try {
     writeFileSync(
       candidatePath,
-      JSON.stringify({ createdAt: now.toISOString(), pid } satisfies Claim),
+      JSON.stringify({ pid } satisfies Claim),
       { encoding: 'utf8', flag: 'wx' },
     )
   } catch {
     return null
   }
 
-  const claims = activeClaims({ directory, prefix, ttlMs, now, ownerIsRunning })
+  const claims = activeClaims({ directory, prefix, ownerIsRunning })
   if (claims.some((entry) => entry.endsWith('.leader.json'))) {
     rmSync(candidatePath, { force: true })
     return null

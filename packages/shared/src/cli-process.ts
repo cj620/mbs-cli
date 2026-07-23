@@ -8,8 +8,6 @@ import {
   isProcessRunning,
 } from './file-claim.js'
 
-const UPDATE_CLAIM_TTL_MS = 30 * 60 * 1000
-
 export interface ActiveCliProcess {
   pid: number
 }
@@ -29,14 +27,6 @@ export function registerCliProcess({
 } = {}): (() => void) | null {
   try {
     mkdirSync(directory, { recursive: true })
-    if (hasActiveFileClaim({
-      directory,
-      prefix: 'update',
-      ttlMs: UPDATE_CLAIM_TTL_MS,
-      ownerIsRunning,
-    })) {
-      return null
-    }
   } catch {
     return null
   }
@@ -56,6 +46,16 @@ export function registerCliProcess({
     rmSync(markerPath, { force: true })
   }
   process.once('exit', unregister)
+
+  if (hasActiveFileClaim({
+    directory,
+    prefix: 'update',
+    ownerIsRunning,
+  })) {
+    unregister()
+    return null
+  }
+
   return unregister
 }
 
@@ -101,20 +101,16 @@ export function findOtherActiveCliProcesses({
 export function beginCliUpdate({
   directory = getProcessDirectory(),
   pid = process.pid,
-  now = new Date(),
   isProcessRunning: ownerIsRunning = isProcessRunning,
 }: {
   directory?: string
   pid?: number
-  now?: Date
   isProcessRunning?: (pid: number) => boolean
 } = {}): (() => void) | null {
   return acquireFileClaim({
     directory,
     prefix: 'update',
-    ttlMs: UPDATE_CLAIM_TTL_MS,
     pid,
-    now,
     ownerIsRunning,
   })
 }
