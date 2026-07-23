@@ -1,10 +1,27 @@
 # CLI Version and Update
 
+## Agent-safe update check
+
+Before the first `mbs` command for each user request, an agent should run:
+
+```bash
+mbs version --if-due
+```
+
+This command checks npm at most once every two hours and otherwise reads the
+cached result. A newly discovered version sets `data.notificationDue` to
+`true`. The agent must ask the user for confirmation before running
+`mbs update`; it must never update during an active command or a running
+`mbs serve` process.
+
 ## Commands
 
 ```bash
 # Show current CLI version and check the latest npm release
 mbs version
+
+# Check only when the two-hour interval has elapsed
+mbs version --if-due
 
 # Upgrade CLI via npm (npm install -g @mb-it-org/cli@latest)
 mbs update

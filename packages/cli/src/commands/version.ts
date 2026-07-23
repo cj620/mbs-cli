@@ -1,30 +1,37 @@
-import { Command } from '@oclif/core'
-import { fetchLatestNpmVersion } from '@mb-it-org/shared'
+import { Command, Flags } from '@oclif/core'
+import { checkLatestNpmVersion } from '@mb-it-org/shared'
 import { createRequire } from 'node:module'
 
 const require = createRequire(import.meta.url)
 
-async function fetchLatestVersion(): Promise<string | null> {
-  try {
-    return await fetchLatestNpmVersion()
-  } catch {
-    return null
-  }
-}
-
 export default class Version extends Command {
   static description = 'Show CLI version and check for updates'
 
-  static examples = ['mbs version']
+  static examples = ['mbs version', 'mbs version --if-due']
+
+  static flags = {
+    'if-due': Flags.boolean({
+      description: 'Check npm at most once every two hours and signal when user confirmation is needed',
+      default: false,
+    }),
+  }
 
   async run(): Promise<void> {
-    await this.parse(Version)
+    const { flags } = await this.parse(Version)
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const pkg = require('../../package.json') as { version?: string }
     const current = pkg.version ?? 'unknown'
 
-    const latest = await fetchLatestVersion()
+    const { latest, checkPerformed } = await checkLatestNpmVersion({
+      ifDue: flags['if-due'],
+    })
+    const checkMetadata = flags['if-due']
+      ? {
+          checkPerformed,
+          notificationDue: false,
+        }
+      : {}
 
     if (latest === null) {
       this.log(
@@ -34,6 +41,7 @@ export default class Version extends Command {
             current,
             latest: null,
             updateAvailable: null,
+            ...checkMetadata,
           },
         }),
       )
@@ -50,7 +58,15 @@ export default class Version extends Command {
             current,
             latest,
             updateAvailable: true,
-            hint: `新版本可用: v${latest}，运行 mbs update 升级`,
+            ...(flags['if-due']
+              ? {
+                  checkPerformed,
+                  notificationDue: checkPerformed,
+                  hint: `检测到新版本 v${latest}，运行 mbs update 前必须先征得用户确认`,
+                }
+              : {
+                  hint: `新版本可用: v${latest}，运行 mbs update 升级`,
+                }),
           },
         }),
       )
@@ -62,6 +78,7 @@ export default class Version extends Command {
             current,
             latest,
             updateAvailable: false,
+            ...checkMetadata,
           },
         }),
       )

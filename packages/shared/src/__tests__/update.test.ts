@@ -4,6 +4,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { MBSError } from '../errors.js'
 import {
+  checkLatestNpmVersion,
   detectInstalledUpdateSource,
   fetchLatestNpmVersion,
   fetchLatestReleaseInfo,
@@ -13,6 +14,56 @@ import {
   selectReleaseAsset,
   validateCliBundle,
 } from '../update.js'
+
+describe('checkLatestNpmVersion', () => {
+  it('reuses the cached npm result for two hours', async () => {
+    const tempDir = mkdtempSync(join(tmpdir(), 'mbs-update-check-'))
+    const statePath = join(tempDir, 'update-check.json')
+    const fetchImpl = vi.fn().mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: async () => ({ version: '0.1.59' }),
+    })
+    const checkedAt = new Date('2026-07-23T08:00:00.000Z')
+
+    try {
+      await expect(
+        checkLatestNpmVersion({ fetchImpl, ifDue: true, now: checkedAt, statePath }),
+      ).resolves.toEqual({
+        latest: '0.1.59',
+        checkPerformed: true,
+      })
+
+      await expect(
+        checkLatestNpmVersion({
+          fetchImpl,
+          ifDue: true,
+          now: new Date(checkedAt.getTime() + 2 * 60 * 60 * 1000 - 1),
+          statePath,
+        }),
+      ).resolves.toEqual({
+        latest: '0.1.59',
+        checkPerformed: false,
+      })
+
+      await expect(
+        checkLatestNpmVersion({
+          fetchImpl,
+          ifDue: true,
+          now: new Date(checkedAt.getTime() + 2 * 60 * 60 * 1000),
+          statePath,
+        }),
+      ).resolves.toEqual({
+        latest: '0.1.59',
+        checkPerformed: true,
+      })
+
+      expect(fetchImpl).toHaveBeenCalledTimes(2)
+    } finally {
+      rmSync(tempDir, { recursive: true, force: true })
+    }
+  })
+})
 
 describe('detectInstalledUpdateSource', () => {
   it('treats node_modules installs as npm-managed', () => {

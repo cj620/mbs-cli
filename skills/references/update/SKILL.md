@@ -1,5 +1,16 @@
 # update — CLI 版本检查与更新
 
+## Agent 前置检查与用户确认
+
+每个需要一条或多条 `mbs` 命令的用户请求：
+
+1. 在第一条命令前运行 `mbs version --if-due`。
+2. 当 `data.notificationDue` 为 `true` 时，告知用户 `data.latest` 版本可用并询问是否更新。
+3. 只有获得用户明确确认后才能运行 `mbs update`。
+4. 用户拒绝或检查无法连接 npm 时，使用当前已安装版本继续任务。
+
+条件检查最多每 2 小时访问一次 npm，绝不自动更新正在运行的任务。
+
 通过 `mbs version` 和 `mbs update` 管理 CLI 自身及内置 skill 文档的版本。
 
 ## 适用场景
@@ -31,7 +42,7 @@
 
 | 命令 | 说明 | 参数 |
 |------|------|------|
-| `mbs version` | 查当前版本，检查 npm registry 最新版 | 无 |
+| `mbs version` | 查当前版本，检查 npm registry 最新版 | `--if-due`：最多每 2 小时联网检查一次 |
 | `mbs update` | 通过 npm 升级 CLI（含 skill 文档） | 无 |
 
 > 版本来源已统一为 npm registry（`https://registry.npmjs.org/@mb-it-org/cli/latest`）。
@@ -42,6 +53,9 @@
 ## 输出格式
 
 ### `mbs version`
+
+Agent 使用 `mbs version --if-due` 时，仅在本次实际联网且发现新版的情况下返回
+`data.notificationDue: true`。看到该字段后必须询问用户，不能自动运行 `mbs update`。
 
 **已是最新：**
 ```json

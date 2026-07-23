@@ -8,6 +8,7 @@ export { getWhoamiStatus } from './whoami.js'
 export type { WhoamiStatus } from './whoami.js'
 export { MBSCommand } from './base-command.js'
 export {
+  checkLatestNpmVersion,
   detectInstalledUpdateSource,
   fetchLatestNpmVersion,
   fetchLatestReleaseInfo,
@@ -17,6 +18,7 @@ export {
   selectReleaseAsset,
   validateCliBundle,
 } from './update.js'
+export type { LatestVersionCheckResult } from './update.js'
 export { getAuthContext, forceRefreshAuthContext } from './auth/index.js'
 export { setKey, getKey, deleteKey } from './auth/key-store.js'
 export { clearCookie, readCookie, readUserInfo, readCacheTimestamp } from './auth/cookie-cache.js'

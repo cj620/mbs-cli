@@ -1,6 +1,19 @@
-import { existsSync, renameSync, rmSync } from 'node:fs'
-import { join } from 'node:path'
+import { existsSync, mkdirSync, readFileSync, renameSync, rmSync, writeFileSync } from 'node:fs'
+import { dirname, join } from 'node:path'
+import { getConfigDir } from './config.js'
 import { MBSError } from './errors.js'
+
+const UPDATE_CHECK_INTERVAL_MS = 2 * 60 * 60 * 1000
+
+interface UpdateCheckState {
+  checkedAt: string
+  latest: string | null
+}
+
+export interface LatestVersionCheckResult {
+  latest: string | null
+  checkPerformed: boolean
+}
 
 export interface GitHubReleaseAsset {
   name: string
@@ -82,6 +95,47 @@ export async function fetchLatestNpmVersion({
   } finally {
     clearTimeout(timeout)
   }
+}
+
+export async function checkLatestNpmVersion({
+  fetchImpl = fetch,
+  ifDue = false,
+  now = new Date(),
+  statePath = join(getConfigDir(), 'update-check.json'),
+}: {
+  fetchImpl?: typeof fetch
+  ifDue?: boolean
+  now?: Date
+  statePath?: string
+} = {}): Promise<LatestVersionCheckResult> {
+  if (ifDue) {
+    try {
+      const state = JSON.parse(readFileSync(statePath, 'utf8')) as UpdateCheckState
+      const elapsed = now.getTime() - new Date(state.checkedAt).getTime()
+
+      if (elapsed >= 0 && elapsed < UPDATE_CHECK_INTERVAL_MS) {
+        return { latest: state.latest, checkPerformed: false }
+      }
+    } catch {
+      // Missing or invalid state means a fresh check is due.
+    }
+  }
+
+  let latest: string | null
+  try {
+    latest = await fetchLatestNpmVersion({ fetchImpl })
+  } catch {
+    latest = null
+  }
+
+  mkdirSync(dirname(statePath), { recursive: true })
+  writeFileSync(
+    statePath,
+    JSON.stringify({ checkedAt: now.toISOString(), latest } satisfies UpdateCheckState),
+    'utf8',
+  )
+
+  return { latest, checkPerformed: true }
 }
 
 export function detectInstalledUpdateSource(installDir: string): InstalledUpdateSource {
