@@ -18,7 +18,7 @@
 
 | 意图 | 命令 | 必填参数 |
 |---|---|---|
-| 获取销售的中台排行数据：获取销售的中台排行数据 | `mbs pim instudio-pms-get-shop-manager-ranking-list` | - |
+| 获取销售的中台排行数据：获取销售的中台排行数据 | `mbs pim instudio-pms-get-shop-manager-ranking-list` | `times` |
 | 开发中台的列表数据：开发中台的列表数据 | `mbs pim instudio-pms-list` | - |
 
 ## 命令详情

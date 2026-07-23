@@ -1,6 +1,6 @@
 // AUTO-GENERATED FROM audit manifest. DO NOT EDIT.
 // Source: manifests/mbs-api-manifest.json
-// Manifest: 2026-05-20T00:00:00+08:00 @ e4084006f47bd5ad48408ee2ec3af402e3ab27bf3853c7c78463268e0573f582
+// Manifest: 2026-05-20T00:00:00+08:00 @ 5d73287addda8c70faf8faba9f00506ca4e6706165ec8a21cbbbe4d1c866a528
 import { Flags } from '@oclif/core'
 import { MBSCommand } from '@mb-it-org/shared'
 
@@ -8,7 +8,7 @@ export default class PimInstudioPmsGetShopManagerRankingList extends MBSCommand 
   static description = '获取销售的中台排行数据：获取销售的中台排行数据'
 
   static flags = {
-    times: Flags.string({ description: '年月' }),
+    times: Flags.string({ description: '传递年月用于标识查询指定年月报表格式示例2026-07', required: true }),
     platformName: Flags.string({ description: '平台名称' }),
     platformNameList: Flags.string({ description: '平台名称列表（字段名推断,语义待核实） (comma-separated)' }),
     bigChief: Flags.string({ description: '大酋长' }),

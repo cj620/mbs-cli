@@ -5,7 +5,7 @@
 ## 用法
 
 ```bash
-mbs pim instudio-pms-get-shop-manager-ranking-list [--times <string>] [--platformName <string>] [--platformNameList <array<string>>] [--bigChief <string>] [--teamNumber <string>] [--shopName <string>] [--grade <integer>] [--warningIndexs <array<string>>] [--shopManagers <array<string>>] [--page <integer>] [--pageSize <integer>] [--startIndex <integer>] [--customerServiceList <array<string>>] [--shopNameList <array<string>>] [--smallScore <integer>] [--bigScore <integer>] [--shopManager <string>] [--chartType <string>] [--position <integer>] [--operateStatus <integer>] [--managerEmployeeList <array<string>>] [--sqlList <array<string>>] [--grades <array<integer>>] [--keyWord <string>] [--keyWordList <array<string>>] [--platformIds <array<string>>] [--bigChiefList <array<string>>] [--employeeList <array<string>>] [--customerServiceMgr <string>] [--shopNames <array<string>>] [--lastTimes <string>] [--directors <array<string>>] [--managers <array<string>>] [--shopManagerIds <array<string>>] [--sites <array<string>>] [--shopManagerStar <array<string>>] [--tableName <string>] [--skuOperList <array<string>>] [--openShopStartTime <string>] [--openShopEndTime <string>] [--qualifyTotalAmountFlag <integer>] [--qualifyfhmaoliFlag <integer>] [--firstMonthFlag <integer>] [--submitStrategy <boolean>] [--shopModel <string>] [--categoryId <string>] [--companyId <string>] [--companyIdSpecial <string>] [--companyIdEmp <array<string>>] [--companyIdSpecialEmp <array<string>>] [--categoryShopList <array<string>>] [--specialSumRanking <boolean>] [--exportTitleList <array<string>>] [--exportTimeList <array<string>>]
+mbs pim instudio-pms-get-shop-manager-ranking-list --times <string> [--platformName <string>] [--platformNameList <array<string>>] [--bigChief <string>] [--teamNumber <string>] [--shopName <string>] [--grade <integer>] [--warningIndexs <array<string>>] [--shopManagers <array<string>>] [--page <integer>] [--pageSize <integer>] [--startIndex <integer>] [--customerServiceList <array<string>>] [--shopNameList <array<string>>] [--smallScore <integer>] [--bigScore <integer>] [--shopManager <string>] [--chartType <string>] [--position <integer>] [--operateStatus <integer>] [--managerEmployeeList <array<string>>] [--sqlList <array<string>>] [--grades <array<integer>>] [--keyWord <string>] [--keyWordList <array<string>>] [--platformIds <array<string>>] [--bigChiefList <array<string>>] [--employeeList <array<string>>] [--customerServiceMgr <string>] [--shopNames <array<string>>] [--lastTimes <string>] [--directors <array<string>>] [--managers <array<string>>] [--shopManagerIds <array<string>>] [--sites <array<string>>] [--shopManagerStar <array<string>>] [--tableName <string>] [--skuOperList <array<string>>] [--openShopStartTime <string>] [--openShopEndTime <string>] [--qualifyTotalAmountFlag <integer>] [--qualifyfhmaoliFlag <integer>] [--firstMonthFlag <integer>] [--submitStrategy <boolean>] [--shopModel <string>] [--categoryId <string>] [--companyId <string>] [--companyIdSpecial <string>] [--companyIdEmp <array<string>>] [--companyIdSpecialEmp <array<string>>] [--categoryShopList <array<string>>] [--specialSumRanking <boolean>] [--exportTitleList <array<string>>] [--exportTimeList <array<string>>]
 ```
 
 ## API
@@ -15,13 +15,13 @@ mbs pim instudio-pms-get-shop-manager-ranking-list [--times <string>] [--platfor
 - Path: `/yypms/pms/middlePanel/getShopManagerRankingList`
 - Schema version: `1`
 - Manifest version: `2026-05-20T00:00:00+08:00`
-- Manifest hash: `e4084006f47bd5ad48408ee2ec3af402e3ab27bf3853c7c78463268e0573f582`
+- Manifest hash: `5d73287addda8c70faf8faba9f00506ca4e6706165ec8a21cbbbe4d1c866a528`
 
 ## 参数
 
 | 参数 | API 字段 | 位置 | 类型 | 必填 | 默认值 | 说明 |
 |---|---|---|---|---|---|---|
-| `times` | times | body | string | 否 | - | 年月 |
+| `times` | times | body | string | 是 | - | 传递年月用于标识查询指定年月报表格式示例2026-07 |
 | `platformName` | platformName | body | string | 否 | - | 平台名称 |
 | `platformNameList` | platformNameList | body | array<string> | 否 | - | 平台名称列表（字段名推断,语义待核实） |
 | `bigChief` | bigChief | body | string | 否 | - | 大酋长 |

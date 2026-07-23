@@ -1243,7 +1243,7 @@
               "properties": {
                 "times": {
                   "type": "string",
-                  "description": "年月"
+                  "description": "传递年月用于标识查询指定年月报表格式示例2026-07"
                 },
                 "platformName": {
                   "type": "string",
@@ -1617,7 +1617,10 @@
                   "type": "object",
                   "description": "Added刊登天（字段名推断,语义待核实）"
                 }
-              }
+              },
+              "required": [
+                "times"
+              ]
             }
           },
           "response": {
