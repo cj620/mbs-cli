@@ -2,6 +2,7 @@ import { mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'nod
 import { join } from 'node:path'
 
 import { getConfigDir } from './config.js'
+import { MBSError } from './errors.js'
 import {
   acquireFileClaim,
   hasActiveFileClaim,
@@ -28,14 +29,14 @@ export function registerCliProcess({
   try {
     mkdirSync(directory, { recursive: true })
   } catch {
-    return null
+    return () => undefined
   }
 
   const markerPath = join(directory, `process-${pid}.json`)
   try {
     writeFileSync(markerPath, JSON.stringify({ pid }), 'utf8')
   } catch {
-    return null
+    return () => undefined
   }
 
   let active = true
@@ -47,11 +48,18 @@ export function registerCliProcess({
   }
   process.once('exit', unregister)
 
-  if (hasActiveFileClaim({
-    directory,
-    prefix: 'update',
-    ownerIsRunning,
-  })) {
+  let updateActive: boolean
+  try {
+    updateActive = hasActiveFileClaim({
+      directory,
+      prefix: 'update',
+      ownerIsRunning,
+    })
+  } catch {
+    unregister()
+    return null
+  }
+  if (updateActive) {
     unregister()
     return null
   }
@@ -71,8 +79,17 @@ export function findOtherActiveCliProcesses({
   let entries: string[]
   try {
     entries = readdirSync(directory).filter((entry) => entry.startsWith('process-'))
-  } catch {
-    return []
+  } catch (error) {
+    const code =
+      typeof error === 'object' && error !== null && 'code' in error
+        ? String(error.code)
+        : ''
+    if (code === 'ENOENT') return []
+    throw new MBSError(
+      'Cannot verify whether another mbs process is running',
+      'validation',
+      'Check the MBS config directory permissions, then retry the update',
+    )
   }
 
   const active: ActiveCliProcess[] = []

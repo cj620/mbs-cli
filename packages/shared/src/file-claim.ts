@@ -32,8 +32,13 @@ function activeClaims({
   let entries: string[]
   try {
     entries = readdirSync(directory).filter((entry) => entry.startsWith(`${prefix}-`))
-  } catch {
-    return []
+  } catch (error) {
+    const code =
+      typeof error === 'object' && error !== null && 'code' in error
+        ? String(error.code)
+        : ''
+    if (code === 'ENOENT') return []
+    throw error
   }
 
   return entries.filter((entry) => {
@@ -98,7 +103,13 @@ export function acquireFileClaim({
     return null
   }
 
-  const claims = activeClaims({ directory, prefix, ownerIsRunning })
+  let claims: string[]
+  try {
+    claims = activeClaims({ directory, prefix, ownerIsRunning })
+  } catch {
+    rmSync(candidatePath, { force: true })
+    return null
+  }
   if (claims.some((entry) => entry.endsWith('.leader.json'))) {
     rmSync(candidatePath, { force: true })
     return null

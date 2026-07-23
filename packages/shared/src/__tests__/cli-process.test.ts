@@ -1,4 +1,4 @@
-import { mkdtempSync, rmSync } from 'node:fs'
+import { mkdtempSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 
@@ -87,6 +87,22 @@ describe('CLI process registry', () => {
     } finally {
       finishUpdate?.()
       rmSync(directory, { recursive: true, force: true })
+    }
+  })
+
+  it('allows business commands when process markers cannot be persisted', () => {
+    const tempDir = mkdtempSync(join(tmpdir(), 'mbs-process-unavailable-'))
+    const notDirectory = join(tempDir, 'blocked')
+    writeFileSync(notDirectory, 'blocked', 'utf8')
+
+    try {
+      const unregister = registerCliProcess({
+        directory: join(notDirectory, 'active-processes'),
+      })
+      expect(unregister).not.toBeNull()
+      unregister?.()
+    } finally {
+      rmSync(tempDir, { recursive: true, force: true })
     }
   })
 })
