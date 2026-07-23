@@ -1,4 +1,4 @@
-import { mkdtempSync, rmSync, writeFileSync } from 'node:fs'
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 
@@ -90,19 +90,36 @@ describe('CLI process registry', () => {
     }
   })
 
-  it('allows business commands when process markers cannot be persisted', () => {
+  it('fails closed when process markers and update claims cannot be inspected', () => {
     const tempDir = mkdtempSync(join(tmpdir(), 'mbs-process-unavailable-'))
     const notDirectory = join(tempDir, 'blocked')
     writeFileSync(notDirectory, 'blocked', 'utf8')
 
     try {
-      const unregister = registerCliProcess({
-        directory: join(notDirectory, 'active-processes'),
-      })
-      expect(unregister).not.toBeNull()
-      unregister?.()
+      expect(
+        registerCliProcess({
+          directory: join(notDirectory, 'active-processes'),
+        }),
+      ).toBeNull()
     } finally {
       rmSync(tempDir, { recursive: true, force: true })
+    }
+  })
+
+  it('does not start a CLI process when its marker cannot be written', () => {
+    const directory = mkdtempSync(join(tmpdir(), 'mbs-marker-write-error-'))
+    const commandPid = 202
+    mkdirSync(join(directory, `process-${commandPid}.json`))
+
+    try {
+      expect(
+        registerCliProcess({
+          directory,
+          pid: commandPid,
+        }),
+      ).toBeNull()
+    } finally {
+      rmSync(directory, { recursive: true, force: true })
     }
   })
 })

@@ -29,14 +29,14 @@ export function registerCliProcess({
   try {
     mkdirSync(directory, { recursive: true })
   } catch {
-    return () => undefined
+    return null
   }
 
   const markerPath = join(directory, `process-${pid}.json`)
   try {
     writeFileSync(markerPath, JSON.stringify({ pid }), 'utf8')
   } catch {
-    return () => undefined
+    return null
   }
 
   let active = true
