@@ -4,11 +4,14 @@ import { getConfigDir } from './config.js'
 import { MBSError } from './errors.js'
 
 const UPDATE_CHECK_INTERVAL_MS = 2 * 60 * 60 * 1000
+const UPDATE_CHECK_LOCK_TTL_MS = 5 * 60 * 1000
 
 interface UpdateCheckState {
   checkedAt: string
   latest: string | null
 }
+
+type LockResult = (() => void) | null | undefined
 
 export interface LatestVersionCheckResult {
   latest: string | null
@@ -31,6 +34,83 @@ export function isVersionNewer(candidate: string, current: string): boolean {
   }
 
   return false
+}
+
+function readUpdateCheckState(statePath: string): UpdateCheckState | null {
+  try {
+    const state = JSON.parse(readFileSync(statePath, 'utf8')) as Partial<UpdateCheckState>
+    if (
+      typeof state.checkedAt !== 'string' ||
+      (!Number.isFinite(new Date(state.checkedAt).getTime())) ||
+      (state.latest !== null && typeof state.latest !== 'string')
+    ) {
+      return null
+    }
+    return state as UpdateCheckState
+  } catch {
+    return null
+  }
+}
+
+function isUpdateCheckDue(
+  state: UpdateCheckState | null,
+  now: Date,
+): boolean {
+  if (!state) return true
+  const elapsed = now.getTime() - new Date(state.checkedAt).getTime()
+  return elapsed < 0 || elapsed >= UPDATE_CHECK_INTERVAL_MS
+}
+
+function acquireUpdateCheckLock(lockPath: string, now: Date): LockResult {
+  try {
+    mkdirSync(dirname(lockPath), { recursive: true })
+  } catch {
+    return undefined
+  }
+
+  for (let attempt = 0; attempt < 2; attempt += 1) {
+    try {
+      writeFileSync(
+        lockPath,
+        JSON.stringify({ createdAt: now.toISOString(), pid: process.pid }),
+        { encoding: 'utf8', flag: 'wx' },
+      )
+      return () => rmSync(lockPath, { force: true })
+    } catch (error) {
+      const code =
+        typeof error === 'object' && error !== null && 'code' in error
+          ? String(error.code)
+          : ''
+      if (code !== 'EEXIST') return undefined
+
+      try {
+        const lock = JSON.parse(readFileSync(lockPath, 'utf8')) as { createdAt?: string }
+        const age = now.getTime() - new Date(lock.createdAt ?? '').getTime()
+        if (!Number.isFinite(age) || age < 0 || age >= UPDATE_CHECK_LOCK_TTL_MS) {
+          rmSync(lockPath, { force: true })
+          continue
+        }
+      } catch {
+        rmSync(lockPath, { force: true })
+        continue
+      }
+
+      return null
+    }
+  }
+
+  return null
+}
+
+function writeUpdateCheckState(statePath: string, state: UpdateCheckState): void {
+  const tempPath = `${statePath}.${process.pid}.${Date.now()}.tmp`
+  try {
+    mkdirSync(dirname(statePath), { recursive: true })
+    writeFileSync(tempPath, JSON.stringify(state), 'utf8')
+    renameSync(tempPath, statePath)
+  } catch {
+    rmSync(tempPath, { force: true })
+  }
 }
 
 export interface GitHubReleaseAsset {
@@ -126,34 +206,38 @@ export async function checkLatestNpmVersion({
   now?: Date
   statePath?: string
 } = {}): Promise<LatestVersionCheckResult> {
-  if (ifDue) {
-    try {
-      const state = JSON.parse(readFileSync(statePath, 'utf8')) as UpdateCheckState
-      const elapsed = now.getTime() - new Date(state.checkedAt).getTime()
-
-      if (elapsed >= 0 && elapsed < UPDATE_CHECK_INTERVAL_MS) {
-        return { latest: state.latest, checkPerformed: false }
-      }
-    } catch {
-      // Missing or invalid state means a fresh check is due.
-    }
+  let state = readUpdateCheckState(statePath)
+  if (ifDue && !isUpdateCheckDue(state, now)) {
+    return { latest: state?.latest ?? null, checkPerformed: false }
   }
 
-  let latest: string | null
+  const releaseLock = ifDue
+    ? acquireUpdateCheckLock(`${statePath}.lock`, now)
+    : undefined
+  if (releaseLock === null) {
+    return { latest: state?.latest ?? null, checkPerformed: false }
+  }
+
   try {
-    latest = await fetchLatestNpmVersion({ fetchImpl })
-  } catch {
-    latest = null
+    if (ifDue && releaseLock) {
+      state = readUpdateCheckState(statePath)
+      if (!isUpdateCheckDue(state, now)) {
+        return { latest: state?.latest ?? null, checkPerformed: false }
+      }
+    }
+
+    let latest: string | null
+    try {
+      latest = await fetchLatestNpmVersion({ fetchImpl })
+    } catch {
+      latest = null
+    }
+
+    writeUpdateCheckState(statePath, { checkedAt: now.toISOString(), latest })
+    return { latest, checkPerformed: true }
+  } finally {
+    releaseLock?.()
   }
-
-  mkdirSync(dirname(statePath), { recursive: true })
-  writeFileSync(
-    statePath,
-    JSON.stringify({ checkedAt: now.toISOString(), latest } satisfies UpdateCheckState),
-    'utf8',
-  )
-
-  return { latest, checkPerformed: true }
 }
 
 export function detectInstalledUpdateSource(installDir: string): InstalledUpdateSource {

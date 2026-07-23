@@ -9,4 +9,12 @@ describe('CLI bootstrap', () => {
 
     expect(runScript).not.toContain('development: true')
   })
+
+  it('registers only a sanitized command label for active-process protection', () => {
+    const runScript = readFileSync(join(process.cwd(), 'bin', 'run.js'), 'utf8')
+
+    expect(runScript).toContain('registerCliProcess(commandParts.join')
+    expect(runScript).toContain("argument.startsWith('-')")
+    expect(runScript).not.toContain("process.argv.slice(2).join(' ')")
+  })
 })

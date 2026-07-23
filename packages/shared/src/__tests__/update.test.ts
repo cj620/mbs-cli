@@ -63,6 +63,54 @@ describe('checkLatestNpmVersion', () => {
       rmSync(tempDir, { recursive: true, force: true })
     }
   })
+
+  it('allows only one npm check when two processes start together', async () => {
+    const tempDir = mkdtempSync(join(tmpdir(), 'mbs-update-concurrent-'))
+    const statePath = join(tempDir, 'update-check.json')
+    let finishFirstCheck: ((value: unknown) => void) | undefined
+    const firstResponse = new Promise((resolve) => {
+      finishFirstCheck = resolve
+    })
+    const fetchImpl = vi
+      .fn()
+      .mockImplementationOnce(async () => firstResponse)
+      .mockResolvedValue({
+        ok: true,
+        status: 200,
+        json: async () => ({ version: '0.1.59' }),
+      })
+    const now = new Date('2026-07-23T08:00:00.000Z')
+
+    try {
+      const first = checkLatestNpmVersion({ fetchImpl, ifDue: true, now, statePath })
+      await vi.waitFor(() => expect(fetchImpl).toHaveBeenCalledTimes(1))
+
+      await expect(
+        checkLatestNpmVersion({ fetchImpl, ifDue: true, now, statePath }),
+      ).resolves.toEqual({
+        latest: null,
+        checkPerformed: false,
+      })
+
+      expect(fetchImpl).toHaveBeenCalledTimes(1)
+      finishFirstCheck?.({
+        ok: true,
+        status: 200,
+        json: async () => ({ version: '0.1.59' }),
+      })
+      await expect(first).resolves.toEqual({
+        latest: '0.1.59',
+        checkPerformed: true,
+      })
+    } finally {
+      finishFirstCheck?.({
+        ok: true,
+        status: 200,
+        json: async () => ({ version: '0.1.59' }),
+      })
+      rmSync(tempDir, { recursive: true, force: true })
+    }
+  })
 })
 
 describe('detectInstalledUpdateSource', () => {

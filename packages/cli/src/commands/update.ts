@@ -1,5 +1,9 @@
 import { Command } from '@oclif/core'
-import { MBSError, fetchLatestNpmVersion } from '@mb-it-org/shared'
+import {
+  MBSError,
+  fetchLatestNpmVersion,
+  findOtherActiveCliProcesses,
+} from '@mb-it-org/shared'
 import { readFileSync } from 'node:fs'
 import { dirname, join, resolve } from 'node:path'
 import { createRequire } from 'node:module'
@@ -55,6 +59,18 @@ export default class Update extends Command {
     const installDir = getCurrentInstallDir()
 
     try {
+      const [activeProcess] = findOtherActiveCliProcesses()
+      if (activeProcess) {
+        const processLabel = activeProcess.command
+          ? `${activeProcess.pid} (${activeProcess.command})`
+          : String(activeProcess.pid)
+        throw new MBSError(
+          'Cannot update CLI while another mbs process is running',
+          'validation',
+          `Stop PID ${processLabel}, then run mbs update again`,
+        )
+      }
+
       const latestVersion = await fetchLatestNpmVersion()
 
       if (latestVersion === currentVersion) {

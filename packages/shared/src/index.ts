@@ -8,6 +8,11 @@ export { getWhoamiStatus } from './whoami.js'
 export type { WhoamiStatus } from './whoami.js'
 export { MBSCommand } from './base-command.js'
 export {
+  findOtherActiveCliProcesses,
+  registerCliProcess,
+} from './cli-process.js'
+export type { ActiveCliProcess } from './cli-process.js'
+export {
   checkLatestNpmVersion,
   detectInstalledUpdateSource,
   fetchLatestNpmVersion,

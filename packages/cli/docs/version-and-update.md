@@ -8,11 +8,11 @@ Before the first `mbs` command for each user request, an agent should run:
 mbs version --if-due
 ```
 
-This command checks npm at most once every two hours and otherwise reads the
-cached result. A newly discovered version sets `data.notificationDue` to
-`true`. The agent must ask the user for confirmation before running
-`mbs update`; it must never update during an active command or a running
-`mbs serve` process.
+This command uses a cross-process lock to check npm at most once every two
+hours and otherwise reads the cached result. A newly discovered version sets
+`data.notificationDue` to `true`. The agent must ask the user for confirmation
+before running `mbs update`. The update command refuses to install while
+another `mbs` command or `mbs serve` process is active.
 
 Existing installations need a one-time bootstrap when this behavior is first
 released: update the CLI manually, run `mbs skills install`, and restart the

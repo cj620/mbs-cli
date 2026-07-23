@@ -71,7 +71,7 @@ mbs update     # 统一走 npm install -g @mb-it-org/cli@latest
 
 `mbs update` 内部会判等：版本一致直接返回 `updated: false`，幂等安全。
 
-Agent 在每个需要使用 `mbs` 的用户请求开始前运行 `mbs version --if-due`。该命令最多每 2 小时访问一次 npm；检测到新版时返回 `data.notificationDue: true`，Agent 必须先询问用户，获得明确确认后才能运行 `mbs update`。正在执行的任务或 `mbs serve` 运行期间不得更新。
+Agent 在每个需要使用 `mbs` 的用户请求开始前运行 `mbs version --if-due`。该命令通过跨进程锁保证最多每 2 小时访问一次 npm；检测到新版时返回 `data.notificationDue: true`，Agent 必须先询问用户，获得明确确认后才能运行 `mbs update`。正在执行的任务或 `mbs serve` 运行期间不得更新，`mbs update` 检测到其他活跃 CLI 进程时也会拒绝安装。
 
 首次发布此机制时，已有安装需要完成一次迁移：手动更新 CLI、运行 `mbs skills install`，再重启 Agent 会话。之后的新会话才会自动执行上述前置检查。
 
