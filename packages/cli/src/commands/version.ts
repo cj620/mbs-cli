@@ -1,5 +1,5 @@
 import { Command, Flags } from '@oclif/core'
-import { checkLatestNpmVersion } from '@mb-it-org/shared'
+import { checkLatestNpmVersion, isVersionNewer } from '@mb-it-org/shared'
 import { createRequire } from 'node:module'
 
 const require = createRequire(import.meta.url)
@@ -48,7 +48,7 @@ export default class Version extends Command {
       return
     }
 
-    const updateAvailable = latest !== current
+    const updateAvailable = isVersionNewer(latest, current)
 
     if (updateAvailable) {
       this.log(

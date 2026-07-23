@@ -14,6 +14,10 @@ cached result. A newly discovered version sets `data.notificationDue` to
 `mbs update`; it must never update during an active command or a running
 `mbs serve` process.
 
+Existing installations need a one-time bootstrap when this behavior is first
+released: update the CLI manually, run `mbs skills install`, and restart the
+agent session so the new preflight rule is loaded.
+
 ## Commands
 
 ```bash

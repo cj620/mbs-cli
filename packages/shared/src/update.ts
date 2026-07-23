@@ -15,6 +15,24 @@ export interface LatestVersionCheckResult {
   checkPerformed: boolean
 }
 
+export function isVersionNewer(candidate: string, current: string): boolean {
+  const parse = (version: string): number[] | null => {
+    const match = /^(\d+)\.(\d+)\.(\d+)$/.exec(version)
+    return match ? match.slice(1).map(Number) : null
+  }
+  const candidateParts = parse(candidate)
+  const currentParts = parse(current)
+  if (!candidateParts || !currentParts) return false
+
+  for (let index = 0; index < candidateParts.length; index += 1) {
+    if (candidateParts[index] !== currentParts[index]) {
+      return candidateParts[index] > currentParts[index]
+    }
+  }
+
+  return false
+}
+
 export interface GitHubReleaseAsset {
   name: string
   browserDownloadUrl: string

@@ -19,6 +19,7 @@ mbs version --if-due
 - 该命令最多每 2 小时访问一次 npm，其余调用只读取本地状态。
 - 如果 `data.notificationDue === true`，在开始业务任务前告知用户可用版本，并询问是否运行 `mbs update`。
 - 只有用户明确确认后才能运行 `mbs update`；用户拒绝或稍后处理时，使用当前版本继续原任务。
+- 更新成功后运行 `mbs skills install` 同步 Agent skill，并告知用户新 skill 需要重启 Agent 会话后才会加载。
 - 同一个用户请求需要多条 `mbs` 命令时，不要重复执行前置检查。
 - 正在执行命令或运行 `mbs serve` 时不得更新；只在下一个用户请求开始前或启动 `mbs serve` 前检查。
 - 前置检查无法连接 npm 时，使用当前版本继续原任务。

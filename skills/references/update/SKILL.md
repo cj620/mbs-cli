@@ -7,7 +7,8 @@
 1. 在第一条命令前运行 `mbs version --if-due`。
 2. 当 `data.notificationDue` 为 `true` 时，告知用户 `data.latest` 版本可用并询问是否更新。
 3. 只有获得用户明确确认后才能运行 `mbs update`。
-4. 用户拒绝或检查无法连接 npm 时，使用当前已安装版本继续任务。
+4. 更新成功后运行 `mbs skills install`，并告知用户重启 Agent 会话以加载新 skill。
+5. 用户拒绝或检查无法连接 npm 时，使用当前已安装版本继续任务。
 
 条件检查最多每 2 小时访问一次 npm，绝不自动更新正在运行的任务。
 

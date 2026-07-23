@@ -13,6 +13,7 @@ export {
   fetchLatestNpmVersion,
   fetchLatestReleaseInfo,
   findExtractedBundleRoot,
+  isVersionNewer,
   replaceDirectoryWithRollback,
   resolveReleaseTarget,
   selectReleaseAsset,
