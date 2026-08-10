@@ -63,6 +63,26 @@ describe('APIClient', () => {
     )
   })
 
+  it('forwards an abort signal to POST requests', async () => {
+    const instance = {
+      get: vi.fn(),
+      post: vi.fn().mockResolvedValue({ data: { code: 0, data: {} } }),
+      request: vi.fn(),
+      interceptors: { response: { use: vi.fn() } },
+    }
+    mockAxios.create = vi.fn().mockReturnValue(instance)
+    const controller = new AbortController()
+
+    const c = new APIClient('http://api.example.com', 'SESSION=abc123', vi.fn())
+    await c.post('/v1/recall', { query: 'sales' }, { signal: controller.signal })
+
+    expect(instance.post).toHaveBeenCalledWith(
+      '/v1/recall',
+      { query: 'sales' },
+      { signal: controller.signal },
+    )
+  })
+
   it('sends streaming POST with NDJSON headers', async () => {
     const stream = { on: vi.fn() }
     const instance = {

@@ -48,6 +48,9 @@ importers:
       '@mb-it-org/fars':
         specifier: workspace:*
         version: link:../fars
+      '@mb-it-org/legacy':
+        specifier: workspace:*
+        version: link:../legacy
       '@mb-it-org/oms':
         specifier: workspace:*
         version: link:../oms
@@ -148,6 +151,25 @@ importers:
       typescript:
         specifier: ^5.4.0
         version: 5.9.3
+
+  packages/legacy:
+    dependencies:
+      '@mb-it-org/shared':
+        specifier: workspace:*
+        version: link:../shared
+      '@oclif/core':
+        specifier: ^4.10.5
+        version: 4.10.5
+    devDependencies:
+      '@types/node':
+        specifier: ^20.0.0
+        version: 20.19.39
+      typescript:
+        specifier: ^5.4.0
+        version: 5.9.3
+      vitest:
+        specifier: ^1.6.1
+        version: 1.6.1(@types/node@20.19.39)
 
   packages/oms:
     dependencies:

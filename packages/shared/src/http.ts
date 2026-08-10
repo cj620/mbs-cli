@@ -16,6 +16,7 @@ export interface GetOptions {
 export interface PostOptions {
   pathPrefix?: string;
   params?: AxiosRequestConfig["params"];
+  signal?: AxiosRequestConfig["signal"];
 }
 
 /**
@@ -35,6 +36,16 @@ export class APIClient {
   private readonly instance: AxiosInstance;
   private readonly refreshAuth: () => Promise<string>;
 
+  /**
+   * Creates an authenticated API transport with stable CLI headers.
+   *
+   * <p>The saved CLI Cookie and stable client type are attached to every
+   * request. Authentication retries are delegated to the supplied callback.</p>
+   *
+   * @param baseURL Base URL used for relative API request paths.
+   * @param cookie Cookie header value obtained from the CLI authentication context.
+   * @param refreshAuth Callback that returns a replacement Cookie after authentication failure.
+   */
   constructor(
     baseURL: string,
     cookie: string,
@@ -43,7 +54,10 @@ export class APIClient {
     this.refreshAuth = refreshAuth;
     this.instance = axios.create({
       baseURL,
-      headers: { Cookie: cookie, "client-type": "cli" },
+      headers: {
+        Cookie: cookie,
+        "client-type": "cli",
+      },
     });
 
     this.instance.interceptors.response.use((response) => {
@@ -81,6 +95,15 @@ export class APIClient {
     return await this.withRetry(() => this.instance.get<T>(url, config).then((r) => r.data));
   }
 
+  /**
+   * Sends a JSON POST request through the authenticated API client.
+   *
+   * @param path Relative endpoint path.
+   * @param body Optional JSON-compatible request body.
+   * @param options Optional path prefix, query parameters, and abort signal.
+   * @returns The response payload after authentication retry and envelope validation.
+   * @throws Error when transport, cancellation, authentication, permission, or API validation fails.
+   */
   async post<T = unknown>(
     path: string,
     body?: unknown,
@@ -88,8 +111,12 @@ export class APIClient {
   ): Promise<T> {
     const url = options?.pathPrefix ? options.pathPrefix + path : path;
     return await this.withRetry(() => {
-      const request = options?.params
-        ? this.instance.post<T>(url, body, { params: options.params })
+      const config: AxiosRequestConfig = {
+        ...(options?.params ? { params: options.params } : {}),
+        ...(options?.signal ? { signal: options.signal } : {}),
+      };
+      const request = Object.keys(config).length > 0
+        ? this.instance.post<T>(url, body, config)
         : this.instance.post<T>(url, body);
       return request.then((r) => r.data);
     });

@@ -13,13 +13,14 @@
 mbs find "<用户原始需求>" --domain ars
 ```
 
-从候选中确认目标接口后，只读取返回的 `detailPath`：
+确认 API 候选后执行返回的 `detailCommand`：
 
 ```bash
-mbs skills show --file references/ars/<action>.md
+mbs describe <apiId>
 ```
 
-- 不在本文件中平铺或扫描全部 action。
+- 本地不保存或扫描该业务域的接口卡片和单接口文档。
 - 命中 workflow 时按 steps 的 `intentQuery` 继续检索 API。
 - 低置信、无结果或歧义时先补充条件。
-- 读取单接口详情并确认必填参数后，才执行返回的只读命令。
+- 后端详情确认完整字段后，仅在候选或详情包含 `command` 时使用 `command --help` 核对 CLI 参数；缺少 `command` 时报告不可直接执行，禁止按展示名称猜测命令。
+- 后端不可用时明确报告失败，不使用本地词法结果降级。

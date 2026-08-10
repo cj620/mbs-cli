@@ -22,6 +22,7 @@ describe('database API paths', () => {
     expect(`${DATABASE_API_PREFIX}/show-create-table`).toBe('/cli-service/cli/doris/show-create-table')
     expect(`${DATABASE_API_PREFIX}/query`).toBe('/cli-service/cli/doris/query')
   })
+
 })
 
 describe('resolveSql', () => {

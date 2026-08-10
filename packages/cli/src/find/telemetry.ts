@@ -19,8 +19,18 @@ const defaultDependencies: FindTelemetryDependencies = {
   now: () => new Date(),
 }
 
+/**
+ * Records a minimal local discovery event without persisting the user's natural-language query.
+ *
+ * <p>Only the execution mode, candidate count, timestamp, and an optional stable selected action
+ * are stored. Persistence failures are deliberately isolated from the successful find result.</p>
+ *
+ * @param meta Backend origin metadata for the successful request.
+ * @param candidateCount Number of candidates returned to the caller.
+ * @param selected Optional stable CLI action selected by a later workflow.
+ * @param dependencies File and clock dependencies, replaceable by tests.
+ */
 export function recordFindEvent(
-  query: string,
   meta: FindMeta,
   candidateCount: number,
   selected?: string,
@@ -31,7 +41,6 @@ export function recordFindEvent(
     dependencies.ensureDirectory(directory)
     const event = {
       timestamp: dependencies.now().toISOString(),
-      query,
       mode: meta.mode,
       candidateCount,
       ...(selected ? { selected } : {}),

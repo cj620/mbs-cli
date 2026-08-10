@@ -24,6 +24,7 @@ describe('setConfig / getConfig', () => {
     expect(config.apiUrl).toBe('http://api.example.com')
   })
 
+  /** Verifies a fresh installation targets the production API root. */
   it('returns the default config when config does not exist', () => {
     expect(getConfig()).toEqual({ apiUrl: 'http://www.instudio.me:6206' })
   })
@@ -33,4 +34,5 @@ describe('setConfig / getConfig', () => {
     setConfig({ apiUrl: 'http://second.com' })
     expect(getConfig().apiUrl).toBe('http://second.com')
   })
+
 })

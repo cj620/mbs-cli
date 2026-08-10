@@ -34,6 +34,16 @@ export default class DorisQuery extends MBSCommand {
     }),
   }
 
+  /**
+   * Resolves validated SQL and data-source options, executes the streaming
+   * read-only query, and maintains the existing metadata-query cache contract.
+   *
+   * <p>The request uses the shared authenticated client and standard CLI
+   * gateway, matching the metadata command routing contract.</p>
+   *
+   * @returns A promise that resolves after the NDJSON stream is written.
+   * @throws Error for invalid SQL, invalid source options, transport failures, or API failures.
+   */
   async run(): Promise<void> {
     const { flags } = await this.parse(DorisQuery)
     const sql = await resolveSql(flags.sql)
@@ -48,7 +58,10 @@ export default class DorisQuery extends MBSCommand {
       }
     }
 
-    const stream = await this.client.postStream(`${DATABASE_API_PREFIX}/query`, databaseQueryBody(sql, source))
+    const stream = await this.client.postStream(
+      `${DATABASE_API_PREFIX}/query`,
+      databaseQueryBody(sql, source),
+    )
     if (cacheable) {
       const result = await writeAndCollectNdjsonStream(stream)
       if (!result.hasError) writeDorisMetadataCache('data-dictionary-query', cacheKey, result.text)

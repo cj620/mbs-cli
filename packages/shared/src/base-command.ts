@@ -16,6 +16,15 @@ const API_GATEWAY_PREFIX = "/gateway/cli";
 export abstract class MBSCommand extends Command {
   protected client!: APIClient;
 
+  /**
+   * Initializes the command's HTTP client before command parsing and execution.
+   *
+   * <p>The client always uses the saved CLI authentication context, refresh
+   * callback, and standard `/gateway/cli` base URL.</p>
+   *
+   * @returns A promise that resolves after the command client is ready.
+   * @throws Error when the saved authentication context cannot be loaded.
+   */
   async init(): Promise<void> {
     await super.init();
     const { cookie } = await getAuthContext();

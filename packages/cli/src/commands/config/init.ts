@@ -8,6 +8,11 @@ export default class ConfigInit extends Command {
 
   static examples = ['mbs config init']
 
+  /**
+   * Interactively replaces the persisted API root used by normal CLI requests.
+   *
+   * @returns A promise that resolves after configuration is persisted and reported.
+   */
   async run(): Promise<void> {
     await this.parse(ConfigInit)
     this.log('MBS CLI Configuration Setup')

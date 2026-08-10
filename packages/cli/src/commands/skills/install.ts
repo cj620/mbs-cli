@@ -1,7 +1,14 @@
 import { Command, Flags } from '@oclif/core'
-import { cpSync, existsSync, mkdirSync } from 'node:fs'
+import {
+  cpSync,
+  existsSync,
+  mkdirSync,
+  mkdtempSync,
+  renameSync,
+  rmSync,
+} from 'node:fs'
 import { homedir } from 'node:os'
-import { join } from 'node:path'
+import { basename, dirname, join, resolve } from 'node:path'
 
 type Target = 'auto' | 'claude' | 'codex'
 
@@ -21,6 +28,50 @@ function getPlatforms(target: Target): Platform[] {
   }
 
   return PLATFORMS.filter((platform) => platform.name === target)
+}
+
+/**
+ * Replaces one agent's MBS skill directory without retaining stale endpoint files.
+ *
+ * <p>The source is copied to a sibling staging directory first. An existing
+ * destination is renamed to a temporary backup and restored if activation
+ * fails. The destination must be named exactly `mbs`, which prevents callers
+ * from using this helper as a general recursive replacement primitive.</p>
+ *
+ * @param sourceDir Bundled skill directory containing a root `SKILL.md`.
+ * @param destination Exact agent skill destination ending in `/mbs`.
+ * @throws Error when paths are invalid or staging, activation, cleanup, or rollback fails.
+ */
+export function replaceSkillDirectory(sourceDir: string, destination: string): void {
+  const resolvedSource = resolve(sourceDir)
+  const resolvedDestination = resolve(destination)
+  if (basename(resolvedDestination) !== 'mbs' || !existsSync(join(resolvedSource, 'SKILL.md'))) {
+    throw new Error('Invalid MBS skill source or destination')
+  }
+
+  const parent = dirname(resolvedDestination)
+  mkdirSync(parent, { recursive: true })
+  const staging = mkdtempSync(join(parent, '.mbs-install-'))
+  const backup = join(parent, `.mbs-backup-${process.pid}-${Date.now()}`)
+  let previousMoved = false
+  try {
+    cpSync(resolvedSource, staging, { recursive: true, force: true })
+    if (!existsSync(join(staging, 'SKILL.md'))) {
+      throw new Error('Staged MBS skill is incomplete')
+    }
+    if (existsSync(resolvedDestination)) {
+      renameSync(resolvedDestination, backup)
+      previousMoved = true
+    }
+    renameSync(staging, resolvedDestination)
+    if (previousMoved) rmSync(backup, { recursive: true, force: true })
+  } catch (error) {
+    if (existsSync(staging)) rmSync(staging, { recursive: true, force: true })
+    if (!existsSync(resolvedDestination) && previousMoved && existsSync(backup)) {
+      renameSync(backup, resolvedDestination)
+    }
+    throw error
+  }
 }
 
 export default class SkillsInstall extends Command {
@@ -45,6 +96,15 @@ export default class SkillsInstall extends Command {
     }),
   }
 
+  /**
+   * Installs the bundled domain-only MBS skill into each selected agent.
+   *
+   * <p>Dry-run reports destinations without writing. A real install uses
+   * {@link replaceSkillDirectory} so files removed from a newer bundle cannot
+   * survive from an older installation. Failures produce the existing
+   * structured CLI error and leave the previous directory restored when
+   * activation did not complete.</p>
+   */
   async run(): Promise<void> {
     const { flags } = await this.parse(SkillsInstall)
     const target = flags.target as Target
@@ -94,8 +154,7 @@ export default class SkillsInstall extends Command {
 
     try {
       for (const install of installs) {
-        mkdirSync(install.destination, { recursive: true })
-        cpSync(sourceDir, install.destination, { recursive: true, force: true })
+        replaceSkillDirectory(sourceDir, install.destination)
       }
     } catch (error) {
       this.log(

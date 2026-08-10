@@ -10,20 +10,16 @@ const read = (relativePath: string): string =>
   readFileSync(resolve(repoRoot, relativePath), 'utf8')
 
 describe('dashboard skill bundle', () => {
+  /**
+   * Verifies the root domain router still distinguishes dashboard analysis from database queries.
+   */
   it('registers dashboard intents separately from database queries', () => {
     const router = read('skills/SKILL.md')
-    const manifest = JSON.parse(read('skills/manifest.json')) as {
-      modules: Array<{ keywords: string[]; name: string; skill: string }>
-    }
-    const dashboard = manifest.modules.find((module) => module.name === 'dashboard')
-    const database = manifest.modules.find((module) => module.name === 'database')
 
     expect(router).toContain('references/dashboard/SKILL.md')
     expect(router).toContain('数据分析 / 数据分析展示')
-    expect(dashboard?.skill).toBe('references/dashboard/SKILL.md')
-    expect(dashboard?.keywords).toContain('数据分析')
-    expect(dashboard?.keywords).toContain('专题分析页')
-    expect(database?.keywords).not.toContain('数据分析')
+    expect(router).toContain('数据库 / 多数据源 / SQL')
+    expect(router).not.toContain('apiCards')
   })
 
   it('defines the three delivery modes and compact Python analysis', () => {

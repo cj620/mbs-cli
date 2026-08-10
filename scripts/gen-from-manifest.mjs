@@ -37,12 +37,12 @@ for (const mod of generatedModules) {
     syncDomainIndexSkill(mod)
   } else {
     syncDomainPackage(mod, manifestInput.source, sourceHash)
-    syncDomainSkills(mod, sourceHash)
+    syncDomainSkills(mod)
   }
 }
 
 syncSkillIndex(generatedModules)
-syncSkillManifest(generatedModules)
+removeLegacyInterfaceCardManifest()
 if (!skillIndexOnly) {
   syncCliPackageJson(generatedModules.map((mod) => mod.domain))
   syncServeManifest(activeModules, manifestInput.source, sourceHash)
@@ -160,15 +160,17 @@ function findStaleGeneratedDomains(activeDomainNames) {
     .filter((domain) => !active.has(domain) && existsSync(join(packagesDir, domain, '.mbs-generated.json')))
 }
 
-function syncDomainSkills(mod, hash) {
+/**
+ * Writes one generated domain navigation card and removes legacy endpoint documents.
+ *
+ * @param {object} mod Parsed audit-manifest module.
+ */
+function syncDomainSkills(mod) {
   const skillDir = join(repoRoot, 'skills', 'references', mod.domain)
-  const activeSkillFiles = new Set(['SKILL.md', ...mod.actions.map((action) => `${action.name}.md`)])
+  const activeSkillFiles = new Set(['SKILL.md'])
   const generatedBanner = '<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->\n'
   removeStaleFiles(skillDir, activeSkillFiles, '.md')
   writeFile(join(skillDir, 'SKILL.md'), `${generatedBanner}${renderModuleSkill(mod)}`)
-  for (const action of mod.actions) {
-    writeFile(join(skillDir, `${action.name}.md`), `${generatedBanner}${renderActionSkill(mod, action, hash)}`)
-  }
 }
 
 function syncCliPackageJson(domains) {
@@ -243,23 +245,36 @@ function syncSkillIndex(modules) {
   writeFile(skillPath, syncFindFirstProtocol(next))
 }
 
+/**
+ * Refreshes one domain navigation card during the skill-only generation path.
+ *
+ * @param {object} mod Parsed audit-manifest module.
+ */
 function syncDomainIndexSkill(mod) {
   const skillDir = join(repoRoot, 'skills', 'references', mod.domain)
   const generatedBanner = '<!-- AUTO-GENERATED FROM audit manifest. DO NOT EDIT. -->\n'
+  removeStaleFiles(skillDir, new Set(['SKILL.md']), '.md')
   writeFile(join(skillDir, 'SKILL.md'), `${generatedBanner}${renderModuleSkill(mod)}`)
 }
 
+/**
+ * Synchronizes the root Skill with unified backend discovery and type-specific safe follow-up actions.
+ *
+ * @param {string} content Current root Skill content.
+ * @returns {string} Root Skill content with the generated protocol and routing rules replaced.
+ */
 function syncFindFirstProtocol(content) {
   const protocol = `${findProtocolStart}
-## 接口发现流程
+## 统一语义发现流程
 
-1. 使用用户原始需求执行 \`mbs find "<query>"\`，需要时增加 \`--domain\` 或 \`--target-type\`。
+1. 使用用户原始需求执行 \`mbs find "<query>"\`；通常不指定 \`--target-type\`，也不要要求用户判断应查接口还是数据库表。
 2. 检查候选分数和 hint；低置信、无结果或歧义时先补充业务域、对象或时间范围，不直接执行候选。
 3. 命中 \`workflow\` 时读取其 \`steps\`，逐步用每个 \`intentQuery\` 再次执行 \`mbs find --target-type api\`。
-4. 确认一个 \`api\` 候选后，只读取其 \`detailPath\`：\`mbs skills show --file <detailPath>\`。
-5. 补齐详情中列出的必填参数，再执行候选的只读 \`command\`。
+4. 确认一个 \`api\` 候选后，执行其 \`detailCommand\`（\`mbs describe <apiId>\`）从后端读取完整接口定义。
+5. 确认一个 \`table\` 候选后，只按结构化 \`nextAction\` 的字段调用 \`mbs database show-create-table --host <host> --database <database> [--schema <schema>] --tableName <tableName>\`；候选不是权限凭据，详情仍会二次鉴权。
+6. API 仅在候选或详情包含 \`command\` 时使用 \`command --help\` 确认参数并执行只读命令；缺少 \`command\` 表示尚无权威 CLI 映射，应报告不可直接执行，禁止按展示名称猜测命令。table 仅在用户确认查询目标并检查表结构后，才构造 SELECT 并执行 \`mbs database query\`。
 
-禁止通过 Glob、目录遍历或逐个读取来扫描 \`skills/references/\` 寻找接口；域级文档只用于了解业务域，接口发现必须先使用 \`mbs find\`。
+禁止执行后端命令字符串，也禁止通过 Glob、目录遍历、本地 manifest 或本地表索引发现目标；具体候选和权限过滤必须来自后端。
 ${findProtocolEnd}`
   let next = content
   const protocolPattern = new RegExp(`${escapeRegExp(findProtocolStart)}[\\s\\S]*?${escapeRegExp(findProtocolEnd)}`)
@@ -274,37 +289,17 @@ ${findProtocolEnd}`
   )
   next = next.replace(
     /## 意图路由规则[\s\S]*?(?=\n## 组织架构参数规则)/,
-    `## 意图路由规则\n\n1. **业务数据查询**：先执行 \`mbs find\`，不得先加载整个域的接口目录。\n2. **workflow 候选**：按 steps 的子意图继续 find API，由当前数据决定是否执行可选步骤。\n3. **api 候选**：确认后只读取该候选的单端点详情，再补参数并执行。\n4. **认证 / serve / 版本更新**：使用模块路由表中的专用文档。\n5. **远程召回不可用**：接受 find 的本地降级结果；无结果时补充查询条件，不扫描 references。\n\n`,
+    `## 意图路由规则\n\n1. **业务数据查询**：先用用户原话执行 \`mbs find\`，不要求用户选择 workflow/api/table。\n2. **workflow 候选**：按 steps 的子意图继续 find API，由当前数据决定是否执行可选步骤。\n3. **api 候选**：确认后执行 \`mbs describe <apiId>\` 读取后端完整定义；仅在候选或详情包含 \`command\` 时使用 \`command --help\` 确认 CLI 参数。缺少 \`command\` 时报告不可直接执行，禁止按展示名称猜测命令。\n4. **table 候选**：确认后按结构化身份调用 \`database show-create-table\`；候选、DDL 和 SQL 每一步都沿用后端鉴权，不执行后端命令字符串。\n5. **认证 / serve / 版本更新**：使用模块路由表中的专用文档。\n6. **远程发现不可用**：明确报告依赖失败，不读取本地接口卡片、表索引或端点文档。\n\n`,
   )
   return next
 }
 
-function syncSkillManifest(modules) {
+/**
+ * Removes the obsolete local interface-card manifest when it still exists.
+ */
+function removeLegacyInterfaceCardManifest() {
   const manifestPath = join(repoRoot, 'skills', 'manifest.json')
-  const current = readJson(manifestPath)
-  const generatedNames = new Set(modules.map((mod) => mod.domain))
-  const staticModules = (current.modules ?? []).filter((mod) => !mod.generated && !generatedNames.has(mod.name))
-  const generatedModules = modules.map((mod) => ({
-    name: mod.domain,
-    description: mod.description,
-    keywords: mod.keywords,
-    skill: `references/${mod.domain}/SKILL.md`,
-    commands: mod.actions.map((action) => `mbs ${mod.domain} ${action.name}`),
-    generated: true,
-  }))
-  current.modules = [...staticModules, ...generatedModules]
-  current.apiCards = modules.flatMap((mod) => mod.actions.map((action) => ({
-    id: action.name,
-    type: 'api',
-    name: action.name,
-    domain: mod.domain,
-    description: action.description,
-    command: `mbs ${mod.domain} ${action.name}`,
-    detailPath: `references/${mod.domain}/${action.name}.md`,
-    keywords: mod.keywords,
-    requiredParams: requiredParams(action),
-  })))
-  writeFile(manifestPath, `${JSON.stringify(current, null, 2)}\n`)
+  if (existsSync(manifestPath)) removePath(manifestPath)
 }
 
 function syncServeManifest(modules, source, hash) {
@@ -443,8 +438,14 @@ function renderPathExpression(path, argParams = []) {
   return `\`${expression}\``
 }
 
+/**
+ * Renders a domain-only navigation card with no local endpoint catalogue.
+ *
+ * @param {object} mod Parsed audit-manifest module.
+ * @returns {string} Generated domain Skill content.
+ */
 function renderModuleSkill(mod) {
-  return `# ${mod.domain} - ${mod.description}\n\n## 业务域\n\n- 适用场景：${mod.scenarios || mod.description}\n- 关键词：${mod.keywords.join(' / ')}\n- Service：\`${mod.service || '-'}\`\n\n## 接口发现\n\n\`\`\`bash\nmbs find "<用户原始需求>" --domain ${mod.domain}\n\`\`\`\n\n从候选中确认目标接口后，只读取返回的 \`detailPath\`：\n\n\`\`\`bash\nmbs skills show --file references/${mod.domain}/<action>.md\n\`\`\`\n\n- 不在本文件中平铺或扫描全部 action。\n- 命中 workflow 时按 steps 的 \`intentQuery\` 继续检索 API。\n- 低置信、无结果或歧义时先补充条件。\n- 读取单接口详情并确认必填参数后，才执行返回的只读命令。\n`
+  return `# ${mod.domain} - ${mod.description}\n\n## 业务域\n\n- 适用场景：${mod.scenarios || mod.description}\n- 关键词：${mod.keywords.join(' / ')}\n- Service：\`${mod.service || '-'}\`\n\n## 接口发现\n\n\`\`\`bash\nmbs find "<用户原始需求>" --domain ${mod.domain}\n\`\`\`\n\n确认 API 候选后执行返回的 \`detailCommand\`：\n\n\`\`\`bash\nmbs describe <apiId>\n\`\`\`\n\n- 本地不保存或扫描该业务域的接口卡片和单接口文档。\n- 命中 workflow 时按 steps 的 \`intentQuery\` 继续检索 API。\n- 低置信、无结果或歧义时先补充条件。\n- 后端详情确认完整字段后，仅在候选或详情包含 \`command\` 时使用 \`command --help\` 核对 CLI 参数；缺少 \`command\` 时报告不可直接执行，禁止按展示名称猜测命令。\n- 后端不可用时明确报告失败，不使用本地词法结果降级。\n`
 }
 
 function renderActionSkill(mod, action, hash) {

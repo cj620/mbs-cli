@@ -1,5 +1,10 @@
-export type RecallTargetType = 'api' | 'workflow' | 'all'
+/** Backend semantic-discovery target selector accepted by `mbs find`. */
+export type RecallTargetType = 'api' | 'workflow' | 'table' | 'all'
 
+/** Capability token proving the client validates structured table-detail actions. */
+export const TABLE_ACTION_CAPABILITY = 'table-actions-v1'
+
+/** One backend-maintained workflow step that must be resolved through another API-only find. */
 export interface WorkflowStep {
   goal?: string
   intentQuery?: string
@@ -7,21 +12,59 @@ export interface WorkflowStep {
   expectedData?: string
 }
 
-export interface FindResult {
-  type: 'api' | 'workflow'
-  id: string | number
+/** Fields shared by every normalized backend semantic-discovery candidate. */
+export interface FindResultBase {
+  type: 'api' | 'workflow' | 'table'
+  targetKey?: string
   name: string
   domain?: string
   description?: string
   score: number
+}
+
+/** Normalized read-only API candidate with an ID-derived detail action and an optional proven business command. */
+export interface ApiFindResult extends FindResultBase {
+  type: 'api'
+  id: number
   command?: string
-  detailPath?: string
+  detailCommand?: string
   requiredParams?: string[]
   mainReturns?: string[]
+}
+
+/** Normalized business workflow candidate whose steps require further semantic discovery. */
+export interface WorkflowFindResult extends FindResultBase {
+  type: 'workflow'
+  id: number
   askWhenMissing?: string[]
   steps?: WorkflowStep[]
 }
 
+/** Physical table identity accepted by the existing database read-only commands. */
+export interface TableIdentity {
+  host: string
+  database: string
+  schema?: string
+  tableName: string
+}
+
+/** Allowlisted structured action for loading current table metadata after a user confirms the candidate. */
+export interface TableNextAction extends TableIdentity {
+  command: 'database.show-create-table'
+}
+
+/** Authorized database table candidate; it intentionally has no permission-record numeric ID. */
+export interface TableFindResult extends FindResultBase {
+  type: 'table'
+  targetKey: string
+  table: TableIdentity
+  nextAction: TableNextAction
+}
+
+/** Discriminated union returned by one unified semantic-discovery request. */
+export type FindResult = ApiFindResult | WorkflowFindResult | TableFindResult
+
+/** Backend guidance for empty, low-confidence, or ambiguous candidate sets. */
 export interface FindHint {
   reason: 'NO_RESULT' | 'LOW_CONFIDENCE' | 'AMBIGUOUS' | string
   askWhenMissing?: string[]
@@ -29,50 +72,55 @@ export interface FindHint {
   suggestedQueries?: string[]
 }
 
+/** Candidate collection returned by one successful semantic recall request. */
 export interface FindData {
   results: FindResult[]
   hint?: FindHint
 }
 
+/** Validated user query and optional server-side recall filters. */
 export interface FindRequest {
   query: string
   domain?: string
   targetType: RecallTargetType
   topK: number
+  capabilities: string[]
 }
 
+/** Metadata proving the result came from the backend semantic path. */
 export interface FindMeta {
-  mode: 'remote' | 'local'
+  mode: 'remote'
   total: number
-  fallback?: boolean
-  fallbackReason?: 'remote_unavailable'
 }
 
+/** Successful remote-only find result and its origin metadata. */
 export interface FindOutcome {
   data: FindData
   meta: FindMeta
 }
 
-export interface LocalApiCard {
-  id: string | number
-  type?: 'api'
+/** One sanitized node in a backend request or response field tree. */
+export interface ApiFieldDefinition {
   name: string
-  domain: string
+  type?: string
   description?: string
-  command: string
-  detailPath?: string
-  keywords?: string[]
-  requiredParams?: string[]
-  mainReturns?: string[]
+  required?: boolean
+  fieldScope?: string
+  paramLocation?: string
+  children: ApiFieldDefinition[]
 }
 
-export interface SkillManifest {
-  apiCards?: LocalApiCard[]
-  modules?: Array<{
-    name: string
-    description?: string
-    keywords?: string[]
-    skill?: string
-    commands?: string[]
-  }>
+/** Complete read-only interface definition loaded on demand, with a business command only for proven identifiers. */
+export interface ApiDetailData {
+  id: number
+  name: string
+  domain: string
+  version?: string
+  description?: string
+  method?: string
+  path?: string
+  operationType: 'QUERY'
+  command?: string
+  request: Record<string, ApiFieldDefinition[]>
+  response: ApiFieldDefinition[]
 }

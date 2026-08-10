@@ -1,5 +1,7 @@
 // packages/skill-shared/src/types.ts
+/** Persistent non-sensitive configuration used to locate the MBS API. */
 export interface MBSConfig {
+  /** Absolute root URL of the MBS API gateway deployment. */
   apiUrl: string
 }
 

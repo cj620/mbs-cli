@@ -20,15 +20,16 @@ metadata:
 ---
 
 <!-- AUTO-GENERATED FIND-FIRST PROTOCOL START -->
-## 接口发现流程
+## 统一语义发现流程
 
-1. 使用用户原始需求执行 `mbs find "<query>"`，需要时增加 `--domain` 或 `--target-type`。
+1. 使用用户原始需求执行 `mbs find "<query>"`；通常不指定 `--target-type`，也不要要求用户判断应查接口还是数据库表。
 2. 检查候选分数和 hint；低置信、无结果或歧义时先补充业务域、对象或时间范围，不直接执行候选。
 3. 命中 `workflow` 时读取其 `steps`，逐步用每个 `intentQuery` 再次执行 `mbs find --target-type api`。
-4. 确认一个 `api` 候选后，只读取其 `detailPath`：`mbs skills show --file <detailPath>`。
-5. 补齐详情中列出的必填参数，再执行候选的只读 `command`。
+4. 确认一个 `api` 候选后，执行其 `detailCommand`（`mbs describe <apiId>`）从后端读取完整接口定义。
+5. 确认一个 `table` 候选后，只按结构化 `nextAction` 的字段调用 `mbs database show-create-table --host <host> --database <database> [--schema <schema>] --tableName <tableName>`；候选不是权限凭据，详情仍会二次鉴权。
+6. API 仅在候选或详情包含 `command` 时使用 `command --help` 确认参数并执行只读命令；缺少 `command` 表示尚无权威 CLI 映射，应报告不可直接执行，禁止按展示名称猜测命令。table 仅在用户确认查询目标并检查表结构后，才构造 SELECT 并执行 `mbs database query`。
 
-禁止通过 Glob、目录遍历或逐个读取来扫描 `skills/references/` 寻找接口；域级文档只用于了解业务域，接口发现必须先使用 `mbs find`。
+禁止执行后端命令字符串，也禁止通过 Glob、目录遍历、本地 manifest 或本地表索引发现目标；具体候选和权限过滤必须来自后端。
 <!-- AUTO-GENERATED FIND-FIRST PROTOCOL END -->
 
 ## 模块路由表
@@ -140,11 +141,12 @@ metadata:
 
 ## 意图路由规则
 
-1. **业务数据查询**：先执行 `mbs find`，不得先加载整个域的接口目录。
+1. **业务数据查询**：先用用户原话执行 `mbs find`，不要求用户选择 workflow/api/table。
 2. **workflow 候选**：按 steps 的子意图继续 find API，由当前数据决定是否执行可选步骤。
-3. **api 候选**：确认后只读取该候选的单端点详情，再补参数并执行。
-4. **认证 / serve / 版本更新**：使用模块路由表中的专用文档。
-5. **远程召回不可用**：接受 find 的本地降级结果；无结果时补充查询条件，不扫描 references。
+3. **api 候选**：确认后执行 `mbs describe <apiId>` 读取后端完整定义；仅在候选或详情包含 `command` 时使用 `command --help` 确认 CLI 参数。缺少 `command` 时报告不可直接执行，禁止按展示名称猜测命令。
+4. **table 候选**：确认后按结构化身份调用 `database show-create-table`；候选、DDL 和 SQL 每一步都沿用后端鉴权，不执行后端命令字符串。
+5. **认证 / serve / 版本更新**：使用模块路由表中的专用文档。
+6. **远程发现不可用**：明确报告依赖失败，不读取本地接口卡片、表索引或端点文档。
 
 
 ## 组织架构参数规则（重要）
