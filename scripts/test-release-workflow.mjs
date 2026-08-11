@@ -5,6 +5,42 @@ const workflow = readFileSync(new URL('../.github/workflows/release.yml', import
 
 assert.match(
   workflow,
+  /tags:[\s\S]*'v\*\.\*\.\*'[\s\S]*'maintenance-1-v\*\.\*\.\*'/,
+  'release workflow must use separate Git tag patterns for latest and maintenance-1 releases'
+)
+
+assert.match(
+  workflow,
+  /fetch-depth:\s*0/,
+  'release workflow must fetch branch history before validating the release commit provenance'
+)
+
+assert.match(
+  workflow,
+  /^\s+maintenance-1-v\*\)[\s\S]*?RELEASE_BRANCH="1\.0\.0"[\s\S]*?NPM_DIST_TAG="maintenance-1"/m,
+  'maintenance release tags must resolve to the 1.0.0 branch and maintenance-1 npm dist-tag'
+)
+
+assert.match(
+  workflow,
+  /^\s+v\*\)[\s\S]*?RELEASE_BRANCH="master"[\s\S]*?NPM_DIST_TAG="latest"/m,
+  'normal release tags must remain bound to master and the latest npm dist-tag'
+)
+
+assert.match(
+  workflow,
+  /CURRENT_VERSION.*packages\/cli\/package\.json[\s\S]*CURRENT_VERSION.*EXPECTED_VERSION/,
+  'release workflow must reject tags whose version does not match packages/cli/package.json'
+)
+
+assert.match(
+  workflow,
+  /git merge-base --is-ancestor "\$GITHUB_SHA" "origin\/\$RELEASE_BRANCH"/,
+  'release workflow must reject a tag whose commit is outside the selected release branch history'
+)
+
+assert.match(
+  workflow,
   /pnpm deploy --filter @mb-it-org\/cli --legacy \${{\s*runner\.temp\s*}}\/mbs-deploy/,
   'release workflow must create a pnpm deploy bundle for @mb-it-org/cli before npm publish'
 )
@@ -35,8 +71,14 @@ assert.match(
 
 assert.match(
   workflow,
-  /npm publish(?:\s+--access public)?/,
-  'release workflow must publish @mb-it-org/cli to npm'
+  /npm publish --access public --tag "\$NPM_DIST_TAG"/,
+  'release workflow must always publish @mb-it-org/cli with the resolved npm dist-tag'
+)
+
+assert.doesNotMatch(
+  workflow,
+  /^\s*npm publish(?:\s+--access public)?\s*$/m,
+  'release workflow must never use a bare npm publish that implicitly moves latest'
 )
 
 assert.match(
@@ -155,8 +197,8 @@ assert.doesNotMatch(
 
 assert.match(
   workflow,
-  /npm view @mb-it-org\/cli version --json/,
-  'release workflow must check the published version for @mb-it-org/cli before publishing'
+  /npm view "@mb-it-org\/cli@\$CURRENT_VERSION" version --json/,
+  'release workflow must check the exact @mb-it-org/cli version before publishing'
 )
 
 assert.doesNotMatch(
@@ -175,6 +217,12 @@ assert.match(
   workflow,
   /- name: Notify DingTalk release[\s\S]*continue-on-error:\s*true/,
   'DingTalk notification must not fail the release workflow'
+)
+
+assert.match(
+  workflow,
+  /- name: Notify DingTalk release\s+if:\s*env\.NPM_DIST_TAG == 'latest'/,
+  'maintenance releases must not send the update-to-latest DingTalk notification'
 )
 
 assert.match(

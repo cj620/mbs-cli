@@ -14,9 +14,11 @@
 
 定位：**一个把"内部 API + 浏览器登录态 + Agent 工作流"打包为单一命令的能力底座**，让一行 `mbs <domain> <action>` 等价于一次合规、可追溯、可被 Agent 安全消费的业务调用。
 
+> **1.0.0 长期维护通道**：本分支发布到 npm dist-tag `maintenance-1`，不会修改普通安装使用的 `latest`。维护线用户使用 `npm install -g @mb-it-org/cli@maintenance-1 --registry=https://registry.npmjs.org/` 安装和升级；普通用户继续安装 `@mb-it-org/cli`。`mbs update` 固定跟随 `latest`，维护线用户不要使用该命令升级。
+
 > **If you are an AI agent:** 展开下方「AI Agent 接入指南」，按步骤执行完成接入，不要跳过。
 >
-> **强制刷新 CLI**：只要 agent 读到本 README，必须先跑 `mbs version` 看 `data.updateAvailable`；为 `true` 立刻执行 `mbs update`，再继续后续步骤。未安装 CLI 时按 Step 2 装最新版。**禁止用本机现有旧版直接干活**。
+> **先确定发布通道再刷新 CLI**：普通用户先跑 `mbs version`，`data.updateAvailable` 为 `true` 时执行 `mbs update`；明确使用本 `1.0.0` 维护线时，按 Step 2 显式安装 `@maintenance-1`，不要执行只跟随 `latest` 的 `mbs update`。**禁止未确认通道就用本机旧版直接工作**。
 
 <details>
 <summary><strong>AI Agent 接入指南（点击展开）</strong></summary>
@@ -29,7 +31,7 @@
 
 ## Agent 执行原则
 
-- **强制刷新 CLI**：读到本 README 必须立即 `mbs version`，`data.updateAvailable === true` 时立刻 `mbs update`；旧版 CLI 直接干活 = 失败
+- **先确定通道再刷新 CLI**：普通用户按 `latest` 检查与更新；任务明确指定 `1.0.0` 维护线时使用 `@maintenance-1` 安装与更新
 - **先检测后动作**：每步开头先跑探测命令（`node -v` / `mbs version` / `mbs whoami` / `mbs config get`），已满足直接跳过，不重复安装
 - **以结构化 JSON 为准**：所有 `mbs` 命令输出 `{ ok, data | error }`；判断成功看 `ok` 字段 + 退出码，不解析人话
 - 退出码：`0` 成功 / `1` API 或参数错 / `2` 认证失效（必须重新 `mbs login`）
@@ -70,6 +72,18 @@ mbs update     # 统一走 npm install -g @mb-it-org/cli@latest
 ```
 
 `mbs update` 内部会判等：版本一致直接返回 `updated: false`，幂等安全。
+
+**1.0.0 长期维护通道（仅在任务明确指定时使用）**：
+
+```bash
+# 首次安装与后续升级使用同一条命令
+npm install -g @mb-it-org/cli@maintenance-1 --registry=https://registry.npmjs.org/
+
+# 验证当前安装版本；预期包含 1.0.x
+mbs --version
+```
+
+`maintenance-1` 与普通 `latest` 相互独立。维护线用户不要运行 `mbs update`，因为该命令固定执行 `npm install -g @mb-it-org/cli@latest`，会切换回普通发布通道。`mbs version` 中的 `latest` 和 `updateAvailable` 也只描述普通通道；维护线是否有更新以 `npm view @mb-it-org/cli@maintenance-1 version --registry=https://registry.npmjs.org/` 为准。
 
 ### Step 3: 检测配置
 
@@ -122,10 +136,17 @@ mbs skills install --target codex    # 仅 ~/.codex/skills/mbs/
 
 安装行为：force 覆盖目标目录下 `mbs/`，保留 `references/` 子结构。安装完成后**告知用户重启 agent 会话**让平台重新加载。
 
-更新流程：
+普通 `latest` 通道更新流程：
 
 ```bash
 mbs update
+mbs skills install    # 重跑覆盖
+```
+
+`maintenance-1` 通道更新流程：
+
+```bash
+npm install -g @mb-it-org/cli@maintenance-1 --registry=https://registry.npmjs.org/
 mbs skills install    # 重跑覆盖
 ```
 
@@ -174,8 +195,9 @@ mbs org platforms   # ok:true，含平台数据（认证最终验证）
 步骤：
 1. node -v / npm -v；缺失则装 Node.js 18 LTS
 2. 检测 mbs：
-   - 未安装：npm install -g @mb-it-org/cli --registry=https://registry.npmjs.org/（必须显式 --registry 锁官方源；官方源失败时回落 npm install -g @mb-it-org/cli@latest --registry=https://registry.npmmirror.com）
-   - 已安装：mbs version 看 data.updateAvailable，true 时 mbs update
+   - 普通通道未安装：npm install -g @mb-it-org/cli --registry=https://registry.npmjs.org/（必须显式 --registry 锁官方源；官方源失败时回落 npm install -g @mb-it-org/cli@latest --registry=https://registry.npmmirror.com）
+   - 普通通道已安装：mbs version 看 data.updateAvailable，true 时 mbs update
+   - 任务明确指定 1.0.0 长期维护线：无论是否已安装，都执行 npm install -g @mb-it-org/cli@maintenance-1 --registry=https://registry.npmjs.org/；禁止执行 mbs update
 3. mbs config get；ok:false 则 mbs config init
 4. mbs whoami；ok:false 或退出码 2 时 mbs login 后复检
 5. 只调用系统已装 Chrome/Edge；**禁止安装 Playwright/Chromium 等浏览器运行时**。mbs login 报 "No supported browser runtime" 时按 hint 让用户装系统 Chrome/Edge，不要 agent 自行下载内核
@@ -263,6 +285,14 @@ mbs whoami
 ```bash
 npm install -g @mb-it-org/cli --registry=https://registry.npmjs.org/
 ```
+
+上面安装的是普通 `latest` 通道。只有明确需要本 `1.0.0` 长期维护线时才执行：
+
+```bash
+npm install -g @mb-it-org/cli@maintenance-1 --registry=https://registry.npmjs.org/
+```
+
+维护线后续升级仍重复执行带 `@maintenance-1` 的命令，不要使用只跟随 `latest` 的 `mbs update`。
 
 **登录**：
 
