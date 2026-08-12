@@ -22,9 +22,23 @@ mbs whoami             # 验证认证状态
 MBS_API_URL=https://api.example.com MBS_TOKEN=xxx mbs org platforms
 ```
 
-### 开发专用直通命令（探索未封装接口）
+### 动态只读接口请求
 
-`raw` 仅用于开发者明确要求的接口探索，不是普通业务查询的兜底路径。普通查询应优先使用已封装的业务命令。
+`find → describe` 确认一个 `operationType=QUERY` 的接口后，即使没有预生成业务命令，也可使用公开 `request` 命令。命令会自动添加 `/gateway/cli`，path 只填写详情返回的接口路径：
+
+```bash
+mbs request GET /v1/orders --params '{"status":"open"}'
+mbs request POST /yypms/pms/middlePanel/getMiddlePanelList --body '{"page":1,"pageSize":20}'
+```
+
+- 仅允许 GET 和查询类 POST。
+- path 参数必须先替换；query 字段使用 `--params`，POST body 字段使用 `--body`。
+- 禁止传入完整 URL、`//host`、查询串或未替换的 `{param}`。
+- 不猜测 `describe` 未提供的参数值。
+
+### 开发专用直通命令（兼容入口）
+
+`raw` 仅保留给已有开发脚本探索接口。普通动态业务查询使用经过路径校验的 `mbs request`。
 
 ```bash
 mbs raw GET /v1/orders

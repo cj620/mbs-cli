@@ -252,15 +252,15 @@ describe('find validation', () => {
 
 describe('production recall transport', () => {
   /**
-   * Verifies find and describe preserve the cli-service layer in their complete production URLs.
+   * Verifies find and describe preserve both gateway and cli-service layers in complete URLs.
    */
-  it('targets the cli-service recall endpoints', () => {
+  it('targets the gateway cli-service recall endpoints', () => {
     const baseUrl = resolveRecallBaseUrl('https://api.example.com/')
 
     expect(`${baseUrl}/cli/api/recall`)
-      .toBe('https://api.example.com/cli/cli-service/cli/api/recall')
+      .toBe('https://api.example.com/cli/gateway/cli-service/cli/api/recall')
     expect(`${baseUrl}/cli/api/recall/detail`)
-      .toBe('https://api.example.com/cli/cli-service/cli/api/recall/detail')
+      .toBe('https://api.example.com/cli/gateway/cli-service/cli/api/recall/detail')
   })
 
   /**

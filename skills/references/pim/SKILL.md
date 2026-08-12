@@ -30,5 +30,6 @@ mbs describe <apiId>
 - 本地不保存或扫描该业务域的接口卡片和单接口文档。
 - 命中 workflow 时按 steps 的 `intentQuery` 继续检索 API。
 - 低置信、无结果或歧义时按后端 hint 补充条件。
-- 后端详情确认完整字段后，仅在候选或详情包含 `command` 时使用 `command --help` 核对 CLI 参数；缺少 `command` 时报告不可直接执行，禁止按展示名称猜测命令。
+- 后端详情确认 `operationType=QUERY`、GET/POST、具体 path 和字段作用域后，使用 `mbs request` 组装查询；接口无需预生成业务命令。
+- path 参数必须先替换，query 字段放入 `--params`，POST body 字段放入 `--body`；不得猜测缺失参数。
 - 后端不可用时明确报告失败，不使用本地词法结果降级。

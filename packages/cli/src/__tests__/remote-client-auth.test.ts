@@ -35,16 +35,16 @@ describe('production recall authentication', () => {
   })
 
   /**
-   * Verifies recall uses saved CLI authentication and the cli-service gateway path.
+   * Verifies recall uses saved CLI authentication and both required service layers.
    */
-  it('creates the authenticated cli-service client', async () => {
+  it('creates the authenticated gateway cli-service client', async () => {
     const client = await createRecallClient() as unknown as {
       baseUrl: string
       cookie: string
       refreshAuth: () => Promise<string>
     }
 
-    expect(client.baseUrl).toBe('https://api.example.com/cli/cli-service')
+    expect(client.baseUrl).toBe('https://api.example.com/cli/gateway/cli-service')
     expect(client.cookie).toBe('SESSION=saved-cookie')
     expect(mocks.getAuthContext).toHaveBeenCalledOnce()
     expect(mocks.getConfig).toHaveBeenCalledOnce()

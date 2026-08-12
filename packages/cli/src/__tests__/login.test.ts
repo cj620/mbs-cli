@@ -6,12 +6,11 @@ const mockLaunch = vi.fn()
 
 vi.mock('@mb-it-org/shared', () => ({
   getConfig: () => ({ apiUrl: 'https://example.com' }),
-  LOGIN_PATH: '/login',
-  LOGIN_PATH_PASSWORD: '/loginit2',
+  LOGIN_PATH: '/eshop/manager/login.jsp',
+  LOGIN_PATH_PASSWORD: '/eshop/manager/loginit2.jsp',
   ERPLOGIN_PATH: '/yyaccount/account/user/erplogin',
   KEY_PARAM: 'key',
   LOGIN_TIMEOUT_MS: 5_000,
-  withCliPathPrefix: (apiUrl: string, path = '') => `${apiUrl}/cli${path}`,
   setKey: mockSetKey,
   getAuthContext: mockGetAuthContext,
 }))
@@ -54,6 +53,7 @@ describe('login command', () => {
     return { browser, page }
   }
 
+  /** Verifies QR login opens the direct eshop route and captures the login key. */
   it('prefers the system Chrome channel, captures the login key, and prints success JSON', async () => {
     const { browser, page } = createBrowser()
 
@@ -72,12 +72,30 @@ describe('login command', () => {
 
     expect(mockLaunch).toHaveBeenCalledTimes(1)
     expect(mockLaunch).toHaveBeenCalledWith({ channel: 'chrome', headless: false })
-    expect(page.goto).toHaveBeenCalledWith('https://example.com/cli/login')
+    expect(page.goto).toHaveBeenCalledWith('https://example.com/eshop/manager/login.jsp')
     expect(mockSetKey).toHaveBeenCalledWith('test-key')
     expect(mockGetAuthContext).toHaveBeenCalled()
     expect(log).toHaveBeenLastCalledWith(JSON.stringify({ ok: true, data: { message: 'Authenticated successfully' } }))
     expect(exit).not.toHaveBeenCalled()
     expect(browser.close).toHaveBeenCalled()
+  })
+
+  /** Verifies password login opens the direct eshop password route without a CLI prefix. */
+  it('opens the direct password login route', async () => {
+    const { browser, page } = createBrowser()
+
+    mockLaunch.mockResolvedValue(browser)
+    mockGetAuthContext.mockResolvedValue({ userInfo: { name: 'test-user' } })
+
+    const { default: Login } = await import('../commands/login.js')
+
+    await Login.prototype.run.call({
+      parse: vi.fn(async () => ({ flags: { password: true } })),
+      log: vi.fn(),
+      exit: vi.fn(),
+    })
+
+    expect(page.goto).toHaveBeenCalledWith('https://example.com/eshop/manager/loginit2.jsp')
   })
 
   it('falls back from Chrome and Edge to bundled Chromium when needed', async () => {
