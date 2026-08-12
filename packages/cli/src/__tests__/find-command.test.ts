@@ -6,7 +6,7 @@ import { RecallUnavailableError } from '../find/find-service.js'
 
 describe('find command contract', () => {
   /**
-   * Verifies query and candidate filters remain bounded for backend semantic recall.
+   * Verifies query and candidate filters remain bounded while ordinary examples keep the first recall domain-free.
    */
   it('requires a query and constrains target type and top-k flags', () => {
     const topK = Find.flags['top-k'] as unknown as { min: number; max: number }
@@ -14,6 +14,8 @@ describe('find command contract', () => {
     expect(Find.flags['target-type'].options).toEqual(['api', 'workflow', 'table', 'all'])
     expect(topK.min).toBe(1)
     expect(topK.max).toBe(50)
+    expect(Find.flags.domain.description).toContain('explicit user scope')
+    expect(Find.examples.every((example) => !example.includes('--domain'))).toBe(true)
     expect(Find.flags.diagnostics.default).toBe(false)
     expect(Find.flags).not.toHaveProperty('cookie-prompt')
     expect(Describe.flags).not.toHaveProperty('cookie-prompt')

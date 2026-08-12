@@ -9,7 +9,9 @@ test('generated domain skill stays thin and routes through backend find and desc
   const skill = readFileSync(join(repoRoot, 'skills', 'references', 'pim', 'SKILL.md'), 'utf8')
   const lines = skill.split(/\r?\n/)
 
-  assert.match(skill, /mbs find "<用户原始需求>" --domain pim/)
+  assert.match(skill, /## 首次统一召回[\s\S]*mbs find "<用户原始需求>"\r?\n/)
+  assert.match(skill, /首次召回不得根据模块关键词预判或添加 `--domain`/)
+  assert.match(skill, /用户明确限定 pim[\s\S]*hint[\s\S]*mbs find "<用户原始需求>" --domain pim/)
   assert.match(skill, /mbs describe <apiId>/)
   assert.match(skill, /缺少 `command`.*禁止按展示名称猜测命令/)
   assert.match(skill, /后端不可用时明确报告失败/)
@@ -21,6 +23,8 @@ test('main skill enforces unified backend discovery without local interface or t
   const skill = readFileSync(join(repoRoot, 'skills', 'SKILL.md'), 'utf8')
 
   assert.match(skill, /mbs find "<query>"/)
+  assert.match(skill, /首次召回不得根据模块路由表或关键词预判并添加 `--domain`/)
+  assert.match(skill, /用户明确限定[\s\S]*hint\.suggestedDomains[\s\S]*后续召回[\s\S]*--domain/)
   assert.match(skill, /workflow/)
   assert.match(skill, /table/)
   assert.match(skill, /database show-create-table/)

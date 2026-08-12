@@ -24,7 +24,7 @@ export default class Find extends Command {
     'mbs find "查询店铺库存"',
     'mbs find "销量为什么下降" --target-type workflow',
     'mbs find "每日销售明细表" --target-type table',
-    'mbs find "订单明细" --domain oms --top-k 5',
+    'mbs find "订单明细" --top-k 5',
   ]
 
   static args = {
@@ -32,7 +32,9 @@ export default class Find extends Command {
   }
 
   static flags = {
-    domain: Flags.string({ description: 'Limit candidates to a business domain' }),
+    domain: Flags.string({
+      description: 'Optional domain filter for explicit user scope or hint-driven follow-up',
+    }),
     'target-type': Flags.string({
       description: 'Candidate type',
       options: ['api', 'workflow', 'table', 'all'],

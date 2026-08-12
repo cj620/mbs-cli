@@ -259,6 +259,8 @@ function syncDomainIndexSkill(mod) {
 
 /**
  * Synchronizes the root Skill with unified backend discovery and type-specific safe follow-up actions.
+ * The generated contract passes the original query without local domain inference and reserves
+ * `--domain` for user-explicit or backend-hint-driven follow-up recall.
  *
  * @param {string} content Current root Skill content.
  * @returns {string} Root Skill content with the generated protocol and routing rules replaced.
@@ -267,12 +269,14 @@ function syncFindFirstProtocol(content) {
   const protocol = `${findProtocolStart}
 ## 统一语义发现流程
 
-1. 使用用户原始需求执行 \`mbs find "<query>"\`；通常不指定 \`--target-type\`，也不要要求用户判断应查接口还是数据库表。
-2. 检查候选分数和 hint；低置信、无结果或歧义时先补充业务域、对象或时间范围，不直接执行候选。
-3. 命中 \`workflow\` 时读取其 \`steps\`，逐步用每个 \`intentQuery\` 再次执行 \`mbs find --target-type api\`。
-4. 确认一个 \`api\` 候选后，执行其 \`detailCommand\`（\`mbs describe <apiId>\`）从后端读取完整接口定义。
-5. 确认一个 \`table\` 候选后，只按结构化 \`nextAction\` 的字段调用 \`mbs database show-create-table --host <host> --database <database> [--schema <schema>] --tableName <tableName>\`；候选不是权限凭据，详情仍会二次鉴权。
-6. API 仅在候选或详情包含 \`command\` 时使用 \`command --help\` 确认参数并执行只读命令；缺少 \`command\` 表示尚无权威 CLI 映射，应报告不可直接执行，禁止按展示名称猜测命令。table 仅在用户确认查询目标并检查表结构后，才构造 SELECT 并执行 \`mbs database query\`。
+1. 将用户原始需求原样交给后端，首次执行 \`mbs find "<query>"\`；不要求用户预先选择 domain、workflow、api 或 table。
+2. 首次召回不得根据模块路由表或关键词预判并添加 \`--domain\`，domain、候选类型、排序和权限均由后端统一判断。
+3. 只有用户明确限定业务域，或首次响应的 \`hint.suggestedDomains\` 建议收窄时，后续召回才允许使用 \`--domain\`。
+4. 检查候选分数和 hint；低置信、无结果或歧义时先按后端提示补充业务域、对象或时间范围，不直接执行候选。
+5. 命中 \`workflow\` 时读取其 \`steps\`，逐步用每个 \`intentQuery\` 再次执行 \`mbs find --target-type api\`。
+6. 确认一个 \`api\` 候选后，执行其 \`detailCommand\`（\`mbs describe <apiId>\`）从后端读取完整接口定义。
+7. 确认一个 \`table\` 候选后，只按结构化 \`nextAction\` 的字段调用 \`mbs database show-create-table --host <host> --database <database> [--schema <schema>] --tableName <tableName>\`；候选不是权限凭据，详情仍会二次鉴权。
+8. API 仅在候选或详情包含 \`command\` 时使用 \`command --help\` 确认参数并执行只读命令；缺少 \`command\` 表示尚无权威 CLI 映射，应报告不可直接执行，禁止按展示名称猜测命令。table 仅在用户确认查询目标并检查表结构后，才构造 SELECT 并执行 \`mbs database query\`。
 
 禁止执行后端命令字符串，也禁止通过 Glob、目录遍历、本地 manifest 或本地表索引发现目标；具体候选和权限过滤必须来自后端。
 ${findProtocolEnd}`
@@ -285,11 +289,11 @@ ${findProtocolEnd}`
   }
   next = next.replace(
     /\*\*第一步\*\*：根据用户意图关键词定位模块。\*\*第二步\*\*：读对应 SKILL\.md 获取命令详情。/,
-    '模块表用于了解业务域边界；业务接口仍须按上方流程先执行 `mbs find`。',
+    '模块表仅用于召回后的业务域说明和管理类能力导航；业务查询首次必须直接执行 `mbs find`，不得据此预判 `--domain`。',
   )
   next = next.replace(
     /## 意图路由规则[\s\S]*?(?=\n## 组织架构参数规则)/,
-    `## 意图路由规则\n\n1. **业务数据查询**：先用用户原话执行 \`mbs find\`，不要求用户选择 workflow/api/table。\n2. **workflow 候选**：按 steps 的子意图继续 find API，由当前数据决定是否执行可选步骤。\n3. **api 候选**：确认后执行 \`mbs describe <apiId>\` 读取后端完整定义；仅在候选或详情包含 \`command\` 时使用 \`command --help\` 确认 CLI 参数。缺少 \`command\` 时报告不可直接执行，禁止按展示名称猜测命令。\n4. **table 候选**：确认后按结构化身份调用 \`database show-create-table\`；候选、DDL 和 SQL 每一步都沿用后端鉴权，不执行后端命令字符串。\n5. **认证 / serve / 版本更新**：使用模块路由表中的专用文档。\n6. **远程发现不可用**：明确报告依赖失败，不读取本地接口卡片、表索引或端点文档。\n\n`,
+    `## 意图路由规则\n\n1. **业务数据查询**：将用户原话直接交给 \`mbs find\`；首次召回不预判 domain、workflow、api 或 table。\n2. **domain 收窄**：仅在用户明确限定业务域，或首次响应的 \`hint.suggestedDomains\` 建议收窄后，经用户语义确认的后续调用中使用 \`--domain\`。\n3. **workflow 候选**：按 steps 的子意图继续 find API，由当前数据决定是否执行可选步骤。\n4. **api 候选**：确认后执行 \`mbs describe <apiId>\` 读取后端完整定义；仅在候选或详情包含 \`command\` 时使用 \`command --help\` 确认 CLI 参数。缺少 \`command\` 时报告不可直接执行，禁止按展示名称猜测命令。\n5. **table 候选**：确认后按结构化身份调用 \`database show-create-table\`；候选、DDL 和 SQL 每一步都沿用后端鉴权，不执行后端命令字符串。\n6. **认证 / serve / 版本更新**：使用模块路由表中的专用文档。\n7. **远程发现不可用**：明确报告依赖失败，不读取本地接口卡片、表索引或端点文档。\n\n`,
   )
   return next
 }
@@ -440,12 +444,14 @@ function renderPathExpression(path, argParams = []) {
 
 /**
  * Renders a domain-only navigation card with no local endpoint catalogue.
+ * The card keeps first recall domain-free and documents the domain-specific command only as a
+ * conditional follow-up after explicit user scope or a backend narrowing hint.
  *
  * @param {object} mod Parsed audit-manifest module.
  * @returns {string} Generated domain Skill content.
  */
 function renderModuleSkill(mod) {
-  return `# ${mod.domain} - ${mod.description}\n\n## 业务域\n\n- 适用场景：${mod.scenarios || mod.description}\n- 关键词：${mod.keywords.join(' / ')}\n- Service：\`${mod.service || '-'}\`\n\n## 接口发现\n\n\`\`\`bash\nmbs find "<用户原始需求>" --domain ${mod.domain}\n\`\`\`\n\n确认 API 候选后执行返回的 \`detailCommand\`：\n\n\`\`\`bash\nmbs describe <apiId>\n\`\`\`\n\n- 本地不保存或扫描该业务域的接口卡片和单接口文档。\n- 命中 workflow 时按 steps 的 \`intentQuery\` 继续检索 API。\n- 低置信、无结果或歧义时先补充条件。\n- 后端详情确认完整字段后，仅在候选或详情包含 \`command\` 时使用 \`command --help\` 核对 CLI 参数；缺少 \`command\` 时报告不可直接执行，禁止按展示名称猜测命令。\n- 后端不可用时明确报告失败，不使用本地词法结果降级。\n`
+  return `# ${mod.domain} - ${mod.description}\n\n## 业务域\n\n- 适用场景：${mod.scenarios || mod.description}\n- 关键词：${mod.keywords.join(' / ')}\n- Service：\`${mod.service || '-'}\`\n\n## 首次统一召回\n\n首次召回不得根据模块关键词预判或添加 \`--domain\`：\n\n\`\`\`bash\nmbs find "<用户原始需求>"\n\`\`\`\n\n只有用户明确限定 ${mod.domain}，或首次响应的 \`hint.suggestedDomains\` 建议按 ${mod.domain} 收窄时，才执行后续过滤：\n\n\`\`\`bash\nmbs find "<用户原始需求>" --domain ${mod.domain}\n\`\`\`\n\n确认 API 候选后执行返回的 \`detailCommand\`：\n\n\`\`\`bash\nmbs describe <apiId>\n\`\`\`\n\n- 本地不保存或扫描该业务域的接口卡片和单接口文档。\n- 命中 workflow 时按 steps 的 \`intentQuery\` 继续检索 API。\n- 低置信、无结果或歧义时按后端 hint 补充条件。\n- 后端详情确认完整字段后，仅在候选或详情包含 \`command\` 时使用 \`command --help\` 核对 CLI 参数；缺少 \`command\` 时报告不可直接执行，禁止按展示名称猜测命令。\n- 后端不可用时明确报告失败，不使用本地词法结果降级。\n`
 }
 
 function renderActionSkill(mod, action, hash) {

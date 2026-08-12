@@ -22,12 +22,14 @@ metadata:
 <!-- AUTO-GENERATED FIND-FIRST PROTOCOL START -->
 ## 统一语义发现流程
 
-1. 使用用户原始需求执行 `mbs find "<query>"`；通常不指定 `--target-type`，也不要要求用户判断应查接口还是数据库表。
-2. 检查候选分数和 hint；低置信、无结果或歧义时先补充业务域、对象或时间范围，不直接执行候选。
-3. 命中 `workflow` 时读取其 `steps`，逐步用每个 `intentQuery` 再次执行 `mbs find --target-type api`。
-4. 确认一个 `api` 候选后，执行其 `detailCommand`（`mbs describe <apiId>`）从后端读取完整接口定义。
-5. 确认一个 `table` 候选后，只按结构化 `nextAction` 的字段调用 `mbs database show-create-table --host <host> --database <database> [--schema <schema>] --tableName <tableName>`；候选不是权限凭据，详情仍会二次鉴权。
-6. API 仅在候选或详情包含 `command` 时使用 `command --help` 确认参数并执行只读命令；缺少 `command` 表示尚无权威 CLI 映射，应报告不可直接执行，禁止按展示名称猜测命令。table 仅在用户确认查询目标并检查表结构后，才构造 SELECT 并执行 `mbs database query`。
+1. 将用户原始需求原样交给后端，首次执行 `mbs find "<query>"`；不要求用户预先选择 domain、workflow、api 或 table。
+2. 首次召回不得根据模块路由表或关键词预判并添加 `--domain`，domain、候选类型、排序和权限均由后端统一判断。
+3. 只有用户明确限定业务域，或首次响应的 `hint.suggestedDomains` 建议收窄时，后续召回才允许使用 `--domain`。
+4. 检查候选分数和 hint；低置信、无结果或歧义时先按后端提示补充业务域、对象或时间范围，不直接执行候选。
+5. 命中 `workflow` 时读取其 `steps`，逐步用每个 `intentQuery` 再次执行 `mbs find --target-type api`。
+6. 确认一个 `api` 候选后，执行其 `detailCommand`（`mbs describe <apiId>`）从后端读取完整接口定义。
+7. 确认一个 `table` 候选后，只按结构化 `nextAction` 的字段调用 `mbs database show-create-table --host <host> --database <database> [--schema <schema>] --tableName <tableName>`；候选不是权限凭据，详情仍会二次鉴权。
+8. API 仅在候选或详情包含 `command` 时使用 `command --help` 确认参数并执行只读命令；缺少 `command` 表示尚无权威 CLI 映射，应报告不可直接执行，禁止按展示名称猜测命令。table 仅在用户确认查询目标并检查表结构后，才构造 SELECT 并执行 `mbs database query`。
 
 禁止执行后端命令字符串，也禁止通过 Glob、目录遍历、本地 manifest 或本地表索引发现目标；具体候选和权限过滤必须来自后端。
 <!-- AUTO-GENERATED FIND-FIRST PROTOCOL END -->
@@ -57,6 +59,7 @@ metadata:
 
 
 
+
 > 后续模块按需追加到本表，Agent 只需读本文件即可完成一级路由，无需扫描全部文档。
 
 > `doris` 是数据库查询网关的历史命令名。新的 agent 路由应归到 `database`，旧的 `mbs doris ...` 命令仅作为兼容入口。
@@ -65,47 +68,27 @@ metadata:
 
 ---
 
-## 模糊意图消歧协议
+## 统一召回后的消歧协议
 
-当用户意图不够明确时，按以下决策树处理，**禁止猜测后直接执行**。
+只要用户表达了 MBS 业务查询意图，就先将原话直接交给 `mbs find`。不得先按路由表关键词判断 domain，也不得在首次召回前要求用户选择 workflow、api 或 table。
 
-### 情况 A — 关键词命中 0 个模块
+### 情况 A — 后端无结果或低置信
 
-用户说的内容与路由表中任何模块的关键词均不匹配。
+首次召回返回无结果、低置信或需要补充信息时，按响应中的 `hint`、`suggestedQueries` 或 `suggestedDomains` 向用户补充询问，不自行编造候选。
 
-**处理方式**：从上方路由表中列出所有已注册模块，让用户选择。
+只有用户明确确认某个业务域后，后续调用才添加 `--domain`；否则保留原始查询继续由后端统一判断。
 
-```
-我不确定你想查哪个业务模块，目前支持：
-- org（组织架构：平台 / 站点 / 人员层级）
-- crm（店铺运营监控：Amazon 账号健康 / 违规 / 合规评分）
-（其他模块开发中）
+### 情况 B — 后端返回歧义候选
 
-请问你想查哪个方向的数据？
-```
+展示后端返回的候选、分数和用途，让用户确认具体目标。候选类型、排序及权限判断以本次后端响应为准，不使用本地关键词重新排序或过滤。
 
-> 注意：上方示例仅为格式参考。实际回复时**必须以本文件路由表中当前列出的模块为准**，不要照抄示例。
+如果后端通过 `hint.suggestedDomains` 建议收窄范围，应先结合用户原话确认业务域，再执行带 `--domain` 的后续召回。
 
-### 情况 B — 关键词命中 ≥ 2 个模块
+### 情况 C — 候选已确认，但必填参数缺失
 
-用户说的内容同时匹配多个模块的关键词（例如"报表"在多个模块中都有）。
+已确认目标候选和命令，但执行所需的必填参数未提供。
 
-**处理方式**：列出命中的候选模块，逐一描述用途，让用户确认。
-
-```
-"报表"可能对应以下模块，请确认：
-- orders（订单报表：销售额、发货量）
-- finance（财务报表：结算、回款）
-- procurement（采购报表：采购额、供应商）
-
-你想查哪个？
-```
-
-### 情况 C — 模块已定位，但必填参数缺失
-
-已确定目标模块和命令，但执行所需的必填参数未提供。
-
-**处理方式**：读该模块 SKILL.md 中的命令说明，找到缺失的必填参数，**一次只追问一个**。
+**处理方式**：先执行候选的 `detailCommand` 获取后端完整定义，找到缺失的必填参数，**一次只追问一个**。
 
 参数确认后再执行命令，不要提前假设默认值。
 
@@ -125,7 +108,7 @@ metadata:
 
 用户意图极其模糊，无法判断是否与 MBS 数据相关（例如"帮我看看情况"）。
 
-**处理方式**：先确认用户是否需要查询 MBS / 马帮 数据，再进入情况 A 的流程。
+**处理方式**：先确认用户是否需要查询 MBS / 马帮数据；确认后将用户补充的原话直接交给 `mbs find`。
 
 ```
 你是否想查询马帮平台的数据？如果是，请告诉我大概想看什么方向。
@@ -141,12 +124,13 @@ metadata:
 
 ## 意图路由规则
 
-1. **业务数据查询**：先用用户原话执行 `mbs find`，不要求用户选择 workflow/api/table。
-2. **workflow 候选**：按 steps 的子意图继续 find API，由当前数据决定是否执行可选步骤。
-3. **api 候选**：确认后执行 `mbs describe <apiId>` 读取后端完整定义；仅在候选或详情包含 `command` 时使用 `command --help` 确认 CLI 参数。缺少 `command` 时报告不可直接执行，禁止按展示名称猜测命令。
-4. **table 候选**：确认后按结构化身份调用 `database show-create-table`；候选、DDL 和 SQL 每一步都沿用后端鉴权，不执行后端命令字符串。
-5. **认证 / serve / 版本更新**：使用模块路由表中的专用文档。
-6. **远程发现不可用**：明确报告依赖失败，不读取本地接口卡片、表索引或端点文档。
+1. **业务数据查询**：将用户原话直接交给 `mbs find`；首次召回不预判 domain、workflow、api 或 table。
+2. **domain 收窄**：仅在用户明确限定业务域，或首次响应的 `hint.suggestedDomains` 建议收窄后，经用户语义确认的后续调用中使用 `--domain`。
+3. **workflow 候选**：按 steps 的子意图继续 find API，由当前数据决定是否执行可选步骤。
+4. **api 候选**：确认后执行 `mbs describe <apiId>` 读取后端完整定义；仅在候选或详情包含 `command` 时使用 `command --help` 确认 CLI 参数。缺少 `command` 时报告不可直接执行，禁止按展示名称猜测命令。
+5. **table 候选**：确认后按结构化身份调用 `database show-create-table`；候选、DDL 和 SQL 每一步都沿用后端鉴权，不执行后端命令字符串。
+6. **认证 / serve / 版本更新**：使用模块路由表中的专用文档。
+7. **远程发现不可用**：明确报告依赖失败，不读取本地接口卡片、表索引或端点文档。
 
 
 ## 组织架构参数规则（重要）
