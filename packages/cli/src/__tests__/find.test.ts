@@ -252,11 +252,15 @@ describe('find validation', () => {
 
 describe('production recall transport', () => {
   /**
-   * Verifies normal execution keeps the configured authenticated gateway.
+   * Verifies find and describe preserve the cli-service layer in their complete production URLs.
    */
-  it('always appends the standard CLI gateway prefix', () => {
-    expect(resolveRecallBaseUrl('https://api.example.com/'))
-      .toBe('https://api.example.com/gateway/cli')
+  it('targets the cli-service recall endpoints', () => {
+    const baseUrl = resolveRecallBaseUrl('https://api.example.com/')
+
+    expect(`${baseUrl}/cli/api/recall`)
+      .toBe('https://api.example.com/cli/cli-service/cli/api/recall')
+    expect(`${baseUrl}/cli/api/recall/detail`)
+      .toBe('https://api.example.com/cli/cli-service/cli/api/recall/detail')
   })
 
   /**
