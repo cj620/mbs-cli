@@ -258,9 +258,9 @@ describe('production recall transport', () => {
     const baseUrl = resolveRecallBaseUrl('https://api.example.com/')
 
     expect(`${baseUrl}/cli/api/recall`)
-      .toBe('https://api.example.com/cli/gateway/cli-service/cli/api/recall')
+      .toBe('https://api.example.com/gateway/cli/cli-service/cli/api/recall')
     expect(`${baseUrl}/cli/api/recall/detail`)
-      .toBe('https://api.example.com/cli/gateway/cli-service/cli/api/recall/detail')
+      .toBe('https://api.example.com/gateway/cli/cli-service/cli/api/recall/detail')
   })
 
   /**

@@ -1,6 +1,6 @@
 // AUTO-GENERATED FROM audit manifest. DO NOT EDIT.
 // Source: manifests/mbs-api-manifest.json
-// Manifest: 2026-05-20T00:00:00+08:00 @ bb5873b2cc4b4b640f441445fae12e93fdac17e403d4b921ac62cca7bd97b484
+// Manifest: 2026-05-20T00:00:00+08:00 @ 2b24bbadfad4ce84aa520620923e3ca8ede96624f5d48fb303d1dc3fa41d84df
 import type { AuditManifest } from './router.js'
 
 export const projectManifest = {
@@ -1477,7 +1477,7 @@ export const projectManifest = {
           "name": "crm-web-service-refund-condition",
           "description": "订单退款条件查询（发起退款明细）：订单详情页点击“发起退款(send refund)”时调用，按订单ID查询该订单的可退款条件：退款币种、退款总额、可退款SKU明细及原始金额、可选退款理由列表，以及ERP/平台两侧的历史退款记录，用于回填发起退款弹窗。",
           "method": "POST",
-          "path": "/gateway/crm-web-service/cancelOrder/1/refundCondition",
+          "path": "/crm-web-service/cancelOrder/1/refundCondition",
           "pathPrefix": "",
           "responseMode": "json"
         },
@@ -1485,7 +1485,7 @@ export const projectManifest = {
           "name": "finance-lingxing-data-service-parallel-lingxing-download-infos",
           "description": "领星下载历史分页查询：下载历史页分页查询领星导出任务记录：按文件名、任务状态、创建时间区间筛选并分页，返回任务文件名、下载地址、状态、创建时间、表格总数、文件大小等列表数据。",
           "method": "POST",
-          "path": "/gateway/finance-lingxing-data-service/LingxingPaging/parallelLingxingDownloadInfos",
+          "path": "/finance-lingxing-data-service/LingxingPaging/parallelLingxingDownloadInfos",
           "pathPrefix": "",
           "responseMode": "json"
         },
@@ -3819,7 +3819,7 @@ export const projectManifest = {
           "name": "crm-web-service-check-cancel-eligibility",
           "description": "校验订单取消资格(checkCancelEligibility)：订单详情页点击「取消订单」时调用：根据订单ID校验该订单是否满足取消条件，并返回可选的取消理由列表(cancelReasonList)，用于取消订单弹窗中的「取消理由」下拉。code!=200 时弹出 message 错误提示并中断。",
           "method": "POST",
-          "path": "/gateway/crm-web-service/cancelOrder/1/checkCancelEligibility",
+          "path": "/crm-web-service/cancelOrder/1/checkCancelEligibility",
           "pathPrefix": "",
           "responseMode": "json"
         },
@@ -4145,7 +4145,7 @@ export const projectManifest = {
           "name": "ozon-product-service-id",
           "description": "获取Ozon商品图片编辑信息：Ozon 图片编辑页进入时，按 listing 记录ID(URL路径变量)拉取该 Ozon 商品的编辑信息，前端据此渲染主图、附图列表(imgUrl JSON串)、颜色样本图，并把原始返回对象整体缓存(rawData)，用于后续 1:1还原/3:4裁剪(取 publishSpu/erpSpu/erpSku)及提交保存(原样回传)。",
           "method": "GET",
-          "path": "/gateway/ozon-product-service/ozonProductEdit/getOzonProductEditInfo/{id}",
+          "path": "/ozon-product-service/ozonProductEdit/getOzonProductEditInfo/{id}",
           "pathPrefix": "",
           "responseMode": "json"
         },
@@ -4153,7 +4153,7 @@ export const projectManifest = {
           "name": "product-imageditor-service-id",
           "description": "根据AI图任务ID查询任务状态：图片分配工作台对存在AI图任务(aiImgTaskId)的图片按3秒间隔轮询本接口查询蜂鸟(fengniao)AI处理任务状态；当返回的fengniaoStatus不再为padding时清除定时器并刷新图片列表。",
           "method": "GET",
-          "path": "/gateway/product-imageditor-service/artImage/getAiImgTaskById/{id}",
+          "path": "/product-imageditor-service/artImage/getAiImgTaskById/{id}",
           "pathPrefix": "",
           "responseMode": "json"
         },
@@ -11471,7 +11471,7 @@ export const projectManifest = {
           "name": "fengniao-bridge-service-translate-editor",
           "description": "获取AI精修(翻译编辑器)链接：图库右键\"AI精修\"时调用，向蜂鸟桥接服务请求翻译/精修编辑器访问链接(url)，请求体为空，用户身份通过请求头 customer_id(来源 localStorage userid) 传递；前端拿到 data.url 后作为编辑器 iframe 的 src 打开。",
           "method": "POST",
-          "path": "/gateway/fengniao-bridge-service/auth/translateEditor",
+          "path": "/fengniao-bridge-service/auth/translateEditor",
           "pathPrefix": "",
           "responseMode": "json"
         },
@@ -11495,7 +11495,7 @@ export const projectManifest = {
           "name": "center-message-service-query-notice-page",
           "description": "通知公告分页查询：站内通知公告分页查询。页面加载后调用，拉取当前用户的通知列表（默认只查未读），前端取列表第一条 records[0].id，再调用 getById 拉取详情并弹窗提醒。",
           "method": "POST",
-          "path": "/gateway/center-message-service/message/notice/queryNoticePage",
+          "path": "/center-message-service/message/notice/queryNoticePage",
           "pathPrefix": "",
           "responseMode": "json"
         },
@@ -11503,7 +11503,7 @@ export const projectManifest = {
           "name": "center-message-service-read",
           "description": "公告通知-标记已读：用户在首页公告弹窗中点击「确认已读」按钮时调用，按公告ID将当前公告标记为已读；以 GET 方式携带 noticeId 查询参数请求，前端调用后仅关闭弹窗、不消费返回体。",
           "method": "GET",
-          "path": "/gateway/center-message-service/message/notice/read",
+          "path": "/center-message-service/message/notice/read",
           "pathPrefix": "",
           "responseMode": "json"
         },
@@ -11511,7 +11511,7 @@ export const projectManifest = {
           "name": "crm-web-service-get-ebay-mail-notice",
           "description": "获取eBay未回复邮件提醒：拉取当前登录客服/员工需要处理的 eBay 未回复邮件汇总，按邮件主题聚合返回每个主题下的未回复邮件数量，前端在仪表盘右侧以 ElNotification 弹窗提醒；data 为空对象时不弹窗。配套确认已读按钮调用 removeEbayMailNotice。",
           "method": "POST",
-          "path": "/gateway/crm-web-service/notice/getEbayMailNotice",
+          "path": "/crm-web-service/notice/getEbayMailNotice",
           "pathPrefix": "",
           "responseMode": "json"
         },
@@ -11573,7 +11573,7 @@ export const projectManifest = {
           "name": "product-auto-listing-service-platform-type-enum",
           "description": "平台类型枚举查询：获取刊登模板下拉所需的「平台类型枚举」列表。前端在组件挂载时调用，拿到平台数组后用于渲染「刊登模板」下拉菜单，并按 canSalePlatform 过滤被禁用平台（120→TIKTOK、119→OZON），再据所选平台预取刊登模板ID。",
           "method": "GET",
-          "path": "/gateway/product-auto-listing-service/support/enum/platformTypeEnum",
+          "path": "/product-auto-listing-service/support/enum/platformTypeEnum",
           "pathPrefix": "",
           "responseMode": "json"
         },
@@ -12061,7 +12061,7 @@ export const projectManifest = {
           "name": "product-auto-listing-service-get-listing-template-page",
           "description": "刊登模板分页查询：根据 ERP SPU 与平台类型(platformType)分页查询该商品在指定平台下已存在的刊登模板列表；前端取返回列表首条记录的 id，用于刊登模板下拉跳转到对应平台的编辑页(回填模板id)。",
           "method": "POST",
-          "path": "/gateway/product-auto-listing-service/listing/listingTemplate/getListingTemplatePage",
+          "path": "/product-auto-listing-service/listing/listingTemplate/getListingTemplatePage",
           "pathPrefix": "",
           "responseMode": "json"
         },
@@ -12115,7 +12115,7 @@ export const projectManifest = {
           "name": "purchase-core-service-get",
           "description": "今日工作统计查询(下单/跟单任务汇总)：采购“提交今日工作”弹窗数据源：GET 拉取当日下单任务(按采购员的总任务量/完成量/付款完成量)与跟单任务(按组别的任务类型明细及合计)统计，前端将 followUpTask 对象按键遍历转成 [{label,value}] 后渲染到弹窗左右两张表格。",
           "method": "GET",
-          "path": "/gateway/purchase-core-service/report/today/work/get",
+          "path": "/purchase-core-service/report/today/work/get",
           "pathPrefix": "",
           "responseMode": "json"
         },
@@ -12443,7 +12443,7 @@ export const projectManifest = {
           "name": "purchase-core-service-page",
           "description": "降本明细分页查询：降本优化报表「降本明细」页签的多条件分页查询：支持降本时间、入库时间区间、SPU、SKU、降本人、排序方式等筛选，返回降本明细列表（SPU/SKU/产品名/供应商/降本前后金额/降本差额/下降比率/累计降本金额）及总条数。",
           "method": "POST",
-          "path": "/gateway/purchase-core-service/down/cost/report/page",
+          "path": "/purchase-core-service/down/cost/report/page",
           "pathPrefix": "",
           "responseMode": "json"
         }

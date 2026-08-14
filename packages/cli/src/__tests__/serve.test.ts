@@ -175,6 +175,21 @@ describe('serve app', () => {
     }
   })
 
+  /**
+   * Verifies generated business paths remain relative to the shared
+   * `/gateway/cli` client base so commands cannot repeat the gateway segment.
+   */
+  it('keeps generated project action paths relative to the CLI gateway', async () => {
+    const { projectManifest } = await import('../serve/generated-manifest.js')
+    const gatewayPrefixedActions = projectManifest.modules.flatMap((mod) =>
+      mod.actions
+        .filter((action) => action.path.startsWith('/gateway/'))
+        .map((action) => `${mod.domain}:${action.name}:${action.path}`),
+    )
+
+    expect(gatewayPrefixedActions).toEqual([])
+  })
+
   it('project API route forwards an upstream request to the matching path', async () => {
     const { projectManifest } = await import('../serve/generated-manifest.js')
     // pick the first generated action with no path params

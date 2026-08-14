@@ -5,13 +5,13 @@ import {
   getConfig,
 } from '@mb-it-org/shared'
 
-const CLI_SERVICE_PREFIX = '/cli/gateway/cli-service'
+const CLI_SERVICE_PREFIX = '/gateway/cli/cli-service'
 
 /**
  * Resolves the authenticated cli-service base URL used by recall requests.
  *
  * @param apiUrl Configured MBS API root.
- * @returns API root with `/cli/gateway/cli-service` and no duplicate slash.
+ * @returns API root with `/gateway/cli/cli-service` and no duplicate slash.
  */
 export function resolveRecallBaseUrl(apiUrl: string): string {
   return `${apiUrl.replace(/\/+$/, '')}${CLI_SERVICE_PREFIX}`
@@ -63,7 +63,7 @@ export function classifyRemoteFailure(error: unknown): string {
  *
  * <p>The client always reuses the normal saved CLI authentication context and
  * refresh flow, and targets the recall controller through
- * `/cli/gateway/cli-service`.</p>
+ * `/gateway/cli/cli-service`.</p>
  *
  * @returns Authenticated API client configured for the cli-service gateway path.
  * @throws Error when saved authentication or configuration cannot be loaded.

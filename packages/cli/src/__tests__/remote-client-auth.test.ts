@@ -44,7 +44,7 @@ describe('production recall authentication', () => {
       refreshAuth: () => Promise<string>
     }
 
-    expect(client.baseUrl).toBe('https://api.example.com/cli/gateway/cli-service')
+    expect(client.baseUrl).toBe('https://api.example.com/gateway/cli/cli-service')
     expect(client.cookie).toBe('SESSION=saved-cookie')
     expect(mocks.getAuthContext).toHaveBeenCalledOnce()
     expect(mocks.getConfig).toHaveBeenCalledOnce()
