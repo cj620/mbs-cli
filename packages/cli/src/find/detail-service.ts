@@ -1,11 +1,23 @@
 import { cleanBoundedText, RecallUnavailableError, withTimeout } from './find-service.js'
 import type { ApiDetailData, ApiFieldDefinition } from './types.js'
+import type {
+  FormSerializationStyle,
+  MultipartFilenamePolicy,
+  RequestBodyMode,
+  RequestBodyValueKind,
+} from '@mb-it-org/shared'
 
 export type RemoteApiDetail = (apiId: number, signal?: AbortSignal) => Promise<unknown>
 
 const MAX_FIELD_DEPTH = 32
 const MAX_FIELDS_PER_LEVEL = 5_000
 const COMMAND_IDENTIFIER = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
+const REQUEST_BODY_MODES = new Set<RequestBodyMode>([
+  'NONE', 'JSON', 'FORM_URLENCODED', 'MULTIPART', 'TEXT', 'XML', 'BINARY',
+])
+const VALUE_KINDS = new Set<RequestBodyValueKind>(['VALUE', 'FILE', 'BINARY'])
+const SERIALIZATION_STYLES = new Set<FormSerializationStyle>(['FLAT', 'DOT', 'BRACKET', 'JSON_STRING'])
+const FILENAME_POLICIES = new Set<MultipartFilenamePolicy>(['SOURCE_BASENAME', 'FIXED', 'OMIT'])
 
 /**
  * Loads one recalled API definition exclusively from the backend.
@@ -63,6 +75,7 @@ export function normalizeApiDetailResponse(raw: unknown): ApiDetailData {
   for (const [scope, fields] of Object.entries(requestRoot)) {
     request[scope] = normalizeFieldArray(fields, 0)
   }
+  const requestBodyMode = normalizeRequestBodyMode(detail.requestBodyMode, request.body ?? [])
 
   return {
     id: detail.id as number,
@@ -73,6 +86,9 @@ export function normalizeApiDetailResponse(raw: unknown): ApiDetailData {
     ...(typeof detail.method === 'string' ? { method: detail.method } : {}),
     ...(typeof detail.path === 'string' ? { path: detail.path } : {}),
     operationType: 'QUERY',
+    requestBodyMode,
+    ...optionalBoundedText('requestMediaType', detail.requestMediaType, 255),
+    ...optionalBoundedText('requestCharset', detail.requestCharset, 32),
     ...(command ? { command } : {}),
     request,
     response: normalizeFieldArray(detail.response, 0),
@@ -115,8 +131,73 @@ function normalizeField(value: unknown, depth: number): ApiFieldDefinition {
     ...(typeof field.required === 'boolean' ? { required: field.required } : {}),
     ...(typeof field.fieldScope === 'string' ? { fieldScope: field.fieldScope } : {}),
     ...(typeof field.paramLocation === 'string' ? { paramLocation: field.paramLocation } : {}),
+    ...optionalEnumProperty('valueKind', field.valueKind, VALUE_KINDS),
+    ...optionalEnumProperty('serializationStyle', field.serializationStyle, SERIALIZATION_STYLES),
+    ...(typeof field.explode === 'boolean' ? { explode: field.explode } : {}),
+    ...optionalBoundedText('partContentType', field.partContentType, 255),
+    ...optionalEnumProperty('filenamePolicy', field.filenamePolicy, FILENAME_POLICIES),
+    ...optionalBoundedText('partFilename', field.partFilename, 255),
     children: normalizeFieldArray(field.children, depth + 1),
   }
+}
+
+/**
+ * Normalizes the server request-body mode and preserves compatibility with pre-migration detail responses.
+ *
+ * @param value Candidate explicit mode.
+ * @param bodyFields Already normalized body field collection.
+ * @returns Explicit uppercase mode, or JSON/NONE inferred from legacy body presence.
+ * @throws Error when a present mode is not part of the public contract.
+ */
+function normalizeRequestBodyMode(value: unknown, bodyFields: ApiFieldDefinition[]): RequestBodyMode {
+  if (value === undefined || value === null || String(value).trim() === '') {
+    return bodyFields.length > 0 ? 'JSON' : 'NONE'
+  }
+  const normalized = String(value).trim().toUpperCase() as RequestBodyMode
+  if (!REQUEST_BODY_MODES.has(normalized)) throw new Error('remote API detail response is invalid')
+  return normalized
+}
+
+/**
+ * Copies one optional bounded metadata string under its original property name.
+ *
+ * @param key Output property name.
+ * @param value Candidate server value.
+ * @param maxLength Maximum accepted character length.
+ * @returns Empty object when absent, otherwise one validated property.
+ * @throws Error for non-string, oversized, or control-character values.
+ */
+function optionalBoundedText<K extends string>(
+  key: K,
+  value: unknown,
+  maxLength: number,
+): Partial<Record<K, string>> {
+  if (value === undefined || value === null || value === '') return {}
+  if (typeof value !== 'string' || value.length > maxLength || /[\u0000-\u001f\u007f]/u.test(value)) {
+    throw new Error('remote API detail response is invalid')
+  }
+  return { [key]: value } as Partial<Record<K, string>>
+}
+
+/**
+ * Copies one optional string enum only when it belongs to the supplied allowlist.
+ *
+ * @param key Output property name.
+ * @param value Candidate server value.
+ * @param allowed Accepted stable enum values.
+ * @returns Empty object when absent, otherwise one normalized enum property.
+ * @throws Error when a present value is unsupported.
+ */
+function optionalEnumProperty<K extends string, T extends string>(
+  key: K,
+  value: unknown,
+  allowed: Set<T>,
+): Partial<Record<K, T>> {
+  if (value === undefined || value === null || value === '') return {}
+  if (typeof value !== 'string') throw new Error('remote API detail response is invalid')
+  const normalized = value.trim().toUpperCase() as T
+  if (!allowed.has(normalized)) throw new Error('remote API detail response is invalid')
+  return { [key]: normalized } as Partial<Record<K, T>>
 }
 
 /**

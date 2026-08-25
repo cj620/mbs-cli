@@ -150,6 +150,7 @@ export function buildApp(
         action: route.action,
         description: route.description,
         responseMode: route.responseMode,
+        ...(route.requestBodyMode ? { requestBodyMode: route.requestBodyMode } : {}),
       })),
       ...(options.projectApis ? localProjectRoutes : []),
       ...(options.proxyAll

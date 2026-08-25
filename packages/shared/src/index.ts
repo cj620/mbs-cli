@@ -3,6 +3,18 @@ export type { MBSConfig, ApiSuccessResponse, ApiErrorResponse, MBSResponse } fro
 export { NotAuthenticatedError, MBSError } from './errors.js'
 export { getConfig, setConfig, getConfigDir } from './config.js'
 export { APIClient } from './http.js'
+export { encodeRequestBody, requestBodyFieldsFromSchema } from './request-body.js'
+export type {
+  EncodedRequestBody,
+  EncodeRequestBodyOptions,
+  FormSerializationStyle,
+  MultipartFilenamePolicy,
+  RequestBodyDefinition,
+  RequestBodyFieldDefinition,
+  RequestBodyMode,
+  RequestBodyValueKind,
+  RequestContentHeaders,
+} from './request-body.js'
 export { withCliPathPrefix } from './url.js'
 export { getWhoamiStatus } from './whoami.js'
 export type { WhoamiStatus } from './whoami.js'

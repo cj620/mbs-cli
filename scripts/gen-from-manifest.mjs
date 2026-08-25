@@ -276,7 +276,7 @@ function syncFindFirstProtocol(content) {
 5. 命中 \`workflow\` 时读取其 \`steps\`，逐步用每个 \`intentQuery\` 再次执行 \`mbs find --target-type api\`。
 6. 确认一个 \`api\` 候选后，执行其 \`detailCommand\`（\`mbs describe <apiId>\`）从后端读取完整接口定义。
 7. 确认一个 \`table\` 候选后，只按结构化 \`nextAction\` 的字段调用 \`mbs database show-create-table --host <host> --database <database> [--schema <schema>] --tableName <tableName>\`；候选不是权限凭据，详情仍会二次鉴权。
-8. API 详情确认 \`operationType=QUERY\` 且 method 为 GET/POST 后，将已确认字段按 path、query 和 body 作用域组装，使用 \`mbs request <method> <path> [--params <json>] [--body <json>]\` 执行；path 参数必须先替换。可选 \`command\` 只是已封装接口的便利入口，不是动态接口执行前提。table 仅在用户确认查询目标并检查表结构后，才构造 SELECT 并执行 \`mbs database query\`。
+8. API 详情确认 \`operationType=QUERY\` 且 method 为 GET/POST 后，优先使用 \`mbs request --api-id <apiId> [<method> <concrete-path>] [--params <json>] [--body <value>|--body-file <path>]\` 执行，让 CLI 再次读取权威请求体编码元数据；仅旧 JSON 调用保留不带 \`--api-id\` 的兼容形式。path 含参数时必须传入已替换的 concrete-path。可选 \`command\` 只是已封装接口的便利入口，不是动态接口执行前提。table 仅在用户确认查询目标并检查表结构后，才构造 SELECT 并执行 \`mbs database query\`。
 
 禁止执行后端命令字符串，也禁止通过 Glob、目录遍历、本地 manifest 或本地表索引发现目标；具体候选和权限过滤必须来自后端。
 ${findProtocolEnd}`
@@ -293,7 +293,7 @@ ${findProtocolEnd}`
   )
   next = next.replace(
     /## 意图路由规则[\s\S]*?(?=\n## 组织架构参数规则)/,
-    `## 意图路由规则\n\n1. **业务数据查询**：将用户原话直接交给 \`mbs find\`；首次召回不预判 domain、workflow、api 或 table。\n2. **domain 收窄**：仅在用户明确限定业务域，或首次响应的 \`hint.suggestedDomains\` 建议收窄后，经用户语义确认的后续调用中使用 \`--domain\`。\n3. **workflow 候选**：按 steps 的子意图继续 find API，由当前数据决定是否执行可选步骤。\n4. **api 候选**：确认后执行 \`mbs describe <apiId>\` 读取后端完整定义；确认 QUERY、GET/POST 和字段作用域后使用 \`mbs request\` 动态查询，不要求预生成业务命令。\n5. **table 候选**：确认后按结构化身份调用 \`database show-create-table\`；候选、DDL 和 SQL 每一步都沿用后端鉴权，不执行后端命令字符串。\n6. **认证 / serve / 版本更新**：使用模块路由表中的专用文档。\n7. **远程发现不可用**：明确报告依赖失败，不读取本地接口卡片、表索引或端点文档。\n\n`,
+    `## 意图路由规则\n\n1. **业务数据查询**：将用户原话直接交给 \`mbs find\`；首次召回不预判 domain、workflow、api 或 table。\n2. **domain 收窄**：仅在用户明确限定业务域，或首次响应的 \`hint.suggestedDomains\` 建议收窄后，经用户语义确认的后续调用中使用 \`--domain\`。\n3. **workflow 候选**：按 steps 的子意图继续 find API，由当前数据决定是否执行可选步骤。\n4. **api 候选**：确认后执行 \`mbs describe <apiId>\` 读取后端完整定义；确认 QUERY、GET/POST 和字段作用域后使用 \`mbs request --api-id <apiId>\` 动态查询，使非 JSON 编码严格跟随后端元数据，不要求预生成业务命令。\n5. **table 候选**：确认后按结构化身份调用 \`database show-create-table\`；候选、DDL 和 SQL 每一步都沿用后端鉴权，不执行后端命令字符串。\n6. **认证 / serve / 版本更新**：使用模块路由表中的专用文档。\n7. **远程发现不可用**：明确报告依赖失败，不读取本地接口卡片、表索引或端点文档。\n\n`,
   )
   return next
 }
@@ -306,6 +306,17 @@ function removeLegacyInterfaceCardManifest() {
   if (existsSync(manifestPath)) removePath(manifestPath)
 }
 
+/**
+ * Writes the normalized subset of manifest metadata used by the local serve command.
+ *
+ * Request-body definitions are copied only for actions with an explicit mode, preserving the
+ * previous compact JSON manifest shape for legacy actions while retaining all metadata needed by
+ * the shared encoder.
+ *
+ * @param {object[]} modules Normalized manifest modules.
+ * @param {string} source Repository-relative source manifest path.
+ * @param {string} hash Source manifest integrity hash.
+ */
 function syncServeManifest(modules, source, hash) {
   const manifestPath = join(repoRoot, 'packages', 'cli', 'src', 'serve', 'generated-manifest.ts')
   const serveManifest = {
@@ -321,6 +332,10 @@ function syncServeManifest(modules, source, hash) {
         path: action.path,
         pathPrefix: action.pathPrefix,
         responseMode: action.responseMode,
+        requestBodyMode: action.requestBodyMode,
+        requestMediaType: action.requestMediaType,
+        requestCharset: action.requestCharset,
+        request: action.requestBodyMode ? action.request : undefined,
       })),
     })),
   }
@@ -370,27 +385,56 @@ function renderPluginIndex(mod) {
   return `// AUTO-GENERATED FROM audit manifest. DO NOT EDIT.\nimport { Plugin } from '@oclif/core'\n\n${imports}\n\nexport default class ${toClassName(mod.domain)}Plugin extends Plugin {\n  static readonly topic = '${mod.domain}'\n  static readonly description = '${escapeTs(mod.description)}'\n\n  async loadCommands(): Promise<void> {\n    // Commands are auto-loaded via the glob pattern in package.json\n  }\n}\n`
 }
 
+/**
+ * Renders one oclif command from a normalized manifest action.
+ *
+ * POST actions with explicit body metadata delegate encoding to the shared encoder and forward
+ * only its Content-Type header. GET and legacy JSON actions retain their existing generated shape.
+ *
+ * @param {object} mod Normalized business-domain module.
+ * @param {object} action Normalized action owned by the module.
+ * @param {string} source Repository-relative source manifest path.
+ * @param {string} hash Source manifest integrity hash.
+ * @returns {string} Complete generated TypeScript command source.
+ */
 function renderCommand(mod, action, source, hash) {
   const actionParams = flattenActionParams(action)
   const argParams = actionParams.filter((param) => param.in === 'path')
   const flagParams = actionParams.filter((param) => param.in !== 'path')
-  const imports = [`import { ${argParams.length > 0 ? 'Args, ' : ''}Flags } from '@oclif/core'`, "import { MBSCommand } from '@mb-it-org/shared'"]
+  const usesRequestBodyEncoder = action.method === 'POST' && Boolean(action.requestBodyMode)
+  const sharedImports = usesRequestBodyEncoder
+    ? 'MBSCommand, encodeRequestBody, requestBodyFieldsFromSchema'
+    : 'MBSCommand'
+  const imports = [
+    `import { ${argParams.length > 0 ? 'Args, ' : ''}Flags } from '@oclif/core'`,
+    `import { ${sharedImports} } from '@mb-it-org/shared'`,
+  ]
   const className = `${toClassName(mod.domain)}${toClassName(action.name)}`
   const flags = renderFlags(uniqueParamsByName(flagParams.filter((param) => param.constValue === undefined)))
   const args = renderArgs(argParams)
   const pathExpr = renderPathExpression(joinPaths(action.pathPrefix || mod.pathPrefix, action.path), argParams)
   const requestParams = renderParamObject(flagParams.filter((param) => param.in === 'query'))
   const requestBody = renderParamObject(flagParams.filter((param) => param.in !== 'query'))
-  const requestOptions = flagParams.some((param) => param.in === 'query') ? `, { params: ${requestParams} }` : ''
+  const requestOptionEntries = []
+  if (flagParams.some((param) => param.in === 'query')) requestOptionEntries.push(`params: ${requestParams}`)
+  if (usesRequestBodyEncoder) {
+    requestOptionEntries.push('...(encodedBody.headers ? { headers: encodedBody.headers } : {})')
+  }
+  const requestOptions = requestOptionEntries.length > 0 ? `, { ${requestOptionEntries.join(', ')} }` : ''
   const arrayHelper = flagParams.some((param) => param.type === 'array' && param.constValue === undefined)
     ? "\n    const toArray = (value: string | undefined, itemType = 'string'): unknown[] | undefined => {\n      if (value === undefined) return undefined\n      const items = value.split(',').map((item) => item.trim()).filter(Boolean)\n      if (itemType === 'integer' || itemType === 'number') return items.map((item) => Number(item))\n      return items\n    }\n"
     : ''
-  const request =
+  const bodyPrelude = usesRequestBodyEncoder
+    ? `const encodedBody = await encodeRequestBody(${renderRequestBodyDefinition(action)}, ${action.requestBodyMode === 'NONE' ? 'undefined' : requestBody})\n    `
+    : ''
+  const transportBody = usesRequestBodyEncoder ? 'encodedBody.body' : requestBody
+  const request = bodyPrelude + (
     action.responseMode === 'ndjson'
-      ? `const stream = await this.client.postStream(${pathExpr}, ${requestBody}${requestOptions})\n    for await (const chunk of stream) process.stdout.write(Buffer.isBuffer(chunk) ? chunk : String(chunk))`
+      ? `const stream = await this.client.postStream(${pathExpr}, ${transportBody}${requestOptions})\n    for await (const chunk of stream) process.stdout.write(Buffer.isBuffer(chunk) ? chunk : String(chunk))`
       : action.method === 'GET'
         ? `const data = await this.client.get(${pathExpr}, { params: ${requestParams} })`
-        : `const data = await this.client.post(${pathExpr}, ${requestBody}${requestOptions})`
+        : `const data = await this.client.post(${pathExpr}, ${transportBody}${requestOptions})`
+  )
   const output = action.responseMode === 'ndjson' ? '' : '\n    this.output(data)'
 
   return `// AUTO-GENERATED FROM audit manifest. DO NOT EDIT.\n// Source: ${source}\n// Manifest: ${manifest.manifestVersion} @ ${hash}\n${imports.join('\n')}\n\nexport default class ${className} extends MBSCommand {\n  static description = '${escapeTs(action.description)}'\n${flags}${args}\n  async run(): Promise<void> {\n    const { ${argParams.length > 0 ? 'args, ' : ''}flags } = await this.parse(${className})\n${arrayHelper}\n    ${request}${output}\n  }\n}\n`
@@ -451,7 +495,21 @@ function renderPathExpression(path, argParams = []) {
  * @returns {string} Generated domain Skill content.
  */
 function renderModuleSkill(mod) {
-  return `# ${mod.domain} - ${mod.description}\n\n## 业务域\n\n- 适用场景：${mod.scenarios || mod.description}\n- 关键词：${mod.keywords.join(' / ')}\n- Service：\`${mod.service || '-'}\`\n\n## 首次统一召回\n\n首次召回不得根据模块关键词预判或添加 \`--domain\`：\n\n\`\`\`bash\nmbs find "<用户原始需求>"\n\`\`\`\n\n只有用户明确限定 ${mod.domain}，或首次响应的 \`hint.suggestedDomains\` 建议按 ${mod.domain} 收窄时，才执行后续过滤：\n\n\`\`\`bash\nmbs find "<用户原始需求>" --domain ${mod.domain}\n\`\`\`\n\n确认 API 候选后执行返回的 \`detailCommand\`：\n\n\`\`\`bash\nmbs describe <apiId>\n\`\`\`\n\n- 本地不保存或扫描该业务域的接口卡片和单接口文档。\n- 命中 workflow 时按 steps 的 \`intentQuery\` 继续检索 API。\n- 低置信、无结果或歧义时按后端 hint 补充条件。\n- 后端详情确认 \`operationType=QUERY\`、GET/POST、具体 path 和字段作用域后，使用 \`mbs request\` 组装查询；接口无需预生成业务命令。\n- path 参数必须先替换，query 字段放入 \`--params\`，POST body 字段放入 \`--body\`；不得猜测缺失参数。\n- 后端不可用时明确报告失败，不使用本地词法结果降级。\n`
+  return `# ${mod.domain} - ${mod.description}\n\n## 业务域\n\n- 适用场景：${mod.scenarios || mod.description}\n- 关键词：${mod.keywords.join(' / ')}\n- Service：\`${mod.service || '-'}\`\n\n## 首次统一召回\n\n首次召回不得根据模块关键词预判或添加 \`--domain\`：\n\n\`\`\`bash\nmbs find "<用户原始需求>"\n\`\`\`\n\n只有用户明确限定 ${mod.domain}，或首次响应的 \`hint.suggestedDomains\` 建议按 ${mod.domain} 收窄时，才执行后续过滤：\n\n\`\`\`bash\nmbs find "<用户原始需求>" --domain ${mod.domain}\n\`\`\`\n\n确认 API 候选后执行返回的 \`detailCommand\`：\n\n\`\`\`bash\nmbs describe <apiId>\n\`\`\`\n\n- 本地不保存或扫描该业务域的接口卡片和单接口文档。\n- 命中 workflow 时按 steps 的 \`intentQuery\` 继续检索 API。\n- 低置信、无结果或歧义时按后端 hint 补充条件。\n- 后端详情确认 \`operationType=QUERY\`、GET/POST、具体 path 和字段作用域后，使用 \`mbs request --api-id <apiId>\` 组装查询；接口无需预生成业务命令。\n- path 参数必须先替换，query 字段放入 \`--params\`；结构化 body 使用 JSON，TEXT/XML 使用原始文本或 \`--body-file\`，BINARY 使用严格 Base64 或 \`--body-file\`。\n- 后端不可用时明确报告失败，不使用本地词法结果降级。\n`
+}
+
+/**
+ * Renders one generated command's request-body definition using manifest metadata and schema fields.
+ *
+ * @param {object} action Parsed manifest action with an explicit requestBodyMode.
+ * @returns {string} TypeScript expression accepted by the shared encoder.
+ */
+function renderRequestBodyDefinition(action) {
+  const entries = [`mode: ${JSON.stringify(action.requestBodyMode)}`]
+  if (action.requestMediaType) entries.push(`mediaType: ${JSON.stringify(action.requestMediaType)}`)
+  if (action.requestCharset) entries.push(`charset: ${JSON.stringify(action.requestCharset)}`)
+  entries.push(`fields: requestBodyFieldsFromSchema(${JSON.stringify(action.request?.body ?? null)})`)
+  return `{ ${entries.join(', ')} }`
 }
 
 function renderActionSkill(mod, action, hash) {

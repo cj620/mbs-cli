@@ -157,6 +157,15 @@ function normalizeMethod(method) {
   return String(method ?? '').trim().toUpperCase()
 }
 
+/**
+ * Normalizes one untrusted manifest action into the stable generator contract.
+ *
+ * Request-body enum text is canonicalized without inventing a mode for legacy manifests; schema
+ * validation subsequently rejects unsupported values and bounds media type and charset lengths.
+ *
+ * @param {object} action Raw action from the source manifest.
+ * @returns {object} Canonical action ready for schema validation and generation.
+ */
 function normalizeAction(action) {
   const service = action.serviceName ?? action.service
   const path = String(action.path ?? '').replace(/\/{2,}/g, '/')
@@ -180,6 +189,9 @@ function normalizeAction(action) {
     ...(action.pathPrefix ? { pathPrefix: action.pathPrefix } : {}),
     method: normalizeMethod(action.method),
     path,
+    ...(action.requestBodyMode ? { requestBodyMode: String(action.requestBodyMode).trim().toUpperCase() } : {}),
+    ...(action.requestMediaType ? { requestMediaType: String(action.requestMediaType).trim().toLowerCase() } : {}),
+    ...(action.requestCharset ? { requestCharset: String(action.requestCharset).trim() } : {}),
     ...(action.responseMode ? { responseMode: action.responseMode } : {}),
     ...(params ? { params } : {}),
     ...(request ? { request } : {}),

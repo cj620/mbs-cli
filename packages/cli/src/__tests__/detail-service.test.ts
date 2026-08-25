@@ -17,13 +17,25 @@ describe('backend API detail', () => {
       method: 'POST',
       path: '/orders/list',
       operationType: 'QUERY',
+      requestBodyMode: 'MULTIPART',
+      requestMediaType: 'multipart/form-data',
       createBy: 'sensitive-user',
       request: {
         body: [{
           name: 'filter',
           type: 'object',
           required: true,
-          children: [{ name: 'shopId', type: 'integer', required: true, children: [] }],
+          serializationStyle: 'BRACKET',
+          children: [{
+            name: 'attachment',
+            type: 'string',
+            required: true,
+            valueKind: 'FILE',
+            partContentType: 'application/pdf',
+            filenamePolicy: 'FIXED',
+            partFilename: 'contract.pdf',
+            children: [],
+          }],
         }],
       },
       response: [{ name: 'orderNo', type: 'string', children: [] }],
@@ -31,7 +43,16 @@ describe('backend API detail', () => {
 
     expect(detail.command).toBe('mbs oms order-list')
     expect(detail.version).toBe('v1')
-    expect(detail.request.body[0].children[0].name).toBe('shopId')
+    expect(detail.requestBodyMode).toBe('MULTIPART')
+    expect(detail.requestMediaType).toBe('multipart/form-data')
+    expect(detail.request.body[0].serializationStyle).toBe('BRACKET')
+    expect(detail.request.body[0].children[0]).toMatchObject({
+      name: 'attachment',
+      valueKind: 'FILE',
+      partContentType: 'application/pdf',
+      filenamePolicy: 'FIXED',
+      partFilename: 'contract.pdf',
+    })
     expect(detail.response[0].name).toBe('orderNo')
     expect(detail).not.toHaveProperty('createBy')
   })
@@ -51,6 +72,7 @@ describe('backend API detail', () => {
     } })
 
     expect(detail).toMatchObject({ id: 2, name: '查询订单列表', domain: '订单中心' })
+    expect(detail.requestBodyMode).toBe('NONE')
     expect(detail).not.toHaveProperty('command')
   })
 

@@ -6,6 +6,7 @@
 import axios, { type AxiosInstance, type AxiosRequestConfig } from "axios";
 import type { Readable } from "node:stream";
 import { NotAuthenticatedError, PermissionError, MBSError } from "./errors.js";
+import type { RequestContentHeaders } from "./request-body.js";
 import type { RawApiResponse } from "./types.js";
 
 export interface GetOptions {
@@ -13,10 +14,26 @@ export interface GetOptions {
   params?: AxiosRequestConfig["params"];
 }
 
+/** Options accepted by POST transports after request-body encoding and header allowlisting. */
 export interface PostOptions {
+  /** Optional service prefix prepended without changing the configured origin. */
   pathPrefix?: string;
+  /** Query parameters serialized by Axios. */
   params?: AxiosRequestConfig["params"];
+  /** Optional cancellation signal. */
   signal?: AxiosRequestConfig["signal"];
+  /** Encoder-owned Content-Type; arbitrary caller headers are intentionally excluded. */
+  headers?: RequestContentHeaders;
+}
+
+/** Dynamic read-only request options restricted to query data, encoded body, and Content-Type. */
+export interface RequestOptions {
+  /** Query parameters serialized by Axios. */
+  params?: Record<string, unknown>;
+  /** Already encoded JSON value, string, or Buffer. */
+  body?: unknown;
+  /** Encoder-owned Content-Type; Cookie and identity headers remain transport-owned. */
+  headers?: RequestContentHeaders;
 }
 
 /**
@@ -96,11 +113,11 @@ export class APIClient {
   }
 
   /**
-   * Sends a JSON POST request through the authenticated API client.
+   * Sends a POST request through the authenticated API client.
    *
    * @param path Relative endpoint path.
-   * @param body Optional JSON-compatible request body.
-   * @param options Optional path prefix, query parameters, and abort signal.
+   * @param body Optional JSON value or request-body encoder output.
+   * @param options Optional path prefix, query parameters, abort signal, and encoder-owned Content-Type.
    * @returns The response payload after authentication retry and envelope validation.
    * @throws Error when transport, cancellation, authentication, permission, or API validation fails.
    */
@@ -114,6 +131,7 @@ export class APIClient {
       const config: AxiosRequestConfig = {
         ...(options?.params ? { params: options.params } : {}),
         ...(options?.signal ? { signal: options.signal } : {}),
+        ...(options?.headers ? { headers: options.headers as AxiosRequestConfig["headers"] } : {}),
       };
       const request = Object.keys(config).length > 0
         ? this.instance.post<T>(url, body, config)
@@ -122,6 +140,14 @@ export class APIClient {
     });
   }
 
+  /**
+   * Sends a POST request and returns the NDJSON response stream without buffering it.
+   *
+   * @param path Relative endpoint path.
+   * @param body Encoded request body.
+   * @param options Optional query parameters and encoder-owned Content-Type.
+   * @returns Readable response stream after authentication retry.
+   */
   async postStream(
     path: string,
     body?: unknown,
@@ -132,20 +158,37 @@ export class APIClient {
       this.instance
         .post<Readable>(url, body, {
           responseType: "stream",
-          headers: { Accept: "application/x-ndjson" },
+          headers: { Accept: "application/x-ndjson", ...(options?.headers ?? {}) },
           ...(options?.params ? { params: options.params } : {}),
         })
         .then((r) => r.data),
     );
   }
 
+  /**
+   * Sends one already validated dynamic read-only request.
+   *
+   * <p>Callers cannot supply arbitrary HTTP headers: only the request-body encoder's
+   * Content-Type is accepted, so Cookie and client identity remain transport-owned.</p>
+   *
+   * @param method Validated GET or query-only POST method.
+   * @param path Validated origin-relative interface path.
+   * @param options Optional query values, encoded body, and Content-Type.
+   * @returns Response payload after normal authentication retry and envelope checks.
+   */
   async request<T = unknown>(
     method: string,
     path: string,
-    options?: { params?: Record<string, unknown>; body?: unknown },
+    options?: RequestOptions,
   ): Promise<T> {
-    return await this.withRetry(() =>
-      this.instance.request<T>({ method, url: path, params: options?.params, data: options?.body }).then((r) => r.data),
+    return await this.withRetry<T>(() =>
+      this.instance.request<T>({
+        method,
+        url: path,
+        params: options?.params,
+        data: options?.body,
+        ...(options?.headers ? { headers: options.headers as AxiosRequestConfig["headers"] } : {}),
+      }).then((r) => r.data),
     );
   }
 }

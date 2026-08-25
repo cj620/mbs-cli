@@ -2,6 +2,7 @@
 
 | 记忆键 | 主题 | 当前结论 | 适用范围 | 当前来源 | 状态 | 主题文档 | 最后核验 |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| `API-REQUEST-BODY-ENCODING` | 接口请求体编码 | 当前工作区已由 `mbs request --api-id` 读取后端详情并统一编码七种 body 模式，manifest 生成与 serve 复用；构建和全量测试通过，目标安装仍为 JSON-only | `packages/shared`、`packages/cli`、生成器、Skill | `20260825-[FEATURE]接口请求体编码端到端支持` | 本地完成/待发布 | [`./topics/接口请求体编码.md`](./topics/接口请求体编码.md) | 2026-08-25 / `5a8f4fd` 加工作区 |
 | `CLI-PUBLIC-COMPATIBILITY` | CLI 公开命令兼容性 | npm `0.1.58` 的五个业务命令已由独立兼容插件在本地恢复，命令 ID、flags、帮助和只读请求契约验证通过；旧 serve 路由不在本轮范围 | `packages/cli`、`packages/legacy` | `20260810-[BUG]恢复已发布CLI旧命令` | 本地已验证/待发布 | [`./topics/CLI公开命令兼容性.md`](./topics/CLI公开命令兼容性.md) | 2026-08-10 / `5b5c255` + 当前工作区 |
 | `AUTH-DEV-PROXY` | 本地开发认证代理 | 本地联调方案已完整回滚；`apiUrl` 为服务器根地址，登录直达 `/eshop/manager/...`，业务与语义召回统一经 `/gateway/cli` | `packages/shared`、`packages/cli`、`packages/doris` | `20260814-[RELEASE]发布1.0.3维护版本` | 已随 maintenance-1 1.0.3 发布 | [`./topics/本地开发认证代理.md`](./topics/本地开发认证代理.md) | 2026-08-14 / `ee9c017` / npm 1.0.3 |
 | `CLI-GATEWAY-ROUTING` | CLI 网关路由 | 正式业务命令、公共 request 及 find/describe 统一以 `<apiUrl>/gateway/cli` 为上游基础前缀；13 条 manifest 路径已移除重复 `/gateway` | `packages/shared`、`packages/cli`、生成业务包、manifest | `20260814-[RELEASE]发布1.0.3维护版本` | 已随 maintenance-1 1.0.3 发布并核验 | [`./topics/CLI网关路由.md`](./topics/CLI网关路由.md) | 2026-08-14 / `ee9c017` / `maintenance-1-v1.0.3` |

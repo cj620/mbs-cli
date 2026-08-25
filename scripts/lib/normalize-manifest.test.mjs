@@ -43,6 +43,36 @@ test('normalizes mixed-case POST and rejects unsupported methods', () => {
   assert.throws(() => parseAuditManifest(unsupported))
 })
 
+test('preserves request body encoding metadata and field extensions', () => {
+  const manifest = manifestWithMethod('POST')
+  manifest.modules[0].actions[0].requestBodyMode = ' multipart '
+  manifest.modules[0].actions[0].requestMediaType = 'Multipart/Form-Data'
+  manifest.modules[0].actions[0].request = {
+    body: {
+      type: 'object',
+      properties: {
+        attachment: {
+          type: 'string',
+          required: true,
+          valueKind: 'FILE',
+          partContentType: 'application/pdf',
+          filenamePolicy: 'FIXED',
+          partFilename: 'contract.pdf',
+        },
+      },
+    },
+  }
+
+  const normalized = normalizeServerManifest(manifest)
+  const action = normalized.modules[0].actions[0]
+
+  assert.equal(action.requestBodyMode, 'MULTIPART')
+  assert.equal(action.requestMediaType, 'multipart/form-data')
+  assert.equal(action.request.body.properties.attachment.valueKind, 'FILE')
+  assert.equal(action.request.body.properties.attachment.partFilename, 'contract.pdf')
+  assert.doesNotThrow(() => parseAuditManifest(normalized))
+})
+
 test('disambiguates action names that share a service and final path segment', () => {
   const manifest = manifestWithMethod('POST')
   manifest.modules[0].actions = [

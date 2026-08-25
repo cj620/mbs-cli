@@ -175,6 +175,85 @@ describe('serve app', () => {
     }
   })
 
+  /** Verifies metadata-aware serve routes use the shared urlencoded encoder and Content-Type. */
+  it('encodes metadata-aware form routes before forwarding', async () => {
+    const encodedManifest: AuditManifest = {
+      schemaVersion: '1',
+      manifestVersion: '2026-08-25T00:00:00+08:00',
+      modules: [{
+        domain: 'hr',
+        actions: [{
+          name: 'employees',
+          description: 'List employees',
+          method: 'POST',
+          path: '/hr/personal/getAll',
+          requestBodyMode: 'FORM_URLENCODED',
+          requestMediaType: 'application/x-www-form-urlencoded',
+          request: {
+            body: {
+              type: 'object',
+              required: ['groupCompanyId'],
+              properties: {
+                groupCompanyId: { type: 'integer' },
+                pagesize: { type: 'integer' },
+              },
+            },
+          },
+        }],
+      }],
+    }
+    const post = vi.fn().mockResolvedValue({ items: [] })
+    const app = buildApp(encodedManifest, async () => fakeClient(vi.fn(), post))
+
+    const response = await app.inject({
+      method: 'POST',
+      url: '/api/hr/employees',
+      payload: { groupCompanyId: 1, pagesize: 100 },
+    })
+
+    expect(response.statusCode).toBe(200)
+    expect(post).toHaveBeenCalledWith('/hr/personal/getAll', 'groupCompanyId=1&pagesize=100', {
+      params: {},
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    })
+  })
+
+  /** Verifies the unauthenticated local gateway cannot turn multipart FILE metadata into filesystem reads. */
+  it('rejects local file reads from metadata-aware serve routes', async () => {
+    const fileManifest: AuditManifest = {
+      schemaVersion: '1',
+      manifestVersion: '2026-08-25T00:00:00+08:00',
+      modules: [{
+        domain: 'files',
+        actions: [{
+          name: 'inspect',
+          description: 'Inspect file',
+          method: 'POST',
+          path: '/files/inspect',
+          requestBodyMode: 'MULTIPART',
+          request: {
+            body: {
+              type: 'object',
+              properties: { attachment: { type: 'string', valueKind: 'FILE' } },
+            },
+          },
+        }],
+      }],
+    }
+    const post = vi.fn()
+    const app = buildApp(fileManifest, async () => fakeClient(vi.fn(), post))
+
+    const response = await app.inject({
+      method: 'POST',
+      url: '/api/files/inspect',
+      payload: { attachment: 'C:\\private\\secret.txt' },
+    })
+
+    expect(response.statusCode).toBe(500)
+    expect(JSON.parse(response.body).error.message).toContain('cannot read body files')
+    expect(post).not.toHaveBeenCalled()
+  })
+
   /**
    * Verifies generated business paths remain relative to the shared
    * `/gateway/cli` client base so commands cannot repeat the gateway segment.

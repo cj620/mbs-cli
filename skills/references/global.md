@@ -29,10 +29,16 @@ MBS_API_URL=https://api.example.com MBS_TOKEN=xxx mbs org platforms
 ```bash
 mbs request GET /v1/orders --params '{"status":"open"}'
 mbs request POST /yypms/pms/middlePanel/getMiddlePanelList --body '{"page":1,"pageSize":20}'
+mbs request --api-id 123 --body '{"groupCompanyId":1,"pagesize":100}'
+mbs request --api-id 456 --body-file ./payload.xml
 ```
 
 - 仅允许 GET 和查询类 POST。
+- 非 JSON 请求必须使用 `--api-id` 重新读取后端编码元数据；不带 `--api-id` 的旧形式继续按 JSON 兼容。
 - path 参数必须先替换；query 字段使用 `--params`，POST body 字段使用 `--body`。
+- JSON、urlencoded、multipart 的 `--body` 是 JSON；TEXT/XML 的 `--body` 是原始文本；BINARY 的 `--body` 是严格 Base64。
+- `--body-file` 只用于 TEXT、XML、BINARY；multipart FILE 字段在 `--body` JSON 中填写本次运行的本地路径。
+- 嵌套表单默认使用 `BRACKET` 并展开；`explode=false` 的对象或对象数组作为单个 JSON 字符串值发送，标量数组以逗号合并；不要猜测或覆盖详情中的序列化配置。
 - 禁止传入完整 URL、`//host`、查询串或未替换的 `{param}`。
 - 不猜测 `describe` 未提供的参数值。
 

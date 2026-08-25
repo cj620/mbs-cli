@@ -83,6 +83,31 @@ describe('APIClient', () => {
     )
   })
 
+  /** Verifies dynamic requests can forward only the encoder-owned Content-Type header. */
+  it('forwards encoded request body content type', async () => {
+    const instance = {
+      get: vi.fn(),
+      post: vi.fn(),
+      request: vi.fn().mockResolvedValue({ data: { rows: [] } }),
+      interceptors: { response: { use: vi.fn() } },
+    }
+    mockAxios.create = vi.fn().mockReturnValue(instance)
+
+    const c = new APIClient('http://api.example.com', 'SESSION=redacted', vi.fn())
+    await c.request('POST', '/v1/form', {
+      body: 'page=1',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    })
+
+    expect(instance.request).toHaveBeenCalledWith({
+      method: 'POST',
+      url: '/v1/form',
+      params: undefined,
+      data: 'page=1',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    })
+  })
+
   it('sends streaming POST with NDJSON headers', async () => {
     const stream = { on: vi.fn() }
     const instance = {

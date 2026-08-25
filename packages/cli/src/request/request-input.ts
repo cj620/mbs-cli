@@ -1,4 +1,11 @@
-import { MBSError } from '@mb-it-org/shared'
+import {
+  MBSError,
+  encodeRequestBody,
+  type RequestBodyDefinition,
+  type RequestContentHeaders,
+} from '@mb-it-org/shared'
+
+import type { ApiDetailData } from '../find/types.js'
 
 const MAX_JSON_FLAG_LENGTH = 1_000_000
 const READ_ONLY_METHODS = new Set(['GET', 'POST'])
@@ -11,6 +18,80 @@ const READ_ONLY_METHODS = new Set(['GET', 'POST'])
 export interface ReadOnlyRequestOptions {
   body?: unknown
   params?: Record<string, unknown>
+  headers?: RequestContentHeaders
+}
+
+/**
+ * Creates a request from one authoritative backend detail, including non-JSON body encoding.
+ *
+ * <p>The caller may omit method/path and use the detail values directly. If supplied, both values
+ * must match the authoritative method and path template. Structured bodies parse `--body` as JSON;
+ * raw text/XML and strict Base64 remain unparsed. The shared encoder is the only component allowed
+ * to add Content-Type.</p>
+ *
+ * @param detail Validated read-only API detail loaded by numeric API ID.
+ * @param method Optional user-supplied method used as a consistency check.
+ * @param path Optional concrete path; required when the detail path contains unresolved parameters.
+ * @param bodyText Optional `--body` value.
+ * @param bodyFile Optional `--body-file` runtime path for raw modes.
+ * @param paramsJson Optional JSON query-parameter object.
+ * @returns Fully encoded, origin-relative read-only request.
+ * @throws MBSError when detail identity, method/path agreement, input shape, or encoding is invalid.
+ */
+export async function createMetadataReadOnlyRequest(
+  detail: ApiDetailData,
+  method: string | undefined,
+  path: string | undefined,
+  bodyText?: string,
+  bodyFile?: string,
+  paramsJson?: string,
+): Promise<ReadOnlyRequest> {
+  const authoritativeMethod = detail.method?.toUpperCase()
+  const authoritativePath = detail.path
+  if (!authoritativeMethod || !READ_ONLY_METHODS.has(authoritativeMethod) || !authoritativePath) {
+    throw validationError('remote API detail does not contain a usable read-only method and path')
+  }
+  const normalizedMethod = (method ?? authoritativeMethod).toUpperCase()
+  if (normalizedMethod !== authoritativeMethod) {
+    throw validationError('request method does not match the API detail')
+  }
+  if (path === undefined && hasPathTemplate(authoritativePath)) {
+    throw validationError('a concrete path is required for API detail path parameters')
+  }
+  const concretePath = path ?? authoritativePath
+  validateRelativeInterfacePath(concretePath)
+  if (!matchesInterfacePath(authoritativePath, concretePath)) {
+    throw validationError('request path does not match the API detail')
+  }
+
+  const paramsValue = paramsJson === undefined ? undefined : parseJsonFlag('params', paramsJson)
+  if (paramsValue !== undefined && !isJsonObject(paramsValue)) {
+    throw validationError('params must be a JSON object')
+  }
+  if (normalizedMethod === 'GET' && (bodyText !== undefined || bodyFile !== undefined
+    || detail.requestBodyMode !== 'NONE')) {
+    throw validationError('GET request must not include a body')
+  }
+
+  const input = parseBodyForMode(detail.requestBodyMode, bodyText)
+  const definition: RequestBodyDefinition = {
+    mode: detail.requestBodyMode,
+    ...(detail.requestMediaType ? { mediaType: detail.requestMediaType } : {}),
+    ...(detail.requestCharset ? { charset: detail.requestCharset } : {}),
+    fields: detail.request.body ?? [],
+  }
+  const encoded = await encodeRequestBody(definition, input, {
+    ...(bodyFile !== undefined ? { bodyFile } : {}),
+  })
+  return {
+    method: normalizedMethod as 'GET' | 'POST',
+    path: concretePath,
+    options: {
+      ...(encoded.body !== undefined ? { body: encoded.body } : {}),
+      ...(paramsValue !== undefined ? { params: paramsValue } : {}),
+      ...(encoded.headers ? { headers: encoded.headers } : {}),
+    },
+  }
 }
 
 /**
@@ -102,6 +183,72 @@ function validateRelativeInterfacePath(path: string): void {
     || segments.some((segment) => segment === '.' || segment === '..')) {
     throw validationError(genericMessage)
   }
+}
+
+/**
+ * Matches one concrete safe path against an authoritative path template.
+ *
+ * <p>Each `{name}` or `:name` placeholder consumes exactly one non-empty path segment; all literal
+ * characters are escaped. The concrete path is validated separately before this function runs.</p>
+ *
+ * @param template Backend path with optional named placeholders.
+ * @param concretePath User-selected concrete path.
+ * @returns Whether the path belongs to the described interface.
+ * @throws MBSError when the backend template itself is not a safe origin-relative path.
+ */
+function matchesInterfacePath(template: string, concretePath: string): boolean {
+  if (!template.startsWith('/') || template.startsWith('//') || template.includes('\\')
+    || template.includes('?') || template.includes('#') || /[\s\u0000-\u001f\u007f]/u.test(template)) {
+    throw validationError('remote API detail path is invalid')
+  }
+  const segments = template.split('/')
+  const pattern = segments.map((segment, index) => {
+    if (index === 0) return ''
+    if (/^\{[A-Za-z][A-Za-z0-9_]*\}$/u.test(segment)
+      || /^:[A-Za-z][A-Za-z0-9_]*$/u.test(segment)) return '[^/]+'
+    if (segment === '.' || segment === '..' || segment.includes('{') || segment.includes('}')) {
+      throw validationError('remote API detail path is invalid')
+    }
+    return escapeRegExp(segment)
+  }).join('/')
+  return new RegExp(`^${pattern}$`, 'u').test(concretePath)
+}
+
+/**
+ * Detects named path placeholders that cannot be sent as literal upstream segments.
+ *
+ * @param template Validated backend interface path template.
+ * @returns Whether any full segment uses `{name}` or `:name` placeholder syntax.
+ */
+function hasPathTemplate(template: string): boolean {
+  return template.split('/').some((segment) => /^\{[A-Za-z][A-Za-z0-9_]*\}$/u.test(segment)
+    || /^:[A-Za-z][A-Za-z0-9_]*$/u.test(segment))
+}
+
+/**
+ * Parses `--body` according to the authoritative request body mode.
+ *
+ * @param mode Backend request body mode.
+ * @param text Optional raw flag text.
+ * @returns Parsed JSON/form object, untouched raw text/Base64, or undefined.
+ * @throws MBSError for malformed or oversized structured JSON.
+ */
+function parseBodyForMode(mode: RequestBodyDefinition['mode'], text?: string): unknown {
+  if (text === undefined) return undefined
+  if (mode === 'JSON' || mode === 'FORM_URLENCODED' || mode === 'MULTIPART') {
+    return parseJsonFlag('body', text)
+  }
+  return text
+}
+
+/**
+ * Escapes a literal path segment for construction of an anchored regular expression.
+ *
+ * @param value Literal backend path segment.
+ * @returns Regex-safe literal.
+ */
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/gu, '\\$&')
 }
 
 /**

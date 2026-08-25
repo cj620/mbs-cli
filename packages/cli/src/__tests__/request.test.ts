@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 
 import Request from '../commands/request.js'
-import { createReadOnlyRequest } from '../request/request-input.js'
+import { createMetadataReadOnlyRequest, createReadOnlyRequest } from '../request/request-input.js'
 
 describe('public authenticated request command', () => {
   /**
@@ -37,6 +37,58 @@ describe('public authenticated request command', () => {
         path: '/v1/orders',
         options: { params: { status: 'open' } },
       })
+  })
+
+  /** Verifies authoritative urlencoded metadata produces bytes and Content-Type instead of JSON. */
+  it('encodes an API-ID form request from backend metadata', async () => {
+    const request = await createMetadataReadOnlyRequest({
+      id: 8,
+      name: 'employee-list',
+      domain: 'hr',
+      method: 'POST',
+      path: '/hr/personal/getAll',
+      operationType: 'QUERY',
+      requestBodyMode: 'FORM_URLENCODED',
+      requestMediaType: 'application/x-www-form-urlencoded',
+      request: {
+        body: [
+          { name: 'groupCompanyId', required: true, children: [] },
+          { name: 'pagesize', children: [] },
+        ],
+      },
+      response: [],
+    }, undefined, undefined, '{"groupCompanyId":1,"pagesize":100}')
+
+    expect(request).toEqual({
+      method: 'POST',
+      path: '/hr/personal/getAll',
+      options: {
+        body: 'groupCompanyId=1&pagesize=100',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      },
+    })
+  })
+
+  /** Verifies supplied methods and concrete parameterized paths must agree with the backend detail. */
+  it('rejects method or path mismatches against API-ID metadata', async () => {
+    const detail = {
+      id: 9,
+      name: 'order-detail',
+      domain: 'oms',
+      method: 'GET',
+      path: '/orders/{orderId}',
+      operationType: 'QUERY' as const,
+      requestBodyMode: 'NONE' as const,
+      request: {},
+      response: [],
+    }
+    await expect(createMetadataReadOnlyRequest(detail, 'POST', '/orders/10')).rejects.toThrow('method')
+    await expect(createMetadataReadOnlyRequest(detail, 'GET', '/other/10')).rejects.toThrow('path')
+    await expect(createMetadataReadOnlyRequest(detail, undefined, undefined)).rejects.toThrow('concrete path')
+    await expect(createMetadataReadOnlyRequest(detail, 'GET', '/orders/10')).resolves.toMatchObject({
+      method: 'GET',
+      path: '/orders/10',
+    })
   })
 
   /**
@@ -77,8 +129,10 @@ describe('public authenticated request command', () => {
   /** Verifies command metadata exposes request publicly with usage-oriented examples. */
   it('publishes a discoverable request command contract', () => {
     expect(Request.hidden).not.toBe(true)
-    expect(Request.args.method.required).toBe(true)
-    expect(Request.args.path.required).toBe(true)
+    expect(Request.args.method.required).toBe(false)
+    expect(Request.args.path.required).toBe(false)
+    expect(Request.flags['api-id']).toBeDefined()
+    expect(Request.flags['body-file']).toBeDefined()
     expect(Request.examples.join('\n')).toContain('mbs request POST')
   })
 })

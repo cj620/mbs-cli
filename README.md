@@ -336,7 +336,7 @@ mbs serve --project-apis
 | 查看 skill 目录 | `mbs skills path` |
 | 查看 skill 内容 | `mbs skills show --file references/database/SKILL.md` |
 | 查看数据分析与看板 skill | `mbs skills show --file references/dashboard/SKILL.md` |
-| 动态查询已发现接口 | `mbs request POST /path --body '{"page":1,"pageSize":20}'` |
+| 动态查询已发现接口 | `mbs request --api-id 123 --body '{"page":1,"pageSize":20}'` |
 | 开发者探索只读 API | `mbs raw GET /path --params '{"key":"value"}'` |
 | 本地 project API 网关 | `mbs serve --project-apis` |
 | 任意只读上游代理 | `mbs serve --proxy-all` |
