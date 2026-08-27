@@ -3,11 +3,11 @@
  * @Date: 2026-04-09 16:12:52
  */
 // packages/skill-shared/src/http.ts
-import axios, { type AxiosInstance, type AxiosRequestConfig } from "axios";
+import axios, { type AxiosInstance, type AxiosRequestConfig, type AxiosResponse } from "axios";
 import type { Readable } from "node:stream";
 import { NotAuthenticatedError, PermissionError, MBSError } from "./errors.js";
+import type { BackendResponseSnapshot } from "./errors.js";
 import type { RequestContentHeaders } from "./request-body.js";
-import type { RawApiResponse } from "./types.js";
 
 export interface GetOptions {
   pathPrefix?: string;
@@ -41,14 +41,76 @@ export interface RequestOptions {
  * key: 服务端 code 值
  * value: 工厂函数，返回对应的 Error 实例
  */
-const API_CODE_HANDLERS: Record<number, () => Error> = {
-  601: () => new NotAuthenticatedError(),
-  109: () => new PermissionError(),
-  403: () => new PermissionError(),
-  401: () => new NotAuthenticatedError(),
-  500: () => new NotAuthenticatedError(),
+const API_CODE_HANDLERS: Record<number, (response: BackendResponseSnapshot) => Error> = {
+  601: (response) => new NotAuthenticatedError(response),
+  109: (response) => new PermissionError(response),
+  403: (response) => new PermissionError(response),
+  401: (response) => new NotAuthenticatedError(response),
+  500: (response) => new NotAuthenticatedError(response),
 };
 
+/**
+ * Validates successful HTTP responses while retaining the complete body for business failures.
+ *
+ * <p>Endpoints without a numeric {@code code} field pass through unchanged. Numeric codes 0 and 200
+ * are successful. Other codes preserve the body in a classified error so authentication refresh and
+ * process exit semantics remain available without replacing the backend response shown to callers.</p>
+ *
+ * @param response Axios response received through the authenticated client.
+ * @returns The same response when the endpoint reports success or has no standard business code.
+ * @throws NotAuthenticatedError for configured authentication codes.
+ * @throws PermissionError for configured permission codes.
+ * @throws MBSError for other backend business errors.
+ */
+function validateApiResponse(response: AxiosResponse<unknown>): AxiosResponse<unknown> {
+  if (typeof response.data !== "object" || response.data === null) return response;
+
+  const body = response.data as Record<string, unknown>;
+  const code = body.code;
+  if (typeof code !== "number") return response;
+  if (code === 0 || code === 200) return response;
+
+  const backendResponse: BackendResponseSnapshot = {
+    body: response.data,
+    statusCode: response.status ?? 200,
+  };
+  const handler = API_CODE_HANDLERS[code];
+  if (handler) throw handler(backendResponse);
+
+  const message = typeof body.msg === "string" ? body.msg : `API error (code: ${code})`;
+  throw new MBSError(message, "api", "", backendResponse);
+}
+
+/**
+ * Converts an Axios HTTP rejection into a classified error that retains the authoritative response body.
+ *
+ * @param error Unknown rejection received by the response interceptor.
+ * @returns This function never returns; the return type documents interceptor control flow.
+ * @throws NotAuthenticatedError for HTTP 401 so the existing one-time refresh path remains active.
+ * @throws PermissionError for HTTP 403.
+ * @throws MBSError for other HTTP responses.
+ * @throws unknown The original rejection when Axios did not receive an HTTP response.
+ */
+function rejectApiResponse(error: unknown): never {
+  if (!axios.isAxiosError<unknown>(error) || !error.response) throw error;
+
+  const backendResponse: BackendResponseSnapshot = {
+    body: error.response.data,
+    statusCode: error.response.status,
+  };
+  if (error.response.status === 401) throw new NotAuthenticatedError(backendResponse);
+  if (error.response.status === 403) throw new PermissionError(backendResponse);
+
+  throw new MBSError(error.message, "api", "", backendResponse);
+}
+
+/**
+ * Authenticated read-only Axios adapter for MBS gateway requests.
+ *
+ * <p>The module centralizes stable CLI headers, one-time authentication refresh, backend business-code
+ * classification, and preservation of upstream response bodies. Callers receive successful bodies directly;
+ * failures cross the seam as classified errors that retain the authoritative backend body.</p>
+ */
 export class APIClient {
   private readonly instance: AxiosInstance;
   private readonly refreshAuth: () => Promise<string>;
@@ -77,28 +139,37 @@ export class APIClient {
       },
     });
 
-    this.instance.interceptors.response.use((response) => {
-      const raw = response.data as RawApiResponse;
-      if (typeof raw?.code !== "number") return response; // 非标准端点，直接放行
-      if (raw.code === 0 || raw.code === 200) return response; // 成功，放行
-
-      const handler = API_CODE_HANDLERS[raw.code];
-      if (handler) throw handler();
-
-      throw new MBSError(raw.msg ?? `API error (code: ${raw.code})`);
-    });
+    this.instance.interceptors.response.use(validateApiResponse, rejectApiResponse);
   }
 
+  /**
+   * Replaces the Cookie attached by the shared Axios adapter after authentication refresh.
+   *
+   * @param cookie Fresh Cookie returned by the authentication module.
+   */
   private updateCookie(cookie: string): void {
     this.instance.defaults.headers["Cookie"] = cookie;
   }
 
+  /**
+   * Runs one authenticated request and retries it once after a classified authentication failure.
+   *
+   * @param request Deferred request so the same transport operation can be repeated after Cookie refresh.
+   * @returns The first successful request value or the successful retry value.
+   * @throws Error A non-authentication failure or final retry failure. If local refresh fails before a retry,
+   * the original backend authentication error is retained so its response body remains observable.
+   */
   private async withRetry<T>(request: () => Promise<T>): Promise<T> {
     try {
       return await request();
     } catch (err) {
       if (err instanceof NotAuthenticatedError) {
-        const newCookie = await this.refreshAuth();
+        let newCookie: string;
+        try {
+          newCookie = await this.refreshAuth();
+        } catch {
+          throw err;
+        }
         this.updateCookie(newCookie);
         return await request();
       }
@@ -106,6 +177,14 @@ export class APIClient {
     }
   }
 
+  /**
+   * Sends a GET request and returns the parsed upstream HTTP response body unchanged.
+   *
+   * @param path Relative endpoint path.
+   * @param options Optional path prefix and Axios query parameters.
+   * @returns Parsed response body after business-code validation and optional authentication retry.
+   * @throws Error Transport, authentication, permission, or backend business failure.
+   */
   async get<T = unknown>(path: string, options?: GetOptions): Promise<T> {
     const { pathPrefix, ...config } = options ?? {};
     const url = pathPrefix ? pathPrefix + path : path;

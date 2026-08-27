@@ -13,6 +13,22 @@ import { NotAuthenticatedError, MBSError, PermissionError } from "./errors.js";
 // matching business microservice. Was "/gateway"; now "/gateway/cli".
 const API_GATEWAY_PREFIX = "/gateway/cli";
 
+/**
+ * Serializes a backend response body for one-line CLI stdout without adding an envelope.
+ *
+ * <p>Text responses remain text. JSON-compatible values are serialized once. An absent body becomes an
+ * empty line, matching an upstream response with no content. Serialization errors propagate to the command
+ * error seam instead of being replaced with a false success.</p>
+ *
+ * @param body Parsed backend response body.
+ * @returns Text written to CLI stdout.
+ */
+function serializeBackendBody(body: unknown): string {
+  if (typeof body === "string") return body;
+  return JSON.stringify(body) ?? "";
+}
+
+/** Shared oclif command module for authenticated MBS queries and consistent process-level failure semantics. */
 export abstract class MBSCommand extends Command {
   protected client!: APIClient;
 
@@ -42,17 +58,36 @@ export abstract class MBSCommand extends Command {
     this.client = new APIClient(baseUrl, cookie, refreshAuth);
   }
 
-  protected output(data: unknown, meta?: Record<string, unknown>): void {
-    this.log(
-      JSON.stringify({
-        ok: true,
-        data,
-        ...(meta !== undefined ? { meta } : {}),
-      }),
-    );
+  /**
+   * Writes the backend response body directly to stdout.
+   *
+   * @param data Parsed response body returned by the shared authenticated client.
+   * @throws TypeError when a non-text value cannot be serialized as JSON.
+   */
+  protected output(data: unknown): void {
+    this.log(serializeBackendBody(data));
   }
 
+  /**
+   * Emits either the retained backend error body or a safe CLI-owned fallback and exits non-zero.
+   *
+   * <p>Backend responses are authoritative and bypass the legacy CLI error envelope. Errors created locally
+   * have no upstream body, so they keep the stable structured fallback. Authentication failures exit 2;
+   * permission, validation, API, transport, and unknown failures exit 1.</p>
+   *
+   * @param err Failure propagated from command execution or the shared HTTP client.
+   * @returns A promise that resolves only in test harnesses where {@code exit} does not terminate execution.
+   */
   async catch(err: Error & { exitCode?: number }): Promise<void> {
+    if (
+      (err instanceof NotAuthenticatedError || err instanceof PermissionError || err instanceof MBSError) &&
+      err.backendResponse
+    ) {
+      this.log(serializeBackendBody(err.backendResponse.body));
+      this.exit(err instanceof NotAuthenticatedError ? 2 : 1);
+      return;
+    }
+
     if (err instanceof NotAuthenticatedError) {
       this.log(
         JSON.stringify({

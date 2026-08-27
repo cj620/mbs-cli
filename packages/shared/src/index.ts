@@ -1,6 +1,7 @@
 // packages/skill-shared/src/index.ts
 export type { MBSConfig, ApiSuccessResponse, ApiErrorResponse, MBSResponse } from './types.js'
 export { NotAuthenticatedError, MBSError } from './errors.js'
+export type { BackendResponseSnapshot } from './errors.js'
 export { getConfig, setConfig, getConfigDir } from './config.js'
 export { APIClient } from './http.js'
 export { encodeRequestBody, requestBodyFieldsFromSchema } from './request-body.js'

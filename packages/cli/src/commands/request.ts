@@ -11,7 +11,7 @@ const RECALL_DETAIL_PATH = '/cli/api/recall/detail'
  * Public authenticated transport for query APIs discovered at runtime.
  *
  * <p>The shared base command owns `/gateway/cli`, saved Cookie use, refresh,
- * error formatting, and exit codes. This command owns only dynamic method,
+ * backend response passthrough, and exit codes. This command owns only dynamic method,
  * path, and request-body input validation.</p>
  */
 export default class Request extends MBSCommand {
@@ -56,11 +56,11 @@ export default class Request extends MBSCommand {
 
   /**
    * Parses and validates the dynamic query, sends it through the shared
-   * authenticated gateway client, and prints the standard success envelope.
+   * authenticated gateway client, and prints the backend HTTP response body directly.
    *
    * @throws MBSError for invalid method, path, or JSON input.
-   * @throws Error for authentication, permission, transport, or API failures;
-   * the inherited command boundary maps them to the stable error envelope.
+   * @throws Error for authentication, permission, transport, or API failures; the inherited command
+   * boundary preserves a received backend body and otherwise emits a safe local error payload.
    */
   async run(): Promise<void> {
     const { args, flags } = await this.parse(Request)
@@ -107,7 +107,7 @@ function createRemoteDetail(): RemoteApiDetail {
 /**
  * Creates a stable validation error for command-shape failures that occur before request encoding.
  *
- * @param message Non-sensitive explanation suitable for the public CLI error envelope.
+ * @param message Non-sensitive explanation suitable for the CLI-owned local validation payload.
  * @returns Validation-classified error with a fixed help hint.
  */
 function requestValidationError(message: string): MBSError {

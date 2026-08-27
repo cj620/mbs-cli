@@ -89,17 +89,21 @@ mbs skills show --file references/org/SKILL.md
 
 ---
 
-## 输出格式（所有命令统一）
+## 输出格式
 
-**成功：**
+**业务查询成功或后端错误：直接输出后端 HTTP response body**
 ```json
-{ "ok": true, "data": <any>, "meta": { "total": <number> } }
+{ "code": 200, "data": <any>, "msg": "..." }
 ```
 
-**失败：**
+CLI 不再增加 `{ok,data}` 或 `{ok:false,error}` 外层。后端业务错误及 HTTP 错误也保留实际 response body，并以非零退出码表示失败。
+
+**没有后端 response body 的本地错误：**
 ```json
 { "ok": false, "error": { "type": "auth|validation|api", "message": "...", "hint": "..." } }
 ```
+
+`version/config/whoami/skills/find/describe/serve` 等本地或专用命令保留各自契约；`database query` 继续透传 NDJSON。
 
 ---
 
@@ -108,5 +112,5 @@ mbs skills show --file references/org/SKILL.md
 | 退出码 | 含义 | 处理方式 |
 |--------|------|---------|
 | `0` | 成功 | — |
-| `1` | API / 参数错误 | 检查 `error.hint` 字段 |
+| `1` | API / 参数错误 | 业务查询检查后端实际错误字段；本地错误检查 `error.hint` |
 | `2` | 认证失败 | 运行 `mbs login` 重新登录 |

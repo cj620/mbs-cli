@@ -1,10 +1,10 @@
 # MBS CLI
 
-面向 AI Agent 与内部研发的马帮（MBS）业务数据接入底座。把分散的内部业务能力沉淀为统一的结构化 JSON 命令与本地零认证 HTTP 网关 —— 一次登录、处处可用；Agent 与内部页面只关心"取什么数"，无需再处理登录态维持、Cookie 刷新、跨域代理与接口拼装。
+面向 AI Agent 与内部研发的马帮（MBS）业务数据接入底座。把分散的内部业务能力沉淀为统一命令与本地零认证 HTTP 网关 —— 一次登录、处处可用；Agent 与内部页面只关心"取什么数"，无需再处理登录态维持、Cookie 刷新、跨域代理与接口拼装。
 
 **核心能力**
 
-- **统一业务抽象**：业务模块按 `mbs <domain> <action>` 暴露，输入输出严格遵循 `{ ok, data }` / `{ ok:false, error }` 契约，退出码语义化（`2` 触发重新登录）。
+- **统一业务抽象**：业务模块按 `mbs <domain> <action>` 暴露，后端 HTTP response body 原样输出，不再增加 CLI envelope；退出码保持语义化（`2` 触发重新登录）。
 - **审计驱动的代码生成**：业务模块从 `audit manifest` 自动生成 CLI 命令、HTTP 路由与 skill 文档三件套，新增能力只需更新 manifest，杜绝手写漂移。
 - **Agent-Native Skill 体系**：随 CLI 打包发布 `skills/` 目录，一键 `mbs skills install` 注入 Claude / Codex 等平台；内置意图路由表、消歧协议、参数约束，Agent 即装即用。
 - **本地 HTTP 网关 (`mbs serve`)**：在 `127.0.0.1` 起一层只读网关，复用 CLI 当前登录态，支持三种模式 —— 项目内置 API、外部 manifest 路由、`/proxy/*` 任意上游直通，配套 `/__routes` 自描述发现端点，内部看板与运营页可秒级接入。
@@ -34,9 +34,9 @@
 
 - **先确定通道再刷新 CLI**：普通用户按 `latest` 检查与更新；任务明确指定 `1.0.0` 维护线时使用 `@maintenance-1` 安装与更新
 - **先检测后动作**：每步开头先跑探测命令（`node -v` / `mbs version` / `mbs whoami` / `mbs config get`），已满足直接跳过，不重复安装
-- **以结构化 JSON 为准**：所有 `mbs` 命令输出 `{ ok, data | error }`；判断成功看 `ok` 字段 + 退出码，不解析人话
+- **区分输出来源**：本地管理命令仍使用 `{ ok, data | error }`；业务查询直接输出后端 response body，不再读取 CLI 外层 `ok/data`
 - 退出码：`0` 成功 / `1` API 或参数错 / `2` 认证失效（必须重新 `mbs login`）
-- 失败时先读 `error.hint`，再决定下一步
+- 业务失败读取后端实际错误字段；本地命令失败先读 `error.hint`
 - 业务查询只用 `mbs`，禁止 `curl` / 手拼 HTTP / 猜 API 路径或 ID
 - CLI 安装、配置、认证、skill 接入是四件独立的事，必须分开汇报状态
 
@@ -164,7 +164,7 @@ mbs skills show --file references/dashboard/SKILL.md # 涉及数据分析、专�
 
 **方式 C（仓库在本机）**：直接读源文件 [`skills/SKILL.md`](skills/SKILL.md) / [`skills/references/global.md`](skills/references/global.md)。
 
-### Step 6: 验收（每条断言 ok 字段 + 退出码 0）
+### Step 6: 验收（本地命令断言 ok 字段；业务查询断言后端 body；全部退出码 0）
 
 ```bash
 node -v             # v18+
@@ -173,7 +173,7 @@ mbs version         # data.current 有版本号
 mbs config get      # ok:true，data.apiUrl 有值
 mbs whoami          # ok:true，含用户信息
 mbs skills show     # ok:true，含 SKILL.md 内容
-mbs org platforms   # ok:true，含平台数据（认证最终验证）
+mbs org platforms   # 直接返回后端 body，含平台数据（认证最终验证）
 ```
 
 **Skill 接入状态需独立汇报**：
@@ -189,8 +189,8 @@ mbs org platforms   # ok:true，含平台数据（认证最终验证）
 
 执行约定：
 - 每步先跑探测命令，已满足跳过；只在缺失时执行安装/初始化
-- 判断成功以结构化 JSON 的 ok 字段 + 退出码为准；退出码 2 = 认证失效
-- 命令失败先读 error.hint
+- 本地管理命令以 JSON 的 ok 字段 + 退出码判断；业务查询直接解析后端 response body；退出码 2 = 认证失效
+- 业务查询失败读取后端实际错误字段；本地命令失败先读 error.hint
 - 分别独立汇报四件事的状态：CLI 已安装、配置已就绪、认证已完成、skill 已接入
 
 步骤：
@@ -205,8 +205,8 @@ mbs org platforms   # ok:true，含平台数据（认证最终验证）
 6. 接入 skill：
    - 平台支持：mbs skills install --dry-run 看检测结果 → mbs skills install；完成后明确告知用户重启 agent 会话
    - 平台不支持：至少读 skills/SKILL.md 与 skills/references/global.md；按任务再读 references/org|crm|database/SKILL.md
-7. 验收：node -v / npm -v / mbs version / mbs config get / mbs whoami / mbs skills show / mbs org platforms 全部 ok:true 且退出码 0
-8. 遇权限/网络/PATH/浏览器/认证阻塞，明确写出阻塞点 + error.hint 原文 + 建议处理；禁止跳过或谎报成功
+7. 验收：node -v / npm -v 有输出；mbs version / config get / whoami / skills show 为 ok:true；mbs org platforms 返回后端平台 body；所有命令退出码 0
+8. 遇权限/网络/PATH/浏览器/认证阻塞，明确写出阻塞点、后端实际错误字段或本地 error.hint 原文及建议处理；禁止跳过或谎报成功
 
 业务查询只用 mbs；禁止 curl、禁止猜 API 路径/参数/ID。
 ```
@@ -486,14 +486,15 @@ pnpm test
 
 ## 输出格式
 
-所有命令统一输出结构化 JSON：
+业务查询命令直接输出后端 HTTP response body，不增加 `{ok,data}` envelope：
 
 ```json
-{ "ok": true, "data": <any>, "meta": { "total": <number> } }
-{ "ok": false, "error": { "type": "auth|validation|api", "message": "...", "hint": "..." } }
+{ "code": 200, "data": <any>, "msg": "..." }
 ```
 
-例外：`mbs database query` 会直接透传服务端 NDJSON 流，便于 agent 增量消费大结果集。
+后端以业务 `code` 或 HTTP 非 2xx 表达错误时，CLI stdout 同样保留后端实际 response body，并通过退出码表达进程失败。没有后端 response body 的本地参数、配置、认证初始化或网络错误继续使用 CLI 自有 `{ok:false,error}` 结构。
+
+`mbs version/config/whoami/skills/find/describe/serve` 等本地或专用命令保留各自输出契约。`mbs database query` 直接透传服务端 NDJSON 流，便于 agent 增量消费大结果集。
 
 退出码：`0` 成功 / `1` 参数或 API 错误 / `2` 认证失效（需重新 `mbs login`）
 

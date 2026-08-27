@@ -81,15 +81,17 @@ export default class OrdersList extends MBSCommand {
 }
 ```
 
-**输出格式（不得修改此约定）：**
+**业务查询输出格式（不得再次封装）：**
 
 ```json
-// 成功
-{ "ok": true, "data": <any>, "meta": { "total": <number> } }
-
-// 失败（由 MBSCommand.catch 自动格式化）
-{ "ok": false, "error": { "type": "auth|validation|api", "message": "...", "hint": "..." } }
+// 成功或后端业务错误：直接输出后端 HTTP response body
+{ "code": 200, "data": <any>, "msg": "..." }
 ```
+
+- `MBSCommand.output()` 禁止添加 `{ok,data}` 等 CLI envelope。
+- 后端业务错误或 HTTP 错误必须保留实际 response body；CLI 仍使用非零退出码。
+- 没有后端 response body 的本地参数、配置、认证初始化或网络错误，使用 CLI 自有安全错误结构。
+- `find`、`describe`、`serve`、本地管理命令和 NDJSON 流遵守各自文档，不自动套用业务响应透传。
 
 **退出码：** `0` 成功 / `1` 参数或 API 错误 / `2` 认证失败
 
