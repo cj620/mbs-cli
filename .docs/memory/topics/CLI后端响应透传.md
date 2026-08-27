@@ -4,28 +4,26 @@
 
 - **记忆键**：`CLI-RESPONSE-PASSTHROUGH`
 - **负责模块**：`packages/shared`、业务命令调用方、CLI 公共文档
-- **当前状态**：待生效
+- **当前状态**：已发布并生效
 - **最后核验时间**：2026-08-27
-- **最后核验基线**：`1.0.0` / `aef3504` + `1.0.5` 发布工作区
+- **最后核验基线**：`e406c69` / `maintenance-1-v1.0.5` / npm 官方源 1.0.5
 - **权威来源**：[`20260827-[RELEASE]发布1.0.5维护版本`](../../req_doc/20260827-[RELEASE]发布1.0.5维护版本/)
 
 ## 当前事实
 
-- 已发布 npm `maintenance-1=1.0.4` 仍将业务查询响应包装为 `{ok:true,data:<backend-body>}`，并将后端业务错误转换为 `{ok:false,error}`。
-- 当前 `1.0.0` 工作区已实施 breaking contract：使用 `MBSCommand.output()` 的业务查询命令直接输出后端 HTTP body；版本已升级为 `1.0.5`，201 条测试、14 个 workspace 构建和 13 条发布保护通过，但远端发布尚未完成。
+- npm `maintenance-1=1.0.5` 已实施 breaking contract：使用 `MBSCommand.output()` 的业务查询命令直接输出后端 HTTP body；成功与后端错误均不添加 CLI envelope，错误仍使用非零退出码。
+- `1.0.5` 已通过 201 条测试、14 个 workspace 构建、13 条发布保护、分支 CI、Release 和官方源隔离安装 smoke。
 - 本地命令、语义发现命令、`mbs serve` 与 NDJSON 保留各自的独立输出契约。
 
 ## 待生效变更
 
-- 任务：[`20260827-[FEATURE]透传后端响应内容`](../../req_doc/20260827-[FEATURE]透传后端响应内容/)
-- 目标：成功与后端错误 stdout 均不添加 CLI envelope，同时保留认证刷新和退出码。
-- 目标环境：npm `maintenance-1=1.0.5`；当前本地 V3 通过，未发布。
+- 无。
 
 ## 演进关系
 
 | 来源 | 关系 | 目标 | 影响范围 | 生效环境 | 当前有效性 |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| 项目初始统一 envelope 契约 | 计划部分替代 | `20260827-[FEATURE]透传后端响应内容` | `MBSCommand.output()` 业务响应及其后端错误 | 未发布工作区 | 待生效；已发布版本仍使用旧契约 |
+| 项目初始统一 envelope 契约 | 部分替代 | `20260827-[FEATURE]透传后端响应内容` | `MBSCommand.output()` 业务响应及其后端错误 | npm maintenance-1 1.0.5 | 已生效；其他本地输出契约不变 |
 
 ## 当前强制约束
 
