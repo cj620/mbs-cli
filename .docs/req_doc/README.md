@@ -8,7 +8,7 @@
 
 | 任务文件夹 | 类型 | 核心业务边界 / 故障现象 | 当前状态 | 负责人 | 关联文档路径 |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| `20260903-[RELEASE]发布1.0.6维护版本` | RELEASE / SECURITY | 将当前认证安全整改精确提交到 `1.0.0`，经分支 CI 后以维护标签发布 npm `maintenance-1=1.0.6`；排除 `.idea` 且不移动 `latest` | 🚧 执行中 / 待发布：正在执行版本升级与发布前 V3 | Codex | [`./20260903-[RELEASE]发布1.0.6维护版本/`](./20260903-[RELEASE]发布1.0.6维护版本/) |
+| `20260903-[RELEASE]发布1.0.6维护版本` | RELEASE / SECURITY | 当前认证整改已提交并通过分支 CI，维护标签已推送；排除 `.idea` 且不移动 `latest` | ⛔ 已阻塞 / 待发布：Release `33743055631` 的 npm publish 返回 E404，1.0.6 尚不存在；待管理员更新 `NPM_TOKEN` 后重跑失败作业 | Codex | [`./20260903-[RELEASE]发布1.0.6维护版本/`](./20260903-[RELEASE]发布1.0.6维护版本/) |
 | `20260903-[FEATURE]接入长短Token刷新登录` | FEATURE / SECURITY | 登录选择扫码、账号密码或手工管理型长期 Refresh Token；每次重新登录先清除旧 Cookie、两类 Refresh 凭据和用户摘要；`refresh` 统一经 compat-session 取得内存 Access Token 并续接 SESSION，MBS_KEY 禁令保持 | ✅ 本地实现与 V3 完成；未发布、未真实网关联调 | Codex | [`./20260903-[FEATURE]接入长短Token刷新登录/`](./20260903-[FEATURE]接入长短Token刷新登录/) |
 | `20260902-[SECURITY]禁止持久化MBS_KEY` | SECURITY / FEATURE | 禁止捕获或持久化长期 `MBS_KEY`；账号密码终端直登；后续任务仅部分修正 SESSION-only 刷新实现，MBS_KEY 禁令保持 | 🧪 本地 V3 已通过 / 待真实 HTTPS 网关联调与发布；refresh 行为由 20260903 任务计划替代 | Codex | [`./20260902-[SECURITY]禁止持久化MBS_KEY/`](./20260902-[SECURITY]禁止持久化MBS_KEY/) |
 | `20260810-[BUG]恢复已发布CLI旧命令` | BUG | 恢复 npm `0.1.58` 已发布的五个业务命令标识、flags 与只读请求契约；本轮不恢复旧 serve 路由 | 🧪 待验收 / 待发布：独立兼容插件、10 条契约测试、全量构建测试及五条帮助验证通过；真实目标网关和发布未执行 | Codex | [`./20260810-[BUG]恢复已发布CLI旧命令/`](./20260810-[BUG]恢复已发布CLI旧命令/) |
