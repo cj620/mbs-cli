@@ -2,6 +2,7 @@
 
 | 记忆键 | 主题 | 当前结论 | 适用范围 | 当前来源 | 状态 | 主题文档 | 最后核验 |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| `AUTH-CREDENTIAL-BOUNDARY` | MBS 认证凭据边界 | `MBS_KEY` 永不接触；CLI 互斥缓存登录型 `AUTH_REFRESH` 或手工管理型 `LongToken`，统一交换内存 Access Token 与兼容 `SESSION`；重新登录前先清空旧认证缓存 | CLI 登录、刷新、认证缓存、业务一次性重试、Docker 报表服务 | `20260903-[FEATURE]接入长短Token刷新登录` / DEC-003 / DEC-004 | 本地实现与 V3 完成 / 待真实网关联调 | [`./topics/MBS认证凭据边界.md`](./topics/MBS认证凭据边界.md) | 2026-09-03 / 当前工作区 |
 | `CLI-RESPONSE-PASSTHROUGH` | CLI 后端响应透传 | npm `maintenance-1=1.0.5` 的业务查询成功与后端错误直接输出实际 HTTP body，不再添加 CLI envelope；认证刷新与非零退出码保留 | `packages/shared`、业务查询命令与公共输出文档 | `20260827-[RELEASE]发布1.0.5维护版本` | 已发布并完成官方源核验 | [`./topics/CLI后端响应透传.md`](./topics/CLI后端响应透传.md) | 2026-08-27 / `e406c69` / npm 1.0.5 |
 | `API-REQUEST-BODY-ENCODING` | 接口请求体编码 | npm `maintenance-1=1.0.4` 已由 `mbs request --api-id` 读取后端详情并统一编码七种 body 模式，manifest 生成与 serve 复用；官方源安装包核验通过 | `packages/shared`、`packages/cli`、生成器、Skill | `20260825-[RELEASE]发布1.0.4维护版本` | 已发布并完成官方源核验 | [`./topics/接口请求体编码.md`](./topics/接口请求体编码.md) | 2026-08-25 / `689e82e` / npm 1.0.4 |
 | `CLI-PUBLIC-COMPATIBILITY` | CLI 公开命令兼容性 | npm `0.1.58` 的五个业务命令已由独立兼容插件在本地恢复，命令 ID、flags、帮助和只读请求契约验证通过；旧 serve 路由不在本轮范围 | `packages/cli`、`packages/legacy` | `20260810-[BUG]恢复已发布CLI旧命令` | 本地已验证/待发布 | [`./topics/CLI公开命令兼容性.md`](./topics/CLI公开命令兼容性.md) | 2026-08-10 / `5b5c255` + 当前工作区 |
@@ -15,9 +16,12 @@
 
 - npm `1.0.4` 的七种请求体编码已通过本地 V3 与官方源安装核验，但尚未使用真实登录态、真实上传文件或目标网关业务接口联调。
 - npm `1.0.5` 的后端响应透传已通过官方源隔离安装的人工最小 mock，但尚未使用真实登录态、目标网关错误响应或既有下游脚本验收。
+- 登录型 Refresh 与手工管理型 `LongToken` 两个分支已完成本地全量 V3。两类真实长期凭据、`SESSION` 与 Bearer 网关兼容性仍待目标 HTTPS 环境联调。
 - 目标环境 embedding/Milvus、workflow 重建与 30 条 eval 尚未验收；本次未使用真实登录态执行生产 find 业务查询。
 
 ## 重大决策
 
+- [`DEC-004 长期凭据与短期 Access 边界`](./decisions/DEC-004-登录型Refresh与短期Access边界.md)：允许互斥缓存登录型 Refresh Cookie 或手工管理型 LongToken；Access Token 仅进程内存，普通业务请求不携带任何长期凭据。
+- [`DEC-003 MBS_KEY 禁止持久化`](./decisions/DEC-003-MBS_KEY禁止持久化.md)：不得捕获、存储、转发或记录长期 `MBS_KEY`；登录只取得短期 Cookie，刷新改为重新授权或正式服务身份机制。
 - [`DEC-001 动态查询接口使用公共只读请求命令`](./decisions/DEC-001-动态查询接口使用公共只读请求命令.md)：普通动态接口固定复用 `/gateway/cli` 和网关权限，不新增 cli-service 执行接口。
 - [`DEC-002 后端响应原样透传`](./decisions/DEC-002-后端响应原样透传.md)：业务查询 stdout 直接表达后端 HTTP response body；本地错误、语义命令、serve 与 NDJSON 保持各自契约。

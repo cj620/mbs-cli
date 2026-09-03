@@ -51,7 +51,7 @@ describe('APIClient', () => {
       statusCode: 200,
     }
     const instance = {
-      defaults: { headers: { Cookie: 'SESSION=old' } },
+      defaults: { headers: { Cookie: 'SESSION=old' } as Record<string, string> },
       get: vi.fn()
         .mockRejectedValueOnce(new NotAuthenticatedError(backendResponse))
         .mockResolvedValueOnce({ data: { code: 200, data: { id: 1 } } }),
@@ -59,7 +59,10 @@ describe('APIClient', () => {
       request: vi.fn(),
       interceptors: { response: { use: vi.fn() } },
     }
-    const refresh = vi.fn().mockResolvedValue('SESSION=fresh')
+    const refresh = vi.fn().mockResolvedValue({
+      cookie: 'SESSION=fresh',
+      accessToken: 'memory-access-token',
+    })
     mockAxios.create = vi.fn().mockReturnValue(instance)
 
     const client = new APIClient('http://api.example.com', 'SESSION=old', refresh)
@@ -68,6 +71,7 @@ describe('APIClient', () => {
     expect(refresh).toHaveBeenCalledOnce()
     expect(instance.get).toHaveBeenCalledTimes(2)
     expect(instance.defaults.headers.Cookie).toBe('SESSION=fresh')
+    expect(instance.defaults.headers.Authorization).toBe('Bearer memory-access-token')
   })
 
   /** Verifies a local refresh failure does not discard the backend response that triggered refresh. */

@@ -1,8 +1,8 @@
-// Type stub for optional @keytar/node-keytar dependency
+// Type stub for the optional deletion-only @keytar/node-keytar dependency.
 declare module '@keytar/node-keytar' {
+  /** Minimal credential adapter surface retained solely for legacy cleanup. */
   interface Keytar {
-    getPassword(service: string, account: string): Promise<string | null>
-    setPassword(service: string, account: string, password: string): Promise<void>
+    /** Deletes a historical credential without returning or exposing its value. */
     deletePassword(service: string, account: string): Promise<boolean>
   }
   const keytar: Keytar

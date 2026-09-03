@@ -1,18 +1,39 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-const mockSetKey = vi.fn()
-const mockGetAuthContext = vi.fn()
+const mockDeleteKey = vi.fn()
+const mockClearCookie = vi.fn()
+const mockFetchCurrentUser = vi.fn()
+const mockInput = vi.fn()
 const mockLaunch = vi.fn()
+const mockLoginWithPassword = vi.fn()
+const mockLoginWithManagedLongToken = vi.fn()
+const mockPassword = vi.fn()
+const mockSaveAuthContext = vi.fn()
+const mockSelect = vi.fn()
+const mockValidatePasswordLoginApiUrl = vi.fn()
+const mockValidateManagedTokenLoginApiUrl = vi.fn()
 
-vi.mock('@mb-it-org/shared', () => ({
+vi.mock('@inquirer/prompts', () => ({
+  input: mockInput,
+  password: mockPassword,
+  select: mockSelect,
+}))
+
+vi.mock('@mb-it-org/shared', async importOriginal => ({
+  ...await importOriginal<typeof import('@mb-it-org/shared')>(),
+  createSessionCookie: (value: unknown) => typeof value === 'string' && value ? `SESSION=${value}` : null,
+  clearCookie: mockClearCookie,
+  deleteKey: mockDeleteKey,
+  fetchCurrentUser: mockFetchCurrentUser,
   getConfig: () => ({ apiUrl: 'https://example.com' }),
   LOGIN_PATH: '/eshop/manager/login.jsp',
-  LOGIN_PATH_PASSWORD: '/eshop/manager/loginit2.jsp',
-  ERPLOGIN_PATH: '/yyaccount/account/user/erplogin',
-  KEY_PARAM: 'key',
   LOGIN_TIMEOUT_MS: 5_000,
-  setKey: mockSetKey,
-  getAuthContext: mockGetAuthContext,
+  loginWithPassword: mockLoginWithPassword,
+  loginWithManagedLongToken: mockLoginWithManagedLongToken,
+  saveAuthContext: mockSaveAuthContext,
+  SESSION_COOKIE_NAME: 'SESSION',
+  validatePasswordLoginApiUrl: mockValidatePasswordLoginApiUrl,
+  validateManagedTokenLoginApiUrl: mockValidateManagedTokenLoginApiUrl,
 }))
 
 vi.mock('playwright-core', () => ({
@@ -24,80 +45,250 @@ vi.mock('playwright-core', () => ({
 describe('login command', () => {
   beforeEach(() => {
     vi.resetModules()
-    mockSetKey.mockReset()
-    mockGetAuthContext.mockReset()
-    mockLaunch.mockReset()
+    vi.resetAllMocks()
+    mockDeleteKey.mockResolvedValue(undefined)
+    mockSaveAuthContext.mockResolvedValue(undefined)
+    mockSelect.mockResolvedValue('qr')
   })
 
+  /** Verifies an unsafe API URL is rejected before the terminal collects credentials. */
+  it('validates password transport before prompting', async () => {
+    const { MBSError } = await import('@mb-it-org/shared')
+    mockValidatePasswordLoginApiUrl.mockImplementation(() => {
+      throw new MBSError('Password login requires HTTPS', 'validation', 'Configure HTTPS')
+    })
+
+    const { default: Login } = await import('../commands/login.js')
+    const log = vi.fn()
+    const exit = vi.fn()
+    const command = Object.assign(Object.create(Login.prototype), {
+      parse: vi.fn(async () => ({ flags: { password: true } })),
+      log,
+      exit,
+    })
+
+    await command.run()
+
+    expect(mockInput).not.toHaveBeenCalled()
+    expect(mockPassword).not.toHaveBeenCalled()
+    expect(mockLoginWithPassword).not.toHaveBeenCalled()
+    expect(log).toHaveBeenCalledWith(JSON.stringify({
+      ok: false,
+      error: {
+        type: 'validation',
+        message: 'Password login requires HTTPS',
+        hint: 'Configure HTTPS',
+      },
+    }))
+    expect(exit).toHaveBeenCalledWith(1)
+  })
+
+  /**
+   * Creates a browser double whose isolated context exposes only a SESSION
+   * cookie, ensuring QR login observes browser cookie state without requests.
+   */
   function createBrowser() {
-    let requestHandler: ((request: { url: () => string }) => void) | undefined
-
     const page = {
-      on: vi.fn((event: string, handler: (request: { url: () => string }) => void) => {
-        if (event === 'request') requestHandler = handler
-      }),
-      goto: vi.fn(async () => {
-        requestHandler?.({
-          url: () => 'https://example.com/yyaccount/account/user/erplogin?key=test-key',
-        })
-      }),
+      goto: vi.fn(async () => undefined),
     }
-
+    const context = {
+      cookies: vi.fn(async () => [
+        { name: 'SESSION', value: 'qr-session', expires: -1 },
+        { name: 'AUTH_REFRESH', value: 'qr-refresh', expires: 4_102_444_800 },
+      ]),
+      newPage: vi.fn(async () => page),
+    }
     const browser = {
-      newContext: vi.fn(async () => ({
-        newPage: vi.fn(async () => page),
-      })),
+      newContext: vi.fn(async () => context),
       close: vi.fn(async () => undefined),
     }
 
-    return { browser, page }
+    return { browser, context, page }
   }
 
-  /** Verifies QR login opens the direct eshop route and captures the login key. */
-  it('prefers the system Chrome channel, captures the login key, and prints success JSON', async () => {
-    const { browser, page } = createBrowser()
+  /** Verifies bare login asks for a method and QR mode stores both auth cookies without observing requests. */
+  it('selects QR login and reads browser authentication cookies', async () => {
+    const { browser, context, page } = createBrowser()
+    const userInfo = {
+      id: 'user-1',
+      loginName: 'user-1',
+      userName: 'Test User',
+      companyId: 1,
+      companyName: 'Test Company',
+      departmentName: 'Operations',
+      positionName: 'Analyst',
+      groupCompanyId: 1,
+      groupCompanyName: 'Test Company',
+    }
 
     mockLaunch.mockResolvedValue(browser)
-    mockGetAuthContext.mockResolvedValue({ userInfo: { name: '张三' } })
+    mockFetchCurrentUser.mockResolvedValue(userInfo)
 
     const { default: Login } = await import('../commands/login.js')
     const log = vi.fn()
     const exit = vi.fn()
 
-    await Login.prototype.run.call({
+    const command = Object.assign(Object.create(Login.prototype), {
       parse: vi.fn(async () => ({ flags: { password: false } })),
       log,
       exit,
     })
+    await command.run()
 
+    expect(mockSelect).toHaveBeenCalledWith({
+      message: 'Choose a login method:',
+      choices: [
+        { name: 'QR code (opens a browser)', value: 'qr' },
+        { name: 'Account and password (terminal)', value: 'password' },
+        { name: 'Long-term Refresh Token (terminal)', value: 'managed-token' },
+      ],
+    })
+    expect(mockClearCookie).toHaveBeenCalledTimes(1)
+    expect(mockClearCookie.mock.invocationCallOrder[0]).toBeLessThan(
+      mockSelect.mock.invocationCallOrder[0],
+    )
+    expect(mockDeleteKey).toHaveBeenCalled()
     expect(mockLaunch).toHaveBeenCalledTimes(1)
     expect(mockLaunch).toHaveBeenCalledWith({ channel: 'chrome', headless: false })
     expect(page.goto).toHaveBeenCalledWith('https://example.com/eshop/manager/login.jsp')
-    expect(mockSetKey).toHaveBeenCalledWith('test-key')
-    expect(mockGetAuthContext).toHaveBeenCalled()
+    expect(context.cookies).toHaveBeenCalled()
+    expect(mockFetchCurrentUser).toHaveBeenCalledWith(
+      'https://example.com',
+      'SESSION=qr-session; AUTH_REFRESH=qr-refresh',
+    )
+    expect(mockSaveAuthContext).toHaveBeenCalledWith({
+      cookie: 'SESSION=qr-session; AUTH_REFRESH=qr-refresh',
+      refreshExpiresAt: '2100-01-01T00:00:00.000Z',
+      userInfo,
+    })
     expect(log).toHaveBeenLastCalledWith(JSON.stringify({ ok: true, data: { message: 'Authenticated successfully' } }))
     expect(exit).not.toHaveBeenCalled()
     expect(browser.close).toHaveBeenCalled()
   })
 
-  /** Verifies password login opens the direct eshop password route without a CLI prefix. */
-  it('opens the direct password login route', async () => {
-    const { browser, page } = createBrowser()
-
-    mockLaunch.mockResolvedValue(browser)
-    mockGetAuthContext.mockResolvedValue({ userInfo: { name: 'test-user' } })
+  /** Verifies bare login accepts a hidden managed token and never opens a browser. */
+  it('selects long-term Refresh Token login', async () => {
+    const managedToken = `ult_v1_${'a'.repeat(32)}.${'B'.repeat(43)}`
+    mockSelect.mockResolvedValue('managed-token')
+    mockPassword.mockResolvedValue(managedToken)
+    mockLoginWithManagedLongToken.mockResolvedValue({
+      cookie: 'SESSION=managed-session',
+      managedLongToken: managedToken,
+      userInfo: {
+        id: 'user-1', loginName: 'user-1', userName: 'Test User', companyId: null,
+        companyName: null, departmentName: null, positionName: null,
+        groupCompanyId: null, groupCompanyName: null,
+      },
+    })
 
     const { default: Login } = await import('../commands/login.js')
-
-    await Login.prototype.run.call({
-      parse: vi.fn(async () => ({ flags: { password: true } })),
+    const command = Object.assign(Object.create(Login.prototype), {
+      parse: vi.fn(async () => ({ flags: { password: false } })),
       log: vi.fn(),
       exit: vi.fn(),
     })
 
-    expect(page.goto).toHaveBeenCalledWith('https://example.com/eshop/manager/loginit2.jsp')
+    await command.run()
+
+    expect(mockPassword).toHaveBeenCalledWith({
+      mask: '*', message: 'Long-term Refresh Token:',
+    })
+    expect(mockClearCookie).toHaveBeenCalledTimes(1)
+    expect(mockClearCookie.mock.invocationCallOrder[0]).toBeLessThan(
+      mockPassword.mock.invocationCallOrder[0],
+    )
+    expect(mockValidateManagedTokenLoginApiUrl).toHaveBeenCalledWith('https://example.com')
+    expect(mockValidateManagedTokenLoginApiUrl.mock.invocationCallOrder[0]).toBeLessThan(
+      mockPassword.mock.invocationCallOrder[0],
+    )
+    expect(mockLoginWithManagedLongToken).toHaveBeenCalledWith('https://example.com', managedToken)
+    expect(mockSaveAuthContext).toHaveBeenCalledWith(expect.objectContaining({
+      managedLongToken: managedToken,
+    }))
+    expect(mockInput).not.toHaveBeenCalled()
+    expect(mockLaunch).not.toHaveBeenCalled()
   })
 
+  /** Verifies password login prompts in the terminal and never launches a browser. */
+  it('logs in directly from terminal prompts in password mode', async () => {
+    const authContext = {
+      cookie: 'SESSION=password-session',
+      userInfo: {
+        id: 'user-1',
+        loginName: 'user-1',
+        userName: 'Test User',
+        companyId: null,
+        companyName: null,
+        departmentName: null,
+        positionName: null,
+        groupCompanyId: null,
+        groupCompanyName: null,
+      },
+    }
+    mockInput.mockResolvedValue('test-account')
+    mockPassword.mockResolvedValue('test-password')
+    mockLoginWithPassword.mockResolvedValue(authContext)
+
+    const { default: Login } = await import('../commands/login.js')
+    const log = vi.fn()
+
+    const command = Object.assign(Object.create(Login.prototype), {
+      parse: vi.fn(async () => ({ flags: { password: true } })),
+      log,
+      exit: vi.fn(),
+    })
+    await command.run()
+
+    expect(mockInput).toHaveBeenCalledWith({ message: 'MBS account:' })
+    expect(mockClearCookie).toHaveBeenCalledTimes(1)
+    expect(mockClearCookie.mock.invocationCallOrder[0]).toBeLessThan(
+      mockInput.mock.invocationCallOrder[0],
+    )
+    expect(mockValidatePasswordLoginApiUrl).toHaveBeenCalledWith('https://example.com')
+    expect(mockValidatePasswordLoginApiUrl.mock.invocationCallOrder[0]).toBeLessThan(
+      mockInput.mock.invocationCallOrder[0],
+    )
+    expect(mockPassword).toHaveBeenCalledWith({ mask: '*', message: 'MBS password:' })
+    expect(mockLoginWithPassword).toHaveBeenCalledWith('https://example.com', {
+      username: 'test-account',
+      password: 'test-password',
+    })
+    expect(mockSaveAuthContext).toHaveBeenCalledWith(authContext)
+    expect(mockLaunch).not.toHaveBeenCalled()
+    expect(mockSelect).not.toHaveBeenCalled()
+    expect(log).toHaveBeenLastCalledWith(JSON.stringify({ ok: true, data: { message: 'Authenticated successfully' } }))
+  })
+
+  /** Verifies bare login can select password mode without requiring the compatibility flag. */
+  it('selects direct password login from the interactive list', async () => {
+    mockSelect.mockResolvedValue('password')
+    mockInput.mockResolvedValue('test-account')
+    mockPassword.mockResolvedValue('test-password')
+    mockLoginWithPassword.mockResolvedValue({
+      cookie: 'SESSION=password-session; AUTH_REFRESH=password-refresh',
+      refreshExpiresAt: '2100-01-01T00:00:00.000Z',
+      userInfo: {
+        id: 'user-1', loginName: 'user-1', userName: 'Test User', companyId: null,
+        companyName: null, departmentName: null, positionName: null,
+        groupCompanyId: null, groupCompanyName: null,
+      },
+    })
+
+    const { default: Login } = await import('../commands/login.js')
+    const command = Object.assign(Object.create(Login.prototype), {
+      parse: vi.fn(async () => ({ flags: { password: false } })),
+      log: vi.fn(),
+      exit: vi.fn(),
+    })
+
+    await command.run()
+
+    expect(mockSelect).toHaveBeenCalledTimes(1)
+    expect(mockLoginWithPassword).toHaveBeenCalledTimes(1)
+    expect(mockLaunch).not.toHaveBeenCalled()
+  })
+
+  /** Verifies QR login keeps the existing system-browser fallback order. */
   it('falls back from Chrome and Edge to bundled Chromium when needed', async () => {
     const { browser } = createBrowser()
 
@@ -105,28 +296,38 @@ describe('login command', () => {
       .mockRejectedValueOnce(new Error('chrome launch failed'))
       .mockRejectedValueOnce(new Error('edge launch failed'))
       .mockResolvedValueOnce(browser)
-    mockGetAuthContext.mockResolvedValue({ userInfo: { name: '张三' } })
+    mockFetchCurrentUser.mockResolvedValue({
+      id: 'user-1',
+      loginName: 'user-1',
+      userName: 'Test User',
+      companyId: null,
+      companyName: null,
+      departmentName: null,
+      positionName: null,
+      groupCompanyId: null,
+      groupCompanyName: null,
+    })
 
     const { default: Login } = await import('../commands/login.js')
     const log = vi.fn()
     const exit = vi.fn()
 
-    await Login.prototype.run.call({
+    const command = Object.assign(Object.create(Login.prototype), {
       parse: vi.fn(async () => ({ flags: { password: false } })),
       log,
       exit,
     })
+    await command.run()
 
     expect(mockLaunch).toHaveBeenNthCalledWith(1, { channel: 'chrome', headless: false })
     expect(mockLaunch).toHaveBeenNthCalledWith(2, { channel: 'msedge', headless: false })
     expect(mockLaunch).toHaveBeenNthCalledWith(3, { headless: false })
-    expect(mockSetKey).toHaveBeenCalledWith('test-key')
-    expect(mockGetAuthContext).toHaveBeenCalled()
-    expect(log).toHaveBeenLastCalledWith(JSON.stringify({ ok: true, data: { message: 'Authenticated successfully' } }))
+    expect(mockSaveAuthContext).toHaveBeenCalledTimes(1)
     expect(exit).not.toHaveBeenCalled()
     expect(browser.close).toHaveBeenCalled()
   })
 
+  /** Verifies a missing browser is reported only for QR login. */
   it('prints a structured error when Chromium is unavailable', async () => {
     mockLaunch.mockRejectedValue(new Error("browserType.launch: Executable doesn't exist at /ms-playwright/chromium"))
 
@@ -134,11 +335,12 @@ describe('login command', () => {
     const log = vi.fn()
     const exit = vi.fn()
 
-    await Login.prototype.run.call({
+    const command = Object.assign(Object.create(Login.prototype), {
       parse: vi.fn(async () => ({ flags: { password: false } })),
       log,
       exit,
     })
+    await command.run()
 
     expect(log).toHaveBeenLastCalledWith(
       JSON.stringify({

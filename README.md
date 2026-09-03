@@ -1,6 +1,6 @@
 # MBS CLI
 
-面向 AI Agent 与内部研发的马帮（MBS）业务数据接入底座。把分散的内部业务能力沉淀为统一命令与本地零认证 HTTP 网关 —— 一次登录、处处可用；Agent 与内部页面只关心"取什么数"，无需再处理登录态维持、Cookie 刷新、跨域代理与接口拼装。
+面向 AI Agent 与内部研发的马帮（MBS）业务数据接入底座。把分散的内部业务能力沉淀为统一命令与本地零认证 HTTP 网关 —— 一次登录、处处可用；Agent 与内部页面只关心“取什么数”，无需接触 MBS Cookie、跨域代理与接口拼装。会话失效后由用户重新登录。
 
 **核心能力**
 
@@ -112,9 +112,13 @@ mbs whoami
 - `ok:false` 或退出码 `2` → 执行 `mbs login`
 
 ```bash
-mbs login    # 仅调用系统已安装的 Chrome / Edge，按顺序探测
-mbs whoami   # 复检
+mbs login              # 显示登录方式选择列表（扫码 / 账号密码 / 长期 Refresh Token）
+mbs login --password   # 终端隐藏输入账号密码；直接调用认证中心，不启动浏览器
+mbs refresh            # 用当前登录的长期凭据换取短期 Access Token 并续接 SESSION
+mbs whoami             # 复检
 ```
+
+每次执行 `mbs login` 都会先清空当前用户的 `SESSION`、登录型 `AUTH_REFRESH`、管理型 `LongToken`、Refresh 到期时间和用户摘要，再展示登录方式或收集新凭据；若新登录取消或失败，旧登录态不会恢复。扫码和账号密码登录缓存认证中心签发的 `SESSION`、可轮换 `AUTH_REFRESH` Cookie、Refresh 到期时间和最小用户摘要。第三种方式在隐藏终端中接收后台签发的长期 Refresh Token，按服务端 `LongToken` 协议交换并缓存该 Token 与兼容 `SESSION`；两类长期凭据严格互斥。长期凭据只用于认证交换，不直接访问业务接口；交换返回的短期 Access Token 只保存在当前进程内存，不写入文件或输出。CLI 始终不捕获、不读取、不保存 `MBS_KEY`。非扫码模式只允许连接 HTTPS 认证地址；HTTP 仅允许回环开发代理，账号、密码和长期 Token 都不支持通过参数或环境变量传入。
 
 `mbs login` 失败时会输出结构化错误：
 - `error.message: "No supported browser runtime is available"` → 按 `error.hint` 装系统 Chrome 或 Edge；**禁止安装 Playwright/Chromium 等额外浏览器运行时**
@@ -200,8 +204,8 @@ mbs org platforms   # 直接返回后端 body，含平台数据（认证最终�
    - 普通通道已安装：mbs version 看 data.updateAvailable，true 时 mbs update
    - 任务明确指定 1.0.0 长期维护线：无论是否已安装，都执行 npm install -g @mb-it-org/cli@maintenance-1 --registry=https://registry.npmjs.org/；禁止执行 mbs update
 3. mbs config get；ok:false 则 mbs config init
-4. mbs whoami；ok:false 或退出码 2 时 mbs login 后复检
-5. 只调用系统已装 Chrome/Edge；**禁止安装 Playwright/Chromium 等浏览器运行时**。mbs login 报 "No supported browser runtime" 时按 hint 让用户装系统 Chrome/Edge，不要 agent 自行下载内核
+4. mbs whoami；ok:false 或退出码 2 时执行 mbs login 并在列表中选择扫码、账号密码或后台长期 Refresh Token；也可用 mbs login --password 直接进入终端密码模式，完成后复检
+5. 仅扫码模式调用系统已装 Chrome/Edge；**禁止安装 Playwright/Chromium 等浏览器运行时**。mbs login 报 "No supported browser runtime" 时按 hint 让用户装系统 Chrome/Edge，不要 agent 自行下载内核；密码模式不得要求浏览器
 6. 接入 skill：
    - 平台支持：mbs skills install --dry-run 看检测结果 → mbs skills install；完成后明确告知用户重启 agent 会话
    - 平台不支持：至少读 skills/SKILL.md 与 skills/references/global.md；按任务再读 references/org|crm|database/SKILL.md
@@ -236,7 +240,9 @@ npm 全局安装完成但当前 shell 找不到 `mbs`：重新打开终端，或
 ### 认证失效（退出码 2）
 
 ```bash
-mbs login
+mbs login              # 选择扫码、账号密码或后台长期 Refresh Token 登录
+mbs login --password   # 终端账号密码直登
+mbs refresh            # 轮换 Refresh Cookie、取得内存 Access Token并续接 SESSION
 mbs whoami
 ```
 
@@ -299,10 +305,12 @@ npm install -g @mb-it-org/cli@maintenance-1 --registry=https://registry.npmjs.or
 **登录**：
 
 ```bash
-mbs login
+mbs login              # 选择扫码、账号密码或后台长期 Refresh Token 登录
+mbs login --password   # 终端账号密码直登
+mbs refresh            # 刷新 Access Token 与兼容 SESSION
 ```
 
-> 默认使用系统已有 Chrome/Edge 完成登录；通常不需要额外安装浏览器运行时。
+> 扫码模式默认使用系统已有 Chrome/Edge；账号密码和长期 Token 模式不需要浏览器。任一长期凭据仍有效时，业务请求首次 401 会自动交换并重试一次；交换失败时重新登录。
 
 **验证**：
 
@@ -317,7 +325,7 @@ mbs org platforms # 获取平台列表，验证业务数据可达
 mbs serve --project-apis
 ```
 
-启动后默认监听 `http://127.0.0.1:7878`，并把当前项目已实现的 API 暴露为 `/api/<domain>/<action>` 路由。前端页面可以直接请求这个本地网关，把已封装的业务接口组合成内部看板、辅助运营页面或临时分析页面，无需在页面里重新实现马帮登录、Cookie 刷新和 API 转发。
+启动后默认监听 `http://127.0.0.1:7878`，并把当前项目已实现的 API 暴露为 `/api/<domain>/<action>` 路由。前端页面可以直接请求这个本地网关，把已封装的业务接口组合成内部看板、辅助运营页面或临时分析页面，无需在页面里接触 MBS Cookie 或自行转发 API；会话失效后需在 CLI 重新登录。
 
 需要快速验证本地接口服务时，可以启动网关后打开 [examples/serve-dashboard/index.html](examples/serve-dashboard/index.html)。该测试页面会检查 `/__routes` 和 `/api/test/whoami`，用于确认认证状态和 project API 路由是否可用。
 
@@ -329,8 +337,8 @@ mbs serve --project-apis
 |------|------|
 | 查看配置 | `mbs config get` |
 | 初始化配置 | `mbs config init` |
-| 登录 / 登出 | `mbs login` / `mbs logout` |
-| 刷新认证 Cookie | `mbs refresh` |
+| 登录 / 登出 | `mbs login` 或 `mbs login --password` / `mbs logout` |
+| 刷新认证 | `mbs refresh`（轮换 Refresh Cookie，刷新内存 Access Token 与兼容 SESSION） |
 | 查看认证状态 | `mbs whoami` 或 `mbs test whoami` |
 | 查看版本与更新 | `mbs version` / `mbs update` |
 | 查看 skill 目录 | `mbs skills path` |
@@ -417,7 +425,7 @@ mbs serve --proxy-all
 
 ## 本地页面二创开发
 
-把 `mbs serve` 当作"本地零认证 BFF"，前端开发者可以在自己机器上快速搭出内部看板、运营辅助页、临时分析页或 demo，不必申请后端代理、不必处理马帮登录态、不必关心 Cookie 刷新。
+把 `mbs serve` 当作“本地零认证 BFF”，前端开发者可以在自己机器上快速搭出内部看板、运营辅助页、临时分析页或 demo，不必申请后端代理，也不需要让页面接触 MBS Cookie；会话到期后由 CLI 用户重新登录。
 
 **适用场景**
 
@@ -443,7 +451,7 @@ mbs serve --proxy-all
 2. 拉路由表：页面初始化时 `fetch('http://127.0.0.1:7878/__routes')`，把 `data[]` 渲染成可选接口。
 3. 选接口取数：按 `route.method` + `route.url` 直接发请求；路径参数走 `/:name` 占位，业务参数走 query 或 body。
 4. 渲染：JSON 路由直接展开 `data`；NDJSON 路由按行流式追加。
-5. 出问题看 `{ ok:false, error.hint }`；HTTP `401` 走 `mbs login` 重新登录后页面刷新即可。
+5. 出问题看 `{ ok:false, error.hint }`；HTTP `401` 会先自动交换并重试一次，仍失败时执行 `mbs login` 重新选择登录方式。
 
 **集成示例（任意框架通用）**
 
@@ -496,7 +504,7 @@ pnpm test
 
 `mbs version/config/whoami/skills/find/describe/serve` 等本地或专用命令保留各自输出契约。`mbs database query` 直接透传服务端 NDJSON 流，便于 agent 增量消费大结果集。
 
-退出码：`0` 成功 / `1` 参数或 API 错误 / `2` 认证失效（需重新 `mbs login`）
+退出码：`0` 成功 / `1` 参数或 API 错误 / `2` 认证失效（需重新执行任一交互式登录命令）
 
 ---
 

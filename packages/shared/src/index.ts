@@ -30,15 +30,42 @@ export {
   selectReleaseAsset,
   validateCliBundle,
 } from './update.js'
-export { getAuthContext, forceRefreshAuthContext } from './auth/index.js'
-export { setKey, getKey, deleteKey } from './auth/key-store.js'
-export { clearCookie, readCookie, readUserInfo, readCacheTimestamp } from './auth/cookie-cache.js'
-export type { AuthContext, UserInfo } from './auth/context.js'
+export { forceRefreshAuthContext, getAuthContext, saveAuthContext } from './auth/index.js'
+export { deleteKey } from './auth/key-store.js'
+export {
+  clearCookie,
+  readCacheTimestamp,
+  readCookie,
+  readManagedLongToken,
+  readRefreshExpiresAt,
+  readUserInfo,
+} from './auth/cookie-cache.js'
+export type { AuthContext, RefreshedAuthContext, UserInfo } from './auth/context.js'
+export {
+  COMPAT_SESSION_EXCHANGE_PATH,
+  exchangeCompatibilitySession,
+  fetchCurrentUser,
+  loginWithManagedLongToken,
+  loginWithPassword,
+  validateManagedTokenLoginApiUrl,
+  validatePasswordLoginApiUrl,
+} from './auth/session-login.js'
+export type { PasswordLoginCredentials } from './auth/session-login.js'
+export {
+  AUTH_REFRESH_COOKIE_NAME,
+  createBrowserAuthCookies,
+  createSessionCookie,
+  extractManagedSessionCookie,
+  normalizeSessionCookie,
+  SESSION_COOKIE_NAME,
+} from './auth/session-cookie.js'
+export {
+  createManagedLongTokenAuthorization,
+  MANAGED_LONG_TOKEN_SCHEME,
+  normalizeManagedLongToken,
+} from './auth/managed-token.js'
 export {
   LOGIN_PATH,
-  LOGIN_PATH_PASSWORD,
-  ERPLOGIN_PATH,
-  KEY_PARAM,
   LOGIN_TIMEOUT_MS,
   KEYTAR_SERVICE,
   KEYTAR_ACCOUNT,

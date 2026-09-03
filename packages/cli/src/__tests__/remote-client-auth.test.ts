@@ -5,6 +5,7 @@ const mocks = vi.hoisted(() => ({
   forceRefreshAuthContext: vi.fn(),
   getAuthContext: vi.fn(),
   getConfig: vi.fn(),
+  normalizeSessionCookie: vi.fn(),
 }))
 
 vi.mock('@mb-it-org/shared', () => ({
@@ -12,6 +13,7 @@ vi.mock('@mb-it-org/shared', () => ({
   forceRefreshAuthContext: mocks.forceRefreshAuthContext,
   getAuthContext: mocks.getAuthContext,
   getConfig: mocks.getConfig,
+  normalizeSessionCookie: mocks.normalizeSessionCookie,
 }))
 
 import { createRecallClient } from '../find/remote-client.js'
@@ -23,7 +25,7 @@ describe('production recall authentication', () => {
       this: Record<string, unknown>,
       baseUrl: string,
       cookie: string,
-      refreshAuth: () => Promise<string>,
+      refreshAuth: () => Promise<{ cookie: string; accessToken: string }>,
     ) {
       this.baseUrl = baseUrl
       this.cookie = cookie
@@ -31,7 +33,11 @@ describe('production recall authentication', () => {
     })
     mocks.getAuthContext.mockResolvedValue({ cookie: 'SESSION=saved-cookie' })
     mocks.getConfig.mockReturnValue({ apiUrl: 'https://api.example.com/' })
-    mocks.forceRefreshAuthContext.mockResolvedValue({ cookie: 'SESSION=refreshed-cookie' })
+    mocks.normalizeSessionCookie.mockImplementation((cookie: string) => cookie.split(';')[0])
+    mocks.forceRefreshAuthContext.mockResolvedValue({
+      cookie: 'SESSION=refreshed-cookie; AUTH_REFRESH=rotated',
+      accessToken: 'memory-access-token',
+    })
   })
 
   /**
@@ -41,14 +47,17 @@ describe('production recall authentication', () => {
     const client = await createRecallClient() as unknown as {
       baseUrl: string
       cookie: string
-      refreshAuth: () => Promise<string>
+      refreshAuth: () => Promise<{ cookie: string; accessToken: string }>
     }
 
     expect(client.baseUrl).toBe('https://api.example.com/gateway/cli/cli-service')
     expect(client.cookie).toBe('SESSION=saved-cookie')
     expect(mocks.getAuthContext).toHaveBeenCalledOnce()
     expect(mocks.getConfig).toHaveBeenCalledOnce()
-    await expect(client.refreshAuth()).resolves.toBe('SESSION=refreshed-cookie')
+    await expect(client.refreshAuth()).resolves.toEqual({
+      cookie: 'SESSION=refreshed-cookie',
+      accessToken: 'memory-access-token',
+    })
     expect(mocks.forceRefreshAuthContext).toHaveBeenCalledOnce()
   })
 })

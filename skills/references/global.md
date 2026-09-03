@@ -5,22 +5,28 @@
 ### 首次配置
 
 ```bash
-mbs login              # 默认扫码登录（优先使用系统 Chrome / Edge）
-mbs login --password   # 账号密码登录，打开 loginit2.jsp（等同 -p）
+mbs login              # 显示列表，选择扫码、账号密码或后台长期 Refresh Token 登录
+mbs login --password   # 终端隐藏输入账号密码并直接登录（等同 -p）
 mbs whoami             # 验证认证状态
+mbs refresh            # 使用当前长期凭据刷新短期 Access Token 与兼容 SESSION
 ```
 
 说明：
-- `mbs login` 默认打开扫码登录页（`/eshop/manager/login.jsp`），并监听 `ERPLOGIN_PATH` 请求来提取登录 key
-- `--password` / `-p`：改为打开账号密码登录页（`/eshop/manager/loginit2.jsp`），其余认证流程不变
+- 每次有效执行 `mbs login` 都会先删除当前认证缓存（`SESSION`、`AUTH_REFRESH`、管理型 `LongToken`、Refresh 到期时间和用户摘要），再显示选择列表或读取新凭据；取消或登录失败不会恢复旧登录态
+- `mbs login` 先显示可键盘选择的登录方式列表；扫码选项打开 `/eshop/manager/login.jsp`，只轮询隔离浏览器上下文中的 `SESSION` 与 `AUTH_REFRESH` Cookie，不监听登录请求或解析 `MBS_KEY`
+- `--password` / `-p`：先校验认证地址，再在终端分别读取账号和隐藏密码，直接调用认证中心；该模式不会启动浏览器
+- 后台长期 Refresh Token：在选择列表中选中后通过隐藏终端手工粘贴；CLI 按管理型 `LongToken` 协议交换，不启动浏览器，也不提供参数或环境变量入口
+- 密码登录仅允许 HTTPS；只有 `localhost`、`127.0.0.1`、`::1` 回环开发代理可使用 HTTP
+- CLI 缓存严格二选一：登录型 `AUTH_REFRESH` + 到期时间，或不轮换的管理型 `LongToken`；两者都与兼容 `SESSION` 和最小用户摘要保存在当前用户认证缓存
+- `mbs refresh` 使用缓存中的唯一长期凭据调用 `/gateway/auth-center-service/auth/token/exchange/compat-session`；登录型 Cookie 会轮换，管理型 Token 保持不变，短期 Access Token 仅留在当前进程内存且绝不输出或持久化
+- 业务请求首次认证失败时最多自动交换并重试一次；重试使用内存 Bearer 与兼容 SESSION，最终失败时重新执行 `mbs login`
+- `MBS_KEY` 仍禁止捕获、读取、保存、转发或记录；登录型 Refresh Cookie 不是 `MBS_KEY`，也不能直接访问业务接口
 - 默认不需要预装浏览器运行时；不要在阅读文档或环境检查阶段主动安装
 - 只有系统 Chrome / Edge 都不可用，且 `mbs login` 明确提示缺少浏览器运行时时，才说明阻塞点并按提示处理
 
 ### CI / 无交互环境
 
-```bash
-MBS_API_URL=https://api.example.com MBS_TOKEN=xxx mbs org platforms
-```
+当前 CLI 不提供账号密码或长期用户凭据的无交互输入入口。无人值守任务可以预先通过交互式 `mbs login` 导入后台签发的受限管理型长期 Token，并把 CLI 配置目录挂载为仅运行用户可读写的持久卷；不得把 Token 写入命令行、环境变量、镜像、前端资源或日志。多用户系统仍应使用独立授权机制，不能共享这份单用户缓存。
 
 ### 动态只读接口请求
 
@@ -53,7 +59,7 @@ mbs raw POST /v1/export --body '{"from":"2026-01-01","to":"2026-04-08"}'
 
 ### 本地 HTTP 网关（业务页面二次开发）
 
-`mbs serve` 会读取 audit manifest，并在本机启动一个 HTTP 网关，让浏览器页面复用 CLI 认证查询 MBS API。它适合基于已审计的业务接口做内部看板、运营辅助页、临时分析页等页面化二次开发，页面侧无需重新实现登录、Cookie 刷新和 API 转发。
+`mbs serve` 会读取 audit manifest，并在本机启动一个 HTTP 网关，让浏览器页面复用 CLI 认证查询 MBS API。它适合基于已审计的业务接口做内部看板、运营辅助页、临时分析页等页面化二次开发，页面侧无需接触 MBS Cookie 或自行转发 API；首次认证失败会由 CLI 交换一次并重试，最终失败时重新登录。
 
 ```bash
 mbs serve --manifest fixtures/sample-audit-manifest.json
@@ -113,4 +119,4 @@ CLI 不再增加 `{ok,data}` 或 `{ok:false,error}` 外层。后端业务错误�
 |--------|------|---------|
 | `0` | 成功 | — |
 | `1` | API / 参数错误 | 业务查询检查后端实际错误字段；本地错误检查 `error.hint` |
-| `2` | 认证失败 | 运行 `mbs login` 重新登录 |
+| `2` | 认证失败 | 运行 `mbs login` 选择方式重新登录 |

@@ -36,6 +36,14 @@ export interface RequestOptions {
   headers?: RequestContentHeaders;
 }
 
+/** Authentication material returned by the one-time refresh callback. */
+export interface RefreshedRequestAuthentication {
+  /** Updated compatible SESSION header used by business services and future exchanges. */
+  cookie: string;
+  /** Short Bearer credential retained only in this APIClient instance. */
+  accessToken: string;
+}
+
 /**
  * 错误码映射表。新增错误码在此追加一行即可。
  * key: 服务端 code 值
@@ -113,7 +121,7 @@ function rejectApiResponse(error: unknown): never {
  */
 export class APIClient {
   private readonly instance: AxiosInstance;
-  private readonly refreshAuth: () => Promise<string>;
+  private readonly refreshAuth: () => Promise<string | RefreshedRequestAuthentication>;
 
   /**
    * Creates an authenticated API transport with stable CLI headers.
@@ -123,12 +131,13 @@ export class APIClient {
    *
    * @param baseURL Base URL used for relative API request paths.
    * @param cookie Cookie header value obtained from the CLI authentication context.
-   * @param refreshAuth Callback that returns a replacement Cookie after authentication failure.
+   * @param refreshAuth Callback returning a legacy Cookie string or upgraded Cookie plus
+   * memory-only Access Token after authentication failure.
    */
   constructor(
     baseURL: string,
     cookie: string,
-    refreshAuth: () => Promise<string>,
+    refreshAuth: () => Promise<string | RefreshedRequestAuthentication>,
   ) {
     this.refreshAuth = refreshAuth;
     this.instance = axios.create({
@@ -143,12 +152,16 @@ export class APIClient {
   }
 
   /**
-   * Replaces the Cookie attached by the shared Axios adapter after authentication refresh.
+   * Replaces the Cookie and, when available, installs the memory-only Bearer credential.
    *
-   * @param cookie Fresh Cookie returned by the authentication module.
+   * @param authentication Fresh authentication returned by the authentication module.
    */
-  private updateCookie(cookie: string): void {
+  private updateAuthentication(authentication: string | RefreshedRequestAuthentication): void {
+    const cookie = typeof authentication === "string" ? authentication : authentication.cookie;
     this.instance.defaults.headers["Cookie"] = cookie;
+    if (typeof authentication !== "string") {
+      this.instance.defaults.headers["Authorization"] = `Bearer ${authentication.accessToken}`;
+    }
   }
 
   /**
@@ -164,13 +177,13 @@ export class APIClient {
       return await request();
     } catch (err) {
       if (err instanceof NotAuthenticatedError) {
-        let newCookie: string;
+        let authentication: string | RefreshedRequestAuthentication;
         try {
-          newCookie = await this.refreshAuth();
+          authentication = await this.refreshAuth();
         } catch {
           throw err;
         }
-        this.updateCookie(newCookie);
+        this.updateAuthentication(authentication);
         return await request();
       }
       throw err;

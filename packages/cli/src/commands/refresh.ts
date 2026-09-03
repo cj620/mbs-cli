@@ -1,58 +1,50 @@
-// packages/cli/src/commands/refresh.ts
 import { Command } from '@oclif/core'
-import { getKey, forceRefreshAuthContext, NotAuthenticatedError } from '@mb-it-org/shared'
+import { forceRefreshAuthContext, MBSError, NotAuthenticatedError } from '@mb-it-org/shared'
 
 export default class Refresh extends Command {
-  static description = 'Refresh the authentication cookie using the stored key'
+  static description = 'Refresh Access Token and compatible SESSION using the cached long credential'
 
   static examples = ['mbs refresh']
 
+  /**
+   * Renews short Access/SESSION state using the cached long credential.
+   *
+   * <p>Login Refresh Cookie authentication rotates and persists its replacement;
+   * management LongToken authentication retains the same credential. No
+   * credential is printed. The returned Access Token remains in process memory
+   * until this command exits, while compatible SESSION state is persisted.</p>
+   */
   async run(): Promise<void> {
     await this.parse(Refresh)
 
-    const key = await getKey()
-    if (!key) {
-      this.log(
-        JSON.stringify({
+    try {
+      await forceRefreshAuthContext()
+      this.log(JSON.stringify({
+        ok: true,
+        data: { message: 'Authentication refreshed successfully' },
+      }))
+    } catch (error) {
+      if (error instanceof NotAuthenticatedError) {
+        this.log(JSON.stringify({
           ok: false,
           error: {
             type: 'auth',
-            message: 'No key found',
-            hint: 'Run mbs login to authenticate first',
+            message: 'Authentication refresh failed',
+            hint: 'Run mbs login to authenticate again',
           },
-        }),
-      )
-      this.exit(2)
-      return
-    }
-
-    try {
-      const { userInfo } = await forceRefreshAuthContext()
-      this.log(
-        JSON.stringify({
-          ok: true,
-          data: {
-            message: 'Cookie refreshed successfully',
-            user: userInfo,
-          },
-        }),
-      )
-    } catch (err) {
-      if (err instanceof NotAuthenticatedError) {
-        this.log(
-          JSON.stringify({
-            ok: false,
-            error: {
-              type: 'auth',
-              message: 'Authentication failed',
-              hint: 'Run mbs login to authenticate',
-            },
-          }),
-        )
+        }))
         this.exit(2)
         return
       }
-      throw err
+      if (error instanceof MBSError) {
+        this.log(JSON.stringify({
+          ok: false,
+          error: { type: error.type, message: error.message, hint: error.hint },
+        }))
+        this.exit(1)
+        return
+      }
+      throw error
     }
   }
 }

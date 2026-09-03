@@ -7,6 +7,7 @@ import {
   getAuthContext,
   getConfig,
   getWhoamiStatus,
+  normalizeSessionCookie,
 } from '@mb-it-org/shared'
 import Fastify, { type FastifyInstance, type FastifyReply, type FastifyRequest } from 'fastify'
 import { readFileSync } from 'node:fs'
@@ -218,9 +219,16 @@ export default class Serve extends Command {
     let client: APIClient | undefined
     const getClient = async (): Promise<APIClient> => {
       if (client) return client
-      const { cookie } = await getAuthContext()
+      const { cookie: authenticationCookie } = await getAuthContext()
+      const cookie = normalizeSessionCookie(authenticationCookie)
+      if (!cookie) throw new NotAuthenticatedError()
       const { apiUrl } = getConfig()
-      const refresh = async (): Promise<string> => (await forceRefreshAuthContext()).cookie
+      const refresh = async (): Promise<{ cookie: string; accessToken: string }> => {
+        const { cookie: refreshedAuthenticationCookie, accessToken } = await forceRefreshAuthContext()
+        const refreshedCookie = normalizeSessionCookie(refreshedAuthenticationCookie)
+        if (!refreshedCookie) throw new NotAuthenticatedError()
+        return { cookie: refreshedCookie, accessToken }
+      }
       client = new APIClient(apiUrl, cookie, refresh)
       return client
     }

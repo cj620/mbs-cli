@@ -8,6 +8,7 @@ import { getAuthContext, forceRefreshAuthContext } from "./auth/index.js";
 import { getConfig } from "./config.js";
 import { APIClient } from "./http.js";
 import { NotAuthenticatedError, MBSError, PermissionError } from "./errors.js";
+import { normalizeSessionCookie } from "./auth/session-cookie.js";
 
 // Gateway entry every CLI request passes through; the gateway routes to the
 // matching business microservice. Was "/gateway"; now "/gateway/cli".
@@ -43,12 +44,16 @@ export abstract class MBSCommand extends Command {
    */
   async init(): Promise<void> {
     await super.init();
-    const { cookie } = await getAuthContext();
+    const { cookie: authenticationCookie } = await getAuthContext();
+    const cookie = normalizeSessionCookie(authenticationCookie);
+    if (!cookie) throw new NotAuthenticatedError();
     const { apiUrl } = getConfig();
 
-    const refreshAuth = async (): Promise<string> => {
-      const { cookie: newCookie } = await forceRefreshAuthContext();
-      return newCookie;
+    const refreshAuth = async (): Promise<{ cookie: string; accessToken: string }> => {
+      const { cookie: refreshedAuthenticationCookie, accessToken } = await forceRefreshAuthContext();
+      const refreshedCookie = normalizeSessionCookie(refreshedAuthenticationCookie);
+      if (!refreshedCookie) throw new NotAuthenticatedError();
+      return { cookie: refreshedCookie, accessToken };
     };
 
     // Global gateway prefix: every request goes through /gateway/cli, which

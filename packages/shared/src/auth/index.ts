@@ -1,38 +1,79 @@
-// packages/skill-shared/src/auth/index.ts
-import { readCookie, readUserInfo, writeCookieAndUserInfo } from './cookie-cache.js'
-import { getKey } from './key-store.js'
-import { refreshCookieAndUserInfo } from './refresher.js'
-import { getConfig } from '../config.js'
+import {
+  clearCookie,
+  readAuthContextCache,
+  writeCookieAndUserInfo,
+} from './cookie-cache.js'
+import { deleteKey } from './key-store.js'
 import { NotAuthenticatedError } from '../errors.js'
-import type { AuthContext, UserInfo } from './context.js'
+import { getConfig } from '../config.js'
+import type { AuthContext, RefreshedAuthContext, UserInfo } from './context.js'
+import { exchangeCompatibilitySession } from './session-login.js'
 
-export type { AuthContext, UserInfo }
+export type { AuthContext, RefreshedAuthContext, UserInfo }
 export { NotAuthenticatedError }
 
+/**
+ * Returns the active cached Cookie context after removing legacy key storage.
+ *
+ * @returns The unexpired session, exactly one optional long credential, and safe user summary.
+ * @throws NotAuthenticatedError when either cache component is unavailable.
+ */
 export async function getAuthContext(): Promise<AuthContext> {
-  const cachedCookie = readCookie()
-  const cachedUserInfo = readUserInfo()
-  if (cachedCookie && cachedUserInfo) {
-    return { cookie: cachedCookie, userInfo: cachedUserInfo }
-  }
-
-  const key = await getKey()
-  if (!key) throw new NotAuthenticatedError()
-
-  const { apiUrl } = getConfig()
-  const { cookie, userInfo } = await refreshCookieAndUserInfo(apiUrl, key)
-  writeCookieAndUserInfo(cookie, userInfo)
-
-  return { cookie, userInfo }
+  await deleteKey()
+  const context = readAuthContextCache()
+  if (!context) throw new NotAuthenticatedError()
+  return context
 }
 
-export async function forceRefreshAuthContext(): Promise<AuthContext> {
-  const key = await getKey()
-  if (!key) throw new NotAuthenticatedError()
+/**
+ * Persists a newly authenticated context after deleting legacy MBS key storage.
+ *
+ * @param context Context returned by QR, password, or managed-token login.
+ */
+export async function saveAuthContext(context: AuthContext): Promise<void> {
+  await deleteKey()
+  writeCookieAndUserInfo(
+    context.cookie,
+    context.userInfo,
+    context.refreshExpiresAt,
+    context.managedLongToken,
+  )
+}
 
-  const { apiUrl } = getConfig()
-  const { cookie, userInfo } = await refreshCookieAndUserInfo(apiUrl, key)
-  writeCookieAndUserInfo(cookie, userInfo)
+/**
+ * Renews authentication through auth-center's compatibility exchange.
+ *
+ * <p>Login-Refresh state rotates; management LongToken state remains unchanged.
+ * The Access Token is returned only to the active process. Persistence writes
+ * only approved long credential, compatible Cookie, and safe user state.
+ * Authentication rejection or uncertain persistence clears the local cache to
+ * prevent replaying credentials that may already be invalid.</p>
+ *
+ * @returns Updated compatible session state and a memory-only short Access Token.
+ * @throws NotAuthenticatedError when no supported long credential exists or auth-center rejects it.
+ * @throws Error for transport or persistence failures; temporary pre-response
+ * transport failures preserve the existing cache for a later retry.
+ */
+export async function forceRefreshAuthContext(): Promise<RefreshedAuthContext> {
+  const current = await getAuthContext()
+  if (!current.refreshExpiresAt && !current.managedLongToken) {
+    clearCookie()
+    throw new NotAuthenticatedError()
+  }
 
-  return { cookie, userInfo }
+  let refreshed: RefreshedAuthContext
+  try {
+    refreshed = await exchangeCompatibilitySession(getConfig().apiUrl, current)
+  } catch (error) {
+    if (error instanceof NotAuthenticatedError) clearCookie()
+    throw error
+  }
+
+  try {
+    await saveAuthContext(refreshed)
+  } catch (error) {
+    clearCookie()
+    throw error
+  }
+  return refreshed
 }

@@ -1,100 +1,195 @@
-// packages/skill-shared/src/__tests__/auth/index.test.ts
-import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { getAuthContext } from '../../auth/index.js'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { forceRefreshAuthContext, getAuthContext, saveAuthContext } from '../../auth/index.js'
 
-const mockUserInfo = {
-  id: '15357',
-  loginName: '15779582731',
-  userName: '昌建',
-  employeeId: '4202',
-  departmentId: 71,
-  departmentName: '胤元总经办',
-  positionId: 145,
-  positionName: '运营总经理',
-  permission: '10,1010,1020',
-  companyId: null,
-  companyName: null,
-  dataPermission: '0',
-  allPlatformId: null,
-  createdBy: '15198',
-  createdOn: '2025-04-14 10:32:30.0',
-  groupCompanyId: 1,
-  groupCompanyName: '上海胤元电子科技有限公司（上海总部）',
-  jumpType: '0',
-  mabangLoginName: '昌建',
-  mabangPassword: '无法查看 ^_^',
-  mabangerpId: null,
-  manageAuthority: null,
-  password: '无法查看 ^_^',
-  platformId: null,
-  roleList: null,
-  status: 1,
-  teamId: null,
+const safeUserInfo = {
+  id: 'user-1',
+  loginName: 'user-1',
+  userName: 'Test User',
+  companyId: 7,
+  companyName: 'Test Company',
+  departmentName: 'Operations',
+  positionName: 'Analyst',
+  groupCompanyId: 7,
+  groupCompanyName: 'Test Company',
 }
 
 vi.mock('../../auth/cookie-cache.js', () => ({
-  readCookie: vi.fn(),
-  readUserInfo: vi.fn(),
+  clearCookie: vi.fn(),
+  readAuthContextCache: vi.fn(),
   writeCookieAndUserInfo: vi.fn(),
 }))
 
-vi.mock('../../auth/key-store.js', () => ({
-  getKey: vi.fn(),
-}))
-
-vi.mock('../../auth/refresher.js', () => ({
-  refreshCookieAndUserInfo: vi.fn(),
+vi.mock('../../auth/session-login.js', () => ({
+  exchangeCompatibilitySession: vi.fn(),
 }))
 
 vi.mock('../../config.js', () => ({
-  getConfig: vi.fn().mockReturnValue({ apiUrl: 'http://api.example.com' }),
-  getConfigDir: vi.fn().mockReturnValue('/tmp/mbs-test'),
-  setConfig: vi.fn(),
+  getConfig: vi.fn(() => ({ apiUrl: 'https://example.com' })),
 }))
 
-import { readCookie, readUserInfo, writeCookieAndUserInfo } from '../../auth/cookie-cache.js'
-import { getKey } from '../../auth/key-store.js'
-import { refreshCookieAndUserInfo } from '../../auth/refresher.js'
+vi.mock('../../auth/key-store.js', () => ({
+  deleteKey: vi.fn(),
+}))
 
-const mockReadCookie = vi.mocked(readCookie)
-const mockReadUserInfo = vi.mocked(readUserInfo)
+import {
+  clearCookie, readAuthContextCache,
+  writeCookieAndUserInfo,
+} from '../../auth/cookie-cache.js'
+import { deleteKey } from '../../auth/key-store.js'
+import { exchangeCompatibilitySession } from '../../auth/session-login.js'
+import { getConfig } from '../../config.js'
+
+const mockClearCookie = vi.mocked(clearCookie)
+const mockDeleteKey = vi.mocked(deleteKey)
+const mockReadAuthContextCache = vi.mocked(readAuthContextCache)
 const mockWriteCookieAndUserInfo = vi.mocked(writeCookieAndUserInfo)
-const mockGetKey = vi.mocked(getKey)
-const mockRefreshCookieAndUserInfo = vi.mocked(refreshCookieAndUserInfo)
+const mockExchangeCompatibilitySession = vi.mocked(exchangeCompatibilitySession)
+const mockGetConfig = vi.mocked(getConfig)
 
-beforeEach(() => { vi.clearAllMocks() })
+beforeEach(() => {
+  vi.resetAllMocks()
+  mockDeleteKey.mockResolvedValue(undefined)
+  mockGetConfig.mockReturnValue({ apiUrl: 'https://example.com' })
+  mockWriteCookieAndUserInfo.mockImplementation(() => undefined)
+  mockReadAuthContextCache.mockReturnValue(null)
+})
 
-describe('getAuthContext', () => {
-  it('returns cached cookie and userInfo when valid', async () => {
-    mockReadCookie.mockReturnValue('SESSION=cached; Path=/')
-    mockReadUserInfo.mockReturnValue(mockUserInfo)
-
-    const ctx = await getAuthContext()
-    expect(ctx.cookie).toBe('SESSION=cached; Path=/')
-    expect(ctx.userInfo).toEqual(mockUserInfo)
-    expect(mockRefreshCookieAndUserInfo).not.toHaveBeenCalled()
-  })
-
-  it('refreshes cookie and userInfo when cache is empty', async () => {
-    mockReadCookie.mockReturnValue(null)
-    mockReadUserInfo.mockReturnValue(null)
-    mockGetKey.mockResolvedValue('mykey123')
-    mockRefreshCookieAndUserInfo.mockResolvedValue({
-      cookie: 'SESSION=new; Path=/',
-      userInfo: mockUserInfo,
+describe('authentication context', () => {
+  /** Verifies cached SESSION state is returned after deleting any legacy key. */
+  it('returns cached cookie and safe user info', async () => {
+    mockReadAuthContextCache.mockReturnValue({
+      cookie: 'SESSION=cached',
+      refreshExpiresAt: '2100-01-01T00:00:00.000Z',
+      userInfo: safeUserInfo,
     })
 
-    const ctx = await getAuthContext()
-    expect(ctx.cookie).toBe('SESSION=new; Path=/')
-    expect(ctx.userInfo).toEqual(mockUserInfo)
-    expect(mockWriteCookieAndUserInfo).toHaveBeenCalledWith('SESSION=new; Path=/', mockUserInfo)
+    await expect(getAuthContext()).resolves.toEqual({
+      cookie: 'SESSION=cached',
+      refreshExpiresAt: '2100-01-01T00:00:00.000Z',
+      userInfo: safeUserInfo,
+    })
+    expect(mockDeleteKey).toHaveBeenCalledTimes(1)
   })
 
-  it('throws NotAuthenticatedError when no key and no cookie', async () => {
-    mockReadCookie.mockReturnValue(null)
-    mockReadUserInfo.mockReturnValue(null)
-    mockGetKey.mockResolvedValue(null)
-
+  /** Verifies missing session state requires a fresh login and performs no refresh request. */
+  it('throws when the cache is empty', async () => {
     await expect(getAuthContext()).rejects.toThrow('Not authenticated')
+    expect(mockDeleteKey).toHaveBeenCalledTimes(1)
+  })
+
+  /** Verifies a newly authenticated context is persisted only after legacy key cleanup. */
+  it('saves a new SESSION context', async () => {
+    const context = {
+      cookie: 'SESSION=new-session; AUTH_REFRESH=new-refresh',
+      refreshExpiresAt: '2100-01-01T00:00:00.000Z',
+      userInfo: safeUserInfo,
+    }
+
+    await saveAuthContext(context)
+
+    expect(mockDeleteKey).toHaveBeenCalledTimes(1)
+    expect(mockWriteCookieAndUserInfo).toHaveBeenCalledWith(
+      context.cookie, context.userInfo, context.refreshExpiresAt, undefined,
+    )
+  })
+
+  /** Verifies Refresh Cookie exchange is persisted while Access Token remains only in the return value. */
+  it('refreshes through the compatibility exchange', async () => {
+    const cached = {
+      cookie: 'SESSION=old; AUTH_REFRESH=refresh',
+      refreshExpiresAt: '2100-01-01T00:00:00.000Z',
+      userInfo: safeUserInfo,
+    }
+    const refreshed = {
+      cookie: 'SESSION=fresh; AUTH_REFRESH=rotated',
+      refreshExpiresAt: '2100-01-01T00:00:00.000Z',
+      accessToken: 'memory-access',
+      accessTokenExpiresAt: '2100-01-01T00:15:00.000Z',
+      userInfo: safeUserInfo,
+    }
+    mockReadAuthContextCache.mockReturnValue(cached)
+    mockExchangeCompatibilitySession.mockResolvedValue(refreshed)
+
+    await expect(forceRefreshAuthContext()).resolves.toEqual(refreshed)
+
+    expect(mockExchangeCompatibilitySession).toHaveBeenCalledWith('https://example.com', cached)
+    expect(mockWriteCookieAndUserInfo).toHaveBeenCalledWith(
+      refreshed.cookie, refreshed.userInfo, refreshed.refreshExpiresAt, undefined,
+    )
+    expect(mockWriteCookieAndUserInfo.mock.calls.flat().join(' ')).not.toContain('memory-access')
+    expect(mockClearCookie).not.toHaveBeenCalled()
+  })
+
+  /** Verifies managed-token refresh preserves the non-rotating credential in the protected cache. */
+  it('refreshes and persists managed LongToken authentication', async () => {
+    const managedLongToken = `ult_v1_${'a'.repeat(32)}.${'B'.repeat(43)}`
+    const cached = {
+      cookie: 'SESSION=managed-old',
+      managedLongToken,
+      userInfo: safeUserInfo,
+    }
+    const refreshed = {
+      ...cached,
+      cookie: 'SESSION=managed-fresh',
+      accessToken: 'memory-access',
+      accessTokenExpiresAt: '2100-01-01T00:15:00.000Z',
+    }
+    mockReadAuthContextCache.mockReturnValue(cached)
+    mockExchangeCompatibilitySession.mockResolvedValue(refreshed)
+
+    await expect(forceRefreshAuthContext()).resolves.toEqual(refreshed)
+
+    expect(mockExchangeCompatibilitySession).toHaveBeenCalledWith('https://example.com', cached)
+    expect(mockWriteCookieAndUserInfo).toHaveBeenCalledWith(
+      refreshed.cookie, refreshed.userInfo, undefined, managedLongToken,
+    )
+  })
+
+  /** Verifies a legacy cache without Refresh material is cleared before rejecting. */
+  it('rejects and clears a SESSION-only cache', async () => {
+    mockReadAuthContextCache.mockReturnValue({ cookie: 'SESSION=legacy', userInfo: safeUserInfo })
+
+    await expect(forceRefreshAuthContext()).rejects.toThrow('Not authenticated')
+
+    expect(mockExchangeCompatibilitySession).not.toHaveBeenCalled()
+    expect(mockClearCookie).toHaveBeenCalledTimes(1)
+  })
+
+  /** Verifies a temporary exchange transport failure preserves the still-usable cached Refresh Cookie. */
+  it('preserves cached authentication on a pre-response transport failure', async () => {
+    const { MBSError } = await import('../../errors.js')
+    mockReadAuthContextCache.mockReturnValue({
+      cookie: 'SESSION=old; AUTH_REFRESH=refresh',
+      refreshExpiresAt: '2100-01-01T00:00:00.000Z',
+      userInfo: safeUserInfo,
+    })
+    mockExchangeCompatibilitySession.mockRejectedValue(new MBSError('network failed', 'api'))
+
+    await expect(forceRefreshAuthContext()).rejects.toThrow('network failed')
+
+    expect(mockClearCookie).not.toHaveBeenCalled()
+  })
+
+  /** Verifies a post-rotation cache write failure clears the revoked predecessor instead of replaying it. */
+  it('clears authentication when rotated Cookie persistence fails', async () => {
+    mockReadAuthContextCache.mockReturnValue({
+      cookie: 'SESSION=old; AUTH_REFRESH=refresh',
+      refreshExpiresAt: '2100-01-01T00:00:00.000Z',
+      userInfo: safeUserInfo,
+    })
+    mockExchangeCompatibilitySession.mockResolvedValue({
+      cookie: 'SESSION=fresh; AUTH_REFRESH=rotated',
+      refreshExpiresAt: '2100-01-01T00:00:00.000Z',
+      accessToken: 'memory-access',
+      accessTokenExpiresAt: '2100-01-01T00:15:00.000Z',
+      userInfo: safeUserInfo,
+    })
+    mockWriteCookieAndUserInfo.mockImplementation(() => {
+      throw new Error('disk unavailable')
+    })
+
+    await expect(forceRefreshAuthContext()).rejects.toThrow('disk unavailable')
+
+    expect(mockClearCookie).toHaveBeenCalledTimes(1)
   })
 })

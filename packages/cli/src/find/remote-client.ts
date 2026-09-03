@@ -1,8 +1,10 @@
 import {
   APIClient,
+  NotAuthenticatedError,
   forceRefreshAuthContext,
   getAuthContext,
   getConfig,
+  normalizeSessionCookie,
 } from '@mb-it-org/shared'
 
 const CLI_SERVICE_PREFIX = '/gateway/cli/cli-service'
@@ -69,8 +71,15 @@ export function classifyRemoteFailure(error: unknown): string {
  * @throws Error when saved authentication or configuration cannot be loaded.
  */
 export async function createRecallClient(): Promise<APIClient> {
-  const { cookie } = await getAuthContext()
+  const { cookie: authenticationCookie } = await getAuthContext()
+  const cookie = normalizeSessionCookie(authenticationCookie)
+  if (!cookie) throw new NotAuthenticatedError()
   const { apiUrl } = getConfig()
-  const refreshAuth = async (): Promise<string> => (await forceRefreshAuthContext()).cookie
+  const refreshAuth = async (): Promise<{ cookie: string; accessToken: string }> => {
+    const { cookie: refreshedAuthenticationCookie, accessToken } = await forceRefreshAuthContext()
+    const refreshedCookie = normalizeSessionCookie(refreshedAuthenticationCookie)
+    if (!refreshedCookie) throw new NotAuthenticatedError()
+    return { cookie: refreshedCookie, accessToken }
+  }
   return new APIClient(resolveRecallBaseUrl(apiUrl), cookie, refreshAuth)
 }

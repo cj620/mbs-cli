@@ -8,6 +8,9 @@
 
 | 任务文件夹 | 类型 | 核心业务边界 / 故障现象 | 当前状态 | 负责人 | 关联文档路径 |
 | :--- | :--- | :--- | :--- | :--- | :--- |
+| `20260903-[RELEASE]发布1.0.6维护版本` | RELEASE / SECURITY | 将当前认证安全整改精确提交到 `1.0.0`，经分支 CI 后以维护标签发布 npm `maintenance-1=1.0.6`；排除 `.idea` 且不移动 `latest` | 🚧 执行中 / 待发布：正在执行版本升级与发布前 V3 | Codex | [`./20260903-[RELEASE]发布1.0.6维护版本/`](./20260903-[RELEASE]发布1.0.6维护版本/) |
+| `20260903-[FEATURE]接入长短Token刷新登录` | FEATURE / SECURITY | 登录选择扫码、账号密码或手工管理型长期 Refresh Token；每次重新登录先清除旧 Cookie、两类 Refresh 凭据和用户摘要；`refresh` 统一经 compat-session 取得内存 Access Token 并续接 SESSION，MBS_KEY 禁令保持 | ✅ 本地实现与 V3 完成；未发布、未真实网关联调 | Codex | [`./20260903-[FEATURE]接入长短Token刷新登录/`](./20260903-[FEATURE]接入长短Token刷新登录/) |
+| `20260902-[SECURITY]禁止持久化MBS_KEY` | SECURITY / FEATURE | 禁止捕获或持久化长期 `MBS_KEY`；账号密码终端直登；后续任务仅部分修正 SESSION-only 刷新实现，MBS_KEY 禁令保持 | 🧪 本地 V3 已通过 / 待真实 HTTPS 网关联调与发布；refresh 行为由 20260903 任务计划替代 | Codex | [`./20260902-[SECURITY]禁止持久化MBS_KEY/`](./20260902-[SECURITY]禁止持久化MBS_KEY/) |
 | `20260810-[BUG]恢复已发布CLI旧命令` | BUG | 恢复 npm `0.1.58` 已发布的五个业务命令标识、flags 与只读请求契约；本轮不恢复旧 serve 路由 | 🧪 待验收 / 待发布：独立兼容插件、10 条契约测试、全量构建测试及五条帮助验证通过；真实目标网关和发布未执行 | Codex | [`./20260810-[BUG]恢复已发布CLI旧命令/`](./20260810-[BUG]恢复已发布CLI旧命令/) |
 | `20260806-[FEATURE]统一语义发现与数据库表召回` | FEATURE | 用户只提交自然语言；CLI 消费 workflow/api/table 混合候选，table 安全衔接 `show-create-table → query`，不建立本地向量或目录降级 | 🧪 待验收：本地 CLI、Skill、测试与构建完成；真实后端联调、全局安装和发布未执行 | Codex | [`./20260806-[FEATURE]统一语义发现与数据库表召回/`](./20260806-[FEATURE]统一语义发现与数据库表召回/) |
 | `20260722-[FEATURE]接口检索降噪与智能召回` | FEATURE | 智能体只保留业务域导航；API/workflow 仅从后端 Milvus 语义召回，完整接口定义通过 `mbs describe` 按需读取，不保留本地接口卡片或词法降级 | 🚧 待验收：loopback 一次性隐藏 Cookie Prompt、自动化验证、构建和本地 Codex 安装已完成；不写凭据缓存、日志或遥测，不回退刷新普通认证；等待用户交互输入完成真实 `find → describe` | Codex | [`./20260722-[FEATURE]接口检索降噪与智能召回/`](./20260722-[FEATURE]接口检索降噪与智能召回/) |
@@ -40,4 +43,5 @@
 
 - **【架构规范】**：业务模块必须遵守 `<domain> → shared ← cli` 依赖方向，domain 不可反向依赖 cli。
 - **【安全边界】**：CLI 仅允许只读 GET 与查询类 POST；禁止写操作。
+- **【认证凭据】**：`MBS_KEY` 是长期账号凭据，任何 CLI、浏览器前端、服务端或容器环境均不得捕获、持久化、转发或记录；只允许按规范保管短期 Cookie/会话。
 - **【上下文规范】**：接口发现必须先走 `mbs find`；不得扫描 `skills/references/` 获取接口全集；完整端点文档仅在目标确认后按需读取。
