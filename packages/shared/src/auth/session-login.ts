@@ -346,12 +346,15 @@ export async function loginWithManagedLongToken(
 /**
  * Resolves the safe identity associated with an existing SESSION cookie.
  *
- * <p>This is used after QR login, where the browser owns authentication and the
- * CLI observes only the resulting session cookie.</p>
+ * <p>This is used after QR login and initial managed-token exchange. The
+ * current-user request sends only the normalized SESSION cookie because the
+ * authentication endpoint does not accept CLI client classification.</p>
  *
  * @param apiUrl Configured MBS API root.
  * @param cookie Exact or legacy-formatted SESSION cookie string.
  * @returns Minimal non-secret user identity.
+ * @throws NotAuthenticatedError when the Cookie or response identity is invalid.
+ * @throws MBSError when URL validation or the sanitized transport request fails.
  */
 export async function fetchCurrentUser(apiUrl: string, cookie: string): Promise<UserInfo> {
   const root = normalizedApiRoot(apiUrl)
@@ -361,7 +364,7 @@ export async function fetchCurrentUser(apiUrl: string, cookie: string): Promise<
   let response
   try {
     response = await axios.get(`${root}${CURRENT_USER_PATH}`, {
-      headers: { Cookie: sessionCookie, 'client-type': 'cli' },
+      headers: { Cookie: sessionCookie },
     })
   } catch (error) {
     throw safeTransportError(error)

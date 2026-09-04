@@ -304,6 +304,10 @@ describe('loginWithManagedLongToken', () => {
         Authorization: `LongToken ${managedLongToken}`,
       } },
     )
+    expect(mockAxios.get).toHaveBeenCalledWith(
+      'https://example.com/gateway/auth-center-service/auth/user/current',
+      { headers: { Cookie: 'SESSION=managed-session' } },
+    )
   })
 
   /** Verifies manual LongToken login accepts configured remote HTTP without extra authorization. */
@@ -350,7 +354,7 @@ describe('loginWithManagedLongToken', () => {
 })
 
 describe('fetchCurrentUser', () => {
-  /** Verifies QR login resolves the safe user summary with the captured SESSION cookie. */
+  /** Verifies current-user lookup sends only the captured SESSION cookie and normalizes the safe summary. */
   it('loads and normalizes the current user', async () => {
     mockAxios.get = vi.fn().mockResolvedValue({
       data: { code: 200, data: authUser },
@@ -359,7 +363,7 @@ describe('fetchCurrentUser', () => {
     await expect(fetchCurrentUser('https://example.com', 'SESSION=qr-session')).resolves.toEqual(safeUserInfo)
     expect(mockAxios.get).toHaveBeenCalledWith(
       'https://example.com/gateway/auth-center-service/auth/user/current',
-      { headers: { Cookie: 'SESSION=qr-session', 'client-type': 'cli' } },
+      { headers: { Cookie: 'SESSION=qr-session' } },
     )
   })
 })
