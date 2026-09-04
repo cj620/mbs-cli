@@ -1,4 +1,5 @@
 import { EventEmitter } from 'node:events'
+import { resolve } from 'node:path'
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
@@ -13,11 +14,12 @@ class ChildProcessDouble extends EventEmitter {}
 
 describe('interactive login terminal launcher', () => {
   const originalArguments = process.argv
+  const entryPath = resolve('workspace with spaces', 'mbs-cli', 'bin', 'run.js')
 
   beforeEach(() => {
     vi.resetModules()
     vi.resetAllMocks()
-    process.argv = ['node.exe', 'D:\\workspace with spaces\\mbs-cli\\bin\\run.js']
+    process.argv = ['node.exe', entryPath]
   })
 
   afterEach(() => {
@@ -48,9 +50,7 @@ describe('interactive login terminal launcher', () => {
       expect.any(String),
     ])
     expect(options).toMatchObject({ stdio: 'ignore', windowsHide: true })
-    expect(options.env.MBS_LOGIN_CHILD_ENTRY_PATH).toBe(
-      'D:\\workspace with spaces\\mbs-cli\\bin\\run.js',
-    )
+    expect(options.env.MBS_LOGIN_CHILD_ENTRY_PATH).toBe(entryPath)
     expect(options.env.MBS_LOGIN_CHILD_MODE_FLAG).toBe('--password')
     expect(options.env.MBS_LOGIN_CHILD_NODE_PATH).toBe(process.execPath)
 
