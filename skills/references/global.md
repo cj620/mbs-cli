@@ -23,7 +23,7 @@ mbs refresh            # 使用当前长期凭据刷新短期 Access Token 与�
 - 密码、管理型长期 Token 和 refresh 默认接受配置中的 HTTP(S) 地址，不要求额外确认或 Origin 授权
 - 远程 HTTP 不提供机密性、完整性或服务端身份保护，账号密码、Token 和 Cookie 可能被监听或篡改；仅作为服务端 HTTPS 上线前的临时兼容，具备 HTTPS 后应立即重新配置
 - CLI 缓存严格二选一：登录型 `AUTH_REFRESH` + 到期时间，或不轮换的管理型 `LongToken`；两者都与兼容 `SESSION` 和最小用户摘要保存在当前用户认证缓存
-- `mbs refresh` 使用缓存中的唯一长期凭据调用 `/gateway/auth-center-service/auth/token/exchange/compat-session`；登录型 Cookie 会轮换，管理型 Token 保持不变，短期 Access Token 仅留在当前进程内存且绝不输出或持久化
+- `mbs refresh` 使用缓存中的唯一长期凭据调用 `/gateway/auth-center-service/auth/token/exchange/compat-session`；该接口无论用于 login 还是 refresh 都不发送 `client-type: cli`。登录型 Cookie 会轮换，管理型 Token 保持不变，短期 Access Token 仅留在当前进程内存且绝不输出或持久化
 - 业务请求首次认证失败时最多自动交换并重试一次；重试使用内存 Bearer 与兼容 SESSION，最终失败时重新执行 `mbs login`
 - `MBS_KEY` 仍禁止捕获、读取、保存、转发或记录；登录型 Refresh Cookie 不是 `MBS_KEY`，也不能直接访问业务接口
 - 默认不需要预装浏览器运行时；不要在阅读文档或环境检查阶段主动安装

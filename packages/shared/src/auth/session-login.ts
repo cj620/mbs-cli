@@ -28,9 +28,6 @@ export interface PasswordLoginCredentials {
   password: string
 }
 
-/** Auth-center phase that determines whether managed exchange uses client classification. */
-type ManagedExchangePurpose = 'login' | 'refresh'
-
 /** Generic auth-center response envelope used by login and current-user routes. */
 interface AuthCenterResponse {
   code?: unknown
@@ -178,8 +175,8 @@ function safeTransportError(error: unknown): Error {
  *
  * <p>The password exists only in the request object for this call. The returned
  * context contains only the two auth Cookie pairs, the Refresh expiry, and an
- * allow-listed user summary. The login endpoint receives no client-type header;
- * client classification remains reserved for post-login refresh operations.</p>
+ * allow-listed user summary. Neither the login endpoint nor the compatible
+ * session exchange endpoint receives a client-type header.</p>
  *
  * @param apiUrl Configured MBS API root.
  * @param credentials Interactive credentials that must not be logged or persisted.
@@ -212,7 +209,8 @@ export async function loginWithPassword(
  *
  * <p>Login Refresh uses Cookie only and requires rotation. Managed LongToken uses
  * the exclusive Authorization scheme, remains unchanged, and may send only its
- * existing SESSION Cookie so auth-center can reuse the compatible session.</p>
+ * existing SESSION Cookie so auth-center can reuse the compatible session. The
+ * shared exchange endpoint never receives CLI client classification.</p>
  *
  * @param apiUrl Configured HTTP(S) MBS API root; HTTP sends credentials in plaintext.
  * @param context Cached authentication containing exactly one supported long credential.
@@ -230,7 +228,7 @@ export async function exchangeCompatibilitySession(
   if (context.managedLongToken !== undefined) {
     const managedLongToken = normalizeManagedLongToken(context.managedLongToken)
     if (!cookie || !managedLongToken || hasLoginRefresh) throw new NotAuthenticatedError()
-    const managedExchange = await exchangeManagedLongToken(root, managedLongToken, 'refresh', cookie)
+    const managedExchange = await exchangeManagedLongToken(root, managedLongToken, cookie)
     return { ...managedExchange, userInfo: context.userInfo }
   }
   if (!cookie || !hasLoginRefresh) throw new NotAuthenticatedError()
@@ -238,7 +236,7 @@ export async function exchangeCompatibilitySession(
   let response
   try {
     response = await axios.post(`${root}${COMPAT_SESSION_EXCHANGE_PATH}`, undefined, {
-      headers: { Cookie: cookie, 'client-type': 'cli' },
+      headers: { Cookie: cookie },
     })
   } catch (error) {
     throw safeTransportError(error)
@@ -262,13 +260,12 @@ export async function exchangeCompatibilitySession(
  *
  * <p>An optional SESSION may be sent solely so the server can reuse the same
  * compatible session. AUTH_REFRESH is rejected before this method is called.
- * Initial login sends only LongToken authorization; post-login refresh also
- * includes the CLI client classification. Transport failures are converted to
- * safe errors that omit headers.</p>
+ * Both initial login and post-login refresh omit client classification because
+ * the shared exchange endpoint does not accept it. Transport failures are
+ * converted to safe errors that omit headers.</p>
  *
  * @param root Normalized HTTP(S) API root; HTTP provides no transport encryption.
  * @param managedLongToken Valid management token in auth-center's versioned format.
- * @param purpose Initial login or post-login refresh request contract.
  * @param currentCookie Optional current SESSION-only Cookie header.
  * @returns Compatible SESSION, unchanged management token, and memory-only Access state.
  * @throws NotAuthenticatedError when request or response identity material is incomplete.
@@ -277,7 +274,6 @@ export async function exchangeCompatibilitySession(
 async function exchangeManagedLongToken(
   root: string,
   managedLongToken: string,
-  purpose: ManagedExchangePurpose,
   currentCookie?: string,
 ): Promise<ManagedCompatibilityExchange> {
   const authorization = createManagedLongTokenAuthorization(managedLongToken)
@@ -290,7 +286,6 @@ async function exchangeManagedLongToken(
       headers: {
         Authorization: authorization,
         ...(sessionCookie ? { Cookie: sessionCookie } : {}),
-        ...(purpose === 'refresh' ? { 'client-type': 'cli' } : {}),
       },
     })
   } catch (error) {
@@ -316,8 +311,8 @@ async function exchangeManagedLongToken(
  * LongToken header, and retained only in the returned authentication context.
  * The short Access Token is discarded because login persists only the long
  * credential, compatible SESSION, and safe current-user summary. The initial
- * exchange deliberately omits client classification and sends only LongToken
- * authorization.</p>
+ * exchange endpoint always omits client classification; this initial request
+ * therefore sends only LongToken authorization.</p>
  *
  * @param apiUrl Configured HTTP(S) MBS API root; HTTP sends credentials in plaintext.
  * @param value Token pasted into the hidden terminal prompt.
@@ -338,7 +333,7 @@ export async function loginWithManagedLongToken(
       'Paste the complete management token issued by auth-center',
     )
   }
-  const exchange = await exchangeManagedLongToken(root, managedLongToken, 'login')
+  const exchange = await exchangeManagedLongToken(root, managedLongToken)
   const userInfo = await fetchCurrentUser(root, exchange.cookie)
   return { cookie: exchange.cookie, managedLongToken, userInfo }
 }

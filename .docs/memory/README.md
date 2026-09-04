@@ -2,7 +2,7 @@
 
 | 记忆键 | 主题 | 当前结论 | 适用范围 | 当前来源 | 状态 | 主题文档 | 最后核验 |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| `AUTH-CREDENTIAL-BOUNDARY` | MBS 认证凭据边界 | `MBS_KEY` 永不接触；npm 1.1.1 中密码登录、首次 LongToken 交换和 current-user 均不发送 `client-type`，登录后 Refresh 仍发送该头 | CLI 登录、刷新、认证缓存、Agent Skill、业务一次性重试、Docker 报表服务 | `20260904-[RELEASE]发布1.1.1维护版本` / `20260904-[BUG]当前用户查询移除客户端类型头` / DEC-003 / DEC-004 / DEC-005 / DEC-006 | 已随 maintenance-1 1.1.1 发布并完成官方源核验 | [`./topics/MBS认证凭据边界.md`](./topics/MBS认证凭据边界.md) | 2026-09-04 / `fc3702f` / npm 1.1.1 |
+| `AUTH-CREDENTIAL-BOUNDARY` | MBS 认证凭据边界 | `MBS_KEY` 永不接触；当前工作区及本机活动 CLI 的 compat-session 在 login 与 refresh 下均不发送 `client-type`，npm 官方 1.1.1 仍保留 Refresh 旧行为 | CLI 登录、刷新、认证缓存、Agent Skill、业务一次性重试、Docker 报表服务 | `20260904-[CHORE]本地替换刷新请求头修复版CLI` / `20260904-[BUG]刷新交换移除客户端类型头` / `20260904-[RELEASE]发布1.1.1维护版本` / DEC-003 / DEC-004 / DEC-005 / DEC-006 | 当前工作区 V3 与本机链接安装已通过；npm maintenance-1 仍为 1.1.1 | [`./topics/MBS认证凭据边界.md`](./topics/MBS认证凭据边界.md) | 2026-09-04 / `168a05eb` + 当前工作区、本机链接 |
 | `CLI-RESPONSE-PASSTHROUGH` | CLI 后端响应透传 | npm `maintenance-1=1.0.5` 的业务查询成功与后端错误直接输出实际 HTTP body，不再添加 CLI envelope；认证刷新与非零退出码保留 | `packages/shared`、业务查询命令与公共输出文档 | `20260827-[RELEASE]发布1.0.5维护版本` | 已发布并完成官方源核验 | [`./topics/CLI后端响应透传.md`](./topics/CLI后端响应透传.md) | 2026-08-27 / `e406c69` / npm 1.0.5 |
 | `API-REQUEST-BODY-ENCODING` | 接口请求体编码 | npm `maintenance-1=1.0.4` 已由 `mbs request --api-id` 读取后端详情并统一编码七种 body 模式，manifest 生成与 serve 复用；官方源安装包核验通过 | `packages/shared`、`packages/cli`、生成器、Skill | `20260825-[RELEASE]发布1.0.4维护版本` | 已发布并完成官方源核验 | [`./topics/接口请求体编码.md`](./topics/接口请求体编码.md) | 2026-08-25 / `689e82e` / npm 1.0.4 |
 | `CLI-PUBLIC-COMPATIBILITY` | CLI 公开命令兼容性 | npm `0.1.58` 的五个业务命令已由独立兼容插件在本地恢复，命令 ID、flags、帮助和只读请求契约验证通过；旧 serve 路由不在本轮范围 | `packages/cli`、`packages/legacy` | `20260810-[BUG]恢复已发布CLI旧命令` | 本地已验证/待发布 | [`./topics/CLI公开命令兼容性.md`](./topics/CLI公开命令兼容性.md) | 2026-08-10 / `5b5c255` + 当前工作区 |
@@ -18,7 +18,7 @@
 - npm `1.0.5` 的后端响应透传已通过官方源隔离安装的人工最小 mock，但尚未使用真实登录态、目标网关错误响应或既有下游脚本验收。
 - npm `1.0.6` 的登录型 Refresh 与手工管理型 `LongToken` 两个分支已完成全量 V3 和官方源安装验证；两类真实长期凭据、`SESSION` 与 Bearer 网关兼容性仍待目标 HTTPS 环境联调。
 - npm `1.0.7` 已默认允许远程 HTTP 认证并完成本地 V3、CI、Release 与官方源安装核验；尚未使用真实目标 HTTP 凭据链路联调，明文传输风险由部署方承担，服务端 HTTPS 可用后应立即重新配置。
-- npm `1.1.1` 已发布 current-user 请求头修正并完成 V3、CI、Release、dist-tag、官方包与 Skill 验证；密码登录、首次 LongToken 交换和 current-user 均不发送 `client-type: cli`，登录后 Refresh 仍保留该分类头，真实认证中心链路尚未联调。
+- npm `1.1.1` 已发布 current-user 请求头修正并完成 V3、CI、Release、dist-tag、官方包与 Skill 验证；该官方版本的登录后 Refresh 仍发送 `client-type: cli`。当前工作区已通过 V3 并修正该行为，本机活动 CLI 已链接到工作区；尚未正式发布或真实联调。
 - 目标环境 embedding/Milvus、workflow 重建与 30 条 eval 尚未验收；本次未使用真实登录态执行生产 find 业务查询。
 
 ## 重大决策

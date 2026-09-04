@@ -1,9 +1,9 @@
 # MBS 认证凭据边界
 
 - 记忆键：`AUTH-CREDENTIAL-BOUNDARY`
-- 状态：npm `1.1.1` 已发布并完成官方源核验；真实认证仍待联调
-- 当前来源：`20260904-[RELEASE]发布1.1.1维护版本`、`20260904-[BUG]当前用户查询移除客户端类型头`、DEC-003、DEC-004、DEC-005、DEC-006
-- 最后核验：2026-09-04 / `fc3702f` / npm `1.1.1`
+- 状态：npm `1.1.1` 已发布并完成官方源核验；当前工作区已移除 Refresh 分类头并通过 V3，本机活动 CLI 已链接到工作区，待发布和真实认证联调
+- 当前来源：`20260904-[CHORE]本地替换刷新请求头修复版CLI`、`20260904-[BUG]刷新交换移除客户端类型头`、`20260904-[RELEASE]发布1.1.1维护版本`、DEC-003、DEC-004、DEC-005、DEC-006
+- 最后核验：2026-09-04 / `168a05eb` + 当前工作区、本机链接
 
 ## 当前结论
 
@@ -18,15 +18,19 @@
 - 扫码登录只轮询隔离浏览器上下文中的 `SESSION` 与 `AUTH_REFRESH`，不监听登录请求。
 - `mbs login --password` 接受配置中的合法 HTTP(S) 地址，通过终端隐藏输入直接调用认证中心；非交互 Windows Agent 会自动打开独立可见终端，不启动浏览器，也不提供参数或环境变量凭据入口。远程 HTTP 不要求额外确认，但会明文传输密码。
 - 后台长期 Refresh Token 模式使用同一 HTTP(S) URL 校验，再通过终端隐藏输入；非交互 Windows Agent 会自动打开独立可见终端，按 `Authorization: LongToken <token>` 调用兼容交换，保存不轮换 Token 与兼容 `SESSION`，不提供参数或环境变量入口。HTTP 会明文传输 Token 和 Cookie。
-- 密码登录请求不发送 `client-type`；首次管理型 LongToken 交换只发送必要的 `Authorization`；current-user 查询只发送标准化 `SESSION` Cookie；登录后的 Cookie/LongToken Refresh 仍发送 `client-type: cli`。该完整契约已随 npm `1.1.1` 发布。
+- 当前工作区中，密码登录不发送 `client-type`；compat-session 无论用于首次管理型 LongToken 登录还是登录后的 Cookie/LongToken Refresh 都不发送 `client-type: cli`；current-user 查询也只发送标准化 `SESSION` Cookie。npm `1.1.1` 已发布版本仍在两类 Refresh 中发送该头，需后续独立发布才能生效。
 - key 存储模块只保留删除能力：删除操作系统凭据条目和已知旧文件时不读取内容。
 - 认证缓存只保存标准化后的 `SESSION`、唯一长期凭据、登录型 Refresh 到期时间和最小用户摘要；同时出现 `AUTH_REFRESH` 与管理型 `LongToken` 时失败关闭。
 - `mbs refresh` 与业务请求首次 401 使用 `/gateway/auth-center-service/auth/token/exchange/compat-session`；登录型 Cookie 保存旋转值，管理型 Token 保持不变。短期 Access Token 只进入当前 APIClient 内存，业务请求不携带任何长期凭据。
 - 缺少 Refresh 的旧 SESSION-only 缓存在原两小时内兼容读取但不能刷新；交换失败后重新登录。
 
-登录型 Refresh 与管理型 Token 两个分支自 `@mb-it-org/cli@1.0.6` 提供；远程 HTTP 默认允许已随 `1.0.7` 发布；Agent 非交互登录交接和首次登录请求头修复已随 `1.1.0` 发布；current-user 请求头修正已随 `1.1.1` 发布。官方源安装包的版本、登录帮助和 Skill 内容已核验，真实 HTTP 凭据链路仍未联调。
+登录型 Refresh 与管理型 Token 两个分支自 `@mb-it-org/cli@1.0.6` 提供；远程 HTTP 默认允许已随 `1.0.7` 发布；Agent 非交互登录交接和首次登录请求头修复已随 `1.1.0` 发布；current-user 请求头修正已随 `1.1.1` 发布。compat-session 在两类 Refresh 中移除 `client-type` 的修复目前存在于当前工作区，本机活动 CLI 已链接到该工作区，但尚未发布。官方源安装包的版本、登录帮助和 Skill 内容已核验，真实 HTTP 凭据链路仍未联调。
 
 current-user 请求头修正已通过定向 17 项、shared 114 项、全仓 259 项与 14 包构建；功能提交、版本提交及两次维护分支 CI、Release、npm dist-tag、官方精确版本临时执行与 Codex Skill 刷新均通过。真实认证联调仍未执行。
+
+当前工作区的 Refresh 请求头修正已通过定向 17 项、shared 114 项、全仓 259 项与 14 包构建；compat-session 源码不再发送客户端分类头，普通业务 APIClient 契约保持。提交、CI、发布、官方包和真实认证联调仍未执行。
+
+本机 PATH 当前命中的系统级 `mbs` shim 使用指向工作区 `packages/cli` 的 Junction，CLI 内的 shared 依赖也指向工作区 `packages/shared`；版本显示仍为 `1.1.1`。版本、refresh 帮助和内置 Skill 已离线核验，未发起真实认证请求。重新安装官方 `@mb-it-org/cli@1.1.1` 可回滚本地链接。
 
 ## 服务端应用约束
 
@@ -43,6 +47,8 @@ current-user 请求头修正已通过定向 17 项、shared 114 项、全仓 259
 - `20260904-[FEATURE]支持Agent对话选择登录方式` 补充非交互入口：Agent 对话只选择模式，秘密只在 Windows 可见终端隐藏输入；不改变认证协议或缓存结构。
 - `20260904-[BUG]登录请求移除客户端类型头` 修正认证登录契约：密码登录和首次 LongToken 登录不发送客户端分类头，登录后 Refresh 行为保持。
 - `20260904-[BUG]当前用户查询移除客户端类型头` 部分修正前一任务遗漏：首次 Token 登录随后执行的 current-user 查询也不发送客户端分类头；登录后 Refresh 行为继续保持。
+- `20260904-[BUG]刷新交换移除客户端类型头` 修正前两项任务中对 Refresh 的历史假设：compat-session 不按 login/refresh 区分客户端分类头，两类用途均不发送 `client-type: cli`；普通业务请求头保持不变。
+- `20260904-[CHORE]本地替换刷新请求头修复版CLI` 将本机活动的系统级 npm 安装链接到当前工作区；该本机事实不等同于 npm 发布。
 - `MBS_KEY` 禁令和旧 key 删除式清理完全保留；新机制只使用认证中心正式签发的登录型 Refresh Cookie或后台管理型 `LongToken`。
 
 ## 深入读取条件

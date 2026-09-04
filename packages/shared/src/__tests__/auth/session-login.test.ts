@@ -157,8 +157,8 @@ describe('loginWithPassword', () => {
 })
 
 describe('exchangeCompatibilitySession', () => {
-  /** Verifies compat exchange rotates Refresh, replaces SESSION, and retains Access only in the return value. */
-  it('returns refreshed cookies and a validated memory Access Token', async () => {
+  /** Verifies Cookie refresh omits client classification while rotating cookies and returning memory-only Access. */
+  it('refreshes Cookie authentication without a client-type header', async () => {
     vi.useFakeTimers()
     vi.setSystemTime(new Date('2026-09-03T00:00:00.000Z'))
     mockAxios.post = vi.fn().mockResolvedValue({
@@ -187,7 +187,6 @@ describe('exchangeCompatibilitySession', () => {
       undefined,
       { headers: {
         Cookie: 'SESSION=old-session; AUTH_REFRESH=old-refresh',
-        'client-type': 'cli',
       } },
     )
     vi.useRealTimers()
@@ -232,8 +231,8 @@ describe('exchangeCompatibilitySession', () => {
     })).rejects.toThrow('Not authenticated')
   })
 
-  /** Verifies a managed credential uses the exclusive LongToken header and retains an unchanged SESSION. */
-  it('refreshes a managed LongToken without rotating it', async () => {
+  /** Verifies managed refresh sends only LongToken plus SESSION and retains the non-rotating credential. */
+  it('refreshes a managed LongToken without a client-type header', async () => {
     vi.useFakeTimers()
     vi.setSystemTime(new Date('2026-09-03T00:00:00.000Z'))
     mockAxios.post = vi.fn().mockResolvedValue({
@@ -260,7 +259,6 @@ describe('exchangeCompatibilitySession', () => {
       { headers: {
         Authorization: `LongToken ${managedLongToken}`,
         Cookie: 'SESSION=managed-session',
-        'client-type': 'cli',
       } },
     )
     vi.useRealTimers()
