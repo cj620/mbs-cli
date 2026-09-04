@@ -6,11 +6,13 @@ const mockFetchCurrentUser = vi.fn()
 const mockGetConfig = vi.fn()
 const mockInput = vi.fn()
 const mockLaunch = vi.fn()
+const mockLaunchInteractiveLoginInNewTerminal = vi.fn()
 const mockLoginWithPassword = vi.fn()
 const mockLoginWithManagedLongToken = vi.fn()
 const mockPassword = vi.fn()
 const mockSaveAuthContext = vi.fn()
 const mockSelect = vi.fn()
+const mockHasInteractiveTerminal = vi.fn()
 const mockValidatePasswordLoginApiUrl = vi.fn()
 const mockValidateManagedTokenLoginApiUrl = vi.fn()
 
@@ -43,12 +45,19 @@ vi.mock('playwright-core', () => ({
   },
 }))
 
+vi.mock('../login/interactive-terminal.js', () => ({
+  hasInteractiveTerminal: mockHasInteractiveTerminal,
+  launchInteractiveLoginInNewTerminal: mockLaunchInteractiveLoginInNewTerminal,
+}))
+
 describe('login command', () => {
   beforeEach(() => {
     vi.resetModules()
     vi.resetAllMocks()
     mockDeleteKey.mockResolvedValue(undefined)
     mockGetConfig.mockReturnValue({ apiUrl: 'https://example.com' })
+    mockHasInteractiveTerminal.mockReturnValue(true)
+    mockLaunchInteractiveLoginInNewTerminal.mockResolvedValue(0)
     mockSaveAuthContext.mockResolvedValue(undefined)
     mockSelect.mockResolvedValue('qr')
   })
@@ -384,6 +393,164 @@ describe('login command', () => {
         },
       }),
     )
+    expect(exit).toHaveBeenCalledWith(1)
+  })
+
+  /** Verifies Agent execution without a chosen method fails before Inquirer reads redirected stdin. */
+  it('rejects bare login in a non-interactive Agent process', async () => {
+    mockHasInteractiveTerminal.mockReturnValue(false)
+
+    const { default: Login } = await import('../commands/login.js')
+    const log = vi.fn()
+    const exit = vi.fn()
+    const command = Object.assign(Object.create(Login.prototype), {
+      parse: vi.fn(async () => ({ flags: { password: false } })),
+      log,
+      exit,
+    })
+
+    await command.run()
+
+    expect(mockClearCookie).toHaveBeenCalledTimes(1)
+    expect(mockDeleteKey).toHaveBeenCalledTimes(1)
+    expect(mockSelect).not.toHaveBeenCalled()
+    expect(mockInput).not.toHaveBeenCalled()
+    expect(mockPassword).not.toHaveBeenCalled()
+    expect(mockLaunch).not.toHaveBeenCalled()
+    expect(mockLaunchInteractiveLoginInNewTerminal).not.toHaveBeenCalled()
+    expect(log).toHaveBeenLastCalledWith(JSON.stringify({
+      ok: false,
+      error: {
+        type: 'validation',
+        message: 'Login method is required in a non-interactive environment',
+        hint: 'Ask the user to choose, then run `mbs login --qr`, `mbs login --password`, or `mbs login --managed-token`',
+      },
+    }))
+    expect(exit).toHaveBeenCalledWith(1)
+  })
+
+  /** Verifies an explicit QR choice bypasses the terminal menu in an Agent process. */
+  it('runs explicit QR login without an interactive terminal', async () => {
+    const { browser } = createBrowser()
+    mockHasInteractiveTerminal.mockReturnValue(false)
+    mockLaunch.mockResolvedValue(browser)
+    mockFetchCurrentUser.mockResolvedValue({
+      id: 'user-1', loginName: 'user-1', userName: 'Test User', companyId: null,
+      companyName: null, departmentName: null, positionName: null,
+      groupCompanyId: null, groupCompanyName: null,
+    })
+
+    const { default: Login } = await import('../commands/login.js')
+    const command = Object.assign(Object.create(Login.prototype), {
+      parse: vi.fn(async () => ({ flags: { password: false, qr: true } })),
+      log: vi.fn(),
+      exit: vi.fn(),
+    })
+
+    await command.run()
+
+    expect(mockSelect).not.toHaveBeenCalled()
+    expect(mockLaunch).toHaveBeenCalledTimes(1)
+    expect(mockLaunchInteractiveLoginInNewTerminal).not.toHaveBeenCalled()
+  })
+
+  /** Verifies redirected password login opens a visible child terminal without collecting secrets in the parent. */
+  it('opens a child terminal for non-interactive password login', async () => {
+    mockHasInteractiveTerminal.mockReturnValue(false)
+
+    const { default: Login } = await import('../commands/login.js')
+    const log = vi.fn()
+    const command = Object.assign(Object.create(Login.prototype), {
+      parse: vi.fn(async () => ({ flags: { password: true } })),
+      log,
+      exit: vi.fn(),
+    })
+
+    await command.run()
+
+    expect(mockLaunchInteractiveLoginInNewTerminal).toHaveBeenCalledWith('password')
+    expect(mockInput).not.toHaveBeenCalled()
+    expect(mockPassword).not.toHaveBeenCalled()
+    expect(mockLoginWithPassword).not.toHaveBeenCalled()
+    expect(log).toHaveBeenLastCalledWith(JSON.stringify({
+      ok: true,
+      data: { message: 'Authenticated successfully' },
+    }))
+  })
+
+  /** Verifies redirected managed-token login opens a visible child terminal without accepting the token as an argument. */
+  it('opens a child terminal for non-interactive managed-token login', async () => {
+    mockHasInteractiveTerminal.mockReturnValue(false)
+
+    const { default: Login } = await import('../commands/login.js')
+    const command = Object.assign(Object.create(Login.prototype), {
+      parse: vi.fn(async () => ({ flags: { 'managed-token': true, password: false } })),
+      log: vi.fn(),
+      exit: vi.fn(),
+    })
+
+    await command.run()
+
+    expect(mockLaunchInteractiveLoginInNewTerminal).toHaveBeenCalledWith('managed-token')
+    expect(mockPassword).not.toHaveBeenCalled()
+    expect(mockLoginWithManagedLongToken).not.toHaveBeenCalled()
+  })
+
+  /** Verifies a failed child login is reported safely and preserves its authentication exit code. */
+  it('propagates a failed child login', async () => {
+    mockHasInteractiveTerminal.mockReturnValue(false)
+    mockLaunchInteractiveLoginInNewTerminal.mockResolvedValue(2)
+
+    const { default: Login } = await import('../commands/login.js')
+    const log = vi.fn()
+    const exit = vi.fn()
+    const command = Object.assign(Object.create(Login.prototype), {
+      parse: vi.fn(async () => ({ flags: { password: true } })),
+      log,
+      exit,
+    })
+
+    await command.run()
+
+    expect(log).toHaveBeenLastCalledWith(JSON.stringify({
+      ok: false,
+      error: {
+        type: 'auth',
+        message: 'Interactive login did not complete',
+        hint: 'Review the login window, then try again',
+      },
+    }))
+    expect(exit).toHaveBeenCalledWith(2)
+  })
+
+  /** Verifies the hidden child marker never falls back to secret prompts without a real TTY. */
+  it('rejects an interactive child that has no TTY', async () => {
+    mockHasInteractiveTerminal.mockReturnValue(false)
+
+    const { default: Login } = await import('../commands/login.js')
+    const log = vi.fn()
+    const exit = vi.fn()
+    const command = Object.assign(Object.create(Login.prototype), {
+      parse: vi.fn(async () => ({
+        flags: { 'interactive-child': true, password: true },
+      })),
+      log,
+      exit,
+    })
+
+    await command.run()
+
+    expect(mockLaunchInteractiveLoginInNewTerminal).not.toHaveBeenCalled()
+    expect(mockInput).not.toHaveBeenCalled()
+    expect(mockPassword).not.toHaveBeenCalled()
+    expect(log).toHaveBeenLastCalledWith(JSON.stringify({
+      ok: false,
+      error: {
+        type: 'validation',
+        message: 'The interactive login window did not provide a TTY',
+        hint: 'Run the selected login command in a local interactive terminal',
+      },
+    }))
     expect(exit).toHaveBeenCalledWith(1)
   })
 })

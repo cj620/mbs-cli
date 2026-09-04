@@ -19,9 +19,31 @@ import {
 import { chromium } from 'playwright-core'
 import type { BrowserContext } from 'playwright-core'
 
+import {
+  hasInteractiveTerminal,
+  launchInteractiveLoginInNewTerminal,
+} from '../login/interactive-terminal.js'
+import type { SecretLoginMethod } from '../login/interactive-terminal.js'
+
 const MISSING_BROWSER_MESSAGE = 'No supported browser runtime is available'
 const MISSING_BROWSER_HINT = 'Make sure Chrome or Edge is installed and available, then try `mbs login` again. Only install an extra browser runtime if the system browsers cannot be used.'
 const SESSION_POLL_INTERVAL_MS = 250
+const LOGIN_SUCCESS = JSON.stringify({ ok: true, data: { message: 'Authenticated successfully' } })
+
+type LoginMethod = 'qr' | SecretLoginMethod
+
+/**
+ * Parsed login selectors used by the command and its isolated terminal child.
+ *
+ * Public selectors are mutually exclusive in oclif. The hidden child marker carries no
+ * credential and only prevents a redirected child from recursively opening another terminal.
+ */
+interface LoginFlags {
+  'interactive-child'?: boolean
+  'managed-token'?: boolean
+  password?: boolean
+  qr?: boolean
+}
 
 /** Returns true when Playwright reports that no launchable browser exists. */
 function isMissingChromiumError(error: unknown): boolean {
@@ -91,12 +113,33 @@ async function waitForAuthCookies(
 export default class Login extends Command {
   static description = 'Authenticate with MBS by QR code, account password, or long-term Refresh Token'
 
-  static examples = ['mbs login', 'mbs login --password']
+  static examples = [
+    'mbs login',
+    'mbs login --qr',
+    'mbs login --password',
+    'mbs login --managed-token',
+  ]
 
   static flags = {
+    qr: Flags.boolean({
+      description: 'Open the QR login browser without showing the terminal method menu',
+      default: false,
+      exclusive: ['password', 'managed-token'],
+    }),
     password: Flags.boolean({
       char: 'p',
       description: 'Prompt for account and password in the terminal without opening a browser',
+      default: false,
+      exclusive: ['qr', 'managed-token'],
+    }),
+    'managed-token': Flags.boolean({
+      description: 'Prompt for a management-issued long-term Refresh Token in the terminal',
+      default: false,
+      exclusive: ['qr', 'password'],
+    }),
+    'interactive-child': Flags.boolean({
+      description: 'Internal marker for a login process running in an isolated terminal',
+      hidden: true,
       default: false,
     }),
   }
@@ -104,15 +147,17 @@ export default class Login extends Command {
   /**
    * Authenticates interactively while persisting only approved auth state and safe user data.
    *
-   * <p>Password mode prompts in the terminal and calls auth-center directly. QR
-   * mode opens a browser but polls only browser cookie state. Managed-token mode
-   * accepts a hidden terminal secret and calls the exclusive LongToken exchange.
-   * Bare login asks between all three modes. All modes delete known legacy key
-   * storage without reading it.</p>
+   * <p>Password mode prompts in the terminal and calls auth-center directly. QR mode opens a
+   * browser but polls only browser cookie state. Managed-token mode accepts a hidden terminal
+   * secret and calls the exclusive LongToken exchange. Bare interactive login asks between all
+   * three modes. Bare redirected login fails with deterministic Agent guidance instead of
+   * attempting to read Inquirer input.</p>
    *
    * <p>Before any method selection or credential collection, login deletes the
    * complete Cookie, Refresh credential, and user cache. Cancellation or failure
-   * leaves the CLI logged out so credentials from different users cannot mix.</p>
+   * leaves the CLI logged out so credentials from different users cannot mix. Redirected
+   * password or managed-token mode opens an isolated Windows terminal and waits for its exit;
+   * only the fixed mode crosses the process seam, never the secret.</p>
    */
   async run(): Promise<void> {
     const { flags } = await this.parse(Login)
@@ -120,15 +165,26 @@ export default class Login extends Command {
     try {
       clearCookie()
       await deleteKey()
+      const method = await this.resolveLoginMethod(flags)
+      if (method !== 'qr' && !hasInteractiveTerminal()) {
+        if (flags['interactive-child']) {
+          throw new MBSError(
+            'The interactive login window did not provide a TTY',
+            'validation',
+            'Run the selected login command in a local interactive terminal',
+          )
+        }
+
+        const childExitCode = await launchInteractiveLoginInNewTerminal(method)
+        if (childExitCode !== 0) {
+          this.reportChildLoginFailure(childExitCode)
+          return
+        }
+        this.log(LOGIN_SUCCESS)
+        return
+      }
+
       const { apiUrl } = getConfig()
-      const method = flags.password ? 'password' : await select({
-        message: 'Choose a login method:',
-        choices: [
-          { name: 'QR code (opens a browser)', value: 'qr' as const },
-          { name: 'Account and password (terminal)', value: 'password' as const },
-          { name: 'Long-term Refresh Token (terminal)', value: 'managed-token' as const },
-        ],
-      })
       if (method === 'password') {
         await this.loginFromTerminal(apiUrl)
       } else if (method === 'managed-token') {
@@ -136,7 +192,7 @@ export default class Login extends Command {
       } else {
         await this.loginFromBrowser(apiUrl)
       }
-      this.log(JSON.stringify({ ok: true, data: { message: 'Authenticated successfully' } }))
+      this.log(LOGIN_SUCCESS)
     } catch (error) {
       if (error instanceof NotAuthenticatedError) {
         this.log(JSON.stringify({
@@ -160,6 +216,57 @@ export default class Login extends Command {
       }
       throw error
     }
+  }
+
+  /**
+   * Resolves one deterministic login mode without reading redirected Agent input.
+   *
+   * @param flags Parsed oclif flags. Public mode flags are mutually exclusive; the hidden child
+   * marker only prevents recursive terminal launch and does not select a method.
+   * @returns Explicit mode, or the user's Inquirer selection when running in a real terminal.
+   * @throws MBSError when a redirected process omits the method, so the Agent can ask the user in
+   * conversation and retry with `--qr`, `--password`, or `--managed-token`.
+   */
+  private async resolveLoginMethod(flags: LoginFlags): Promise<LoginMethod> {
+    if (flags.qr) return 'qr'
+    if (flags.password) return 'password'
+    if (flags['managed-token']) return 'managed-token'
+    if (!hasInteractiveTerminal()) {
+      throw new MBSError(
+        'Login method is required in a non-interactive environment',
+        'validation',
+        'Ask the user to choose, then run `mbs login --qr`, `mbs login --password`, or `mbs login --managed-token`',
+      )
+    }
+
+    return select({
+      message: 'Choose a login method:',
+      choices: [
+        { name: 'QR code (opens a browser)', value: 'qr' as const },
+        { name: 'Account and password (terminal)', value: 'password' as const },
+        { name: 'Long-term Refresh Token (terminal)', value: 'managed-token' as const },
+      ],
+    })
+  }
+
+  /**
+   * Converts an isolated terminal's failure into the stable parent-process CLI response.
+   *
+   * @param childExitCode Exit code returned by the visible login process; authentication code `2`
+   * is preserved, while cancellation or other failures normalize to validation code `1`.
+   * @returns Nothing. The method writes one safe error and requests the matching oclif exit code.
+   */
+  private reportChildLoginFailure(childExitCode: number): void {
+    const isAuthenticationFailure = childExitCode === 2
+    this.log(JSON.stringify({
+      ok: false,
+      error: {
+        type: isAuthenticationFailure ? 'auth' : 'validation',
+        message: 'Interactive login did not complete',
+        hint: 'Review the login window, then try again',
+      },
+    }))
+    this.exit(isAuthenticationFailure ? 2 : 1)
   }
 
   /**

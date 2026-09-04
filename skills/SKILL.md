@@ -19,6 +19,21 @@ metadata:
 
 ---
 
+## Agent 登录交互协议
+
+当用户要求登录，或 `mbs whoami` / 业务命令提示需要重新认证时：
+
+1. 不要在 Agent 的非交互命令通道中裸执行 `mbs login`。
+2. 先在对话中询问用户选择“扫码登录”“账号密码”或“长期 Refresh Token”；宿主支持选择控件时可以使用，其他情况用普通文字询问。
+3. 用户选择扫码后执行 `mbs login --qr`。CLI 直接打开系统 Chrome/Edge，用户在浏览器完成扫码。
+4. 用户选择账号密码后执行 `mbs login --password`。非交互 Windows 环境会自动打开可见终端，账号和隐藏密码只在该终端输入。
+5. 用户选择长期 Refresh Token 后执行 `mbs login --managed-token`。非交互 Windows 环境会自动打开可见终端，Token 只在该终端隐藏输入。
+6. 登录命令成功后执行 `mbs whoami` 复检，再继续原任务。
+
+禁止要求用户在对话中发送密码或 `LongToken`，也禁止把秘密写入命令参数、环境变量、stdin 管道、文件、日志或工具调用。非 Windows Agent 若收到自动终端不支持提示，应让用户在本机交互终端运行已选择的明确命令，不得改用聊天收集秘密。
+
+---
+
 <!-- AUTO-GENERATED FIND-FIRST PROTOCOL START -->
 ## 统一语义发现流程
 

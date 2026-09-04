@@ -7,16 +7,19 @@
 ```bash
 mbs config init        # 配置 HTTP(S) API；远程 HTTP 默认允许但会明文传输凭据
 mbs login              # 显示列表，选择扫码、账号密码或后台长期 Refresh Token 登录
+mbs login --qr         # 跳过菜单，直接打开扫码浏览器
 mbs login --password   # 终端隐藏输入账号密码并直接登录（等同 -p）
+mbs login --managed-token # 终端隐藏输入后台长期 Refresh Token
 mbs whoami             # 验证认证状态
 mbs refresh            # 使用当前长期凭据刷新短期 Access Token 与兼容 SESSION
 ```
 
 说明：
 - 每次有效执行 `mbs login` 都会先删除当前认证缓存（`SESSION`、`AUTH_REFRESH`、管理型 `LongToken`、Refresh 到期时间和用户摘要），再显示选择列表或读取新凭据；取消或登录失败不会恢复旧登录态
-- `mbs login` 先显示可键盘选择的登录方式列表；扫码选项打开 `/eshop/manager/login.jsp`，只轮询隔离浏览器上下文中的 `SESSION` 与 `AUTH_REFRESH` Cookie，不监听登录请求或解析 `MBS_KEY`
-- `--password` / `-p`：先校验认证地址，再在终端分别读取账号和隐藏密码，直接调用认证中心；该模式不会启动浏览器
-- 后台长期 Refresh Token：在选择列表中选中后通过隐藏终端手工粘贴；CLI 按管理型 `LongToken` 协议交换，不启动浏览器，也不提供参数或环境变量入口
+- `mbs login` 只在交互式终端显示可键盘选择的登录方式列表；非交互 Agent 通道必须先在对话中询问用户，再执行一个明确模式参数，避免 Inquirer 读取重定向 stdin
+- `--qr`：跳过菜单，打开 `/eshop/manager/login.jsp`，只轮询隔离浏览器上下文中的 `SESSION` 与 `AUTH_REFRESH` Cookie，不监听登录请求或解析 `MBS_KEY`
+- `--password` / `-p`：先校验认证地址，再在终端分别读取账号和隐藏密码，直接调用认证中心；非交互 Windows 环境自动打开新的可见终端，该模式不会启动浏览器
+- `--managed-token`：通过隐藏终端手工粘贴后台长期 Refresh Token；非交互 Windows 环境自动打开新的可见终端，CLI 按管理型 `LongToken` 协议交换，不启动浏览器，也不接受 Token 参数或环境变量
 - 密码、管理型长期 Token 和 refresh 默认接受配置中的 HTTP(S) 地址，不要求额外确认或 Origin 授权
 - 远程 HTTP 不提供机密性、完整性或服务端身份保护，账号密码、Token 和 Cookie 可能被监听或篡改；仅作为服务端 HTTPS 上线前的临时兼容，具备 HTTPS 后应立即重新配置
 - CLI 缓存严格二选一：登录型 `AUTH_REFRESH` + 到期时间，或不轮换的管理型 `LongToken`；两者都与兼容 `SESSION` 和最小用户摘要保存在当前用户认证缓存
@@ -28,7 +31,7 @@ mbs refresh            # 使用当前长期凭据刷新短期 Access Token 与�
 
 ### CI / 无交互环境
 
-当前 CLI 不提供账号密码或长期用户凭据的无交互输入入口。无人值守任务可以预先通过交互式 `mbs login` 导入后台签发的受限管理型长期 Token，并把 CLI 配置目录挂载为仅运行用户可读写的持久卷；不得把 Token 写入命令行、环境变量、镜像、前端资源或日志。多用户系统仍应使用独立授权机制，不能共享这份单用户缓存。
+Agent 的非交互执行通道不得直接运行未指定模式的 `mbs login`。Agent 应先在对话中让用户选择登录方式，再执行 `mbs login --qr`、`mbs login --password` 或 `mbs login --managed-token`；后两种方式在 Windows 桌面自动打开可见终端收集秘密。真正无人值守的 CI 仍不提供账号密码或长期用户凭据输入入口；可预先通过交互式登录导入后台签发的受限管理型长期 Token，并把 CLI 配置目录挂载为仅运行用户可读写的持久卷。不得把 Token 写入命令行、环境变量、镜像、前端资源或日志，多用户系统也不能共享这份单用户缓存。
 
 ### 动态只读接口请求
 
@@ -121,4 +124,4 @@ CLI 不再增加 `{ok,data}` 或 `{ok:false,error}` 外层。后端业务错误�
 |--------|------|---------|
 | `0` | 成功 | — |
 | `1` | API / 参数错误 | 业务查询检查后端实际错误字段；本地错误检查 `error.hint` |
-| `2` | 认证失败 | 运行 `mbs login` 选择方式重新登录 |
+| `2` | 认证失败 | Agent 先在对话中询问方式，再运行对应的显式登录命令 |

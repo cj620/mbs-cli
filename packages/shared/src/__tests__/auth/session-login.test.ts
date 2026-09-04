@@ -38,7 +38,7 @@ beforeEach(() => {
 })
 
 describe('loginWithPassword', () => {
-  /** Verifies direct login retains only the two auth Cookie pairs and the server-declared Refresh expiry. */
+  /** Verifies direct login omits client classification and retains only approved authentication state. */
   it('returns a safe authentication context from the auth-center response', async () => {
     vi.useFakeTimers()
     vi.setSystemTime(new Date('2026-09-03T00:00:00.000Z'))
@@ -65,12 +65,11 @@ describe('loginWithPassword', () => {
     expect(mockAxios.post).toHaveBeenCalledWith(
       'https://example.com/gateway/auth-center-service/auth/user/login/password',
       { username: 'test-account', password: 'test-password' },
-      { headers: { 'client-type': 'cli' } },
     )
     vi.useRealTimers()
   })
 
-  /** Verifies a configured remote HTTP root is accepted without an extra authorization field. */
+  /** Verifies remote HTTP password login adds neither authorization nor client classification. */
   it('allows remote HTTP by default', async () => {
     mockAxios.post = vi.fn().mockResolvedValue({
       headers: { 'set-cookie': [
@@ -87,7 +86,6 @@ describe('loginWithPassword', () => {
     expect(mockAxios.post).toHaveBeenCalledWith(
       'http://api.example.com:8080/root/gateway/auth-center-service/auth/user/login/password',
       { username: 'test-account', password: 'test-password' },
-      { headers: { 'client-type': 'cli' } },
     )
   })
 
@@ -282,7 +280,7 @@ describe('exchangeCompatibilitySession', () => {
 })
 
 describe('loginWithManagedLongToken', () => {
-  /** Verifies manual managed-token login creates SESSION without persisting an Access Token. */
+  /** Verifies initial managed-token login sends only LongToken and creates persistent SESSION state. */
   it('exchanges the token and resolves the current user', async () => {
     mockAxios.post = vi.fn().mockResolvedValue({
       headers: { 'set-cookie': ['SESSION=managed-session; Path=/; HttpOnly; Secure'] },
@@ -304,7 +302,6 @@ describe('loginWithManagedLongToken', () => {
       undefined,
       { headers: {
         Authorization: `LongToken ${managedLongToken}`,
-        'client-type': 'cli',
       } },
     )
   })

@@ -1,9 +1,9 @@
 # MBS 认证凭据边界
 
 - 记忆键：`AUTH-CREDENTIAL-BOUNDARY`
-- 状态：远程 HTTP 默认允许已随 npm `1.0.7` 发布并完成官方包核验，待真实联调
-- 当前来源：`20260904-[SECURITY]临时支持远程HTTP认证`、DEC-003、DEC-004、DEC-005
-- 最后核验：2026-09-04 / 当前工作区基线 `ba436b3`
+- 状态：npm `1.0.7` 认证基线已发布；Agent 非交互登录交接与首次登录请求头修复在当前工作区 V3 通过，待发布与真实联调
+- 当前来源：`20260904-[FEATURE]支持Agent对话选择登录方式`、`20260904-[BUG]登录请求移除客户端类型头`、DEC-003、DEC-004、DEC-005、DEC-006
+- 最后核验：2026-09-04 / 当前工作区
 
 ## 当前结论
 
@@ -14,16 +14,19 @@
 ## 当前实现
 
 - 每次有效执行 `mbs login` 都先删除完整认证缓存，再选择登录方式或收集新凭据；清理覆盖 `SESSION`、两类互斥长期凭据、Refresh 到期时间和用户摘要，新登录取消或失败不恢复旧状态。
-- 裸 `mbs login` 使用终端选择列表询问扫码、账号密码或后台长期 Refresh Token；`--password` 保留为密码模式快捷方式。
+- 裸 `mbs login` 只在 stdin/stdout 均为 TTY 时使用终端选择列表询问扫码、账号密码或后台长期 Refresh Token；非交互调用返回安全提示。Agent 先在对话中选择，再执行 `--qr`、`--password` 或 `--managed-token`。
 - 扫码登录只轮询隔离浏览器上下文中的 `SESSION` 与 `AUTH_REFRESH`，不监听登录请求。
-- `mbs login --password` 接受配置中的合法 HTTP(S) 地址，通过终端隐藏输入直接调用认证中心；不启动浏览器，也不提供参数或环境变量凭据入口。远程 HTTP 不要求额外确认，但会明文传输密码。
-- 后台长期 Refresh Token 模式使用同一 HTTP(S) URL 校验，再通过终端隐藏输入；按 `Authorization: LongToken <token>` 调用兼容交换，保存不轮换 Token 与兼容 `SESSION`，不提供参数或环境变量入口。HTTP 会明文传输 Token 和 Cookie。
+- `mbs login --password` 接受配置中的合法 HTTP(S) 地址，通过终端隐藏输入直接调用认证中心；非交互 Windows Agent 会自动打开独立可见终端，不启动浏览器，也不提供参数或环境变量凭据入口。远程 HTTP 不要求额外确认，但会明文传输密码。
+- 后台长期 Refresh Token 模式使用同一 HTTP(S) URL 校验，再通过终端隐藏输入；非交互 Windows Agent 会自动打开独立可见终端，按 `Authorization: LongToken <token>` 调用兼容交换，保存不轮换 Token 与兼容 `SESSION`，不提供参数或环境变量入口。HTTP 会明文传输 Token 和 Cookie。
+- 密码登录请求不发送 `client-type`；首次管理型 LongToken 交换只发送必要的 `Authorization`，登录后的 Cookie/LongToken Refresh 仍发送 `client-type: cli`。
 - key 存储模块只保留删除能力：删除操作系统凭据条目和已知旧文件时不读取内容。
 - 认证缓存只保存标准化后的 `SESSION`、唯一长期凭据、登录型 Refresh 到期时间和最小用户摘要；同时出现 `AUTH_REFRESH` 与管理型 `LongToken` 时失败关闭。
 - `mbs refresh` 与业务请求首次 401 使用 `/gateway/auth-center-service/auth/token/exchange/compat-session`；登录型 Cookie 保存旋转值，管理型 Token 保持不变。短期 Access Token 只进入当前 APIClient 内存，业务请求不携带任何长期凭据。
 - 缺少 Refresh 的旧 SESSION-only 缓存在原两小时内兼容读取但不能刷新；交换失败后重新登录。
 
 登录型 Refresh 与管理型 Token 两个分支自 `@mb-it-org/cli@1.0.6` 提供；远程 HTTP 默认允许已随 `1.0.7` 发布。官方源安装包的版本、配置/登录/刷新帮助和 Skill 内容已核验，真实 HTTP 凭据链路仍未联调。
+
+Agent 非交互登录交接与首次登录请求头修复当前只存在于本地工作区，尚未发布。Windows 无凭据可见终端冒烟和完整 V3 已通过并记录在来源任务中；真实账号、密码和 Token 登录仍未执行。
 
 ## 服务端应用约束
 
@@ -37,6 +40,8 @@
 
 - `20260903-[FEATURE]接入长短Token刷新登录` 补充 `20260902-[SECURITY]禁止持久化MBS_KEY`，并按用户最新决定增加管理型长期 Refresh Token 的手工导入。
 - `20260904-[SECURITY]临时支持远程HTTP认证` 部分修正严格 HTTPS 传输实现：合法远程 HTTP 默认允许，不再确认或保存 Origin 授权；不改变任何凭据持久化边界。
+- `20260904-[FEATURE]支持Agent对话选择登录方式` 补充非交互入口：Agent 对话只选择模式，秘密只在 Windows 可见终端隐藏输入；不改变认证协议或缓存结构。
+- `20260904-[BUG]登录请求移除客户端类型头` 修正认证登录契约：密码登录和首次 LongToken 登录不发送客户端分类头，登录后 Refresh 行为保持。
 - `MBS_KEY` 禁令和旧 key 删除式清理完全保留；新机制只使用认证中心正式签发的登录型 Refresh Cookie或后台管理型 `LongToken`。
 
 ## 深入读取条件
@@ -49,3 +54,4 @@
 - [`DEC-003：MBS_KEY 禁止持久化`](../decisions/DEC-003-MBS_KEY禁止持久化.md)
 - [`DEC-004：登录型 Refresh 与短期 Access 边界`](../decisions/DEC-004-登录型Refresh与短期Access边界.md)
 - [`DEC-005：远程 HTTP 认证默认允许`](../decisions/DEC-005-远程HTTP认证默认允许.md)
+- [`DEC-006：Agent 非交互登录交接`](../decisions/DEC-006-Agent非交互登录交接.md)
