@@ -145,6 +145,31 @@ describe('authentication context', () => {
     )
   })
 
+  /** Verifies automatic refresh directly accepts a configured remote HTTP API root. */
+  it('uses configured remote HTTP during refresh without extra authorization', async () => {
+    const cached = {
+      cookie: 'SESSION=old; AUTH_REFRESH=refresh',
+      refreshExpiresAt: '2100-01-01T00:00:00.000Z',
+      userInfo: safeUserInfo,
+    }
+    const refreshed = {
+      ...cached,
+      cookie: 'SESSION=fresh; AUTH_REFRESH=rotated',
+      accessToken: 'memory-access',
+      accessTokenExpiresAt: '2100-01-01T00:15:00.000Z',
+    }
+    mockGetConfig.mockReturnValue({ apiUrl: 'http://api.example.com' })
+    mockReadAuthContextCache.mockReturnValue(cached)
+    mockExchangeCompatibilitySession.mockResolvedValue(refreshed)
+
+    await expect(forceRefreshAuthContext()).resolves.toEqual(refreshed)
+
+    expect(mockExchangeCompatibilitySession).toHaveBeenCalledWith(
+      'http://api.example.com',
+      cached,
+    )
+  })
+
   /** Verifies a legacy cache without Refresh material is cleared before rejecting. */
   it('rejects and clears a SESSION-only cache', async () => {
     mockReadAuthContextCache.mockReturnValue({ cookie: 'SESSION=legacy', userInfo: safeUserInfo })

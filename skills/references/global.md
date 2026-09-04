@@ -5,6 +5,7 @@
 ### 首次配置
 
 ```bash
+mbs config init        # 配置 HTTP(S) API；远程 HTTP 默认允许但会明文传输凭据
 mbs login              # 显示列表，选择扫码、账号密码或后台长期 Refresh Token 登录
 mbs login --password   # 终端隐藏输入账号密码并直接登录（等同 -p）
 mbs whoami             # 验证认证状态
@@ -16,7 +17,8 @@ mbs refresh            # 使用当前长期凭据刷新短期 Access Token 与�
 - `mbs login` 先显示可键盘选择的登录方式列表；扫码选项打开 `/eshop/manager/login.jsp`，只轮询隔离浏览器上下文中的 `SESSION` 与 `AUTH_REFRESH` Cookie，不监听登录请求或解析 `MBS_KEY`
 - `--password` / `-p`：先校验认证地址，再在终端分别读取账号和隐藏密码，直接调用认证中心；该模式不会启动浏览器
 - 后台长期 Refresh Token：在选择列表中选中后通过隐藏终端手工粘贴；CLI 按管理型 `LongToken` 协议交换，不启动浏览器，也不提供参数或环境变量入口
-- 密码登录仅允许 HTTPS；只有 `localhost`、`127.0.0.1`、`::1` 回环开发代理可使用 HTTP
+- 密码、管理型长期 Token 和 refresh 默认接受配置中的 HTTP(S) 地址，不要求额外确认或 Origin 授权
+- 远程 HTTP 不提供机密性、完整性或服务端身份保护，账号密码、Token 和 Cookie 可能被监听或篡改；仅作为服务端 HTTPS 上线前的临时兼容，具备 HTTPS 后应立即重新配置
 - CLI 缓存严格二选一：登录型 `AUTH_REFRESH` + 到期时间，或不轮换的管理型 `LongToken`；两者都与兼容 `SESSION` 和最小用户摘要保存在当前用户认证缓存
 - `mbs refresh` 使用缓存中的唯一长期凭据调用 `/gateway/auth-center-service/auth/token/exchange/compat-session`；登录型 Cookie 会轮换，管理型 Token 保持不变，短期 Access Token 仅留在当前进程内存且绝不输出或持久化
 - 业务请求首次认证失败时最多自动交换并重试一次；重试使用内存 Bearer 与兼容 SESSION，最终失败时重新执行 `mbs login`

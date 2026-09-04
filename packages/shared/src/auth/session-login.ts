@@ -53,8 +53,6 @@ interface ManagedCompatibilityExchange {
   accessTokenExpiresAt: string
 }
 
-const LOOPBACK_HOSTS = new Set(['localhost', '127.0.0.1', '::1', '[::1]'])
-
 /** Returns true when an unknown value is an inspectable object record. */
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value)
@@ -65,17 +63,16 @@ function isRecord(value: unknown): value is Record<string, unknown> {
  *
  * @param apiUrl Configured MBS API root.
  * @returns The normalized root without trailing slashes.
- * @param requireHttps Whether remote HTTP must be rejected for this operation.
- * @param insecureMessage Safe error text used when HTTPS is required.
- * @throws MBSError when the URL is malformed, embeds credentials, uses an
- * unsupported protocol, or violates the requested HTTPS policy.
+ * @throws MBSError when the URL is malformed, embeds credentials, or uses an
+ * unsupported protocol. Both HTTP and HTTPS are accepted; HTTP provides no
+ * transport confidentiality or integrity.
  */
-function normalizedApiRoot(apiUrl: string, requireHttps: boolean, insecureMessage: string): string {
+function normalizedApiRoot(apiUrl: string): string {
   let parsed: URL
   try {
     parsed = new URL(apiUrl)
   } catch {
-    throw new MBSError('Invalid API URL', 'validation', 'Configure a valid HTTPS MBS API URL')
+    throw new MBSError('Invalid API URL', 'validation', 'Configure a valid HTTP or HTTPS MBS API URL')
   }
 
   if (parsed.username || parsed.password || parsed.search || parsed.hash) {
@@ -86,37 +83,27 @@ function normalizedApiRoot(apiUrl: string, requireHttps: boolean, insecureMessag
     throw new MBSError('Invalid API URL', 'validation', 'Configure an HTTP or HTTPS MBS API URL')
   }
 
-  const isLoopbackHttp = parsed.protocol === 'http:' && LOOPBACK_HOSTS.has(parsed.hostname)
-  if (requireHttps && parsed.protocol !== 'https:' && !isLoopbackHttp) {
-    throw new MBSError(
-      insecureMessage,
-      'validation',
-      'Configure an HTTPS API URL; HTTP is allowed only for a loopback development proxy',
-    )
-  }
-
-  return apiUrl.replace(/\/+$/, '')
+  return apiUrl.trim().replace(/\/+$/, '')
 }
 
 /**
- * Validates password-login transport before the CLI asks the user for credentials.
+ * Validates the password-login API root before the CLI asks for credentials.
  *
  * @param apiUrl Configured MBS API root.
- * @throws MBSError when credentials could not be sent over an approved transport.
+ * @throws MBSError when the root is not a structurally safe HTTP(S) URL.
  */
 export function validatePasswordLoginApiUrl(apiUrl: string): void {
-  normalizedApiRoot(apiUrl, true, 'Password login requires HTTPS')
+  normalizedApiRoot(apiUrl)
 }
 
 /**
- * Validates managed-token transport before terminal secret collection.
+ * Validates the managed-token API root before terminal secret collection.
  *
  * @param apiUrl Configured MBS API root.
- * @throws MBSError when the credential could not be sent over HTTPS or an
- * explicitly allowed loopback development proxy.
+ * @throws MBSError when the root is not a structurally safe HTTP(S) URL.
  */
 export function validateManagedTokenLoginApiUrl(apiUrl: string): void {
-  normalizedApiRoot(apiUrl, true, 'Long-term Refresh Token login requires HTTPS')
+  normalizedApiRoot(apiUrl)
 }
 
 /**
@@ -179,7 +166,7 @@ function safeTransportError(error: unknown): Error {
   return new MBSError(
     'Authentication service request failed',
     'api',
-    'Check the configured HTTPS API URL and network connection',
+    'Check the configured HTTP(S) API URL and network connection',
   )
 }
 
@@ -198,7 +185,7 @@ export async function loginWithPassword(
   apiUrl: string,
   credentials: PasswordLoginCredentials,
 ): Promise<AuthContext> {
-  const root = normalizedApiRoot(apiUrl, true, 'Password login requires HTTPS')
+  const root = normalizedApiRoot(apiUrl)
   const body = passwordRequestBody(credentials)
 
   let response
@@ -225,7 +212,7 @@ export async function loginWithPassword(
  * the exclusive Authorization scheme, remains unchanged, and may send only its
  * existing SESSION Cookie so auth-center can reuse the compatible session.</p>
  *
- * @param apiUrl Configured MBS API root; remote plaintext HTTP is rejected.
+ * @param apiUrl Configured HTTP(S) MBS API root; HTTP sends credentials in plaintext.
  * @param context Cached authentication containing exactly one supported long credential.
  * @returns Updated Cookie context plus the short Access Token for current-process use.
  * @throws NotAuthenticatedError for missing credentials, rejected authentication, or
@@ -235,7 +222,7 @@ export async function exchangeCompatibilitySession(
   apiUrl: string,
   context: AuthContext,
 ): Promise<RefreshedAuthContext> {
-  const root = normalizedApiRoot(apiUrl, true, 'Authentication refresh requires HTTPS')
+  const root = normalizedApiRoot(apiUrl)
   const cookie = normalizeAuthCookieHeader(context.cookie)
   const hasLoginRefresh = cookie !== null && hasRefreshCookie(cookie)
   if (context.managedLongToken !== undefined) {
@@ -275,7 +262,7 @@ export async function exchangeCompatibilitySession(
  * compatible session. AUTH_REFRESH is rejected before this method is called.
  * Transport failures are converted to safe errors that omit headers.</p>
  *
- * @param root Normalized HTTPS or loopback API root.
+ * @param root Normalized HTTP(S) API root; HTTP provides no transport encryption.
  * @param managedLongToken Valid management token in auth-center's versioned format.
  * @param currentCookie Optional current SESSION-only Cookie header.
  * @returns Compatible SESSION, unchanged management token, and memory-only Access state.
@@ -324,14 +311,17 @@ async function exchangeManagedLongToken(
  * The short Access Token is discarded because login persists only the long
  * credential, compatible SESSION, and safe current-user summary.</p>
  *
- * @param apiUrl Configured MBS API root; remote plaintext HTTP is rejected.
+ * @param apiUrl Configured HTTP(S) MBS API root; HTTP sends credentials in plaintext.
  * @param value Token pasted into the hidden terminal prompt.
  * @returns Persistable SESSION, managed LongToken, and allow-listed user summary.
  * @throws MBSError for malformed input, unsafe transport, or network failure.
  * @throws NotAuthenticatedError when auth-center rejects the token or omits identity state.
  */
-export async function loginWithManagedLongToken(apiUrl: string, value: string): Promise<AuthContext> {
-  const root = normalizedApiRoot(apiUrl, true, 'Long-term Refresh Token login requires HTTPS')
+export async function loginWithManagedLongToken(
+  apiUrl: string,
+  value: string,
+): Promise<AuthContext> {
+  const root = normalizedApiRoot(apiUrl)
   const managedLongToken = normalizeManagedLongToken(value)
   if (!managedLongToken) {
     throw new MBSError(
@@ -356,7 +346,7 @@ export async function loginWithManagedLongToken(apiUrl: string, value: string): 
  * @returns Minimal non-secret user identity.
  */
 export async function fetchCurrentUser(apiUrl: string, cookie: string): Promise<UserInfo> {
-  const root = normalizedApiRoot(apiUrl, false, 'Authentication requires HTTPS')
+  const root = normalizedApiRoot(apiUrl)
   const sessionCookie = normalizeSessionCookie(cookie)
   if (!sessionCookie) throw new NotAuthenticatedError()
 

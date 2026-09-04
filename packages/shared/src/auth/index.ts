@@ -47,7 +47,8 @@ export async function saveAuthContext(context: AuthContext): Promise<void> {
  * The Access Token is returned only to the active process. Persistence writes
  * only approved long credential, compatible Cookie, and safe user state.
  * Authentication rejection or uncertain persistence clears the local cache to
- * prevent replaying credentials that may already be invalid.</p>
+ * prevent replaying credentials that may already be invalid. Configured HTTP and
+ * HTTPS roots are accepted; HTTP transmits credentials without encryption.</p>
  *
  * @returns Updated compatible session state and a memory-only short Access Token.
  * @throws NotAuthenticatedError when no supported long credential exists or auth-center rejects it.

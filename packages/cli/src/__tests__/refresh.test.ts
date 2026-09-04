@@ -67,7 +67,7 @@ describe('refresh command', () => {
     mockForceRefreshAuthContext.mockRejectedValue(new MBSError(
       'Authentication service request failed',
       'api',
-      'Check the configured HTTPS API URL and network connection',
+      'Check the configured HTTP(S) API URL and network connection',
     ))
     const { default: Refresh } = await import('../commands/refresh.js')
     const log = vi.fn()
@@ -80,7 +80,7 @@ describe('refresh command', () => {
       error: {
         type: 'api',
         message: 'Authentication service request failed',
-        hint: 'Check the configured HTTPS API URL and network connection',
+        hint: 'Check the configured HTTP(S) API URL and network connection',
       },
     }))
     expect(exit).toHaveBeenCalledWith(1)

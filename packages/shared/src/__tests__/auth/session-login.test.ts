@@ -70,16 +70,33 @@ describe('loginWithPassword', () => {
     vi.useRealTimers()
   })
 
-  /** Verifies credentials can never be sent over plaintext to a remote host. */
-  it('rejects remote HTTP before making a request', async () => {
-    await expect(loginWithPassword('http://example.com', {
-      username: 'test-account',
-      password: 'test-password',
-    })).rejects.toMatchObject({
-      type: 'validation',
-      message: 'Password login requires HTTPS',
+  /** Verifies a configured remote HTTP root is accepted without an extra authorization field. */
+  it('allows remote HTTP by default', async () => {
+    mockAxios.post = vi.fn().mockResolvedValue({
+      headers: { 'set-cookie': [
+        'SESSION=http-session; Path=/; HttpOnly',
+        'AUTH_REFRESH=http-refresh; Path=/; Max-Age=60; HttpOnly',
+      ] },
+      data: { code: 200, data: authUser },
     })
 
+    await expect(loginWithPassword(
+      'http://api.example.com:8080/root',
+      { username: 'test-account', password: 'test-password' },
+    )).resolves.toMatchObject({ cookie: 'SESSION=http-session; AUTH_REFRESH=http-refresh' })
+    expect(mockAxios.post).toHaveBeenCalledWith(
+      'http://api.example.com:8080/root/gateway/auth-center-service/auth/user/login/password',
+      { username: 'test-account', password: 'test-password' },
+      { headers: { 'client-type': 'cli' } },
+    )
+  })
+
+  /** Verifies non-HTTP protocols are rejected before credentials can reach Axios. */
+  it('rejects unsupported authentication URL protocols', async () => {
+    await expect(loginWithPassword('ftp://api.example.com', {
+      username: 'test-account',
+      password: 'test-password',
+    })).rejects.toMatchObject({ type: 'validation', message: 'Invalid API URL' })
     expect(mockAxios.post).not.toHaveBeenCalled()
   })
 
@@ -178,6 +195,31 @@ describe('exchangeCompatibilitySession', () => {
     vi.useRealTimers()
   })
 
+  /** Verifies Refresh Cookie exchange accepts configured remote HTTP without extra authorization. */
+  it('refreshes over remote HTTP by default', async () => {
+    mockAxios.post = vi.fn().mockResolvedValue({
+      headers: { 'set-cookie': [
+        'AUTH_REFRESH=rotated-refresh; Path=/; Max-Age=3600; HttpOnly',
+        'SESSION=fresh-session; Path=/; HttpOnly',
+      ] },
+      data: { code: 200, data: {
+        accessToken: 'short-access-token', tokenType: 'Bearer', expiresInSeconds: 900,
+      } },
+    })
+
+    await expect(exchangeCompatibilitySession(
+      'http://api.example.com',
+      {
+        cookie: 'SESSION=old-session; AUTH_REFRESH=old-refresh',
+        refreshExpiresAt: '2100-01-01T00:00:00.000Z',
+        userInfo: safeUserInfo,
+      },
+    )).resolves.toMatchObject({
+      cookie: 'SESSION=fresh-session; AUTH_REFRESH=rotated-refresh',
+      accessToken: 'short-access-token',
+    })
+  })
+
   /** Verifies malformed token responses fail closed even when cookies were returned. */
   it('rejects an invalid Access Token response contract', async () => {
     mockAxios.post = vi.fn().mockResolvedValue({
@@ -265,6 +307,22 @@ describe('loginWithManagedLongToken', () => {
         'client-type': 'cli',
       } },
     )
+  })
+
+  /** Verifies manual LongToken login accepts configured remote HTTP without extra authorization. */
+  it('logs in with a managed token over remote HTTP by default', async () => {
+    mockAxios.post = vi.fn().mockResolvedValue({
+      headers: { 'set-cookie': ['SESSION=managed-session; Path=/; HttpOnly'] },
+      data: { code: 200, data: {
+        accessToken: 'initial-access-token', tokenType: 'Bearer', expiresInSeconds: 900,
+      } },
+    })
+    mockAxios.get = vi.fn().mockResolvedValue({ data: { code: 200, data: authUser } })
+
+    await expect(loginWithManagedLongToken(
+      'http://api.example.com',
+      managedLongToken,
+    )).resolves.toMatchObject({ cookie: 'SESSION=managed-session', managedLongToken })
   })
 
   /** Verifies malformed managed tokens are rejected locally without reaching auth-center. */

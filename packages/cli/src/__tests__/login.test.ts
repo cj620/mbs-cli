@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 const mockDeleteKey = vi.fn()
 const mockClearCookie = vi.fn()
 const mockFetchCurrentUser = vi.fn()
+const mockGetConfig = vi.fn()
 const mockInput = vi.fn()
 const mockLaunch = vi.fn()
 const mockLoginWithPassword = vi.fn()
@@ -25,7 +26,7 @@ vi.mock('@mb-it-org/shared', async importOriginal => ({
   clearCookie: mockClearCookie,
   deleteKey: mockDeleteKey,
   fetchCurrentUser: mockFetchCurrentUser,
-  getConfig: () => ({ apiUrl: 'https://example.com' }),
+  getConfig: mockGetConfig,
   LOGIN_PATH: '/eshop/manager/login.jsp',
   LOGIN_TIMEOUT_MS: 5_000,
   loginWithPassword: mockLoginWithPassword,
@@ -47,6 +48,7 @@ describe('login command', () => {
     vi.resetModules()
     vi.resetAllMocks()
     mockDeleteKey.mockResolvedValue(undefined)
+    mockGetConfig.mockReturnValue({ apiUrl: 'https://example.com' })
     mockSaveAuthContext.mockResolvedValue(undefined)
     mockSelect.mockResolvedValue('qr')
   })
@@ -249,14 +251,44 @@ describe('login command', () => {
       mockInput.mock.invocationCallOrder[0],
     )
     expect(mockPassword).toHaveBeenCalledWith({ mask: '*', message: 'MBS password:' })
-    expect(mockLoginWithPassword).toHaveBeenCalledWith('https://example.com', {
-      username: 'test-account',
-      password: 'test-password',
-    })
+    expect(mockLoginWithPassword).toHaveBeenCalledWith(
+      'https://example.com',
+      { username: 'test-account', password: 'test-password' },
+    )
     expect(mockSaveAuthContext).toHaveBeenCalledWith(authContext)
     expect(mockLaunch).not.toHaveBeenCalled()
     expect(mockSelect).not.toHaveBeenCalled()
     expect(log).toHaveBeenLastCalledWith(JSON.stringify({ ok: true, data: { message: 'Authenticated successfully' } }))
+  })
+
+  /** Verifies password login accepts configured remote HTTP without extra authorization state. */
+  it('uses configured remote HTTP by default', async () => {
+    mockGetConfig.mockReturnValue({ apiUrl: 'http://api.example.com' })
+    mockInput.mockResolvedValue('test-account')
+    mockPassword.mockResolvedValue('test-password')
+    mockLoginWithPassword.mockResolvedValue({
+      cookie: 'SESSION=password-session; AUTH_REFRESH=password-refresh',
+      refreshExpiresAt: '2100-01-01T00:00:00.000Z',
+      userInfo: {
+        id: 'user-1', loginName: 'user-1', userName: 'Test User', companyId: null,
+        companyName: null, departmentName: null, positionName: null,
+        groupCompanyId: null, groupCompanyName: null,
+      },
+    })
+    const { default: Login } = await import('../commands/login.js')
+
+    const command = Object.assign(Object.create(Login.prototype), {
+      parse: vi.fn(async () => ({ flags: { password: true } })),
+      log: vi.fn(),
+      exit: vi.fn(),
+    })
+    await command.run()
+
+    expect(mockValidatePasswordLoginApiUrl).toHaveBeenCalledWith('http://api.example.com')
+    expect(mockLoginWithPassword).toHaveBeenCalledWith(
+      'http://api.example.com',
+      { username: 'test-account', password: 'test-password' },
+    )
   })
 
   /** Verifies bare login can select password mode without requiring the compatibility flag. */

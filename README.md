@@ -100,6 +100,8 @@ mbs config init
 
 返回 `ok:true` 含 `data.apiUrl` → 跳过。
 
+`mbs config init` 默认接受 HTTP 和 HTTPS 地址，不会针对远程 HTTP 再次确认。若配置 HTTP，后续账号密码、长期 Refresh Token、刷新 Cookie、SESSION 和短期 Access Token 都可能在网络中被监听或篡改；这只是服务端 HTTPS 上线前的临时兼容。服务端提供 HTTPS 后应立即重新执行 `mbs config init` 切换为 HTTPS。
+
 ### Step 4: 登录并验证认证
 
 **先看是否已登录**：
@@ -118,7 +120,7 @@ mbs refresh            # 用当前登录的长期凭据换取短期 Access Token
 mbs whoami             # 复检
 ```
 
-每次执行 `mbs login` 都会先清空当前用户的 `SESSION`、登录型 `AUTH_REFRESH`、管理型 `LongToken`、Refresh 到期时间和用户摘要，再展示登录方式或收集新凭据；若新登录取消或失败，旧登录态不会恢复。扫码和账号密码登录缓存认证中心签发的 `SESSION`、可轮换 `AUTH_REFRESH` Cookie、Refresh 到期时间和最小用户摘要。第三种方式在隐藏终端中接收后台签发的长期 Refresh Token，按服务端 `LongToken` 协议交换并缓存该 Token 与兼容 `SESSION`；两类长期凭据严格互斥。长期凭据只用于认证交换，不直接访问业务接口；交换返回的短期 Access Token 只保存在当前进程内存，不写入文件或输出。CLI 始终不捕获、不读取、不保存 `MBS_KEY`。非扫码模式只允许连接 HTTPS 认证地址；HTTP 仅允许回环开发代理，账号、密码和长期 Token 都不支持通过参数或环境变量传入。
+每次执行 `mbs login` 都会先清空当前用户的 `SESSION`、登录型 `AUTH_REFRESH`、管理型 `LongToken`、Refresh 到期时间和用户摘要，再展示登录方式或收集新凭据；若新登录取消或失败，旧登录态不会恢复。扫码和账号密码登录缓存认证中心签发的 `SESSION`、可轮换 `AUTH_REFRESH` Cookie、Refresh 到期时间和最小用户摘要。第三种方式在隐藏终端中接收后台签发的长期 Refresh Token，按服务端 `LongToken` 协议交换并缓存该 Token 与兼容 `SESSION`；两类长期凭据严格互斥。长期凭据只用于认证交换，不直接访问业务接口；交换返回的短期 Access Token 只保存在当前进程内存，不写入文件或输出。CLI 始终不捕获、不读取、不保存 `MBS_KEY`。账号密码、管理型 Token 和 refresh 接受已配置的 HTTP(S) 地址，无需额外授权；HTTP 不会加密账号密码、Token 或 Cookie，只应作为服务端 HTTPS 上线前的临时兼容。账号、密码和长期 Token 仍不支持通过参数或环境变量传入。
 
 `mbs login` 失败时会输出结构化错误：
 - `error.message: "No supported browser runtime is available"` → 按 `error.hint` 装系统 Chrome 或 Edge；**禁止安装 Playwright/Chromium 等额外浏览器运行时**

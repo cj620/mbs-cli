@@ -166,13 +166,19 @@ export default class Login extends Command {
    * Prompts for credentials and performs one direct auth-center login request.
    *
    * @param apiUrl Configured MBS API root.
+   * @returns A promise that resolves only after the validated context is persisted.
+   * @throws Error when transport validation, prompting, login, response validation,
+   * or protected cache persistence fails; the password is cleared from the local variable.
    */
   private async loginFromTerminal(apiUrl: string): Promise<void> {
     validatePasswordLoginApiUrl(apiUrl)
     const username = await input({ message: 'MBS account:' })
     let enteredPassword = await password({ mask: '*', message: 'MBS password:' })
     try {
-      const context = await loginWithPassword(apiUrl, { username, password: enteredPassword })
+      const context = await loginWithPassword(
+        apiUrl,
+        { username, password: enteredPassword },
+      )
       await saveAuthContext(context)
     } finally {
       enteredPassword = ''
@@ -187,6 +193,7 @@ export default class Login extends Command {
    * accepted as a flag or environment variable.</p>
    *
    * @param apiUrl Configured MBS API root.
+   * @returns A promise that resolves only after compatible SESSION state is persisted.
    * @throws Error when input, exchange, identity lookup, or protected cache persistence fails.
    */
   private async loginFromManagedToken(apiUrl: string): Promise<void> {

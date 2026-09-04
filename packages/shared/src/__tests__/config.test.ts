@@ -37,6 +37,23 @@ describe('setConfig / getConfig', () => {
     expect(getConfig().apiUrl).toBe('http://second.com')
   })
 
+  /** Verifies obsolete or unknown persisted fields are not exposed to authentication callers. */
+  it('ignores unknown fields when reading config', () => {
+    const configPath = join(tmpDir, 'config.json')
+    const malformedConfig = '{"apiUrl":"http://api.example.com","legacyTransportOption":true}'
+    writeFileSync(configPath, malformedConfig, 'utf8')
+
+    expect(getConfig()).toEqual({ apiUrl: 'http://api.example.com' })
+    expect(readFileSync(configPath, 'utf8')).toBe(malformedConfig)
+  })
+
+  /** Verifies an invalid required API URL fails rather than reaching route builders. */
+  it('rejects config whose API URL is not a string', () => {
+    writeFileSync(join(tmpDir, 'config.json'), '{"apiUrl":true}', 'utf8')
+
+    expect(() => getConfig()).toThrow('apiUrl must be a string')
+  })
+
   /**
    * Verifies historical production configs ending in `/gateway` are exposed as
    * the canonical API root without rewriting the user's config file during reads.

@@ -7,6 +7,11 @@ export default class ConfigGet extends Command {
 
   static examples = ['mbs config get']
 
+  /**
+   * Prints the active non-secret API configuration.
+   *
+   * @returns A promise that resolves after a structured configuration or safe error is printed.
+   */
   async run(): Promise<void> {
     await this.parse(ConfigGet)
     try {
