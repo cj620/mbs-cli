@@ -8,9 +8,6 @@
 
 | 任务文件夹 | 类型 | 核心业务边界 / 故障现象 | 当前状态 | 负责人 | 关联文档路径 |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| `20260904-[RELEASE]发布1.1.0维护版本` | RELEASE / SECURITY | 提交当前 Agent 登录交接与认证请求头修复，发布 `@mb-it-org/cli@1.1.0` 到 npm `maintenance-1`，保持 `latest` 不变 | 🚀 执行中：范围审查与发布前 V3 | Codex | [`./20260904-[RELEASE]发布1.1.0维护版本/`](./20260904-[RELEASE]发布1.1.0维护版本/) |
-| `20260904-[BUG]登录请求移除客户端类型头` | BUG / SECURITY | 账号密码登录和首次 LongToken 登录不发送 `client-type: cli`；登录后 Refresh 契约保持 | 🧪 待验收 / 待发布：shared 114 项、全仓 259 项及 14 包构建通过；真实登录未执行，未触碰并行 Agent 登录交互改动 | Codex | [`./20260904-[BUG]登录请求移除客户端类型头/`](./20260904-[BUG]登录请求移除客户端类型头/) |
-| `20260904-[FEATURE]支持Agent对话选择登录方式` | FEATURE / SECURITY | Agent 非交互执行 `mbs login` 时不再启动终端菜单；对话选择后扫码打开浏览器，密码或 LongToken 自动打开可见终端隐藏输入 | 🧪 待验收 / 待发布：259 项全仓测试、14 包构建、Windows 可见 TTY 冒烟、help 与 Skill 产物核验通过；真实凭据联调未执行 | Codex | [`./20260904-[FEATURE]支持Agent对话选择登录方式/`](./20260904-[FEATURE]支持Agent对话选择登录方式/) |
 | `20260810-[BUG]恢复已发布CLI旧命令` | BUG | 恢复 npm `0.1.58` 已发布的五个业务命令标识、flags 与只读请求契约；本轮不恢复旧 serve 路由 | 🧪 待验收 / 待发布：独立兼容插件、10 条契约测试、全量构建测试及五条帮助验证通过；真实目标网关和发布未执行 | Codex | [`./20260810-[BUG]恢复已发布CLI旧命令/`](./20260810-[BUG]恢复已发布CLI旧命令/) |
 | `20260806-[FEATURE]统一语义发现与数据库表召回` | FEATURE | 用户只提交自然语言；CLI 消费 workflow/api/table 混合候选，table 安全衔接 `show-create-table → query`，不建立本地向量或目录降级 | 🧪 待验收：本地 CLI、Skill、测试与构建完成；真实后端联调、全局安装和发布未执行 | Codex | [`./20260806-[FEATURE]统一语义发现与数据库表召回/`](./20260806-[FEATURE]统一语义发现与数据库表召回/) |
 | `20260722-[FEATURE]接口检索降噪与智能召回` | FEATURE | 智能体只保留业务域导航；API/workflow 仅从后端 Milvus 语义召回，完整接口定义通过 `mbs describe` 按需读取，不保留本地接口卡片或词法降级 | 🚧 待验收：loopback 一次性隐藏 Cookie Prompt、自动化验证、构建和本地 Codex 安装已完成；不写凭据缓存、日志或遥测，不回退刷新普通认证；等待用户交互输入完成真实 `find → describe` | Codex | [`./20260722-[FEATURE]接口检索降噪与智能召回/`](./20260722-[FEATURE]接口检索降噪与智能召回/) |
@@ -21,6 +18,9 @@
 
 | 任务文件夹 | 类型 | 核心技术点 / 修复根因 | 状态 | 生产上线/修复时间 | 关联文档路径 |
 | :--- | :--- | :--- | :--- | :--- | :--- |
+| `20260904-[RELEASE]发布1.1.0维护版本` | RELEASE / SECURITY | 发布 Agent 非交互登录交接及登录请求头修复；仅更新 npm `maintenance-1`，保持 `latest` 不变 | ✅ 已完成 / 已发布：259 项测试、14 包构建、分支 CI、Release、dist-tag 与官方包核验通过 | 2026-09-04 | [`./20260904-[RELEASE]发布1.1.0维护版本/`](./20260904-[RELEASE]发布1.1.0维护版本/) |
+| `20260904-[BUG]登录请求移除客户端类型头` | BUG / SECURITY | 密码登录和首次 LongToken 登录不发送 `client-type: cli`；登录后 Refresh 契约保持 | ✅ 已随 `1.1.0` 发布：共享/全仓回归、CI、Release 与官方包核验通过；真实认证联调未执行 | 2026-09-04 | [`./20260904-[BUG]登录请求移除客户端类型头/`](./20260904-[BUG]登录请求移除客户端类型头/) |
+| `20260904-[FEATURE]支持Agent对话选择登录方式` | FEATURE / SECURITY | Agent 非交互裸登录安全拒绝；明确模式后扫码打开浏览器，密码或 LongToken 在 Windows 可见终端隐藏输入 | ✅ 已随 `1.1.0` 发布：V3、Windows 无凭据冒烟、分支 CI、Release、login help 与 Skill 核验通过；真实认证联调未执行 | 2026-09-04 | [`./20260904-[FEATURE]支持Agent对话选择登录方式/`](./20260904-[FEATURE]支持Agent对话选择登录方式/) |
 | `20260904-[RELEASE]发布1.0.7维护版本` | RELEASE / SECURITY | 发布远程 HTTP 默认允许能力；补齐并发提交遗漏测试与审计，只更新 `maintenance-1` | ✅ 已完成 / 已发布：248 项测试、14 包构建、分支 CI、Release、dist-tag 与官方源隔离安装通过 | 2026-09-04 | [`./20260904-[RELEASE]发布1.0.7维护版本/`](./20260904-[RELEASE]发布1.0.7维护版本/) |
 | `20260904-[SECURITY]临时支持远程HTTP认证` | SECURITY / FEATURE | 合法 HTTP(S) 默认用于密码、长期 Token 与 compat-session 认证，不确认或保存 Origin 授权；保留 URL 与凭据边界 | ✅ 已随 `1.0.7` 发布：V3、CI、Release 与官方包帮助/Skill 核验通过；真实 HTTP 凭据联调未执行 | 2026-09-04 | [`./20260904-[SECURITY]临时支持远程HTTP认证/`](./20260904-[SECURITY]临时支持远程HTTP认证/) |
 | `20260903-[RELEASE]发布1.0.6维护版本` | RELEASE / SECURITY | 发布三种安全登录入口、两类长期 Refresh 凭据、compat-session 刷新及重新登录前清理；排除 `.idea` 且不移动 `latest` | ✅ 已完成 / 已发布：分支 CI、Release 第 4 次作业、dist-tag 与官方源隔离安装核验通过 | 2026-09-04 | [`./20260903-[RELEASE]发布1.0.6维护版本/`](./20260903-[RELEASE]发布1.0.6维护版本/) |
