@@ -1,7 +1,7 @@
 # MBS 认证凭据边界
 
 - 记忆键：`AUTH-CREDENTIAL-BOUNDARY`
-- 状态：npm `1.0.6` 已发布；当前工作区远程 HTTP 默认允许已完成本地 V3，待发布与真实联调
+- 状态：远程 HTTP 默认允许已随 npm `1.0.7` 发布并完成官方包核验，待真实联调
 - 当前来源：`20260904-[SECURITY]临时支持远程HTTP认证`、DEC-003、DEC-004、DEC-005
 - 最后核验：2026-09-04 / 当前工作区基线 `ba436b3`
 
@@ -23,7 +23,7 @@
 - `mbs refresh` 与业务请求首次 401 使用 `/gateway/auth-center-service/auth/token/exchange/compat-session`；登录型 Cookie 保存旋转值，管理型 Token 保持不变。短期 Access Token 只进入当前 APIClient 内存，业务请求不携带任何长期凭据。
 - 缺少 Refresh 的旧 SESSION-only 缓存在原两小时内兼容读取但不能刷新；交换失败后重新登录。
 
-登录型 Refresh 与管理型 Token 两个分支已随 `@mb-it-org/cli@1.0.6` 发布。该版本只允许 HTTPS/loopback；远程 HTTP 默认允许属于后续当前工作区变更，尚未发布或真实联调。
+登录型 Refresh 与管理型 Token 两个分支自 `@mb-it-org/cli@1.0.6` 提供；远程 HTTP 默认允许已随 `1.0.7` 发布。官方源安装包的版本、配置/登录/刷新帮助和 Skill 内容已核验，真实 HTTP 凭据链路仍未联调。
 
 ## 服务端应用约束
 
