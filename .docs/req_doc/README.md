@@ -8,9 +8,6 @@
 
 | 任务文件夹 | 类型 | 核心业务边界 / 故障现象 | 当前状态 | 负责人 | 关联文档路径 |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| `20260903-[RELEASE]发布1.0.6维护版本` | RELEASE / SECURITY | 当前认证整改已提交并通过分支 CI，维护标签已推送；排除 `.idea` 且不移动 `latest` | ⛔ 已阻塞 / 待发布：Release `33743055631` 的 npm publish 返回 E404，1.0.6 尚不存在；待管理员更新 `NPM_TOKEN` 后重跑失败作业 | Codex | [`./20260903-[RELEASE]发布1.0.6维护版本/`](./20260903-[RELEASE]发布1.0.6维护版本/) |
-| `20260903-[FEATURE]接入长短Token刷新登录` | FEATURE / SECURITY | 登录选择扫码、账号密码或手工管理型长期 Refresh Token；每次重新登录先清除旧 Cookie、两类 Refresh 凭据和用户摘要；`refresh` 统一经 compat-session 取得内存 Access Token 并续接 SESSION，MBS_KEY 禁令保持 | ✅ 本地实现与 V3 完成；未发布、未真实网关联调 | Codex | [`./20260903-[FEATURE]接入长短Token刷新登录/`](./20260903-[FEATURE]接入长短Token刷新登录/) |
-| `20260902-[SECURITY]禁止持久化MBS_KEY` | SECURITY / FEATURE | 禁止捕获或持久化长期 `MBS_KEY`；账号密码终端直登；后续任务仅部分修正 SESSION-only 刷新实现，MBS_KEY 禁令保持 | 🧪 本地 V3 已通过 / 待真实 HTTPS 网关联调与发布；refresh 行为由 20260903 任务计划替代 | Codex | [`./20260902-[SECURITY]禁止持久化MBS_KEY/`](./20260902-[SECURITY]禁止持久化MBS_KEY/) |
 | `20260810-[BUG]恢复已发布CLI旧命令` | BUG | 恢复 npm `0.1.58` 已发布的五个业务命令标识、flags 与只读请求契约；本轮不恢复旧 serve 路由 | 🧪 待验收 / 待发布：独立兼容插件、10 条契约测试、全量构建测试及五条帮助验证通过；真实目标网关和发布未执行 | Codex | [`./20260810-[BUG]恢复已发布CLI旧命令/`](./20260810-[BUG]恢复已发布CLI旧命令/) |
 | `20260806-[FEATURE]统一语义发现与数据库表召回` | FEATURE | 用户只提交自然语言；CLI 消费 workflow/api/table 混合候选，table 安全衔接 `show-create-table → query`，不建立本地向量或目录降级 | 🧪 待验收：本地 CLI、Skill、测试与构建完成；真实后端联调、全局安装和发布未执行 | Codex | [`./20260806-[FEATURE]统一语义发现与数据库表召回/`](./20260806-[FEATURE]统一语义发现与数据库表召回/) |
 | `20260722-[FEATURE]接口检索降噪与智能召回` | FEATURE | 智能体只保留业务域导航；API/workflow 仅从后端 Milvus 语义召回，完整接口定义通过 `mbs describe` 按需读取，不保留本地接口卡片或词法降级 | 🚧 待验收：loopback 一次性隐藏 Cookie Prompt、自动化验证、构建和本地 Codex 安装已完成；不写凭据缓存、日志或遥测，不回退刷新普通认证；等待用户交互输入完成真实 `find → describe` | Codex | [`./20260722-[FEATURE]接口检索降噪与智能召回/`](./20260722-[FEATURE]接口检索降噪与智能召回/) |
@@ -21,6 +18,9 @@
 
 | 任务文件夹 | 类型 | 核心技术点 / 修复根因 | 状态 | 生产上线/修复时间 | 关联文档路径 |
 | :--- | :--- | :--- | :--- | :--- | :--- |
+| `20260903-[RELEASE]发布1.0.6维护版本` | RELEASE / SECURITY | 发布三种安全登录入口、两类长期 Refresh 凭据、compat-session 刷新及重新登录前清理；排除 `.idea` 且不移动 `latest` | ✅ 已完成 / 已发布：分支 CI、Release 第 4 次作业、dist-tag 与官方源隔离安装核验通过 | 2026-09-04 | [`./20260903-[RELEASE]发布1.0.6维护版本/`](./20260903-[RELEASE]发布1.0.6维护版本/) |
+| `20260903-[FEATURE]接入长短Token刷新登录` | FEATURE / SECURITY | 登录选择扫码、账号密码或手工管理型长期 Refresh Token；重新登录先清除旧认证缓存；`refresh` 统一经 compat-session 取得内存 Access Token 与兼容 SESSION | ✅ 已随 `1.0.6` 发布：238 项测试、构建、CI、Release 与官方源 login/refresh 验证通过；真实网关联调未执行 | 2026-09-04 | [`./20260903-[FEATURE]接入长短Token刷新登录/`](./20260903-[FEATURE]接入长短Token刷新登录/) |
+| `20260902-[SECURITY]禁止持久化MBS_KEY` | SECURITY / FEATURE | 禁止捕获或持久化长期 `MBS_KEY`；账号密码终端直登；后续任务以正式 Refresh 凭据补充刷新能力 | ✅ 已随 `1.0.6` 发布：安全禁令、旧 key 删除式清理与官方源命令验证生效；真实 HTTPS 网关联调未执行 | 2026-09-04 | [`./20260902-[SECURITY]禁止持久化MBS_KEY/`](./20260902-[SECURITY]禁止持久化MBS_KEY/) |
 | `20260827-[RELEASE]发布1.0.5维护版本` | RELEASE | 发布后端响应原样透传；仅更新 npm `maintenance-1`，保持普通 `latest` 不变 | ✅ 已完成 / 已发布：本地 V3、分支 CI、Release、dist-tag 与官方源隔离安装核验通过 | 2026-08-27 | [`./20260827-[RELEASE]发布1.0.5维护版本/`](./20260827-[RELEASE]发布1.0.5维护版本/) |
 | `20260827-[FEATURE]透传后端响应内容` | FEATURE / BREAKING CONTRACT | 业务查询成功与后端错误直接输出实际 HTTP body；保留认证刷新和非零退出码 | ✅ 已随 `1.0.5` 发布：201 条测试、构建、CI、Release 与官方源透传 smoke 通过；真实网关与下游迁移未执行 | 2026-08-27 | [`./20260827-[FEATURE]透传后端响应内容/`](./20260827-[FEATURE]透传后端响应内容/) |
 | `20260825-[RELEASE]发布1.0.4维护版本` | RELEASE | 发布接口请求体编码端到端支持；仅更新 npm `maintenance-1`，保持普通 `latest` 不变 | ✅ 已完成 / 已发布：本地 V3、分支 CI、Release、dist-tag 与官方源隔离安装核验通过 | 2026-08-25 | [`./20260825-[RELEASE]发布1.0.4维护版本/`](./20260825-[RELEASE]发布1.0.4维护版本/) |

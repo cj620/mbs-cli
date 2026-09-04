@@ -1,9 +1,9 @@
 # MBS 认证凭据边界
 
 - 记忆键：`AUTH-CREDENTIAL-BOUNDARY`
-- 状态：MBS_KEY 整改保持有效；管理型 LongToken 第三登录方式已本地实现并通过 V3，待真实 HTTPS 网关联调与发布
-- 当前来源：`20260903-[FEATURE]接入长短Token刷新登录`、DEC-003、DEC-004
-- 最后核验：2026-09-03 / 当前工作区
+- 状态：MBS_KEY 整改及三种登录方式已随 npm `1.0.6` 发布并完成官方源命令核验，待真实 HTTPS 网关联调
+- 当前来源：`20260903-[RELEASE]发布1.0.6维护版本`、DEC-003、DEC-004
+- 最后核验：2026-09-04 / `04da103` / npm `maintenance-1=1.0.6`
 
 ## 当前结论
 
@@ -23,7 +23,7 @@
 - `mbs refresh` 与业务请求首次 401 使用 `/gateway/auth-center-service/auth/token/exchange/compat-session`；登录型 Cookie 保存旋转值，管理型 Token 保持不变。短期 Access Token 只进入当前 APIClient 内存，业务请求不携带任何长期凭据。
 - 缺少 Refresh 的旧 SESSION-only 缓存在原两小时内兼容读取但不能刷新；交换失败后重新登录。
 
-登录型 Refresh 与管理型 Token 两个分支已重新通过完整全仓 V3。真实目标 HTTPS 网关联调尚未完成。
+登录型 Refresh 与管理型 Token 两个分支已重新通过完整全仓 V3，并随 `@mb-it-org/cli@1.0.6` 发布。官方源隔离安装后的版本、login 和 refresh 命令帮助验证通过；真实目标 HTTPS 网关联调尚未完成。
 
 ## 服务端应用约束
 
