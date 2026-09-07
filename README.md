@@ -122,7 +122,7 @@ mbs refresh            # 用当前登录的长期凭据换取短期 Access Token
 mbs whoami             # 复检
 ```
 
-每次执行 `mbs login` 都会先清空当前用户的 `SESSION`、登录型 `AUTH_REFRESH`、管理型 `LongToken`、Refresh 到期时间和用户摘要，再展示登录方式或收集新凭据；若新登录取消或失败，旧登录态不会恢复。扫码和账号密码登录缓存认证中心签发的 `SESSION`、可轮换 `AUTH_REFRESH` Cookie、Refresh 到期时间和最小用户摘要。第三种方式在隐藏终端中接收后台签发的长期 Refresh Token，按服务端 `LongToken` 协议交换并缓存该 Token 与兼容 `SESSION`；两类长期凭据严格互斥。长期凭据只用于认证交换，不直接访问业务接口；交换返回的短期 Access Token 只保存在当前进程内存，不写入文件或输出。CLI 始终不捕获、不读取、不保存 `MBS_KEY`。账号密码、管理型 Token 和 refresh 接受已配置的 HTTP(S) 地址，无需额外授权；HTTP 不会加密账号密码、Token 或 Cookie，只应作为服务端 HTTPS 上线前的临时兼容。账号、密码和长期 Token 仍不支持通过参数或环境变量传入。
+每次执行 `mbs login` 都会先清空当前用户的 `SESSION`、登录型 `AUTH_REFRESH`、管理型 `LongToken`、Refresh 到期时间和用户摘要，再展示登录方式或收集新凭据；若新登录取消或失败，旧登录态不会恢复。HTTPS 扫码和账号密码登录缓存认证中心签发的 `SESSION`、可轮换 `AUTH_REFRESH` Cookie、Refresh 到期时间和最小用户摘要；HTTP 扫码只在唯一 `SESSION` 通过 current-user 验证后保存最长两小时，认证中心不会在该明文回调中创建 Refresh，因此失效后必须重新登录。第三种方式在隐藏终端中接收后台签发的长期 Refresh Token，按服务端 `LongToken` 协议交换并缓存该 Token 与兼容 `SESSION`；两类长期凭据严格互斥。长期凭据只用于认证交换，不直接访问业务接口；交换返回的短期 Access Token 只保存在当前进程内存，不写入文件或输出。CLI 始终不捕获、不读取、不保存 `MBS_KEY`。账号密码、管理型 Token 和 refresh 接受已配置的 HTTP(S) 地址，无需额外授权；HTTP 不会加密账号密码、Token 或 Cookie，只应作为服务端 HTTPS 上线前的临时兼容。账号、密码和长期 Token 仍不支持通过参数或环境变量传入。
 
 Agent 命令通道没有交互式 TTY 时，裸 `mbs login` 会返回提示而不会启动终端菜单。Agent 应先在对话中让用户选择方式：`--qr` 直接打开浏览器；`--password` 和 `--managed-token` 在 Windows 上自动打开可见终端，秘密只在该终端中隐藏输入。其他系统当前提示用户在本机交互终端运行已选择的明确命令。
 

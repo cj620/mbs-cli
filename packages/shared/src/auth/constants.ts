@@ -3,4 +3,4 @@ export const COOKIE_TTL_MS = 2 * 60 * 60 * 1000   // 2 hours
 export const KEYTAR_SERVICE = 'mbs-cli'
 export const KEYTAR_ACCOUNT = 'api-key'
 export const LOGIN_TIMEOUT_MS = 5 * 60 * 1000       // 5 minutes
-export const LOGIN_PATH = '/eshop/manager/login.jsp'
+export const LOGIN_PATH = '/gateway/auth-center-service/auth/user/login/qr'

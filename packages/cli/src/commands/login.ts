@@ -1,8 +1,10 @@
 import { input, password, select } from '@inquirer/prompts'
 import { Command, Flags } from '@oclif/core'
 import {
+  AUTH_REFRESH_COOKIE_NAME,
   clearCookie,
   createBrowserAuthCookies,
+  createSessionCookie,
   deleteKey,
   fetchCurrentUser,
   getConfig,
@@ -13,8 +15,10 @@ import {
   MBSError,
   NotAuthenticatedError,
   saveAuthContext,
+  SESSION_COOKIE_NAME,
   validateManagedTokenLoginApiUrl,
   validatePasswordLoginApiUrl,
+  validateQrLoginApiUrl,
 } from '@mb-it-org/shared'
 import { chromium } from 'playwright-core'
 import type { BrowserContext } from 'playwright-core'
@@ -29,6 +33,7 @@ const MISSING_BROWSER_MESSAGE = 'No supported browser runtime is available'
 const MISSING_BROWSER_HINT = 'Make sure Chrome or Edge is installed and available, then try `mbs login` again. Only install an extra browser runtime if the system browsers cannot be used.'
 const SESSION_POLL_INTERVAL_MS = 250
 const LOGIN_SUCCESS = JSON.stringify({ ok: true, data: { message: 'Authenticated successfully' } })
+const HTTP_QR_SESSION_WARNING = '警告：当前扫码登录使用 HTTP，仅保存最长 2 小时的 SESSION；无法自动刷新，请尽快改用 HTTPS。'
 
 type LoginMethod = 'qr' | SecretLoginMethod
 
@@ -43,6 +48,20 @@ interface LoginFlags {
   'managed-token'?: boolean
   password?: boolean
   qr?: boolean
+}
+
+/**
+ * Authentication cookies observed after a QR login completes in the isolated browser.
+ *
+ * <p>HTTPS normally supplies a rotating AUTH_REFRESH credential and its expiry. The
+ * temporary remote-HTTP compatibility branch deliberately omits both, leaving the shared
+ * cache to apply its existing two-hour lifetime to the validated SESSION.</p>
+ */
+interface BrowserLoginCookies {
+  /** Canonical request Cookie header containing one SESSION and optional AUTH_REFRESH. */
+  cookie: string
+  /** Browser-declared AUTH_REFRESH expiry; absent only for the HTTP SESSION fallback. */
+  refreshExpiresAt?: string
 }
 
 /** Returns true when Playwright reports that no launchable browser exists. */
@@ -89,23 +108,88 @@ async function waitForNextCookiePoll(): Promise<void> {
 }
 
 /**
- * Waits for the browser to own valid SESSION and AUTH_REFRESH cookies without observing requests.
+ * Resolves an authentication operation only while the shared QR deadline remains valid.
+ *
+ * <p>The operation factory is not invoked after expiry. The helper owns one AbortController
+ * and aborts it when the deadline wins; operations with cancellation support must forward the
+ * supplied signal. Browser operations are additionally terminated when the caller closes its
+ * owned browser in {@code finally}.</p>
+ *
+ * @param operation Deferred browser or auth-center operation to start when time remains;
+ * it receives the exact positive millisecond budget and borrowed deadline signal also used by
+ * the outer fallback timer.
+ * @param deadlineEpochMs Absolute QR completion deadline in Unix milliseconds.
+ * @returns The operation result when it settles before the deadline.
+ * @throws NotAuthenticatedError when no time remains or the deadline wins the race.
+ */
+async function completeBeforeQrDeadline<T>(
+  operation: (remainingMs: number, signal: AbortSignal) => Promise<T>,
+  deadlineEpochMs: number,
+): Promise<T> {
+  const remainingMs = deadlineEpochMs - Date.now()
+  if (remainingMs <= 0) throw new NotAuthenticatedError()
+
+  const deadlineController = new AbortController()
+  let deadlineTimer: ReturnType<typeof setTimeout> | undefined
+  try {
+    return await Promise.race([
+      operation(remainingMs, deadlineController.signal),
+      new Promise<never>((_resolve, reject) => {
+        deadlineTimer = setTimeout(() => {
+          reject(new NotAuthenticatedError())
+          deadlineController.abort()
+        }, remainingMs)
+      }),
+    ])
+  } finally {
+    if (deadlineTimer !== undefined) clearTimeout(deadlineTimer)
+  }
+}
+
+/**
+ * Waits for the target login origin to own a usable authentication cookie set.
+ *
+ * <p>A unique, unexpired SESSION plus AUTH_REFRESH pair always wins. A unique safe SESSION
+ * without any AUTH_REFRESH is accepted only when the actual login URL uses plain HTTP.
+ * Auth-center deliberately does not create or send a long-lived Refresh credential for that
+ * plaintext QR callback; duplicate, malformed, or expired Refresh entries therefore never
+ * downgrade to SESSION-only authentication.</p>
  *
  * @param context Fresh isolated browser context used by the QR login page.
- * @param timeoutMs Maximum interactive login duration.
- * @returns Minimal Cookie header and server-declared Refresh expiry.
+ * @param loginUrl Exact QR page URL used both to scope browser Cookie reads and to decide
+ * whether the bounded HTTP-only compatibility branch is available.
+ * @param deadlineEpochMs Absolute completion deadline shared with navigation and identity lookup.
+ * @param rejectedHttpSessionCookies HTTP-only candidate Cookie headers already rejected by
+ * current-user verification. They remain process-local and are skipped until the callback rotates
+ * the browser Session; HTTPS dual-Cookie candidates are never placed in this set.
+ * @returns Minimal Cookie header plus Refresh expiry when the browser owns the full pair.
  * @throws NotAuthenticatedError when the deadline expires.
  */
 async function waitForAuthCookies(
   context: BrowserContext,
-  timeoutMs: number,
-): Promise<{ cookie: string; refreshExpiresAt: string }> {
-  const deadline = Date.now() + timeoutMs
-  while (Date.now() < deadline) {
-    const cookies = await context.cookies()
+  loginUrl: string,
+  deadlineEpochMs: number,
+  rejectedHttpSessionCookies: ReadonlySet<string> = new Set<string>(),
+): Promise<BrowserLoginCookies> {
+  const allowHttpSessionOnly = new URL(loginUrl).protocol === 'http:'
+  while (Date.now() < deadlineEpochMs) {
+    const cookies = await completeBeforeQrDeadline(
+      () => context.cookies(loginUrl),
+      deadlineEpochMs,
+    )
     const authCookies = createBrowserAuthCookies(cookies)
     if (authCookies) return authCookies
-    await waitForNextCookiePoll()
+    if (allowHttpSessionOnly) {
+      const sessions = cookies.filter(cookie => cookie.name === SESSION_COOKIE_NAME)
+      const refreshes = cookies.filter(cookie => cookie.name === AUTH_REFRESH_COOKIE_NAME)
+      const sessionCookie = sessions.length === 1 && refreshes.length === 0
+        ? createSessionCookie(sessions[0].value)
+        : null
+      if (sessionCookie && !rejectedHttpSessionCookies.has(sessionCookie)) {
+        return { cookie: sessionCookie }
+      }
+    }
+    await completeBeforeQrDeadline(waitForNextCookiePoll, deadlineEpochMs)
   }
   throw new NotAuthenticatedError()
 }
@@ -315,12 +399,27 @@ export default class Login extends Command {
   }
 
   /**
-   * Opens the QR page and stores the resulting minimal authentication Cookie context.
+   * Opens the QR page and persists only identity-verified authentication state.
+   *
+   * <p>Navigation, URL-scoped Cookie polling, and current-user verification share one
+   * absolute deadline so stalled browser or network work reaches the closing finally block.
+   * HTTPS requires the complete rotating Cookie pair. Plain HTTP may store a SESSION-only
+   * context for the shared cache's existing two-hour limit, but only after current-user
+   * verification. If the public page's authentication interceptor creates an anonymous HTTP
+   * Session, the rejected candidate remains process-local and polling continues until the login
+   * callback rotates the Session. The compatibility result emits a credential-free warning.</p>
    *
    * @param apiUrl Configured MBS API root.
+   * @returns A promise that resolves only after validated Cookie state and safe user data
+   * have been persisted; the public command prints the final success response afterward.
+   * @throws NotAuthenticatedError when the deadline expires or identity cannot be verified.
+   * @throws MBSError when the API root is unsafe or no supported browser is installed.
+   * @throws Error when browser startup, navigation, or protected cache persistence fails.
    */
   private async loginFromBrowser(apiUrl: string): Promise<void> {
+    validateQrLoginApiUrl(apiUrl)
     const loginUrl = `${apiUrl.replace(/\/+$/, '')}${LOGIN_PATH}`
+    const deadlineEpochMs = Date.now() + LOGIN_TIMEOUT_MS
     this.log('Opening browser for authentication...')
     this.log(`URL: ${loginUrl}`)
 
@@ -337,10 +436,48 @@ export default class Login extends Command {
     try {
       const context = await browser.newContext()
       const page = await context.newPage()
-      await page.goto(loginUrl)
-      const authCookies = await waitForAuthCookies(context, LOGIN_TIMEOUT_MS)
-      const userInfo = await fetchCurrentUser(apiUrl, authCookies.cookie)
+      const navigationResponse = await completeBeforeQrDeadline(
+        () => page.goto(loginUrl),
+        deadlineEpochMs,
+      )
+      if (navigationResponse && !navigationResponse.ok()) {
+        throw new MBSError(
+          `QR login page request failed (HTTP ${navigationResponse.status()})`,
+          'api',
+          'Check the configured API URL and auth-center availability',
+        )
+      }
+      const rejectedHttpSessionCookies = new Set<string>()
+      let authCookies: BrowserLoginCookies
+      let userInfo: Awaited<ReturnType<typeof fetchCurrentUser>>
+      while (true) {
+        authCookies = await waitForAuthCookies(
+          context,
+          loginUrl,
+          deadlineEpochMs,
+          rejectedHttpSessionCookies,
+        )
+        try {
+          userInfo = await completeBeforeQrDeadline(
+            (remainingMs, signal) => fetchCurrentUser(
+              apiUrl,
+              authCookies.cookie,
+              remainingMs,
+              signal,
+            ),
+            deadlineEpochMs,
+          )
+          break
+        } catch (error) {
+          const isRejectedHttpSession = error instanceof NotAuthenticatedError
+            && new URL(loginUrl).protocol === 'http:'
+            && authCookies.refreshExpiresAt === undefined
+          if (!isRejectedHttpSession) throw error
+          rejectedHttpSessionCookies.add(authCookies.cookie)
+        }
+      }
       await saveAuthContext({ ...authCookies, userInfo })
+      if (!authCookies.refreshExpiresAt) this.log(HTTP_QR_SESSION_WARNING)
     } finally {
       await browser.close()
     }

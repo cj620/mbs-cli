@@ -44,3 +44,4 @@
 ## 后续演进
 
 - 2026-09-04：DEC-005 部分修正远程传输门禁。密码、管理型 LongToken 和 compat-session 默认接受合法 HTTP(S) 地址，不要求额外确认或 Origin 授权；本决策中的凭据互斥、持久化、轮换、Access Token 仅内存和登录前清理边界不变。该修正已随 npm `1.0.7` 发布。
+- 2026-09-04：DEC-007 明确扫码兼容。HTTPS 仍取得登录型 Refresh；认证中心在远程 HTTP 扫码回调中完全不创建或发送 Refresh，CLI 只允许 current-user 验证后的最长两小时 SESSION-only 上下文。服务端不会通过关闭 Refresh Cookie 的 `Secure` 默认值提供兼容。该修正已在当前工作区本地验证，待发布。

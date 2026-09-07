@@ -1,9 +1,9 @@
 # MBS 认证凭据边界
 
 - 记忆键：`AUTH-CREDENTIAL-BOUNDARY`
-- 状态：npm `1.1.2` 已发布并完成官方源核验；compat-session 已移除 Refresh 分类头，真实认证联调未执行
-- 当前来源：`20260904-[BUG]刷新交换移除客户端类型头`、`20260904-[RELEASE]发布1.1.2维护版本`、DEC-003、DEC-004、DEC-005、DEC-006
-- 最后核验：2026-09-04 / `832423f` / `maintenance-1-v1.1.2` / npm 官方源、本机链接
+- 状态：npm `1.1.2` 已发布；当前工作区登录闭环修复已完成本地验证、待发布，真实认证联调未执行
+- 当前来源：`20260904-[BUG]修复登录完成与请求认证`、`20260904-[RELEASE]发布1.1.2维护版本`、DEC-003 至 DEC-007
+- 最后核验：2026-09-07 / 双仓当前工作区 V3 / 未发布
 
 ## 当前结论
 
@@ -11,11 +11,14 @@
 
 浏览器和账号密码登录可以在不捕获 `MBS_KEY` 的前提下获得认证中心签发的 `SESSION` 与登录型 `AUTH_REFRESH` Cookie。后台申请的管理型 `LongToken` 则由用户通过隐藏终端手工导入。CLI 缓存中两类长期凭据严格互斥：`AUTH_REFRESH` 有绝对有效期且每次成功交换轮换，管理型 `LongToken` 不轮换且由后台撤销；二者都不能直接访问业务接口。交换返回的短期 Access Token 只允许保存在当前进程内存。
 
+当前扫码入口已迁移到认证中心。HTTPS 仍要求完整 `SESSION + AUTH_REFRESH`；项目既有远程 HTTP 兼容下，认证中心不创建或发送长期 Refresh，CLI 只在登录 URL 上恰有唯一安全 `SESSION`、完全没有 Refresh 且 current-user 验证成功时保存最长两小时的 Session-only 上下文，并明确提示不能自动刷新。
+
 ## 当前实现
 
 - 每次有效执行 `mbs login` 都先删除完整认证缓存，再选择登录方式或收集新凭据；清理覆盖 `SESSION`、两类互斥长期凭据、Refresh 到期时间和用户摘要，新登录取消或失败不恢复旧状态。
 - 裸 `mbs login` 只在 stdin/stdout 均为 TTY 时使用终端选择列表询问扫码、账号密码或后台长期 Refresh Token；非交互调用返回安全提示。Agent 先在对话中选择，再执行 `--qr`、`--password` 或 `--managed-token`。
-- 扫码登录只轮询隔离浏览器上下文中的 `SESSION` 与 `AUTH_REFRESH`，不监听登录请求。
+- 扫码登录先校验 API root 不含 userinfo/query/fragment，再打开认证中心 `/gateway/auth-center-service/auth/user/login/qr`，只读取该 URL 可见的 Cookie，不监听登录请求。导航 4xx/5xx 立即失败；导航、轮询和 current-user 使用统一总时限，底层身份查询同时设置剩余 Axios timeout 与 `AbortSignal`；成功保存后输出一次成功，所有结束路径关闭浏览器。
+- HTTP 扫码页若因共享认证拦截器提前产生匿名 `SESSION`，current-user 拒绝该候选后 CLI 不关闭浏览器，而是在同一绝对时限内忽略旧值并等待 OAuth 回调旋转的新 Session；认证中心页面入口同时主动失效预登录 Session，双端共同避免“未扫码即失败”。
 - `mbs login --password` 接受配置中的合法 HTTP(S) 地址，通过终端隐藏输入直接调用认证中心；非交互 Windows Agent 会自动打开独立可见终端，不启动浏览器，也不提供参数或环境变量凭据入口。远程 HTTP 不要求额外确认，但会明文传输密码。
 - 后台长期 Refresh Token 模式使用同一 HTTP(S) URL 校验，再通过终端隐藏输入；非交互 Windows Agent 会自动打开独立可见终端，按 `Authorization: LongToken <token>` 调用兼容交换，保存不轮换 Token 与兼容 `SESSION`，不提供参数或环境变量入口。HTTP 会明文传输 Token 和 Cookie。
 - 自 npm `1.1.2` 起，密码登录不发送 `client-type`；compat-session 无论用于首次管理型 LongToken 登录还是登录后的 Cookie/LongToken Refresh 都不发送 `client-type: cli`；current-user 查询也只发送标准化 `SESSION` Cookie。
@@ -48,6 +51,7 @@ Refresh 请求头修正已通过定向 17 项、shared 114 项、全仓 259 项�
 - `20260904-[BUG]登录请求移除客户端类型头` 修正认证登录契约：密码登录和首次 LongToken 登录不发送客户端分类头，登录后 Refresh 行为保持。
 - `20260904-[BUG]当前用户查询移除客户端类型头` 部分修正前一任务遗漏：首次 Token 登录随后执行的 current-user 查询也不发送客户端分类头；登录后 Refresh 行为继续保持。
 - `20260904-[BUG]刷新交换移除客户端类型头` 修正前两项任务中对 Refresh 的历史假设：compat-session 不按 login/refresh 区分客户端分类头，两类用途均不发送 `client-type: cli`；普通业务请求头保持不变。
+- `20260904-[BUG]修复登录完成与请求认证` 把扫码入口迁移到认证中心，补充服务端 state 绑定和 CLI 的受限 HTTP Session 降级，并修复网关把认证中心 401 错误改写为 403 的刷新阻断；当前仅本地验证、待发布。
 - `20260904-[CHORE]本地替换刷新请求头修复版CLI` 将本机活动的系统级 npm 安装链接到当前工作区；该本机事实不等同于 npm 发布。
 - `MBS_KEY` 禁令和旧 key 删除式清理完全保留；新机制只使用认证中心正式签发的登录型 Refresh Cookie或后台管理型 `LongToken`。
 
@@ -62,3 +66,4 @@ Refresh 请求头修正已通过定向 17 项、shared 114 项、全仓 259 项�
 - [`DEC-004：登录型 Refresh 与短期 Access 边界`](../decisions/DEC-004-登录型Refresh与短期Access边界.md)
 - [`DEC-005：远程 HTTP 认证默认允许`](../decisions/DEC-005-远程HTTP认证默认允许.md)
 - [`DEC-006：Agent 非交互登录交接`](../decisions/DEC-006-Agent非交互登录交接.md)
+- [`DEC-007：扫码登录闭环与 HTTP 会话降级`](../decisions/DEC-007-扫码登录闭环与HTTP会话降级.md)

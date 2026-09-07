@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import {
   createBrowserAuthCookies,
+  createSessionCookie,
   extractManagedSessionCookie,
   extractLoginAuthCookies,
   extractRefreshedAuthCookies,
@@ -9,6 +10,28 @@ import {
 } from '../../auth/session-cookie.js'
 
 describe('authentication Cookie boundary', () => {
+  /**
+   * Verifies the browser SESSION formatter rejects empty, framing-unsafe, whitespace,
+   * delimiter-bearing, and oversized values before they can become a request header.
+   */
+  it.each([
+    '',
+    'contains space',
+    'contains;delimiter',
+    'contains\rcontrol',
+    'contains\ncontrol',
+    'x'.repeat(4097),
+  ])('rejects an unsafe browser SESSION value', value => {
+    expect(createSessionCookie(value)).toBeNull()
+  })
+
+  /** Verifies one bounded opaque browser SESSION value becomes the exact allow-listed pair. */
+  it('formats a safe browser SESSION value', () => {
+    expect(createSessionCookie('opaque-session_value-1')).toBe(
+      'SESSION=opaque-session_value-1',
+    )
+  })
+
   /** Verifies browser cookies become a minimal Cookie header with the Refresh absolute expiry. */
   it('creates authentication cookies from browser state', () => {
     expect(createBrowserAuthCookies([

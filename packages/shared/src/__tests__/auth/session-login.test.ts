@@ -5,6 +5,7 @@ import {
   fetchCurrentUser,
   loginWithManagedLongToken,
   loginWithPassword,
+  validateQrLoginApiUrl,
 } from '../../auth/session-login.js'
 
 vi.mock('axios')
@@ -35,6 +36,29 @@ const managedLongToken = `ult_v1_${'a'.repeat(32)}.${'B'.repeat(43)}`
 
 beforeEach(() => {
   vi.clearAllMocks()
+})
+
+describe('validateQrLoginApiUrl', () => {
+  /** Verifies QR navigation accepts only credential-free HTTP(S) API roots. */
+  it.each([
+    'https://user:secret@example.com',
+    'https://example.com?token=secret',
+    'https://example.com#secret',
+    'file:///tmp/login',
+  ])('rejects an unsafe QR API root: %s', apiUrl => {
+    expect(() => validateQrLoginApiUrl(apiUrl)).toThrowError(expect.objectContaining({
+      type: 'validation',
+      message: 'Invalid API URL',
+    }))
+  })
+
+  /** Verifies QR navigation retains explicit HTTP compatibility for configured deployments. */
+  it.each(['https://example.com/root/', 'http://api.example.com:8080'])(
+    'accepts a structurally safe QR API root: %s',
+    apiUrl => {
+      expect(() => validateQrLoginApiUrl(apiUrl)).not.toThrow()
+    },
+  )
 })
 
 describe('loginWithPassword', () => {
@@ -364,4 +388,67 @@ describe('fetchCurrentUser', () => {
       { headers: { Cookie: 'SESSION=qr-session' } },
     )
   })
+
+  /**
+   * Verifies callers can bound the underlying Axios request and that a transport
+   * timeout is reduced to the credential-free API error contract.
+   */
+  it('applies a caller timeout and safely classifies transport expiry', async () => {
+    vi.mocked(axios.isAxiosError).mockReturnValueOnce(true)
+    mockAxios.get = vi.fn().mockRejectedValue(
+      Object.assign(new Error('simulated transport timeout for an untrusted request'), {
+        code: 'ECONNABORTED',
+      }),
+    )
+
+    await expect(
+      fetchCurrentUser('https://example.com', 'SESSION=qr-session', 1_250),
+    ).rejects.toMatchObject({
+      type: 'api',
+      message: 'Authentication service request failed',
+      hint: 'Check the configured HTTP(S) API URL and network connection',
+    })
+    expect(mockAxios.get).toHaveBeenCalledWith(
+      'https://example.com/gateway/auth-center-service/auth/user/current',
+      { headers: { Cookie: 'SESSION=qr-session' }, timeout: 1_250 },
+    )
+  })
+
+  /**
+   * Verifies current-user lookup borrows the caller's cancellation signal so an
+   * absolute QR deadline can terminate the underlying Axios request, not only
+   * the promise waiting for it.
+   */
+  it('forwards caller cancellation to the current-user request', async () => {
+    const controller = new AbortController()
+    mockAxios.get = vi.fn().mockResolvedValue({ data: { code: 200, data: authUser } })
+
+    await expect(
+      fetchCurrentUser('https://example.com', 'SESSION=qr-session', 1_250, controller.signal),
+    ).resolves.toEqual(safeUserInfo)
+
+    expect(mockAxios.get).toHaveBeenCalledWith(
+      'https://example.com/gateway/auth-center-service/auth/user/current',
+      {
+        headers: { Cookie: 'SESSION=qr-session' },
+        signal: controller.signal,
+        timeout: 1_250,
+      },
+    )
+  })
+
+  /** Verifies invalid timeout values fail locally instead of reaching Axios with ambiguous semantics. */
+  it.each([0, -1, 1.5, Number.NaN, Number.POSITIVE_INFINITY])(
+    'rejects a non-positive-integer current-user timeout: %s',
+    async timeoutMs => {
+      await expect(
+        fetchCurrentUser('https://example.com', 'SESSION=qr-session', timeoutMs),
+      ).rejects.toMatchObject({
+        type: 'validation',
+        message: 'Invalid current-user timeout',
+        hint: 'Use a positive integer timeout in milliseconds',
+      })
+      expect(mockAxios.get).not.toHaveBeenCalled()
+    },
+  )
 })

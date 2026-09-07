@@ -49,6 +49,7 @@ export {
   loginWithPassword,
   validateManagedTokenLoginApiUrl,
   validatePasswordLoginApiUrl,
+  validateQrLoginApiUrl,
 } from './auth/session-login.js'
 export type { PasswordLoginCredentials } from './auth/session-login.js'
 export {

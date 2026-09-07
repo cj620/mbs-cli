@@ -107,6 +107,17 @@ export function validateManagedTokenLoginApiUrl(apiUrl: string): void {
 }
 
 /**
+ * Validates the QR-login API root before the CLI displays or navigates to it.
+ *
+ * @param apiUrl Configured MBS API root.
+ * @throws MBSError when the root is malformed, carries embedded credentials,
+ * query data, or a fragment, or uses a protocol other than HTTP(S).
+ */
+export function validateQrLoginApiUrl(apiUrl: string): void {
+  normalizedApiRoot(apiUrl)
+}
+
+/**
  * Validates terminal credentials without transforming the password.
  *
  * @param credentials Values returned by the interactive terminal prompts.
@@ -347,19 +358,38 @@ export async function loginWithManagedLongToken(
  *
  * @param apiUrl Configured MBS API root.
  * @param cookie Exact or legacy-formatted SESSION cookie string.
+ * @param timeoutMs Optional positive integer Axios timeout in milliseconds. Omitting it
+ * preserves the existing transport default for callers without an overall deadline.
+ * @param signal Optional caller-owned cancellation signal. This function borrows the signal
+ * for the single Axios request and never aborts or otherwise mutates the caller's controller.
  * @returns Minimal non-secret user identity.
  * @throws NotAuthenticatedError when the Cookie or response identity is invalid.
- * @throws MBSError when URL validation or the sanitized transport request fails.
+ * @throws MBSError when URL validation, timeout validation, cancellation, or the sanitized
+ * transport request fails.
  */
-export async function fetchCurrentUser(apiUrl: string, cookie: string): Promise<UserInfo> {
+export async function fetchCurrentUser(
+  apiUrl: string,
+  cookie: string,
+  timeoutMs?: number,
+  signal?: AbortSignal,
+): Promise<UserInfo> {
   const root = normalizedApiRoot(apiUrl)
   const sessionCookie = normalizeSessionCookie(cookie)
   if (!sessionCookie) throw new NotAuthenticatedError()
+  if (timeoutMs !== undefined && (!Number.isSafeInteger(timeoutMs) || timeoutMs <= 0)) {
+    throw new MBSError(
+      'Invalid current-user timeout',
+      'validation',
+      'Use a positive integer timeout in milliseconds',
+    )
+  }
 
   let response
   try {
     response = await axios.get(`${root}${CURRENT_USER_PATH}`, {
       headers: { Cookie: sessionCookie },
+      ...(timeoutMs === undefined ? {} : { timeout: timeoutMs }),
+      ...(signal === undefined ? {} : { signal }),
     })
   } catch (error) {
     throw safeTransportError(error)

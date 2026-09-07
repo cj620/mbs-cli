@@ -15,6 +15,7 @@ const mockSelect = vi.fn()
 const mockHasInteractiveTerminal = vi.fn()
 const mockValidatePasswordLoginApiUrl = vi.fn()
 const mockValidateManagedTokenLoginApiUrl = vi.fn()
+const mockValidateQrLoginApiUrl = vi.fn()
 
 vi.mock('@inquirer/prompts', () => ({
   input: mockInput,
@@ -24,12 +25,11 @@ vi.mock('@inquirer/prompts', () => ({
 
 vi.mock('@mb-it-org/shared', async importOriginal => ({
   ...await importOriginal<typeof import('@mb-it-org/shared')>(),
-  createSessionCookie: (value: unknown) => typeof value === 'string' && value ? `SESSION=${value}` : null,
   clearCookie: mockClearCookie,
   deleteKey: mockDeleteKey,
   fetchCurrentUser: mockFetchCurrentUser,
   getConfig: mockGetConfig,
-  LOGIN_PATH: '/eshop/manager/login.jsp',
+  LOGIN_PATH: '/gateway/auth-center-service/auth/user/login/qr',
   LOGIN_TIMEOUT_MS: 5_000,
   loginWithPassword: mockLoginWithPassword,
   loginWithManagedLongToken: mockLoginWithManagedLongToken,
@@ -37,6 +37,7 @@ vi.mock('@mb-it-org/shared', async importOriginal => ({
   SESSION_COOKIE_NAME: 'SESSION',
   validatePasswordLoginApiUrl: mockValidatePasswordLoginApiUrl,
   validateManagedTokenLoginApiUrl: mockValidateManagedTokenLoginApiUrl,
+  validateQrLoginApiUrl: mockValidateQrLoginApiUrl,
 }))
 
 vi.mock('playwright-core', () => ({
@@ -95,8 +96,102 @@ describe('login command', () => {
   })
 
   /**
-   * Creates a browser double whose isolated context exposes only a SESSION
-   * cookie, ensuring QR login observes browser cookie state without requests.
+   * Verifies an unsafe QR API root is rejected before its credential-bearing text
+   * can reach command output or a browser launch boundary.
+   */
+  it('validates the QR API URL before output or browser launch', async () => {
+    const { MBSError } = await import('@mb-it-org/shared')
+    const unsafeApiUrl = 'https://user:secret@example.com?token=private'
+    mockGetConfig.mockReturnValue({ apiUrl: unsafeApiUrl })
+    mockValidateQrLoginApiUrl.mockImplementation(() => {
+      throw new MBSError(
+        'Invalid API URL',
+        'validation',
+        'Configure an API root without credentials, query, or fragment',
+      )
+    })
+
+    const { default: Login } = await import('../commands/login.js')
+    const log = vi.fn()
+    const exit = vi.fn()
+    const command = Object.assign(Object.create(Login.prototype), {
+      parse: vi.fn(async () => ({ flags: { qr: true } })),
+      log,
+      exit,
+    })
+
+    await command.run()
+
+    expect(mockValidateQrLoginApiUrl).toHaveBeenCalledWith(unsafeApiUrl)
+    expect(mockLaunch).not.toHaveBeenCalled()
+    expect(log).toHaveBeenCalledTimes(1)
+    expect(JSON.stringify(log.mock.calls)).not.toContain('secret')
+    expect(JSON.stringify(log.mock.calls)).not.toContain('private')
+    expect(log).toHaveBeenLastCalledWith(JSON.stringify({
+      ok: false,
+      error: {
+        type: 'validation',
+        message: 'Invalid API URL',
+        hint: 'Configure an API root without credentials, query, or fragment',
+      },
+    }))
+    expect(exit).toHaveBeenCalledWith(1)
+  })
+
+  /**
+   * Verifies an HTTP failure from the QR page stops before cookie polling and
+   * identity persistence, while the owned browser is still closed exactly once.
+   */
+  it('fails quickly and closes the browser when QR navigation returns HTTP 503', async () => {
+    const page = {
+      goto: vi.fn(async () => ({
+        ok: () => false,
+        status: () => 503,
+      })),
+    }
+    const context = {
+      cookies: vi.fn(async () => [
+        { name: 'SESSION', value: 'must-not-be-read', expires: -1 },
+        { name: 'AUTH_REFRESH', value: 'must-not-be-read', expires: 4_102_444_800 },
+      ]),
+      newPage: vi.fn(async () => page),
+    }
+    const browser = {
+      newContext: vi.fn(async () => context),
+      close: vi.fn(async () => undefined),
+    }
+    mockLaunch.mockResolvedValue(browser)
+
+    const { default: Login } = await import('../commands/login.js')
+    const log = vi.fn()
+    const exit = vi.fn()
+    const command = Object.assign(Object.create(Login.prototype), {
+      parse: vi.fn(async () => ({ flags: { qr: true } })),
+      log,
+      exit,
+    })
+
+    await command.run()
+
+    expect(page.goto).toHaveBeenCalledTimes(1)
+    expect(context.cookies).not.toHaveBeenCalled()
+    expect(mockFetchCurrentUser).not.toHaveBeenCalled()
+    expect(mockSaveAuthContext).not.toHaveBeenCalled()
+    expect(log).toHaveBeenLastCalledWith(JSON.stringify({
+      ok: false,
+      error: {
+        type: 'api',
+        message: 'QR login page request failed (HTTP 503)',
+        hint: 'Check the configured API URL and auth-center availability',
+      },
+    }))
+    expect(exit).toHaveBeenCalledWith(1)
+    expect(browser.close).toHaveBeenCalledTimes(1)
+  })
+
+  /**
+   * Creates a browser double whose isolated context exposes the complete QR
+   * cookie pair, ensuring login observes browser cookie state without requests.
    */
   function createBrowser() {
     const page = {
@@ -161,11 +256,15 @@ describe('login command', () => {
     expect(mockDeleteKey).toHaveBeenCalled()
     expect(mockLaunch).toHaveBeenCalledTimes(1)
     expect(mockLaunch).toHaveBeenCalledWith({ channel: 'chrome', headless: false })
-    expect(page.goto).toHaveBeenCalledWith('https://example.com/eshop/manager/login.jsp')
+    expect(page.goto).toHaveBeenCalledWith(
+      'https://example.com/gateway/auth-center-service/auth/user/login/qr',
+    )
     expect(context.cookies).toHaveBeenCalled()
     expect(mockFetchCurrentUser).toHaveBeenCalledWith(
       'https://example.com',
       'SESSION=qr-session; AUTH_REFRESH=qr-refresh',
+      expect.any(Number),
+      expect.any(AbortSignal),
     )
     expect(mockSaveAuthContext).toHaveBeenCalledWith({
       cookie: 'SESSION=qr-session; AUTH_REFRESH=qr-refresh',
@@ -175,6 +274,453 @@ describe('login command', () => {
     expect(log).toHaveBeenLastCalledWith(JSON.stringify({ ok: true, data: { message: 'Authenticated successfully' } }))
     expect(exit).not.toHaveBeenCalled()
     expect(browser.close).toHaveBeenCalled()
+  })
+
+  /**
+   * Verifies the temporary HTTP compatibility path accepts one safe SESSION only
+   * after the current-user endpoint proves that the browser session is authenticated.
+   */
+  it('accepts a verified session-only QR login over HTTP', async () => {
+    mockGetConfig.mockReturnValue({ apiUrl: 'http://www.instudio.me:6206' })
+    const loginUrl = 'http://www.instudio.me:6206/gateway/auth-center-service/auth/user/login/qr'
+    const userInfo = {
+      id: 'user-1', loginName: 'user-1', userName: 'Test User', companyId: null,
+      companyName: null, departmentName: null, positionName: null,
+      groupCompanyId: null, groupCompanyName: null,
+    }
+    const page = { goto: vi.fn(async () => undefined) }
+    const context = {
+      cookies: vi.fn(async () => [
+        { name: 'SESSION', value: 'http-qr-session', expires: -1 },
+      ]),
+      newPage: vi.fn(async () => page),
+    }
+    const browser = {
+      newContext: vi.fn(async () => context),
+      close: vi.fn(async () => undefined),
+    }
+    mockLaunch.mockResolvedValue(browser)
+    mockFetchCurrentUser.mockResolvedValue(userInfo)
+
+    const { default: Login } = await import('../commands/login.js')
+    const log = vi.fn()
+    const command = Object.assign(Object.create(Login.prototype), {
+      parse: vi.fn(async () => ({ flags: { qr: true } })),
+      log,
+      exit: vi.fn(),
+    })
+
+    vi.useFakeTimers()
+    try {
+      const runPromise = command.run()
+      await vi.runAllTimersAsync()
+      await runPromise
+    } finally {
+      vi.useRealTimers()
+    }
+
+    expect(page.goto).toHaveBeenCalledWith(loginUrl)
+    expect(context.cookies).toHaveBeenCalledWith(loginUrl)
+    expect(mockFetchCurrentUser).toHaveBeenCalledWith(
+      'http://www.instudio.me:6206',
+      'SESSION=http-qr-session',
+      5_000,
+      expect.any(AbortSignal),
+    )
+    expect(mockSaveAuthContext).toHaveBeenCalledWith({
+      cookie: 'SESSION=http-qr-session',
+      userInfo,
+    })
+    expect(mockFetchCurrentUser.mock.invocationCallOrder[0]).toBeLessThan(
+      mockSaveAuthContext.mock.invocationCallOrder[0],
+    )
+    expect(log).toHaveBeenCalledWith(
+      '警告：当前扫码登录使用 HTTP，仅保存最长 2 小时的 SESSION；无法自动刷新，请尽快改用 HTTPS。',
+    )
+    expect(log).toHaveBeenLastCalledWith(
+      JSON.stringify({ ok: true, data: { message: 'Authenticated successfully' } }),
+    )
+    expect(browser.close).toHaveBeenCalledTimes(1)
+  })
+
+  /**
+   * Verifies an anonymous SESSION created while serving the public QR page does not
+   * terminate HTTP login before the callback rotates it to an authenticated session.
+   */
+  it('keeps waiting when the HTTP QR page first exposes an anonymous session', async () => {
+    const { NotAuthenticatedError } = await import('@mb-it-org/shared')
+    mockGetConfig.mockReturnValue({ apiUrl: 'http://www.instudio.me:6206' })
+    const userInfo = {
+      id: 'user-1', loginName: 'user-1', userName: 'Test User', companyId: null,
+      companyName: null, departmentName: null, positionName: null,
+      groupCompanyId: null, groupCompanyName: null,
+    }
+    const page = { goto: vi.fn(async () => undefined) }
+    const context = {
+      cookies: vi.fn()
+        .mockResolvedValueOnce([
+          { name: 'SESSION', value: 'anonymous-page-session', expires: -1 },
+        ])
+        .mockResolvedValue([
+          { name: 'SESSION', value: 'authenticated-callback-session', expires: -1 },
+        ]),
+      newPage: vi.fn(async () => page),
+    }
+    const browser = {
+      newContext: vi.fn(async () => context),
+      close: vi.fn(async () => undefined),
+    }
+    mockLaunch.mockResolvedValue(browser)
+    mockFetchCurrentUser
+      .mockRejectedValueOnce(new NotAuthenticatedError())
+      .mockResolvedValueOnce(userInfo)
+
+    const { default: Login } = await import('../commands/login.js')
+    const log = vi.fn()
+    const exit = vi.fn()
+    const command = Object.assign(Object.create(Login.prototype), {
+      parse: vi.fn(async () => ({ flags: { qr: true } })),
+      log,
+      exit,
+    })
+
+    vi.useFakeTimers()
+    try {
+      const runPromise = command.run()
+      await vi.runAllTimersAsync()
+      await runPromise
+    } finally {
+      vi.useRealTimers()
+    }
+
+    expect(mockFetchCurrentUser).toHaveBeenNthCalledWith(
+      1,
+      'http://www.instudio.me:6206',
+      'SESSION=anonymous-page-session',
+      5_000,
+      expect.any(AbortSignal),
+    )
+    expect(mockFetchCurrentUser).toHaveBeenNthCalledWith(
+      2,
+      'http://www.instudio.me:6206',
+      'SESSION=authenticated-callback-session',
+      expect.any(Number),
+      expect.any(AbortSignal),
+    )
+    expect(mockSaveAuthContext).toHaveBeenCalledWith({
+      cookie: 'SESSION=authenticated-callback-session',
+      userInfo,
+    })
+    expect(exit).not.toHaveBeenCalled()
+    expect(log).toHaveBeenLastCalledWith(
+      JSON.stringify({ ok: true, data: { message: 'Authenticated successfully' } }),
+    )
+    expect(browser.close).toHaveBeenCalledTimes(1)
+  })
+
+  /**
+   * Verifies HTTPS never downgrades to SESSION-only state and closes the browser
+   * exactly once when the complete QR cookie pair does not arrive before the deadline.
+   */
+  it('rejects session-only QR login over HTTPS', async () => {
+    const page = { goto: vi.fn(async () => undefined) }
+    const context = {
+      cookies: vi.fn(async () => [
+        { name: 'SESSION', value: 'https-session-only', expires: -1 },
+      ]),
+      newPage: vi.fn(async () => page),
+    }
+    const browser = {
+      newContext: vi.fn(async () => context),
+      close: vi.fn(async () => undefined),
+    }
+    mockLaunch.mockResolvedValue(browser)
+
+    const { default: Login } = await import('../commands/login.js')
+    const log = vi.fn()
+    const exit = vi.fn()
+    const command = Object.assign(Object.create(Login.prototype), {
+      parse: vi.fn(async () => ({ flags: { qr: true } })),
+      log,
+      exit,
+    })
+
+    vi.useFakeTimers()
+    try {
+      const runPromise = command.run()
+      await vi.runAllTimersAsync()
+      await runPromise
+    } finally {
+      vi.useRealTimers()
+    }
+
+    expect(context.cookies).toHaveBeenCalledWith(
+      'https://example.com/gateway/auth-center-service/auth/user/login/qr',
+    )
+    expect(mockFetchCurrentUser).not.toHaveBeenCalled()
+    expect(mockSaveAuthContext).not.toHaveBeenCalled()
+    expect(log).toHaveBeenLastCalledWith(JSON.stringify({
+      ok: false,
+      error: {
+        type: 'auth',
+        message: 'Authentication failed',
+        hint: 'Check the selected login credential, then try again',
+      },
+    }))
+    expect(exit).toHaveBeenCalledWith(2)
+    expect(browser.close).toHaveBeenCalledTimes(1)
+  })
+
+  /**
+   * Verifies HTTP still preserves the complete rotating-cookie path and scopes
+   * cookie lookup to the login URL so same-named cookies from another origin do not interfere.
+   */
+  it('prefers complete QR cookies over the HTTP compatibility fallback', async () => {
+    mockGetConfig.mockReturnValue({ apiUrl: 'http://api.example.com' })
+    const loginUrl = 'http://api.example.com/gateway/auth-center-service/auth/user/login/qr'
+    const userInfo = {
+      id: 'user-1', loginName: 'user-1', userName: 'Test User', companyId: null,
+      companyName: null, departmentName: null, positionName: null,
+      groupCompanyId: null, groupCompanyName: null,
+    }
+    const page = { goto: vi.fn(async () => undefined) }
+    const context = {
+      cookies: vi.fn(async (url?: string | string[]) => url === loginUrl
+        ? [
+            { name: 'SESSION', value: 'http-dual-session', expires: -1 },
+            { name: 'AUTH_REFRESH', value: 'http-dual-refresh', expires: 4_102_444_800 },
+          ]
+        : [
+            { name: 'SESSION', value: 'foreign-session-one', expires: -1 },
+            { name: 'SESSION', value: 'foreign-session-two', expires: -1 },
+          ]),
+      newPage: vi.fn(async () => page),
+    }
+    const browser = {
+      newContext: vi.fn(async () => context),
+      close: vi.fn(async () => undefined),
+    }
+    mockLaunch.mockResolvedValue(browser)
+    mockFetchCurrentUser.mockResolvedValue(userInfo)
+
+    const { default: Login } = await import('../commands/login.js')
+    const log = vi.fn()
+    const command = Object.assign(Object.create(Login.prototype), {
+      parse: vi.fn(async () => ({ flags: { qr: true } })),
+      log,
+      exit: vi.fn(),
+    })
+
+    await command.run()
+
+    expect(context.cookies).toHaveBeenCalledWith(loginUrl)
+    expect(mockFetchCurrentUser).toHaveBeenCalledWith(
+      'http://api.example.com',
+      'SESSION=http-dual-session; AUTH_REFRESH=http-dual-refresh',
+      expect.any(Number),
+      expect.any(AbortSignal),
+    )
+    expect(mockSaveAuthContext).toHaveBeenCalledWith({
+      cookie: 'SESSION=http-dual-session; AUTH_REFRESH=http-dual-refresh',
+      refreshExpiresAt: '2100-01-01T00:00:00.000Z',
+      userInfo,
+    })
+    expect(log).not.toHaveBeenCalledWith(expect.stringContaining('仅保存最长 2 小时'))
+    expect(browser.close).toHaveBeenCalledTimes(1)
+  })
+
+  /**
+   * Verifies any present but unusable Refresh state blocks the HTTP fallback,
+   * preventing ambiguous or header-unsafe browser cookies from being persisted.
+   */
+  it.each([
+    [
+      'duplicate Refresh cookies',
+      [
+        { name: 'SESSION', value: 'http-session', expires: -1 },
+        { name: 'AUTH_REFRESH', value: 'refresh-one', expires: 4_102_444_800 },
+        { name: 'AUTH_REFRESH', value: 'refresh-two', expires: 4_102_444_800 },
+      ],
+    ],
+    [
+      'an unsafe Refresh cookie',
+      [
+        { name: 'SESSION', value: 'http-session', expires: -1 },
+        { name: 'AUTH_REFRESH', value: 'unsafe refresh', expires: 4_102_444_800 },
+      ],
+    ],
+    [
+      'an expired Refresh cookie',
+      [
+        { name: 'SESSION', value: 'http-session', expires: -1 },
+        { name: 'AUTH_REFRESH', value: 'expired-refresh', expires: 1 },
+      ],
+    ],
+  ])('rejects HTTP SESSION fallback when the browser contains %s', async (_caseName, cookies) => {
+    mockGetConfig.mockReturnValue({ apiUrl: 'http://api.example.com' })
+    const page = { goto: vi.fn(async () => undefined) }
+    const context = {
+      cookies: vi.fn(async () => cookies),
+      newPage: vi.fn(async () => page),
+    }
+    const browser = {
+      newContext: vi.fn(async () => context),
+      close: vi.fn(async () => undefined),
+    }
+    mockLaunch.mockResolvedValue(browser)
+
+    const { default: Login } = await import('../commands/login.js')
+    const exit = vi.fn()
+    const command = Object.assign(Object.create(Login.prototype), {
+      parse: vi.fn(async () => ({ flags: { qr: true } })),
+      log: vi.fn(),
+      exit,
+    })
+
+    vi.useFakeTimers()
+    try {
+      const runPromise = command.run()
+      await vi.runAllTimersAsync()
+      await runPromise
+    } finally {
+      vi.useRealTimers()
+    }
+
+    expect(mockFetchCurrentUser).not.toHaveBeenCalled()
+    expect(mockSaveAuthContext).not.toHaveBeenCalled()
+    expect(exit).toHaveBeenCalledWith(2)
+    expect(browser.close).toHaveBeenCalledTimes(1)
+  })
+
+  /**
+   * Verifies the HTTP compatibility branch accepts neither ambiguous SESSION
+   * multiplicity nor a value that cannot be placed safely in a Cookie header.
+   */
+  it.each([
+    [
+      'duplicate SESSION cookies',
+      [
+        { name: 'SESSION', value: 'session-one', expires: -1 },
+        { name: 'SESSION', value: 'session-two', expires: -1 },
+      ],
+    ],
+    [
+      'a header-unsafe SESSION cookie',
+      [{ name: 'SESSION', value: 'unsafe session', expires: -1 }],
+    ],
+  ])('rejects HTTP SESSION fallback for %s', async (_caseName, cookies) => {
+    mockGetConfig.mockReturnValue({ apiUrl: 'http://api.example.com' })
+    const page = { goto: vi.fn(async () => undefined) }
+    const context = {
+      cookies: vi.fn(async () => cookies),
+      newPage: vi.fn(async () => page),
+    }
+    const browser = {
+      newContext: vi.fn(async () => context),
+      close: vi.fn(async () => undefined),
+    }
+    mockLaunch.mockResolvedValue(browser)
+
+    const { default: Login } = await import('../commands/login.js')
+    const exit = vi.fn()
+    const command = Object.assign(Object.create(Login.prototype), {
+      parse: vi.fn(async () => ({ flags: { qr: true } })),
+      log: vi.fn(),
+      exit,
+    })
+
+    vi.useFakeTimers()
+    try {
+      const runPromise = command.run()
+      await vi.runAllTimersAsync()
+      await runPromise
+    } finally {
+      vi.useRealTimers()
+    }
+
+    expect(mockFetchCurrentUser).not.toHaveBeenCalled()
+    expect(mockSaveAuthContext).not.toHaveBeenCalled()
+    expect(exit).toHaveBeenCalledWith(2)
+    expect(browser.close).toHaveBeenCalledTimes(1)
+  })
+
+  /**
+   * Verifies the QR deadline also bounds current-user verification so a stalled
+   * network request cannot leave the browser open or persist unverified state.
+   */
+  it('closes the browser when current-user verification exceeds the QR deadline', async () => {
+    const { browser } = createBrowser()
+    mockLaunch.mockResolvedValue(browser)
+    let currentUserSignal: AbortSignal | undefined
+    mockFetchCurrentUser.mockImplementation((
+      _apiUrl: string,
+      _cookie: string,
+      _timeoutMs: number,
+      signal?: AbortSignal,
+    ) => {
+      currentUserSignal = signal
+      return new Promise((_resolve, reject) => {
+        signal?.addEventListener('abort', () => reject(signal.reason), { once: true })
+      })
+    })
+
+    const { default: Login } = await import('../commands/login.js')
+    const exit = vi.fn()
+    const command = Object.assign(Object.create(Login.prototype), {
+      parse: vi.fn(async () => ({ flags: { qr: true } })),
+      log: vi.fn(),
+      exit,
+    })
+
+    vi.useFakeTimers()
+    let settled = false
+    try {
+      const runPromise = command.run().then(() => {
+        settled = true
+      })
+      await vi.runAllTimersAsync()
+      expect(settled).toBe(true)
+      await runPromise
+    } finally {
+      vi.useRealTimers()
+    }
+
+    expect(mockFetchCurrentUser).toHaveBeenCalledWith(
+      'https://example.com',
+      'SESSION=qr-session; AUTH_REFRESH=qr-refresh',
+      5_000,
+      expect.any(AbortSignal),
+    )
+    expect(currentUserSignal?.aborted).toBe(true)
+    expect(mockSaveAuthContext).not.toHaveBeenCalled()
+    expect(exit).toHaveBeenCalledWith(2)
+    expect(browser.close).toHaveBeenCalledTimes(1)
+  })
+
+  /**
+   * Verifies an authentication rejection during current-user verification closes
+   * the QR browser exactly once and never persists the observed browser cookies.
+   */
+  it('closes the browser when current-user verification rejects the session', async () => {
+    const { NotAuthenticatedError } = await import('@mb-it-org/shared')
+    const { browser } = createBrowser()
+    mockLaunch.mockResolvedValue(browser)
+    mockFetchCurrentUser.mockRejectedValue(new NotAuthenticatedError())
+
+    const { default: Login } = await import('../commands/login.js')
+    const exit = vi.fn()
+    const command = Object.assign(Object.create(Login.prototype), {
+      parse: vi.fn(async () => ({ flags: { qr: true } })),
+      log: vi.fn(),
+      exit,
+    })
+
+    await command.run()
+
+    expect(mockFetchCurrentUser).toHaveBeenCalledTimes(1)
+    expect(mockSaveAuthContext).not.toHaveBeenCalled()
+    expect(exit).toHaveBeenCalledWith(2)
+    expect(browser.close).toHaveBeenCalledTimes(1)
   })
 
   /** Verifies bare login accepts a hidden managed token and never opens a browser. */
