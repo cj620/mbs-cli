@@ -1,9 +1,9 @@
 # DEC-007：扫码登录闭环与 HTTP 会话降级
 
-- 状态：有效，本地实现与自动化验证完成，待发布和真实环境验收
+- 状态：有效，CLI 已随 npm `1.1.3` 发布；认证中心配套实现待发布和真实环境验收
 - 日期：2026-09-04
 - 决策范围：MBS CLI 扫码登录入口、浏览器 Cookie 判定、登录完成时限与远程 HTTP 兼容
-- 来源任务：`20260904-[BUG]修复登录完成与请求认证`
+- 来源任务：`20260904-[BUG]修复登录完成与请求认证`、`20260907-[RELEASE]发布1.1.3维护版本`
 
 ## 背景
 
@@ -41,4 +41,5 @@ CLI 曾打开旧商城 JSP，但当前认证缓存要求认证中心签发的 `S
 
 - CLI 行为测试覆盖 HTTPS 双 Cookie、HTTP SESSION-only、异常 Refresh 不降级、登录 URL Cookie 隔离、非法 URL、页面 503、current-user 拒绝/绝对取消、浏览器关闭与成功/警告输出。
 - Node loopback HTTP 测试覆盖业务首发 `SESSION`，以及 401 后新 `SESSION`、内存 Bearer 和唯一一次重试；持续 401 只发两次请求；slow-drip 实际连接会被 `AbortSignal` 关闭；普通请求不携带长期凭据。
+- CLI 已随 `@mb-it-org/cli@1.1.3` 发布，两次分支 CI、Release、npm dist-tag 和官方包版本/帮助/Skill 核验通过。
 - 本地自动化不能证明目标环境的 HTTPS、Cookie、共享 Redis/Session namespace、Nacos 白名单或真实钉钉回调已经生效。发布后必须使用专用测试身份执行扫码、密码、管理型 Token、失效刷新和真实 RBAC 允许/拒绝验收。
