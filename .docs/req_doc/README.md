@@ -8,9 +8,6 @@
 
 | 任务文件夹 | 类型 | 核心业务边界 / 故障现象 | 当前状态 | 负责人 | 关联文档路径 |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| `20260908-[RELEASE]发布1.1.4维护版本` | RELEASE / SECURITY / BREAKING CONTRACT | 发布远端响应统一透传与长期 Token 会话续期修复；仅更新 npm `maintenance-1`，保持 `latest` 不变 | 🚧 执行中：功能提交 `1efe59e` 与 CI `34184974228` 成功，正在提交 1.1.4 版本检查点 | Codex | [`./20260908-[RELEASE]发布1.1.4维护版本/`](./20260908-[RELEASE]发布1.1.4维护版本/) |
-| `20260908-[BUG]修复长期Token会话续期` | BUG / SECURITY | 认证失败不清登录材料；Access Token 可安全落盘并跨进程使用；缺失/到期及 401/601 时通过长期凭据申请，最终后端响应原样展示 | ✅ 本地完成 / 待发布：方案 A 已实现；全仓 305 项测试、14 包构建和关键帮助通过，未使用真实凭据联调 | Codex | [`./20260908-[BUG]修复长期Token会话续期/`](./20260908-[BUG]修复长期Token会话续期/) |
-| `20260908-[FEATURE]统一透传远端响应内容` | FEATURE / BREAKING CONTRACT | CLI 及 serve 对直接暴露的远端 HTTP response body 不增加 envelope、不裁剪或改写；本地失败仍使用 CLI 自有结构 | 🧪 待验收：本地实现、295 项测试、14 包构建、命令帮助与差异检查通过；真实后端联调、下游迁移和发布未执行 | Codex | [`./20260908-[FEATURE]统一透传远端响应内容/`](./20260908-[FEATURE]统一透传远端响应内容/) |
 | `20260904-[BUG]修复登录完成与请求认证` | BUG / SECURITY | 扫码迁移至认证中心并使用限时 HMAC/HTTPS `__Host-` state；HTTP 忽略扫码前匿名 Session 并仅保存验证后的两小时 SESSION；网关保留认证中心 401，使密码/LongToken 可进入唯一刷新重试 | 🧪 待验收：CLI 已随 npm `1.1.3` 发布并完成 CI/Release/官方包核验；认证中心 113 项、网关 21 项与打包已本地通过，配套服务端发布和真实环境联调未执行 | Codex | [`./20260904-[BUG]修复登录完成与请求认证/`](./20260904-[BUG]修复登录完成与请求认证/) |
 | `20260810-[BUG]恢复已发布CLI旧命令` | BUG | 恢复 npm `0.1.58` 已发布的五个业务命令标识、flags 与只读请求契约；本轮不恢复旧 serve 路由 | 🧪 待验收 / 待发布：独立兼容插件、10 条契约测试、全量构建测试及五条帮助验证通过；真实目标网关和发布未执行 | Codex | [`./20260810-[BUG]恢复已发布CLI旧命令/`](./20260810-[BUG]恢复已发布CLI旧命令/) |
 | `20260806-[FEATURE]统一语义发现与数据库表召回` | FEATURE | 用户只提交自然语言；CLI 消费 workflow/api/table 混合候选，table 安全衔接 `show-create-table → query`，不建立本地向量或目录降级 | 🧪 待验收：本地 CLI、Skill、测试与构建完成；真实后端联调、全局安装和发布未执行 | Codex | [`./20260806-[FEATURE]统一语义发现与数据库表召回/`](./20260806-[FEATURE]统一语义发现与数据库表召回/) |
@@ -22,6 +19,9 @@
 
 | 任务文件夹 | 类型 | 核心技术点 / 修复根因 | 状态 | 生产上线/修复时间 | 关联文档路径 |
 | :--- | :--- | :--- | :--- | :--- | :--- |
+| `20260908-[RELEASE]发布1.1.4维护版本` | RELEASE / SECURITY / BREAKING CONTRACT | 发布远端响应统一透传与长期 Token 会话续期修复；仅更新 npm `maintenance-1`，保持 `latest` 不变 | ✅ 已完成 / 已发布：305 项测试、14 包构建、两次分支 CI、Release、dist-tag 与官方包/Skill 核验通过 | 2026-09-08 | [`./20260908-[RELEASE]发布1.1.4维护版本/`](./20260908-[RELEASE]发布1.1.4维护版本/) |
+| `20260908-[BUG]修复长期Token会话续期` | BUG / SECURITY | 认证失败不清登录材料；Access Token 安全落盘并跨进程复用；缺失/到期及 401/601 时通过长期凭据申请一次 | ✅ 已随 `1.1.4` 发布：V3、CI、Release、dist-tag 与官方包核验通过；真实认证联调未执行 | 2026-09-08 | [`./20260908-[BUG]修复长期Token会话续期/`](./20260908-[BUG]修复长期Token会话续期/) |
+| `20260908-[FEATURE]统一透传远端响应内容` | FEATURE / BREAKING CONTRACT | find、describe 与 serve 远端路由直接透传 HTTP response body，不再包装、裁剪、重排、派生或替换后端错误 | ✅ 已随 `1.1.4` 发布：V3、CI、Release、dist-tag 与官方包/Skill 核验通过；真实后端和下游未验收 | 2026-09-08 | [`./20260908-[FEATURE]统一透传远端响应内容/`](./20260908-[FEATURE]统一透传远端响应内容/) |
 | `20260907-[RELEASE]发布1.1.3维护版本` | RELEASE / SECURITY | 发布 CLI 扫码登录闭环、HTTP 匿名 Session 继续等待、两小时 Session-only 降级与可取消绝对时限；仅更新 npm `maintenance-1` | ✅ 已完成 / 已发布：297 项测试、14 包构建、两次分支 CI、Release、dist-tag 与官方包/Skill 核验通过；`latest` 未变 | 2026-09-07 | [`./20260907-[RELEASE]发布1.1.3维护版本/`](./20260907-[RELEASE]发布1.1.3维护版本/) |
 | `20260904-[RELEASE]发布1.1.2维护版本` | RELEASE / SECURITY | 发布 compat-session 两类 Refresh 移除 `client-type: cli` 的修复；仅更新 npm `maintenance-1`，保持 `latest` 不变 | ✅ 已完成 / 已发布：259 项测试、14 包构建、两次分支 CI、Release、dist-tag、官方包与 Skill 核验通过 | 2026-09-04 | [`./20260904-[RELEASE]发布1.1.2维护版本/`](./20260904-[RELEASE]发布1.1.2维护版本/) |
 | `20260904-[CHORE]本地替换刷新请求头修复版CLI` | CHORE / SECURITY | 将本机 PATH 当前命中的系统级 npm 安装替换为工作区 `packages/cli` Junction；仅做离线命令与 Skill 核验 | ✅ 已完成 / 本机已替换：链接、npm 清单、版本、refresh 帮助、依赖与 Skill 验证通过；真实认证和发布未执行 | 不适用 | [`./20260904-[CHORE]本地替换刷新请求头修复版CLI/`](./20260904-[CHORE]本地替换刷新请求头修复版CLI/) |

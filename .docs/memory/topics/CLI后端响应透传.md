@@ -4,29 +4,29 @@
 
 - **记忆键**：`CLI-RESPONSE-PASSTHROUGH`
 - **负责模块**：`packages/shared`、业务命令调用方、CLI 公共文档
-- **当前状态**：普通业务命令已发布；`find`、`describe`、`serve` 扩展已完成本地 V3，尚未发布
+- **当前状态**：普通业务命令及 `find`、`describe`、`serve` 远端路由扩展已随 npm `1.1.4` 发布；真实后端与下游迁移未联调
 - **最后核验时间**：2026-09-08
-- **最后核验基线**：`1.0.0@61c64df0ed3b77b9434f346747a5d21ea6dec382` + 本地未提交变更 / 295 项测试 + 14 包构建
+- **最后核验基线**：`1.0.0@b85c5df5448405afc5b83d62c86e82392a96a41c` / 305 项测试 + 14 包构建 + CI/Release/官方包核验
 - **权威来源**：[`20260908-[FEATURE]统一透传远端响应内容`](../../req_doc/20260908-[FEATURE]统一透传远端响应内容/)
 
 ## 当前事实
 
 - npm `maintenance-1=1.0.5` 已实施 breaking contract：使用 `MBSCommand.output()` 的业务查询命令直接输出后端 HTTP body；成功与后端错误均不添加 CLI envelope，错误仍使用非零退出码。
 - `1.0.5` 已通过 201 条测试、14 个 workspace 构建、13 条发布保护、分支 CI、Release 和官方源隔离安装 smoke。
-- 当前本地实现把同一契约扩展到 `find`、`describe` 和 `serve` 远端路由：不包装、不提取内层 `data`，也不裁剪、重排、派生或替换远端字段。
+- npm `maintenance-1=1.1.4` 把同一契约扩展到 `find`、`describe` 和 `serve` 远端路由：不包装、不提取内层 `data`，也不裁剪、重排、派生或替换远端字段。
 - `find` 只校验请求并设置超时，远端候选 body 作为不透明值返回；`describe` 命令使用原始详情获取 seam，而 `request --api-id` 继续使用内部详情元数据校验器。
 - `serve` manifest/project/proxy 路由直接发送远端 body，并在错误快照可用时保留上游 HTTP 状态；本地路由、启动信息与无响应失败保留自身结构。
 
 ## 待生效变更
 
-- `find`、`describe`、`serve` 扩展尚未发布，也未完成真实后端联调和下游迁移验证。
+- `find`、`describe`、`serve` 扩展已发布，但仍未完成真实后端联调和下游迁移验证。
 
 ## 演进关系
 
 | 来源 | 关系 | 目标 | 影响范围 | 生效环境 | 当前有效性 |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | 项目初始统一 envelope 契约 | 部分替代 | `20260827-[FEATURE]透传后端响应内容` | `MBSCommand.output()` 业务响应及其后端错误 | npm maintenance-1 1.0.5 | 已生效；其他本地输出契约不变 |
-| `find`/`describe`/`serve` 独立包装契约 | 替代 | `20260908-[FEATURE]统一透传远端响应内容` | 直接暴露远端 body 的命令与 serve 路由 | 本地工作区 | 本地 V3 通过；尚未发布 |
+| `find`/`describe`/`serve` 独立包装契约 | 替代 | `20260908-[FEATURE]统一透传远端响应内容` | 直接暴露远端 body 的命令与 serve 路由 | npm maintenance-1 1.1.4 | 已发布并完成官方源核验；真实后端未联调 |
 
 ## 当前强制约束
 
@@ -45,5 +45,6 @@
 
 - [`20260827-[FEATURE]透传后端响应内容`](../../req_doc/20260827-[FEATURE]透传后端响应内容/)
 - [`20260827-[RELEASE]发布1.0.5维护版本`](../../req_doc/20260827-[RELEASE]发布1.0.5维护版本/)
+- [`20260908-[RELEASE]发布1.1.4维护版本`](../../req_doc/20260908-[RELEASE]发布1.1.4维护版本/)
 - [`20260908-[FEATURE]统一透传远端响应内容`](../../req_doc/20260908-[FEATURE]统一透传远端响应内容/)
 - [`20260812-[FEATURE]新增公共只读请求命令`](../../req_doc/20260812-[FEATURE]新增公共只读请求命令/)
