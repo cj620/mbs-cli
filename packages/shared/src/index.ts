@@ -1,7 +1,7 @@
 // packages/skill-shared/src/index.ts
 export type { MBSConfig, ApiSuccessResponse, ApiErrorResponse, MBSResponse } from './types.js'
-export { NotAuthenticatedError, MBSError } from './errors.js'
-export type { BackendResponseSnapshot } from './errors.js'
+export { backendFailureFromError, NotAuthenticatedError, PermissionError, MBSError } from './errors.js'
+export type { BackendFailure, BackendResponseSnapshot } from './errors.js'
 export { getConfig, setConfig, getConfigDir } from './config.js'
 export { APIClient } from './http.js'
 export { encodeRequestBody, requestBodyFieldsFromSchema } from './request-body.js'
@@ -19,7 +19,7 @@ export type {
 export { withCliPathPrefix } from './url.js'
 export { getWhoamiStatus } from './whoami.js'
 export type { WhoamiStatus } from './whoami.js'
-export { MBSCommand } from './base-command.js'
+export { MBSCommand, serializeBackendBody } from './base-command.js'
 export {
   detectInstalledUpdateSource,
   fetchLatestNpmVersion,
@@ -30,7 +30,12 @@ export {
   selectReleaseAsset,
   validateCliBundle,
 } from './update.js'
-export { forceRefreshAuthContext, getAuthContext, saveAuthContext } from './auth/index.js'
+export {
+  forceRefreshAuthContext,
+  getAuthContext,
+  getRequestAuthContext,
+  saveAuthContext,
+} from './auth/index.js'
 export { deleteKey } from './auth/key-store.js'
 export {
   clearCookie,

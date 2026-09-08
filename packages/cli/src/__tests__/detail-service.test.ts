@@ -1,9 +1,20 @@
 import { describe, expect, it } from 'vitest'
 
-import { describeApi, normalizeApiDetailResponse } from '../find/detail-service.js'
+import { describeApi, fetchApiDetail, normalizeApiDetailResponse } from '../find/detail-service.js'
 import { RecallUnavailableError } from '../find/find-service.js'
 
 describe('backend API detail', () => {
+  /** Verifies the command-facing detail seam preserves the complete remote body by identity. */
+  it('fetches the exact remote detail body without normalization', async () => {
+    const body = {
+      code: 200,
+      data: { id: 7, operationType: 'QUERY', extra: { owner: 'backend' } },
+      msg: 'ok',
+    }
+
+    await expect(fetchApiDetail(7, async () => body)).resolves.toBe(body)
+  })
+
   /**
    * Verifies the complete backend field tree is preserved while non-execution metadata is omitted.
    */

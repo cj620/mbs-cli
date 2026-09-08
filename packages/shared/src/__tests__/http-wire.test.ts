@@ -161,12 +161,12 @@ async function closeLoopbackServer(server: Server): Promise<void> {
 
 describe('APIClient wire authentication', () => {
   /**
-   * Verifies the actual Node HTTP adapter sends the persisted SESSION on the first
-   * business request and applies both refreshed credentials to the sole retry.
+   * Verifies the actual Node HTTP adapter sends persisted SESSION and Bearer state
+   * on the first business request and applies both refreshed credentials to the sole retry.
    * Synthetic values and an ephemeral loopback server keep the regression free of
    * real accounts, tokens, cookies, and remote side effects.
    */
-  it('sends SESSION initially and SESSION plus memory-only Bearer after HTTP 401', async () => {
+  it('sends persisted Bearer initially and refreshed Bearer after HTTP 401', async () => {
     const scenario: AuthenticationWireScenario = {
       receivedHeaders: [],
       successfulRequestNumber: 2,
@@ -183,6 +183,7 @@ describe('APIClient wire authentication', () => {
         baseUrl,
         'SESSION=initial-session',
         refreshAuthentication,
+        'synthetic-disk-access-token',
       )
 
       await expect(client.get('/business')).resolves.toEqual({
@@ -194,10 +195,10 @@ describe('APIClient wire authentication', () => {
       expect(refreshAuthentication).toHaveBeenCalledTimes(1)
       expect(scenario.receivedHeaders).toHaveLength(2)
       expect(scenario.receivedHeaders[0]).toMatchObject({
+        authorization: 'Bearer synthetic-disk-access-token',
         cookie: 'SESSION=initial-session',
         'client-type': 'cli',
       })
-      expect(scenario.receivedHeaders[0]?.authorization).toBeUndefined()
       expect(scenario.receivedHeaders[1]).toMatchObject({
         authorization: 'Bearer synthetic-memory-access-token',
         cookie: 'SESSION=refreshed-session',

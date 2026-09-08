@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { MBSError, NotAuthenticatedError } from '../errors.js'
 import type { AuthContext, RefreshedAuthContext, UserInfo } from './context.js'
-import { normalizeUserInfo } from './context.js'
+import { normalizeAccessToken, normalizeUserInfo } from './context.js'
 import {
   createManagedLongTokenAuthorization,
   normalizeManagedLongToken,
@@ -47,9 +47,9 @@ interface ManagedCompatibilityExchange {
   cookie: string
   /** Non-rotating management credential retained for later exchanges. */
   managedLongToken: string
-  /** Short Bearer credential retained only by the current process. */
+  /** Short Bearer credential returned for protected-cache persistence and immediate use. */
   accessToken: string
-  /** Absolute local expiry for the current-process Access Token. */
+  /** Absolute local expiry for the short-lived Access Token. */
   accessTokenExpiresAt: string
 }
 
@@ -148,14 +148,11 @@ function authResponse(value: unknown): AuthCenterResponse | null {
  */
 function accessTokenPayload(value: unknown): AccessTokenExchangePayload | null {
   if (!isRecord(value)) return null
-  const accessToken = value.accessToken
+  const accessToken = normalizeAccessToken(value.accessToken)
   const tokenType = value.tokenType
   const expiresInSeconds = value.expiresInSeconds
   if (
-    typeof accessToken !== 'string'
-    || accessToken.length === 0
-    || accessToken.length > 4096
-    || /\s/u.test(accessToken)
+    accessToken === null
     || tokenType !== 'Bearer'
     || typeof expiresInSeconds !== 'number'
     || !Number.isSafeInteger(expiresInSeconds)
@@ -225,7 +222,7 @@ export async function loginWithPassword(
  *
  * @param apiUrl Configured HTTP(S) MBS API root; HTTP sends credentials in plaintext.
  * @param context Cached authentication containing exactly one supported long credential.
- * @returns Updated Cookie context plus the short Access Token for current-process use.
+ * @returns Updated Cookie context plus short Access state for protected-cache persistence and request use.
  * @throws NotAuthenticatedError for missing credentials, rejected authentication, or
  * a malformed success response; throws MBSError for transport/configuration failures.
  */
@@ -278,7 +275,7 @@ export async function exchangeCompatibilitySession(
  * @param root Normalized HTTP(S) API root; HTTP provides no transport encryption.
  * @param managedLongToken Valid management token in auth-center's versioned format.
  * @param currentCookie Optional current SESSION-only Cookie header.
- * @returns Compatible SESSION, unchanged management token, and memory-only Access state.
+ * @returns Compatible SESSION, unchanged management token, and bounded Access state.
  * @throws NotAuthenticatedError when request or response identity material is incomplete.
  * @throws MBSError for sanitized transport failures.
  */
@@ -320,21 +317,21 @@ async function exchangeManagedLongToken(
  *
  * <p>The secret is validated before transport, exchanged through the exclusive
  * LongToken header, and retained only in the returned authentication context.
- * The short Access Token is discarded because login persists only the long
- * credential, compatible SESSION, and safe current-user summary. The initial
- * exchange endpoint always omits client classification; this initial request
- * therefore sends only LongToken authorization.</p>
+ * The short Access Token and expiry remain in the returned context so the login
+ * command can persist and immediately reuse them. The initial exchange endpoint
+ * always omits client classification; this initial request therefore sends only
+ * LongToken authorization.</p>
  *
  * @param apiUrl Configured HTTP(S) MBS API root; HTTP sends credentials in plaintext.
  * @param value Token pasted into the hidden terminal prompt.
- * @returns Persistable SESSION, managed LongToken, and allow-listed user summary.
+ * @returns Persistable SESSION, managed LongToken, bounded Access state, and allow-listed user summary.
  * @throws MBSError for malformed input, unsafe transport, or network failure.
  * @throws NotAuthenticatedError when auth-center rejects the token or omits identity state.
  */
 export async function loginWithManagedLongToken(
   apiUrl: string,
   value: string,
-): Promise<AuthContext> {
+): Promise<RefreshedAuthContext> {
   const root = normalizedApiRoot(apiUrl)
   const managedLongToken = normalizeManagedLongToken(value)
   if (!managedLongToken) {
@@ -346,7 +343,7 @@ export async function loginWithManagedLongToken(
   }
   const exchange = await exchangeManagedLongToken(root, managedLongToken)
   const userInfo = await fetchCurrentUser(root, exchange.cookie)
-  return { cookie: exchange.cookie, managedLongToken, userInfo }
+  return { ...exchange, userInfo }
 }
 
 /**

@@ -1,4 +1,5 @@
 import { Args, Command, Flags } from '@oclif/core'
+import { backendFailureFromError, serializeBackendBody } from '@mb-it-org/shared'
 
 import {
   findApis,
@@ -10,7 +11,6 @@ import {
   classifyRemoteFailure,
   createRecallClient,
 } from '../find/remote-client.js'
-import { recordFindEvent } from '../find/telemetry.js'
 import { TABLE_ACTION_CAPABILITY, type FindRequest, type RecallTargetType } from '../find/types.js'
 
 const RECALL_PATH = '/cli/api/recall'
@@ -47,7 +47,7 @@ export default class Find extends Command {
       max: 50,
     }),
     diagnostics: Flags.boolean({
-      description: 'Include a sanitized backend failure category',
+      description: 'Include a sanitized category only when no backend response body is available',
       default: false,
     }),
   }
@@ -55,13 +55,11 @@ export default class Find extends Command {
   private includeDiagnostics = false
 
   /**
-   * Executes backend-only workflow/API/authorized-table discovery and prints the stable JSON contract.
+   * Executes backend-only discovery and prints the upstream response body without processing it.
    *
    * <p>The command never loads a local interface manifest or table index. Backend, embedding,
-   * Milvus, permission metadata, timeout, authentication, and response-contract failures are reported
-   * as explicit errors so incomplete local metadata cannot masquerade as successful
-   * semantic discovery. Authentication always comes from the normal saved CLI
-   * login context.</p>
+   * Milvus, permission metadata, timeout, and authentication failures with no upstream body are reported
+   * as local errors. A received upstream body bypasses all CLI envelopes and candidate normalization.</p>
    */
   async run(): Promise<void> {
     const { args, flags } = await this.parse(Find)
@@ -74,9 +72,8 @@ export default class Find extends Command {
       capabilities: [TABLE_ACTION_CAPABILITY],
     }
     validateRequest(request)
-    const outcome = await findApis(request, createRemoteRecall())
-    recordFindEvent(outcome.meta, outcome.data.results.length)
-    this.log(JSON.stringify({ ok: true, data: outcome.data, meta: outcome.meta }))
+    const responseBody = await findApis(request, createRemoteRecall())
+    this.log(serializeBackendBody(responseBody))
   }
 
   /**
@@ -86,6 +83,12 @@ export default class Find extends Command {
    */
   async catch(error: Error & { exitCode?: number }): Promise<void> {
     if (error instanceof RecallUnavailableError) {
+      const backendFailure = backendFailureFromError(error.reason)
+      if (backendFailure) {
+        this.log(serializeBackendBody(backendFailure.response.body))
+        this.exit(backendFailure.exitCode)
+        return
+      }
       const payload = {
         ok: false,
         error: {

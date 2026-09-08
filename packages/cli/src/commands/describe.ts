@@ -1,6 +1,7 @@
 import { Args, Command, Flags } from '@oclif/core'
+import { backendFailureFromError, serializeBackendBody } from '@mb-it-org/shared'
 
-import { describeApi, type RemoteApiDetail } from '../find/detail-service.js'
+import { fetchApiDetail, type RemoteApiDetail } from '../find/detail-service.js'
 import { RecallUnavailableError } from '../find/find-service.js'
 import {
   classifyRemoteFailure,
@@ -23,7 +24,7 @@ export default class Describe extends Command {
 
   static flags = {
     diagnostics: Flags.boolean({
-      description: 'Include a sanitized backend failure category',
+      description: 'Include a sanitized category only when no backend response body is available',
       default: false,
     }),
   }
@@ -44,8 +45,8 @@ export default class Describe extends Command {
     if (!Number.isInteger(apiId) || apiId < 1) {
       throw new Error('apiId must be a positive integer')
     }
-    const detail = await describeApi(apiId, createRemoteDetail())
-    this.log(JSON.stringify({ ok: true, data: detail, meta: { mode: 'remote' } }))
+    const responseBody = await fetchApiDetail(apiId, createRemoteDetail())
+    this.log(serializeBackendBody(responseBody))
   }
 
   /**
@@ -55,6 +56,12 @@ export default class Describe extends Command {
    */
   async catch(error: Error & { exitCode?: number }): Promise<void> {
     if (error instanceof RecallUnavailableError) {
+      const backendFailure = backendFailureFromError(error.reason)
+      if (backendFailure) {
+        this.log(serializeBackendBody(backendFailure.response.body))
+        this.exit(backendFailure.exitCode)
+        return
+      }
       const payload = {
         ok: false,
         error: {

@@ -40,7 +40,7 @@ export interface RequestOptions {
 export interface RefreshedRequestAuthentication {
   /** Updated compatible SESSION header used by business services and future exchanges. */
   cookie: string;
-  /** Short Bearer credential retained only in this APIClient instance. */
+  /** Short Bearer credential installed in this APIClient instance. */
   accessToken: string;
 }
 
@@ -132,12 +132,14 @@ export class APIClient {
    * @param baseURL Base URL used for relative API request paths.
    * @param cookie Cookie header value obtained from the CLI authentication context.
    * @param refreshAuth Callback returning a legacy Cookie string or upgraded Cookie plus
-   * memory-only Access Token after authentication failure.
+   * Access Token after authentication failure.
+   * @param accessToken Optional already-validated, unexpired Access Token loaded from the protected cache.
    */
   constructor(
     baseURL: string,
     cookie: string,
     refreshAuth: () => Promise<string | RefreshedRequestAuthentication>,
+    accessToken?: string,
   ) {
     this.refreshAuth = refreshAuth;
     this.instance = axios.create({
@@ -145,6 +147,7 @@ export class APIClient {
       headers: {
         Cookie: cookie,
         "client-type": "cli",
+        ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
       },
     });
 
@@ -152,7 +155,7 @@ export class APIClient {
   }
 
   /**
-   * Replaces the Cookie and, when available, installs the memory-only Bearer credential.
+   * Replaces the Cookie and, when available, installs the refreshed Bearer credential.
    *
    * @param authentication Fresh authentication returned by the authentication module.
    */

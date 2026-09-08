@@ -1,15 +1,18 @@
-import { chmodSync, existsSync, mkdirSync, readFileSync, unlinkSync, writeFileSync } from 'node:fs'
+import { chmodSync, existsSync, mkdirSync, readFileSync, renameSync, unlinkSync, writeFileSync } from 'node:fs'
+import { randomUUID } from 'node:crypto'
 import { join } from 'node:path'
 import { getConfigDir } from '../config.js'
 import { MBSError } from '../errors.js'
 import { COOKIE_TTL_MS } from './constants.js'
 import type { AuthContext, UserInfo } from './context.js'
-import { normalizeUserInfo } from './context.js'
+import { normalizeAccessToken, normalizeUserInfo } from './context.js'
 import { normalizeManagedLongToken } from './managed-token.js'
 import { hasRefreshCookie, normalizeAuthCookieHeader } from './session-cookie.js'
 
 /** Untrusted on-disk session cache representation accepted for legacy migration. */
 interface CookieCacheRecord {
+  accessToken?: unknown
+  accessTokenExpiresAt?: unknown
   cookie?: unknown
   cookieSavedAt?: unknown
   managedLongToken?: unknown
@@ -19,6 +22,8 @@ interface CookieCacheRecord {
 
 /** Validated cache representation used inside the authentication boundary. */
 interface CookieCache {
+  accessToken: string | null
+  accessTokenExpiresAt: string | null
   cookie: string
   cookieSavedAt: string
   managedLongToken: string | null
@@ -77,7 +82,25 @@ function readCache(): CookieCache | null {
     return null
   }
 
-  return { cookie, cookieSavedAt: record.cookieSavedAt, managedLongToken, refreshExpiresAt, userInfo }
+  const accessToken = normalizeAccessToken(record.accessToken)
+  const parsedAccessExpiry = typeof record.accessTokenExpiresAt === 'string'
+    ? Date.parse(record.accessTokenExpiresAt)
+    : Number.NaN
+  const hasRenewableCredential = refreshExpiresAt !== null || managedLongToken !== null
+  const hasUsableAccessState = accessToken !== null
+    && hasRenewableCredential
+    && Number.isFinite(parsedAccessExpiry)
+    && parsedAccessExpiry > Date.now()
+
+  return {
+    accessToken: hasUsableAccessState ? accessToken : null,
+    accessTokenExpiresAt: hasUsableAccessState ? new Date(parsedAccessExpiry).toISOString() : null,
+    cookie,
+    cookieSavedAt: record.cookieSavedAt,
+    managedLongToken,
+    refreshExpiresAt,
+    userInfo,
+  }
 }
 
 /** Returns the active canonical authentication Cookie header, or null when no valid cache exists. */
@@ -122,12 +145,16 @@ export function readAuthContextCache(): AuthContext | null {
     cookie: cache.cookie,
     ...(cache.managedLongToken ? { managedLongToken: cache.managedLongToken } : {}),
     ...(cache.refreshExpiresAt ? { refreshExpiresAt: cache.refreshExpiresAt } : {}),
+    ...(cache.accessToken && cache.accessTokenExpiresAt
+      ? { accessToken: cache.accessToken, accessTokenExpiresAt: cache.accessTokenExpiresAt }
+      : {}),
     userInfo: cache.userInfo,
   }
 }
 
 /**
- * Persists only normalized authentication Cookie pairs and allow-listed identity.
+ * Persists normalized authentication state through a same-directory temporary
+ * file so a failed write cannot truncate the preceding login cache.
  *
  * @param cookie Cookie header or pair that must contain a valid SESSION value.
  * @param userInfo Identity data; only fields supported by normalizeUserInfo are written.
@@ -135,6 +162,10 @@ export function readAuthContextCache(): AuthContext | null {
  * omitted only for the bounded legacy SESSION-only compatibility format.
  * @param managedLongToken Optional management credential, mutually exclusive
  * with AUTH_REFRESH and persisted only in the current-user cache.
+ * @param accessToken Optional validated short-lived Bearer credential. It must
+ * be supplied together with an unexpired {@link accessTokenExpiresAt} and one
+ * supported long credential.
+ * @param accessTokenExpiresAt Absolute local expiry for {@link accessToken}.
  * @throws MBSError when either input cannot be reduced to the safe cache contract.
  */
 export function writeCookieAndUserInfo(
@@ -142,6 +173,8 @@ export function writeCookieAndUserInfo(
   userInfo: UserInfo,
   refreshExpiresAt?: string,
   managedLongToken?: string,
+  accessToken?: string,
+  accessTokenExpiresAt?: string,
 ): void {
   const authCookie = normalizeAuthCookieHeader(cookie)
   const safeManagedLongToken = normalizeManagedLongToken(managedLongToken)
@@ -156,6 +189,16 @@ export function writeCookieAndUserInfo(
   const hasInvalidManagedInput = managedLongToken !== undefined && safeManagedLongToken === null
   const hasAmbiguousCredentials = hasLoginRefresh && safeManagedLongToken !== null
   const hasMisappliedExpiry = safeManagedLongToken !== null && refreshExpiresAt !== undefined
+  const safeAccessToken = normalizeAccessToken(accessToken)
+  const parsedAccessExpiry = typeof accessTokenExpiresAt === 'string'
+    ? Date.parse(accessTokenExpiresAt)
+    : Number.NaN
+  const hasRenewableCredential = normalizedRefreshExpiry !== null || safeManagedLongToken !== null
+  const hasAccessInput = accessToken !== undefined || accessTokenExpiresAt !== undefined
+  const hasValidAccessState = safeAccessToken !== null
+    && Number.isFinite(parsedAccessExpiry)
+    && parsedAccessExpiry > Date.now()
+    && hasRenewableCredential
   if (
     !authCookie
     || !safeUserInfo
@@ -163,12 +206,15 @@ export function writeCookieAndUserInfo(
     || hasInvalidManagedInput
     || hasAmbiguousCredentials
     || hasMisappliedExpiry
+    || (hasAccessInput && !hasValidAccessState)
   ) {
     throw new MBSError('Invalid authentication session', 'validation', 'Run mbs login again')
   }
 
   mkdirSync(getConfigDir(), { recursive: true })
   const cache: CookieCache = {
+    accessToken: hasValidAccessState ? safeAccessToken : null,
+    accessTokenExpiresAt: hasValidAccessState ? new Date(parsedAccessExpiry).toISOString() : null,
     cookie: authCookie,
     cookieSavedAt: new Date().toISOString(),
     managedLongToken: safeManagedLongToken,
@@ -176,8 +222,14 @@ export function writeCookieAndUserInfo(
     userInfo: safeUserInfo,
   }
   const path = getCachePath()
-  writeFileSync(path, JSON.stringify(cache, null, 2), { encoding: 'utf8', mode: 0o600 })
-  chmodSync(path, 0o600)
+  const temporaryPath = `${path}.${process.pid}.${randomUUID()}.tmp`
+  try {
+    writeFileSync(temporaryPath, JSON.stringify(cache, null, 2), { encoding: 'utf8', mode: 0o600 })
+    chmodSync(temporaryPath, 0o600)
+    renameSync(temporaryPath, path)
+  } finally {
+    if (existsSync(temporaryPath)) unlinkSync(temporaryPath)
+  }
 }
 
 /** Removes the complete local session cache when it exists. */

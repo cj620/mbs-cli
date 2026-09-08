@@ -1,6 +1,6 @@
 // packages/skill-shared/src/__tests__/errors.test.ts
 import { describe, it, expect } from 'vitest'
-import { NotAuthenticatedError, MBSError, PermissionError } from '../errors.js'
+import { backendFailureFromError, NotAuthenticatedError, MBSError, PermissionError } from '../errors.js'
 
 describe('NotAuthenticatedError', () => {
   it('has type "auth" and a hint', () => {
@@ -33,5 +33,24 @@ describe('PermissionError', () => {
     expect(err.hint).toBe('You do not have permission to perform this action')
     expect(err.message).toBe('Permission denied')
     expect(err instanceof Error).toBe(true)
+  })
+})
+
+describe('backendFailureFromError', () => {
+  /** Verifies classified control metadata keeps the exact upstream snapshot reference. */
+  it('returns the retained response without inspecting or copying its body', () => {
+    const response = {
+      body: { code: 109, data: { opaque: true }, msg: 'denied' },
+      statusCode: 403,
+    }
+
+    expect(backendFailureFromError(new PermissionError(response))).toEqual({ response, exitCode: 1 })
+    expect(backendFailureFromError(new PermissionError(response))?.response).toBe(response)
+  })
+
+  /** Verifies local failures cannot be mistaken for authoritative upstream responses. */
+  it('returns undefined when no upstream response exists', () => {
+    expect(backendFailureFromError(new MBSError('local failure'))).toBeUndefined()
+    expect(backendFailureFromError(new Error('unrelated'))).toBeUndefined()
   })
 })

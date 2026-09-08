@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { mkdtempSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import {
@@ -54,18 +54,83 @@ describe('cookie-cache', () => {
   /** Verifies a managed LongToken is persisted only with SESSION and remains refreshable beyond legacy TTL. */
   it('stores a managed LongToken as a mutually exclusive credential source', () => {
     vi.useFakeTimers()
-    writeCookieAndUserInfo('SESSION=managed-session', safeUserInfo, undefined, managedLongToken)
+    const accessTokenExpiresAt = new Date(Date.now() + 60_000).toISOString()
+    writeCookieAndUserInfo(
+      'SESSION=managed-session',
+      safeUserInfo,
+      undefined,
+      managedLongToken,
+      'disk-access-token',
+      accessTokenExpiresAt,
+    )
 
     expect(readManagedLongToken()).toBe(managedLongToken)
     expect(readAuthContextCache()).toEqual({
       cookie: 'SESSION=managed-session',
       managedLongToken,
+      accessToken: 'disk-access-token',
+      accessTokenExpiresAt,
       userInfo: safeUserInfo,
     })
     expect(readRefreshExpiresAt()).toBeNull()
     vi.advanceTimersByTime(COOKIE_TTL_MS + 1000)
     expect(readCookie()).toBe('SESSION=managed-session')
     expect(readManagedLongToken()).toBe(managedLongToken)
+  })
+
+  /** Verifies an expired short token is ignored without invalidating the persistent login material. */
+  it('omits expired Access state while retaining the managed LongToken login', () => {
+    vi.useFakeTimers()
+    const accessTokenExpiresAt = new Date(Date.now() + 1_000).toISOString()
+    writeCookieAndUserInfo(
+      'SESSION=managed-session',
+      safeUserInfo,
+      undefined,
+      managedLongToken,
+      'disk-access-token',
+      accessTokenExpiresAt,
+    )
+    vi.advanceTimersByTime(2_000)
+
+    expect(readAuthContextCache()).toEqual({
+      cookie: 'SESSION=managed-session',
+      managedLongToken,
+      userInfo: safeUserInfo,
+    })
+  })
+
+  /** Verifies malformed or incomplete Access fields are ignored without discarding renewable login state. */
+  it.each([
+    { accessToken: 'contains whitespace', accessTokenExpiresAt: new Date(Date.now() + 60_000).toISOString() },
+    { accessToken: 'incomplete-access-token' },
+    { accessTokenExpiresAt: new Date(Date.now() + 60_000).toISOString() },
+  ])('ignores unusable persisted Access state: %o', (accessState) => {
+    writeFileSync(join(tmpDir, 'credentials.json'), JSON.stringify({
+      cookie: 'SESSION=managed-session',
+      cookieSavedAt: new Date().toISOString(),
+      managedLongToken,
+      refreshExpiresAt: null,
+      userInfo: safeUserInfo,
+      ...accessState,
+    }))
+
+    expect(readAuthContextCache()).toEqual({
+      cookie: 'SESSION=managed-session',
+      managedLongToken,
+      userInfo: safeUserInfo,
+    })
+  })
+
+  /** Verifies short-token persistence is accepted only beside a renewable long credential. */
+  it('rejects Access state without a long credential', () => {
+    expect(() => writeCookieAndUserInfo(
+      'SESSION=legacy-session',
+      safeUserInfo,
+      undefined,
+      undefined,
+      'disk-access-token',
+      new Date(Date.now() + 60_000).toISOString(),
+    )).toThrow('Invalid authentication session')
   })
 
   /** Verifies one cache cannot mix rotating login Refresh and non-rotating managed LongToken sources. */
@@ -119,6 +184,9 @@ describe('cookie-cache', () => {
     const persisted = readFileSync(join(tmpDir, 'credentials.json'), 'utf8')
     expect(persisted).not.toContain('Path=/')
     expect(persisted).not.toContain('must-not-be-stored')
+    if (process.platform !== 'win32') {
+      expect(statSync(join(tmpDir, 'credentials.json')).mode & 0o077).toBe(0)
+    }
   })
 
   /** Verifies legacy cache data is reduced to the current safe representation on read. */

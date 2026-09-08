@@ -181,7 +181,7 @@ describe('loginWithPassword', () => {
 })
 
 describe('exchangeCompatibilitySession', () => {
-  /** Verifies Cookie refresh omits client classification while rotating cookies and returning memory-only Access. */
+  /** Verifies Cookie refresh omits client classification while rotating cookies and returning bounded Access state. */
   it('refreshes Cookie authentication without a client-type header', async () => {
     vi.useFakeTimers()
     vi.setSystemTime(new Date('2026-09-03T00:00:00.000Z'))
@@ -304,6 +304,8 @@ describe('exchangeCompatibilitySession', () => {
 describe('loginWithManagedLongToken', () => {
   /** Verifies initial managed-token login sends only LongToken and creates persistent SESSION state. */
   it('exchanges the token and resolves the current user', async () => {
+    vi.useFakeTimers()
+    vi.setSystemTime(new Date('2026-09-03T00:00:00.000Z'))
     mockAxios.post = vi.fn().mockResolvedValue({
       headers: { 'set-cookie': ['SESSION=managed-session; Path=/; HttpOnly; Secure'] },
       data: { code: 200, data: {
@@ -317,6 +319,8 @@ describe('loginWithManagedLongToken', () => {
     )).resolves.toEqual({
       cookie: 'SESSION=managed-session',
       managedLongToken,
+      accessToken: 'initial-access-token',
+      accessTokenExpiresAt: '2026-09-03T00:15:00.000Z',
       userInfo: safeUserInfo,
     })
     expect(mockAxios.post).toHaveBeenCalledWith(
@@ -330,6 +334,7 @@ describe('loginWithManagedLongToken', () => {
       'https://example.com/gateway/auth-center-service/auth/user/current',
       { headers: { Cookie: 'SESSION=managed-session' } },
     )
+    vi.useRealTimers()
   })
 
   /** Verifies manual LongToken login accepts configured remote HTTP without extra authorization. */

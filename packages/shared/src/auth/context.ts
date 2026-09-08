@@ -31,7 +31,9 @@ export interface UserInfo {
  *
  * <p>Upgraded contexts contain exactly one long credential: AUTH_REFRESH in
  * {@link cookie} with {@link refreshExpiresAt}, or {@link managedLongToken} with
- * a SESSION-only Cookie. Legacy contexts may temporarily contain SESSION only.</p>
+ * a SESSION-only Cookie. A validated unexpired Access Token may be persisted
+ * beside that renewable credential for reuse across CLI processes. Legacy
+ * contexts may temporarily contain SESSION only.</p>
  */
 export interface AuthContext {
   /** Canonical Cookie header containing SESSION and, after upgraded login, AUTH_REFRESH. */
@@ -40,16 +42,37 @@ export interface AuthContext {
   refreshExpiresAt?: string
   /** Non-rotating management credential; mutually exclusive with AUTH_REFRESH. */
   managedLongToken?: string
+  /** Validated short-lived Bearer credential, present only together with its expiry and a long credential. */
+  accessToken?: string
+  /** Absolute expiry of the persisted short-lived Access Token. */
+  accessTokenExpiresAt?: string
   /** Minimal non-secret identity associated with the session. */
   userInfo: UserInfo
 }
 
 /** Authentication returned by a successful long-to-short compatibility exchange. */
 export interface RefreshedAuthContext extends AuthContext {
-  /** Short-lived Bearer credential retained only in the current process memory. */
+  /** Short-lived Bearer credential safe to persist in the protected authentication cache. */
   accessToken: string
-  /** Absolute local expiry for the in-memory Access Token. */
+  /** Absolute local expiry used to prevent reuse after the Access Token lifetime. */
   accessTokenExpiresAt: string
+}
+
+/**
+ * Validates a short-lived Bearer credential without transforming its bytes.
+ *
+ * @param value Untrusted auth-center response or disk-cache field.
+ * @returns The exact token string when it is non-empty, bounded, and contains
+ * no whitespace; otherwise null. The scheme prefix is deliberately excluded.
+ */
+export function normalizeAccessToken(value: unknown): string | null {
+  if (
+    typeof value !== 'string'
+    || value.length === 0
+    || value.length > 4096
+    || /\s/u.test(value)
+  ) return null
+  return value
 }
 
 /** Returns true when a parsed value can be inspected as an object record. */

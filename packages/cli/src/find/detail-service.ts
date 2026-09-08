@@ -1,4 +1,4 @@
-import { cleanBoundedText, RecallUnavailableError, withTimeout } from './find-service.js'
+import { RecallUnavailableError, withTimeout } from './find-service.js'
 import type { ApiDetailData, ApiFieldDefinition } from './types.js'
 import type {
   FormSerializationStyle,
@@ -20,6 +20,40 @@ const SERIALIZATION_STYLES = new Set<FormSerializationStyle>(['FLAT', 'DOT', 'BR
 const FILENAME_POLICIES = new Set<MultipartFilenamePolicy>(['SOURCE_BASENAME', 'FIXED', 'OMIT'])
 
 /**
+ * Fetches one API-detail response and returns the exact parsed upstream body.
+ *
+ * <p>The command-facing seam applies only local ID validation and a bounded transport deadline. It does not
+ * unwrap, validate, minimize, copy, or enrich the received body.</p>
+ *
+ * @param apiId Positive interface ID returned by semantic recall.
+ * @param remoteDetail Authenticated callback for the fixed recall-detail endpoint.
+ * @param timeoutMs Maximum backend wait before the request is aborted.
+ * @returns The same response-body value returned by {@code remoteDetail}.
+ * @throws Error for invalid IDs.
+ * @throws RecallUnavailableError when the remote call fails or times out.
+ */
+export async function fetchApiDetail(
+  apiId: number,
+  remoteDetail: RemoteApiDetail,
+  timeoutMs = 4_000,
+): Promise<unknown> {
+  if (!Number.isInteger(apiId) || apiId < 1) {
+    throw new Error('apiId must be a positive integer')
+  }
+  const controller = new AbortController()
+  try {
+    return await withTimeout(
+      remoteDetail(apiId, controller.signal),
+      timeoutMs,
+      () => controller.abort(),
+    )
+  } catch (error) {
+    if (error instanceof RecallUnavailableError) throw error
+    throw new RecallUnavailableError(error)
+  }
+}
+
+/**
  * Loads one recalled API definition exclusively from the backend.
  *
  * @param apiId Positive interface ID returned by semantic recall.
@@ -37,13 +71,8 @@ export async function describeApi(
   if (!Number.isInteger(apiId) || apiId < 1) {
     throw new Error('apiId must be a positive integer')
   }
-  const controller = new AbortController()
   try {
-    const raw = await withTimeout(
-      remoteDetail(apiId, controller.signal),
-      timeoutMs,
-      () => controller.abort(),
-    )
+    const raw = await fetchApiDetail(apiId, remoteDetail, timeoutMs)
     return normalizeApiDetailResponse(raw)
   } catch (error) {
     if (error instanceof RecallUnavailableError) throw error
@@ -139,6 +168,24 @@ function normalizeField(value: unknown, depth: number): ApiFieldDefinition {
     ...optionalBoundedText('partFilename', field.partFilename, 255),
     children: normalizeFieldArray(field.children, depth + 1),
   }
+}
+
+/**
+ * Converts one untrusted scalar to bounded printable text for internal request-metadata parsing.
+ *
+ * @param name Stable field name used in validation failures.
+ * @param value Untrusted scalar value.
+ * @param maxLength Maximum accepted UTF-16 code-unit length after trimming.
+ * @returns Non-empty trimmed text without control characters.
+ * @throws Error when the value is not a string, is blank, is oversized, or contains control characters.
+ */
+function cleanBoundedText(name: string, value: unknown, maxLength: number): string {
+  if (typeof value !== 'string') throw new Error(`remote API detail ${name} is invalid`)
+  const cleaned = value.trim()
+  if (!cleaned || cleaned.length > maxLength || /[\u0000-\u001F\u007F]/u.test(cleaned)) {
+    throw new Error(`remote API detail ${name} is invalid`)
+  }
+  return cleaned
 }
 
 /**

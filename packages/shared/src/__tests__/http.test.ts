@@ -44,6 +44,28 @@ describe('APIClient', () => {
     expect(instance.post).toHaveBeenCalledWith('/v1/export', { from: '2026-01-01' })
   })
 
+  /** Verifies a valid persisted Access Token is attached before the first request after process startup. */
+  it('installs an initial Bearer token with the saved Cookie', () => {
+    const instance = {
+      get: vi.fn(),
+      post: vi.fn(),
+      request: vi.fn(),
+      interceptors: { response: { use: vi.fn() } },
+    }
+    mockAxios.create = vi.fn().mockReturnValue(instance)
+
+    new APIClient('http://api.example.com', 'SESSION=abc123', vi.fn(), 'disk-access-token')
+
+    expect(mockAxios.create).toHaveBeenCalledWith({
+      baseURL: 'http://api.example.com',
+      headers: {
+        Authorization: 'Bearer disk-access-token',
+        Cookie: 'SESSION=abc123',
+        'client-type': 'cli',
+      },
+    })
+  })
+
   /** Verifies a backend authentication response still drives one refresh before returning the retry body. */
   it('refreshes once after a backend authentication failure', async () => {
     const backendResponse = {
@@ -95,6 +117,29 @@ describe('APIClient', () => {
 
     await expect(client.get('/v1/orders')).rejects.toBe(authenticationError)
     expect(refresh).toHaveBeenCalledOnce()
+    expect(instance.get).toHaveBeenCalledOnce()
+  })
+
+  /** Verifies permission failures are returned immediately without attempting a credential exchange. */
+  it('does not refresh after a backend permission failure', async () => {
+    const permissionError = new PermissionError({
+      body: { code: 403, data: null, msg: 'forbidden' },
+      statusCode: 200,
+    })
+    const instance = {
+      defaults: { headers: { Cookie: 'SESSION=current' } },
+      get: vi.fn().mockRejectedValue(permissionError),
+      post: vi.fn(),
+      request: vi.fn(),
+      interceptors: { response: { use: vi.fn() } },
+    }
+    const refresh = vi.fn()
+    mockAxios.create = vi.fn().mockReturnValue(instance)
+
+    const client = new APIClient('http://api.example.com', 'SESSION=current', refresh, 'disk-access-token')
+
+    await expect(client.get('/v1/orders')).rejects.toBe(permissionError)
+    expect(refresh).not.toHaveBeenCalled()
     expect(instance.get).toHaveBeenCalledOnce()
   })
 

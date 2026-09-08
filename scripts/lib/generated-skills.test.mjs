@@ -13,6 +13,8 @@ test('generated domain skill stays thin and routes through backend find and desc
   assert.match(skill, /首次召回不得根据模块关键词预判或添加 `--domain`/)
   assert.match(skill, /用户明确限定 pim[\s\S]*hint[\s\S]*mbs find "<用户原始需求>" --domain pim/)
   assert.match(skill, /mbs describe <apiId>/)
+  assert.match(skill, /未包装的后端 response body/)
+  assert.doesNotMatch(skill, /detailCommand/)
   assert.match(skill, /operationType=QUERY.*mbs request/)
   assert.match(skill, /接口无需预生成业务命令/)
   assert.match(skill, /后端不可用时明确报告失败/)
@@ -33,6 +35,8 @@ test('main skill enforces unified backend discovery without local interface or t
   assert.match(skill, /mbs describe <apiId>/)
   assert.match(skill, /operationType=QUERY.*mbs request/)
   assert.match(skill, /不要求预生成业务命令|不是动态接口执行前提/)
+  assert.match(skill, /直接输出后端 response body/)
+  assert.doesNotMatch(skill, /执行其 `detailCommand`/)
   assert.match(skill, /远程发现不可用/)
 })
 

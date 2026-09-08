@@ -2,7 +2,7 @@
 
 | 记忆键 | 主题 | 当前结论 | 适用范围 | 当前来源 | 状态 | 主题文档 | 最后核验 |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| `AUTH-CREDENTIAL-BOUNDARY` | MBS 认证凭据边界 | `MBS_KEY` 永不接触；npm `1.1.3` 已发布 CLI 认证中心扫码入口、HTTP 匿名 Session 继续等待、两小时 Session-only 降级和可取消绝对时限；认证中心/网关配套修复待发布 | CLI 登录、刷新、认证缓存、Agent Skill、业务一次性重试、Docker 报表服务 | `20260904-[BUG]修复登录完成与请求认证` / `20260907-[RELEASE]发布1.1.3维护版本` / DEC-003 至 DEC-007 | CLI 已发布 + 配套服务端待发布；真实认证未联调 | [`./topics/MBS认证凭据边界.md`](./topics/MBS认证凭据边界.md) | 2026-09-07 / `bed3567` / npm `1.1.3` / CLI 297、认证中心 113、网关 21 项测试 |
+| `AUTH-CREDENTIAL-BOUNDARY` | MBS 认证凭据边界 | `MBS_KEY` 永不接触；当前工作区允许严格校验且未过期的 Access Token 安全落盘、跨进程复用，缺失/到期时请求前换取，所有失败均不隐式清登录材料 | CLI 登录、刷新、认证缓存、Agent Skill、业务一次性重试、Docker 报表服务 | `20260908-[BUG]修复长期Token会话续期` / DEC-003 至 DEC-008 | 本地已验证、待发布；真实认证未联调 | [`./topics/MBS认证凭据边界.md`](./topics/MBS认证凭据边界.md) | 2026-09-08 / 当前工作区 / 305 项测试、14 包构建、关键帮助通过 |
 | `CLI-RESPONSE-PASSTHROUGH` | CLI 后端响应透传 | npm `maintenance-1=1.0.5` 的业务查询成功与后端错误直接输出实际 HTTP body，不再添加 CLI envelope；认证刷新与非零退出码保留 | `packages/shared`、业务查询命令与公共输出文档 | `20260827-[RELEASE]发布1.0.5维护版本` | 已发布并完成官方源核验 | [`./topics/CLI后端响应透传.md`](./topics/CLI后端响应透传.md) | 2026-08-27 / `e406c69` / npm 1.0.5 |
 | `API-REQUEST-BODY-ENCODING` | 接口请求体编码 | npm `maintenance-1=1.0.4` 已由 `mbs request --api-id` 读取后端详情并统一编码七种 body 模式，manifest 生成与 serve 复用；官方源安装包核验通过 | `packages/shared`、`packages/cli`、生成器、Skill | `20260825-[RELEASE]发布1.0.4维护版本` | 已发布并完成官方源核验 | [`./topics/接口请求体编码.md`](./topics/接口请求体编码.md) | 2026-08-25 / `689e82e` / npm 1.0.4 |
 | `CLI-PUBLIC-COMPATIBILITY` | CLI 公开命令兼容性 | npm `0.1.58` 的五个业务命令已由独立兼容插件在本地恢复，命令 ID、flags、帮助和只读请求契约验证通过；旧 serve 路由不在本轮范围 | `packages/cli`、`packages/legacy` | `20260810-[BUG]恢复已发布CLI旧命令` | 本地已验证/待发布 | [`./topics/CLI公开命令兼容性.md`](./topics/CLI公开命令兼容性.md) | 2026-08-10 / `5b5c255` + 当前工作区 |
@@ -20,6 +20,7 @@
 - npm `1.0.7` 已默认允许远程 HTTP 认证并完成本地 V3、CI、Release 与官方源安装核验；尚未使用真实目标 HTTP 凭据链路联调，明文传输风险由部署方承担，服务端 HTTPS 可用后应立即重新配置。
 - npm `1.1.2` 已发布 compat-session 两类 Refresh 请求头修正并完成 V3、CI、Release、dist-tag、官方包与 Skill 验证；登录与刷新均不再发送 `client-type: cli`。真实认证联调仍未执行。
 - npm `1.1.3` 已发布 CLI 扫码登录闭环修复并完成 V3、两次分支 CI、Release、dist-tag 和官方包/Skill 验证；认证中心与网关配套修复尚未发布，真实认证与目标配置仍未联调。
+- 当前工作区的 Access Token 持久化、请求前换取和失败保留已通过本地 V3；尚未提交、发布或使用真实长期凭据与目标网关联调。
 - 目标环境 embedding/Milvus、workflow 重建与 30 条 eval 尚未验收；本次未使用真实登录态执行生产 find 业务查询。
 
 ## 重大决策
@@ -27,7 +28,8 @@
 - [`DEC-006 Agent 非交互登录交接`](./decisions/DEC-006-Agent非交互登录交接.md)：Agent 在对话中选择明确模式；扫码打开浏览器，Windows 密码/Token 模式在独立可见终端隐藏输入，秘密不进入 Agent 通道。
 - [`DEC-007 扫码登录闭环与 HTTP 会话降级`](./decisions/DEC-007-扫码登录闭环与HTTP会话降级.md)：扫码迁移到认证中心；HTTPS 强制双 Cookie，HTTP 服务端不创建 Refresh 且只在 current-user 验证后保存最长两小时 SESSION；URL 校验、页面快速失败、origin Cookie 与可取消 deadline 共同收口浏览器。
 - [`DEC-005 远程 HTTP 认证默认允许`](./decisions/DEC-005-远程HTTP认证默认允许.md)：合法远程 HTTP 不再要求确认或 Origin 授权；这是明文临时兼容，不得描述为加密。
-- [`DEC-004 长期凭据与短期 Access 边界`](./decisions/DEC-004-登录型Refresh与短期Access边界.md)：允许互斥缓存登录型 Refresh Cookie 或手工管理型 LongToken；Access Token 仅进程内存，普通业务请求不携带任何长期凭据。
+- [`DEC-008 认证失败保留与 Access 持久化`](./decisions/DEC-008-认证失败保留与Access持久化.md)：部分替代 DEC-004；Access Token 可在受保护缓存中跨进程复用，失败不清登录材料，仅显式 logout 或新 login 可清理。
+- [`DEC-004 长期凭据与短期 Access 边界`](./decisions/DEC-004-登录型Refresh与短期Access边界.md)：长期凭据互斥、只发认证中心、普通业务请求不携带长期凭据；Access 仅内存和失败清理规则已被 DEC-008 部分替代。
 - [`DEC-003 MBS_KEY 禁止持久化`](./decisions/DEC-003-MBS_KEY禁止持久化.md)：不得捕获、存储、转发或记录长期 `MBS_KEY`；登录只取得短期 Cookie，刷新改为重新授权或正式服务身份机制。
 - [`DEC-001 动态查询接口使用公共只读请求命令`](./decisions/DEC-001-动态查询接口使用公共只读请求命令.md)：普通动态接口固定复用 `/gateway/cli` 和网关权限，不新增 cli-service 执行接口。
 - [`DEC-002 后端响应原样透传`](./decisions/DEC-002-后端响应原样透传.md)：业务查询 stdout 直接表达后端 HTTP response body；本地错误、语义命令、serve 与 NDJSON 保持各自契约。

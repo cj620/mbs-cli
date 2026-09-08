@@ -3,8 +3,9 @@ import {
   APIClient,
   MBSError,
   NotAuthenticatedError,
+  backendFailureFromError,
   forceRefreshAuthContext,
-  getAuthContext,
+  getRequestAuthContext,
   getConfig,
   getWhoamiStatus,
   normalizeSessionCookie,
@@ -31,6 +32,41 @@ function errorPayload(err: unknown): { ok: false; error: { type: string; message
   }
   const message = err instanceof Error ? err.message : String(err)
   return { ok: false, error: { type: 'api', message, hint: '' } }
+}
+
+/**
+ * Sends one remote response-body value without adding a local envelope.
+ *
+ * <p>Fastify treats {@code null} as an absent payload, so JSON null is emitted explicitly. Other parsed
+ * bodies retain their value and are serialized by Fastify according to their native type.</p>
+ *
+ * @param reply Fastify response associated with the local gateway request.
+ * @param body Parsed upstream response body.
+ */
+function sendBackendBody(reply: FastifyReply, body: unknown): void {
+  if (body === null) {
+    reply.type('application/json').send('null')
+    return
+  }
+  reply.send(body)
+}
+
+/**
+ * Sends an authoritative upstream error body when available, otherwise a safe local error payload.
+ *
+ * @param reply Fastify response associated with the failed gateway request.
+ * @param error Failure returned by the authenticated client or created locally by the gateway.
+ */
+function sendGatewayError(reply: FastifyReply, error: unknown): void {
+  const backendFailure = backendFailureFromError(error)
+  if (backendFailure) {
+    reply.code(backendFailure.response.statusCode)
+    sendBackendBody(reply, backendFailure.response.body)
+    return
+  }
+  const payload = errorPayload(error)
+  const status = payload.error.type === 'auth' ? 401 : 500
+  reply.code(status).send(payload)
 }
 
 function attachCors(app: FastifyInstance): void {
@@ -83,11 +119,9 @@ export function registerRoutes(app: FastifyInstance, routes: ServeRoute[], getCl
             reply.type('application/x-ndjson').send(data)
             return
           }
-          reply.send({ ok: true, data })
+          sendBackendBody(reply, data)
         } catch (err) {
-          const payload = errorPayload(err)
-          const status = payload.error.type === 'auth' ? 401 : 500
-          reply.code(status).send(payload)
+          sendGatewayError(reply, err)
         }
       },
     })
@@ -113,11 +147,9 @@ function registerProxyAllRoute(app: FastifyInstance, getClient: () => Promise<AP
           params: (request.query ?? {}) as Record<string, unknown>,
           body: request.body,
         })
-        reply.send({ ok: true, data })
+        sendBackendBody(reply, data)
       } catch (err) {
-        const payload = errorPayload(err)
-        const status = payload.error.type === 'auth' ? 401 : 500
-        reply.code(status).send(payload)
+        sendGatewayError(reply, err)
       }
     },
   })
@@ -219,7 +251,7 @@ export default class Serve extends Command {
     let client: APIClient | undefined
     const getClient = async (): Promise<APIClient> => {
       if (client) return client
-      const { cookie: authenticationCookie } = await getAuthContext()
+      const { cookie: authenticationCookie, accessToken } = await getRequestAuthContext()
       const cookie = normalizeSessionCookie(authenticationCookie)
       if (!cookie) throw new NotAuthenticatedError()
       const { apiUrl } = getConfig()
@@ -229,7 +261,7 @@ export default class Serve extends Command {
         if (!refreshedCookie) throw new NotAuthenticatedError()
         return { cookie: refreshedCookie, accessToken }
       }
-      client = new APIClient(apiUrl, cookie, refresh)
+      client = new APIClient(apiUrl, cookie, refresh, accessToken)
       return client
     }
 

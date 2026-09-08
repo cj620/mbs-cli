@@ -8,6 +8,14 @@ export interface BackendResponseSnapshot {
   readonly statusCode: number
 }
 
+/** Classified upstream failure details used for control flow without changing the retained response body. */
+export interface BackendFailure {
+  /** Authoritative upstream response that must be exposed without a CLI envelope. */
+  readonly response: BackendResponseSnapshot
+  /** Process exit code associated with the classified failure. */
+  readonly exitCode: 1 | 2
+}
+
 /** Authentication failure that may retain the authoritative upstream response for final CLI output. */
 export class NotAuthenticatedError extends Error {
   readonly type = 'auth' as const
@@ -60,4 +68,24 @@ export class PermissionError extends Error {
     super('Permission denied')
     this.name = 'PermissionError'
   }
+}
+
+/**
+ * Reads the retained upstream response and exit policy from a shared client error.
+ *
+ * <p>This helper deliberately recognizes only errors created by the authenticated HTTP seam. It does not
+ * inspect, clone, redact, or otherwise transform {@link BackendResponseSnapshot.body}; callers receive the
+ * original snapshot reference. Local failures and unrelated errors return {@code undefined}.</p>
+ *
+ * @param error Unknown failure caught at a CLI or HTTP-gateway boundary.
+ * @returns Retained upstream failure details, or {@code undefined} when no upstream body exists.
+ */
+export function backendFailureFromError(error: unknown): BackendFailure | undefined {
+  if (error instanceof NotAuthenticatedError && error.backendResponse) {
+    return { response: error.backendResponse, exitCode: 2 }
+  }
+  if ((error instanceof PermissionError || error instanceof MBSError) && error.backendResponse) {
+    return { response: error.backendResponse, exitCode: 1 }
+  }
+  return undefined
 }

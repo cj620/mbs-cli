@@ -77,7 +77,7 @@ describe('isAllowedOrigin', () => {
 })
 
 describe('serve app', () => {
-  it('POST route forwards body and query to APIClient.post and wraps response', async () => {
+  it('POST route forwards body and query and passes through the response', async () => {
     const post = vi.fn().mockResolvedValue({ items: [{ id: 1 }] })
     const app = buildApp(manifest, async () => fakeClient(vi.fn(), post))
 
@@ -88,7 +88,7 @@ describe('serve app', () => {
     })
 
     expect(res.statusCode).toBe(200)
-    expect(JSON.parse(res.body)).toEqual({ ok: true, data: { items: [{ id: 1 }] } })
+    expect(JSON.parse(res.body)).toEqual({ items: [{ id: 1 }] })
     expect(post).toHaveBeenCalledWith(
       '/gateway/report-service/reports/search',
       { currentPage: 1, pageSize: 10 },
@@ -106,8 +106,20 @@ describe('serve app', () => {
     })
 
     expect(res.statusCode).toBe(200)
-    expect(JSON.parse(res.body).data).toEqual({ siteId: 'abc', name: 'foo' })
+    expect(JSON.parse(res.body)).toEqual({ siteId: 'abc', name: 'foo' })
     expect(get).toHaveBeenCalledWith('/v1/org/sites/abc', { params: { include: 'meta' } })
+  })
+
+  /** Verifies JSON null remains a literal null body instead of becoming an empty Fastify response. */
+  it('passes through a null response body', async () => {
+    const post = vi.fn().mockResolvedValue(null)
+    const app = buildApp(manifest, async () => fakeClient(vi.fn(), post))
+
+    const res = await app.inject({ method: 'POST', url: '/api/reports/search', payload: {} })
+
+    expect(res.statusCode).toBe(200)
+    expect(res.headers['content-type']).toContain('application/json')
+    expect(res.body).toBe('null')
   })
 
   it('returns shaped error when client throws MBSError', async () => {
@@ -173,6 +185,22 @@ describe('serve app', () => {
         ]))
       }
     }
+  })
+
+  /** Verifies an upstream HTTP/business error keeps both its response body and status. */
+  it('passes through the backend body carried by an upstream error', async () => {
+    const { MBSError } = await import('@mb-it-org/shared')
+    const body = { code: 42201, data: { field: 'page' }, msg: 'invalid page' }
+    const post = vi.fn().mockRejectedValue(new MBSError('hidden transport message', 'api', '', {
+      body,
+      statusCode: 422,
+    }))
+    const app = buildApp(manifest, async () => fakeClient(vi.fn(), post))
+
+    const res = await app.inject({ method: 'POST', url: '/api/reports/search', payload: {} })
+
+    expect(res.statusCode).toBe(422)
+    expect(JSON.parse(res.body)).toEqual(body)
   })
 
   /** Verifies metadata-aware serve routes use the shared urlencoded encoder and Content-Type. */
@@ -291,7 +319,7 @@ describe('serve app', () => {
     })
 
     expect(res.statusCode).toBe(200)
-    expect(JSON.parse(res.body)).toEqual({ ok: true, data: { items: [] } })
+    expect(JSON.parse(res.body)).toEqual({ items: [] })
     expect(handler.mock.calls[0][0]).toBe(upstreamPath)
   })
 
@@ -353,7 +381,7 @@ describe('serve app', () => {
     })
 
     expect(res.statusCode).toBe(200)
-    expect(JSON.parse(res.body)).toEqual({ ok: true, data: { items: [] } })
+    expect(JSON.parse(res.body)).toEqual({ items: [] })
     expect(request).toHaveBeenCalledWith('GET', '/gateway/report-service/reports/search', {
       params: { currentPage: '1' },
       body: undefined,
@@ -371,7 +399,7 @@ describe('serve app', () => {
     })
 
     expect(res.statusCode).toBe(200)
-    expect(JSON.parse(res.body)).toEqual({ ok: true, data: { total: 1 } })
+    expect(JSON.parse(res.body)).toEqual({ total: 1 })
     expect(request).toHaveBeenCalledWith('POST', '/gateway/report-service/reports/search', {
       params: {},
       body: { currentPage: 1, pageSize: 10 },

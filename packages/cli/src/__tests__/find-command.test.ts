@@ -3,6 +3,7 @@ import { describe, expect, it, vi } from 'vitest'
 import Describe from '../commands/describe.js'
 import Find from '../commands/find.js'
 import { RecallUnavailableError } from '../find/find-service.js'
+import { PermissionError } from '@mb-it-org/shared'
 
 describe('find command contract', () => {
   /**
@@ -66,6 +67,32 @@ describe('find command contract', () => {
       },
       meta: { diagnostics: { remoteFailure: 'connection_refused' } },
     })
+    expect(exit).toHaveBeenCalledWith(1)
+  })
+
+  /** Verifies find exposes an authoritative backend denial instead of replacing it with semantic-discovery text. */
+  it('passes through the backend body carried by a recall failure', async () => {
+    const log = vi.fn()
+    const exit = vi.fn()
+    const body = { code: 109, data: { scope: 'catalog' }, msg: 'permission denied' }
+    const failure = new RecallUnavailableError(new PermissionError({ body, statusCode: 200 }))
+
+    await Find.prototype.catch.call({ log, exit, includeDiagnostics: true } as never, failure)
+
+    expect(log).toHaveBeenCalledWith(JSON.stringify(body))
+    expect(exit).toHaveBeenCalledWith(1)
+  })
+
+  /** Verifies describe uses the same no-envelope backend-error output contract. */
+  it('passes through the backend body carried by a describe failure', async () => {
+    const log = vi.fn()
+    const exit = vi.fn()
+    const body = { code: 403, data: null, msg: 'forbidden' }
+    const failure = new RecallUnavailableError(new PermissionError({ body, statusCode: 403 }))
+
+    await Describe.prototype.catch.call({ log, exit, includeDiagnostics: true } as never, failure)
+
+    expect(log).toHaveBeenCalledWith(JSON.stringify(body))
     expect(exit).toHaveBeenCalledWith(1)
   })
 })

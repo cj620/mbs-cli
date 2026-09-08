@@ -11,8 +11,9 @@ export default class Refresh extends Command {
    *
    * <p>Login Refresh Cookie authentication rotates and persists its replacement;
    * management LongToken authentication retains the same credential. No
-   * credential is printed. The returned Access Token remains in process memory
-   * until this command exits, while compatible SESSION state is persisted.</p>
+   * credential is printed. The returned Access Token, its expiry, and compatible
+   * SESSION state are persisted in the protected current-user authentication cache.
+   * A failed refresh leaves the existing cache untouched.</p>
    */
   async run(): Promise<void> {
     await this.parse(Refresh)

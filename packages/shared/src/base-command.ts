@@ -4,10 +4,10 @@
  */
 // packages/skill-shared/src/base-command.ts
 import { Command } from "@oclif/core";
-import { getAuthContext, forceRefreshAuthContext } from "./auth/index.js";
+import { getRequestAuthContext, forceRefreshAuthContext } from "./auth/index.js";
 import { getConfig } from "./config.js";
 import { APIClient } from "./http.js";
-import { NotAuthenticatedError, MBSError, PermissionError } from "./errors.js";
+import { backendFailureFromError, NotAuthenticatedError, MBSError, PermissionError } from "./errors.js";
 import { normalizeSessionCookie } from "./auth/session-cookie.js";
 
 // Gateway entry every CLI request passes through; the gateway routes to the
@@ -24,7 +24,7 @@ const API_GATEWAY_PREFIX = "/gateway/cli";
  * @param body Parsed backend response body.
  * @returns Text written to CLI stdout.
  */
-function serializeBackendBody(body: unknown): string {
+export function serializeBackendBody(body: unknown): string {
   if (typeof body === "string") return body;
   return JSON.stringify(body) ?? "";
 }
@@ -44,7 +44,7 @@ export abstract class MBSCommand extends Command {
    */
   async init(): Promise<void> {
     await super.init();
-    const { cookie: authenticationCookie } = await getAuthContext();
+    const { cookie: authenticationCookie, accessToken } = await getRequestAuthContext();
     const cookie = normalizeSessionCookie(authenticationCookie);
     if (!cookie) throw new NotAuthenticatedError();
     const { apiUrl } = getConfig();
@@ -60,7 +60,7 @@ export abstract class MBSCommand extends Command {
     // forwards to the right business microservice. Command paths stay bare
     // (service-relative); the prefix is applied here in one place.
     const baseUrl = `${apiUrl.replace(/\/+$/, "")}${API_GATEWAY_PREFIX}`;
-    this.client = new APIClient(baseUrl, cookie, refreshAuth);
+    this.client = new APIClient(baseUrl, cookie, refreshAuth, accessToken);
   }
 
   /**
@@ -84,12 +84,10 @@ export abstract class MBSCommand extends Command {
    * @returns A promise that resolves only in test harnesses where {@code exit} does not terminate execution.
    */
   async catch(err: Error & { exitCode?: number }): Promise<void> {
-    if (
-      (err instanceof NotAuthenticatedError || err instanceof PermissionError || err instanceof MBSError) &&
-      err.backendResponse
-    ) {
-      this.log(serializeBackendBody(err.backendResponse.body));
-      this.exit(err instanceof NotAuthenticatedError ? 2 : 1);
+    const backendFailure = backendFailureFromError(err);
+    if (backendFailure) {
+      this.log(serializeBackendBody(backendFailure.response.body));
+      this.exit(backendFailure.exitCode);
       return;
     }
 

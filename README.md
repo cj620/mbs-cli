@@ -380,7 +380,7 @@ echo "select * from database.table limit 10" | mbs database query
 mbs database query --sql "select * from orders limit 10" --host pg-main --database order_db --schema public
 ```
 
-`mbs database query` 输出 NDJSON 流，适合大结果集增量消费；普通业务命令仍保持统一 JSON 包装。
+`mbs database query` 输出 NDJSON 流，适合大结果集增量消费；其他远端查询结果直接透传后端 response body。
 
 ---
 
@@ -512,7 +512,7 @@ pnpm test
 
 后端以业务 `code` 或 HTTP 非 2xx 表达错误时，CLI stdout 同样保留后端实际 response body，并通过退出码表达进程失败。没有后端 response body 的本地参数、配置、认证初始化或网络错误继续使用 CLI 自有 `{ok:false,error}` 结构。
 
-`mbs version/config/whoami/skills/find/describe/serve` 等本地或专用命令保留各自输出契约。`mbs database query` 直接透传服务端 NDJSON 流，便于 agent 增量消费大结果集。
+`mbs find`、`mbs describe` 及 `mbs serve` 的远端路由同样直接透传后端 response body，不增加 envelope，也不裁剪、重排或派生字段。`mbs version/config/whoami/skills`、登录状态、`serve` 启动信息和 `/__routes` 等本地管理输出保留各自契约；`mbs database query` 直接透传服务端 NDJSON 流，便于 agent 增量消费大结果集。
 
 退出码：`0` 成功 / `1` 参数或 API 错误 / `2` 认证失效（需重新执行任一交互式登录命令）
 

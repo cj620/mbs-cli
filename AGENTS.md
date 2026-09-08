@@ -91,7 +91,8 @@ export default class OrdersList extends MBSCommand {
 - `MBSCommand.output()` 禁止添加 `{ok,data}` 等 CLI envelope。
 - 后端业务错误或 HTTP 错误必须保留实际 response body；CLI 仍使用非零退出码。
 - 没有后端 response body 的本地参数、配置、认证初始化或网络错误，使用 CLI 自有安全错误结构。
-- `find`、`describe`、`serve`、本地管理命令和 NDJSON 流遵守各自文档，不自动套用业务响应透传。
+- `find`、`describe` 以及 `serve` 的远端代理路由同样直接透传后端 response body，不得增加 envelope、裁剪、重排、派生字段或替换后端错误。
+- `version`、`config`、`whoami`、`skills`、登录状态、`serve` 启动信息与 `/__routes` 等本地管理输出使用自身契约；NDJSON 流保持逐行直通。
 
 **退出码：** `0` 成功 / `1` 参数或 API 错误 / `2` 认证失败
 
