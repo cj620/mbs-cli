@@ -26,6 +26,7 @@
 - 认证缓存只保存标准化后的 `SESSION`、唯一长期凭据、登录型 Refresh 到期时间、成对且未过期的 Access Token/绝对到期时间和最小用户摘要；同时出现 `AUTH_REFRESH` 与管理型 `LongToken` 时失败关闭。无效、过期或不完整的 Access 字段被忽略，但不使其余登录上下文失效。
 - 管理型 LongToken 首次登录与 `mbs refresh` 都保存完整 Access 状态。新 CLI 进程复用仍有效的磁盘 Access；缺失或到期且有长期凭据时，请求初始化先调用 `/gateway/auth-center-service/auth/token/exchange/compat-session` 换取并保存。
 - HTTP 401 与业务码 401/601 最多触发一次额外交换和一次业务重试；403 保持权限拒绝语义。普通业务请求不携带长期凭据，最终有后端 response body 时原样传播。
+- 当前工作区的待发布修复已移除业务 `code=500` 的历史认证映射；500 现在作为普通 `MBSError` 原样保留后端 body、不会交换凭据或重试。真实脱敏联调确认 auth-center 能识别并复用 CLI 当前唯一 SESSION，因此 compat-session 不返回新 `Set-Cookie` 属于正常复用，而非客户端漏读。
 - 认证拒绝、交换/网络/响应失败和缓存写入失败均不主动清除认证缓存；缓存采用同目录临时文件替换，避免写入失败截断既有状态。只有显式 `mbs logout` 或开始新的 `mbs login` 可以清理。
 - 缺少 Refresh 的旧 SESSION-only 缓存在原两小时内兼容读取但不能刷新；其请求失败也不触发隐式清理。
 
@@ -57,6 +58,7 @@ Refresh 请求头修正已通过定向 17 项、shared 114 项、全仓 259 项�
 - `20260904-[BUG]刷新交换移除客户端类型头` 修正前两项任务中对 Refresh 的历史假设：compat-session 不按 login/refresh 区分客户端分类头，两类用途均不发送 `client-type: cli`；普通业务请求头保持不变。
 - `20260904-[BUG]修复登录完成与请求认证` 把扫码入口迁移到认证中心，补充服务端 state 绑定和 CLI 的受限 HTTP Session 降级，并修复网关把认证中心 401 错误改写为 403 的刷新阻断；CLI 部分已随 `1.1.3` 发布，服务端部分待发布。
 - `20260908-[BUG]修复长期Token会话续期` 通过 DEC-008 部分替代 DEC-004：Access Token 可安全落盘并跨进程复用，缺失/到期时请求前换取，任何失败都不隐式清空登录材料；已随 npm `1.1.4` 发布，真实联调仍未执行。
+- `20260908-[BUG]修复业务500认证误判并定位SESSION丢失` 修正 500 认证误判并完成首次脱敏真实链路核对；同一 SESSION 在 auth-center 可识别、在远程 ERP 热销列表链路缺少用户，目标运行态仍待发布后逐跳验收。
 - `20260904-[CHORE]本地替换刷新请求头修复版CLI` 将本机活动的系统级 npm 安装链接到当前工作区；该本机事实不等同于 npm 发布。
 - `MBS_KEY` 禁令和旧 key 删除式清理完全保留；新机制只使用认证中心正式签发的登录型 Refresh Cookie或后台管理型 `LongToken`。
 

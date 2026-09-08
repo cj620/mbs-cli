@@ -54,7 +54,6 @@ const API_CODE_HANDLERS: Record<number, (response: BackendResponseSnapshot) => E
   109: (response) => new PermissionError(response),
   403: (response) => new PermissionError(response),
   401: (response) => new NotAuthenticatedError(response),
-  500: (response) => new NotAuthenticatedError(response),
 };
 
 /**

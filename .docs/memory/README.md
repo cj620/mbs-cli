@@ -21,6 +21,7 @@
 - npm `1.1.2` 已发布 compat-session 两类 Refresh 请求头修正并完成 V3、CI、Release、dist-tag、官方包与 Skill 验证；登录与刷新均不再发送 `client-type: cli`。真实认证联调仍未执行。
 - npm `1.1.3` 已发布 CLI 扫码登录闭环修复并完成 V3、两次分支 CI、Release、dist-tag 和官方包/Skill 验证；认证中心与网关配套修复尚未发布，真实认证与目标配置仍未联调。
 - npm `1.1.4` 已发布远端响应统一透传与 Access Token 持久化、请求前换取和失败保留修复；305 项测试、14 包构建、两次分支 CI、Release、dist-tag 和官方包/Skill 验证通过，仍未使用真实长期凭据、目标网关或下游应用联调。
+- 当前工作区已本地修正“业务 `code=500` 被误判为认证失败”：只有 HTTP 401 或业务 401/601 可触发一次刷新；306 项测试和 14 包构建通过，尚未发布。真实脱敏联调已确认 auth-center 能识别并复用当前 SESSION，但同一 SESSION 在远程 ERP 热销列表链路中缺少用户，仍需目标实例/路由验收。
 - 目标环境 embedding/Milvus、workflow 重建与 30 条 eval 尚未验收；本次未使用真实登录态执行生产 find 业务查询。
 
 ## 重大决策

@@ -143,6 +143,34 @@ describe('APIClient', () => {
     expect(instance.get).toHaveBeenCalledOnce()
   })
 
+  /**
+   * Verifies an ordinary backend failure is returned after one request without invoking credential exchange.
+   *
+   * The classified error retains the authoritative response so command output can preserve the backend body.
+   */
+  it('does not refresh after a backend internal error', async () => {
+    const backendResponse = {
+      body: { code: 500, data: null, msg: 'internal error' },
+      statusCode: 200,
+    }
+    const apiError = new MBSError('internal error', 'api', '', backendResponse)
+    const instance = {
+      defaults: { headers: { Cookie: 'SESSION=current' } },
+      get: vi.fn().mockRejectedValue(apiError),
+      post: vi.fn(),
+      request: vi.fn(),
+      interceptors: { response: { use: vi.fn() } },
+    }
+    const refresh = vi.fn()
+    mockAxios.create = vi.fn().mockReturnValue(instance)
+
+    const client = new APIClient('http://api.example.com', 'SESSION=current', refresh, 'disk-access-token')
+
+    await expect(client.get('/v1/orders')).rejects.toBe(apiError)
+    expect(refresh).not.toHaveBeenCalled()
+    expect(instance.get).toHaveBeenCalledOnce()
+  })
+
   it('sends POST query params together with the body', async () => {
     const instance = {
       get: vi.fn(),
@@ -283,17 +311,34 @@ describe('APIClient response interceptor', () => {
     expect(() => interceptor({ data: { code: 403, data: null, msg: 'forbidden' } })).toThrow(PermissionError)
   })
 
-  it('throws NotAuthenticatedError for unknown error code', () => {
+  /** Verifies a generic backend 500 remains an API failure rather than authentication control flow. */
+  it('throws MBSError for backend code 500', () => {
     const { onFulfilled: interceptor } = captureInterceptor()
-    expect(() => interceptor({ data: { code: 500, data: null, msg: 'internal error' } })).toThrow(NotAuthenticatedError)
+    const body = { code: 500, data: null, msg: 'internal error' }
+
+    try {
+      interceptor({ data: body })
+      expect.fail('expected the backend business error to be thrown')
+    } catch (error) {
+      expect(error).toBeInstanceOf(MBSError)
+      expect(error).not.toBeInstanceOf(NotAuthenticatedError)
+      expect(error).toMatchObject({
+        message: 'internal error',
+        backendResponse: { body, statusCode: 200 },
+      })
+    }
   })
 
-  it('throws NotAuthenticatedError when msg is missing for code 500', () => {
+  /** Verifies a backend 500 without a message uses the safe generic API fallback. */
+  it('uses the generic API message when code 500 has no msg', () => {
     const { onFulfilled: interceptor } = captureInterceptor()
     try {
       interceptor({ data: { code: 500, data: null } })
+      expect.fail('expected the backend business error to be thrown')
     } catch (e) {
-      expect((e as NotAuthenticatedError).message).toBe('Not authenticated')
+      expect(e).toBeInstanceOf(MBSError)
+      expect(e).not.toBeInstanceOf(NotAuthenticatedError)
+      expect((e as MBSError).message).toBe('API error (code: 500)')
     }
   })
 
