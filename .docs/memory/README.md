@@ -4,14 +4,14 @@
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | `AUTH-CREDENTIAL-BOUNDARY` | MBS 认证凭据边界 | `MBS_KEY` 永不接触；npm `maintenance-1=1.1.5` 只允许 HTTP 401 或业务 401/601 触发一次刷新，普通业务 500 保持 API 错误且不改写登录材料 | CLI 登录、刷新、认证缓存、Agent Skill、业务一次性重试、Docker 报表服务 | `20260908-[RELEASE]发布1.1.5维护版本` / DEC-003 至 DEC-008 | CLI 已发布并完成官方源核验；服务端发布与目标运行态待验收 | [`./topics/MBS认证凭据边界.md`](./topics/MBS认证凭据边界.md) | 2026-09-08 / `913e6b2` / npm 1.1.5 |
 | `CLI-RESPONSE-PASSTHROUGH` | CLI 后端响应透传 | npm `maintenance-1=1.1.5` 保留实际后端 body；普通业务 500 为 `MBSError`、退出码 1，不再进入认证刷新或重试 | `packages/shared`、`packages/cli`、业务查询命令、serve 与公共输出文档 | `20260908-[RELEASE]发布1.1.5维护版本` | 已发布并完成官方源核验；远程 ERP 运行态与下游未完成验收 | [`./topics/CLI后端响应透传.md`](./topics/CLI后端响应透传.md) | 2026-09-08 / `913e6b2` / npm 1.1.5 |
-| `DATABASE-BULK-EXPORT` | 批量查询与可恢复导出 | 当前工作区为 database/API 导出增加显式键集游标、日志先行、原子断点、resume/restart、有界指数退避和 staging→流式 XLSX；已发布 1.1.5 尚不包含 | `packages/export`、database/export/dashboard Skill | `20260918-[FEATURE]增强批量查询与可恢复导出` / DEC-011 | 本地 V2 已验证，待发布与真实大批量链路验收 | [`./topics/批量查询与可恢复导出.md`](./topics/批量查询与可恢复导出.md) | 2026-09-18 / `23dea9c` + 当前工作区 |
+| `DATABASE-BULK-EXPORT` | 批量查询与可恢复导出 | npm `maintenance-1=1.1.6` 为 database/API 导出增加显式键集游标、日志先行、原子断点、resume/restart、有界指数退避和 staging→流式 XLSX | `packages/export`、database/export/dashboard Skill | `20260918-[RELEASE]发布1.1.6维护版本` / DEC-011 | 已发布并完成官方包核验；真实大批量链路待验收 | [`./topics/批量查询与可恢复导出.md`](./topics/批量查询与可恢复导出.md) | 2026-09-18 / `6f61f78` / npm 1.1.6 |
 | `API-REQUEST-BODY-ENCODING` | 接口请求体编码 | npm `maintenance-1=1.0.4` 已由 `mbs request --api-id` 读取后端详情并统一编码七种 body 模式，manifest 生成与 serve 复用；官方源安装包核验通过 | `packages/shared`、`packages/cli`、生成器、Skill | `20260825-[RELEASE]发布1.0.4维护版本` | 已发布并完成官方源核验 | [`./topics/接口请求体编码.md`](./topics/接口请求体编码.md) | 2026-08-25 / `689e82e` / npm 1.0.4 |
 | `CLI-PUBLIC-COMPATIBILITY` | CLI 公开命令兼容性 | npm `0.1.58` 的五个业务命令已由独立兼容插件在本地恢复，命令 ID、flags、帮助和只读请求契约验证通过；旧 serve 路由不在本轮范围 | `packages/cli`、`packages/legacy` | `20260810-[BUG]恢复已发布CLI旧命令` | 本地已验证/待发布 | [`./topics/CLI公开命令兼容性.md`](./topics/CLI公开命令兼容性.md) | 2026-08-10 / `5b5c255` + 当前工作区 |
 | `AUTH-DEV-PROXY` | 本地开发认证代理 | 本地代理方案已完整回滚，`apiUrl` 仍为服务器根地址；业务与语义召回经 `/gateway/cli`。npm `1.1.3` 已将 CLI 旧商城扫码入口替换为认证中心入口 | `packages/shared`、`packages/cli`、`packages/doris` | `20260907-[RELEASE]发布1.1.3维护版本`、DEC-007 | 已发布 CLI 基线；配套认证中心待发布 | [`./topics/本地开发认证代理.md`](./topics/本地开发认证代理.md) | 2026-09-07 / `bed3567` / npm `1.1.3` |
 | `CLI-GATEWAY-ROUTING` | CLI 网关路由 | 正式业务命令、公共 request 及 find/describe 统一以 `<apiUrl>/gateway/cli` 为上游基础前缀；13 条 manifest 路径已移除重复 `/gateway` | `packages/shared`、`packages/cli`、生成业务包、manifest | `20260814-[RELEASE]发布1.0.3维护版本` | 已随 maintenance-1 1.0.3 发布并核验 | [`./topics/CLI网关路由.md`](./topics/CLI网关路由.md) | 2026-08-14 / `ee9c017` / `maintenance-1-v1.0.3` |
-| `UNIFIED-SEMANTIC-DISCOVERY` | 统一语义发现 | 明确只读 SQL 或物理表由 `my-tables` 确认后直达数据库，目标未知才 find；首次 find 不预判 domain，参数依赖在 10 次共享预算内递归解析并在歧义或超预算前暂停 | `packages/cli`、`packages/doris`、Skill | `20260918-[FEATURE]明确数据库目标直达查询` / DEC-010；`20260909-[FEATURE]自动解析接口参数依赖` / DEC-009 | 基础链路已发布；两项 Agent Skill 变更已完成本地验证，待发布与真实链路验收 | [`./topics/统一语义发现.md`](./topics/统一语义发现.md) | 2026-09-18 / `23dea9c` + 当前工作区 / 本地 V2-V3 |
+| `UNIFIED-SEMANTIC-DISCOVERY` | 统一语义发现 | 明确只读 SQL 或物理表由 `my-tables` 确认后直达数据库，目标未知才 find；首次 find 不预判 domain，参数依赖在 10 次共享预算内递归解析并在歧义或超预算前暂停 | `packages/cli`、`packages/doris`、Skill | `20260918-[RELEASE]发布1.1.6维护版本` / DEC-009、DEC-010 | 已发布并完成官方包核验；真实参数依赖和数据库链路待验收 | [`./topics/统一语义发现.md`](./topics/统一语义发现.md) | 2026-09-18 / `6f61f78` / npm 1.1.6 |
 | `INTERFACE-SEMANTIC-DISCOVERY` | 接口语义发现 | name/domain 只作展示；详情按 ID 获取；动态 QUERY 接口通过受限 `mbs request GET|POST <path>` 执行，不依赖预生成命令 | `packages/cli`、Skill 生成与安装 | `20260812-[FEATURE]新增公共只读请求命令` | 已随 maintenance-1 1.0.2 发布 | [`./topics/接口语义发现.md`](./topics/接口语义发现.md) | 2026-08-12 / `8d2c3bb` / npm 1.0.2 |
-| `RELEASE-LINE-1X` | 1.0.0 长期维护分支 | `origin/1.0.0` 独立于 master；npm `maintenance-1=1.1.5` 已发布且 `latest` 保持 `0.1.59` | 全仓库、`packages/cli`、CI | `20260908-[RELEASE]发布1.1.5维护版本` | 已发布并完成官方源核验 | [`./topics/1.0.0长期维护分支.md`](./topics/1.0.0长期维护分支.md) | 2026-09-08 / `913e6b2` / `maintenance-1-v1.1.5` |
+| `RELEASE-LINE-1X` | 1.0.0 长期维护分支 | `origin/1.0.0` 独立于 master；npm `maintenance-1=1.1.6` 已发布且 `latest` 保持 `0.1.59` | 全仓库、`packages/cli`、CI | `20260918-[RELEASE]发布1.1.6维护版本` | 已发布并完成官方源核验 | [`./topics/1.0.0长期维护分支.md`](./topics/1.0.0长期维护分支.md) | 2026-09-18 / `6f61f78` / `maintenance-1-v1.1.6` |
 
 ## 当前技术债
 
@@ -23,10 +23,11 @@
 - npm `1.1.3` 已发布 CLI 扫码登录闭环修复并完成 V3、两次分支 CI、Release、dist-tag 和官方包/Skill 验证；认证中心与网关配套修复尚未发布，真实认证与目标配置仍未联调。
 - npm `1.1.4` 已发布远端响应统一透传与 Access Token 持久化、请求前换取和失败保留修复；305 项测试、14 包构建、两次分支 CI、Release、dist-tag 和官方包/Skill 验证通过，仍未使用真实长期凭据、目标网关或下游应用联调。
 - npm `1.1.5` 已发布“业务 `code=500` 不再误判为认证失败”的 CLI 修复：只有 HTTP 401 或业务 401/601 可触发一次刷新；306 项测试、14 包构建、两次分支 CI、Release、dist-tag 和官方包/Skill 验证通过。真实脱敏联调已确认 auth-center 能识别并复用当前 SESSION，但同一 SESSION 在远程 ERP 热销列表链路中缺少用户；ERP 与网关本地修复尚未发布，仍需目标实例/路由验收。
+- npm `1.1.6` 已发布参数依赖自动解析、明确数据库目标直达、可恢复批量查询与流式 XLSX；323 项测试、14 包构建、两次分支 CI、Release、dist-tag 和官方包/Skill 验证通过，`latest` 未移动。
 - 目标环境 embedding/Milvus、workflow 重建与 30 条 eval 尚未验收；本次未使用真实登录态执行生产 find 业务查询。
-- 参数依赖自动解析已通过本地契约测试、全仓测试、构建和 Skill 冒烟，但仍是 Agent Skill 协议而非 CLI 持久编排器；尚未发布，也未使用真实店铺列表与销售接口验证深链、暂停恢复和召回质量。
-- 明确 SQL/物理表直达数据库已通过本地契约测试、生成 dry-run、308 项测试和 14 包构建；尚未安装或发布，也未使用真实登录态验证 `my-tables → show-create-table/query`。
-- 可恢复批量导出已在当前工作区完成键集分页、任务日志、断点、有限重试和流式 Excel 实现；尚未安装、发布或使用真实大批量数据验证断点恢复、外部数据库方言和长时间稳定性。
+- 参数依赖自动解析已随 npm `1.1.6` 发布并通过官方包 Skill 冒烟，但仍是 Agent Skill 协议而非 CLI 持久编排器；尚未使用真实店铺列表与销售接口验证深链、暂停恢复和召回质量。
+- 明确 SQL/物理表直达数据库已随 npm `1.1.6` 发布并通过官方包 Skill 冒烟；尚未使用真实登录态验证 `my-tables → show-create-table/query`。
+- 可恢复批量导出已随 npm `1.1.6` 发布并通过官方包游标/恢复帮助与 Skill 验证；尚未使用真实大批量数据验证断点恢复、外部数据库方言和长时间稳定性。
 
 ## 重大决策
 
