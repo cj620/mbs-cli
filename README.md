@@ -290,7 +290,7 @@ mbs whoami
 | crm | `mbs crm` | 店铺运营监控：Amazon 账号健康、违规统计、合规评分 |
 | database | `mbs database` / `mbs db` | 多数据库源只读 SQL：先查当前用户可操作库表，再按源查看结构、DDL 与流式 SELECT |
 | doris | `mbs doris` | 数据库查询网关历史兼容入口；新任务优先使用 `mbs database` |
-| export | `mbs export` | 数据导出 xlsx：`plan` 预览 + `run` 执行两阶段流程，支持 database SELECT 与 API 分页 |
+| export | `mbs export` | 可恢复 xlsx 导出：`plan` 预览 + `run` 执行，支持 database/API 游标分页、任务日志、断点、有界重试和流式写入 |
 
 ---
 
@@ -373,14 +373,36 @@ mbs serve --project-apis
 
 ```bash
 mbs database my-tables
-mbs database schemas
-mbs database show-create-table --tableName database.table
-mbs database query --sql "select * from database.table limit 10"
-echo "select * from database.table limit 10" | mbs database query
-mbs database query --sql "select * from orders limit 10" --host pg-main --database order_db --schema public
+mbs database schemas --host doris-main --database eshop
+mbs database show-create-table --tableName database.table --host doris-main --database eshop
+mbs database query --sql "select order_id, amount from database.table limit 10" --host doris-main --database eshop
+echo "select order_id, amount from database.table limit 10" | mbs database query --host doris-main --database eshop
+mbs database query --sql "select order_id, status from orders limit 10" --host pg-main --database order_db --schema public
 ```
 
 `mbs database query` 输出 NDJSON 流，适合大结果集增量消费；其他远端查询结果直接透传后端 response body。
+
+大量数据库导出应显式提供稳定唯一的键集游标。Doris/MySQL 中文标识符使用反引号，PostgreSQL 使用双引号；外部数据源不能猜测方言：
+
+```bash
+mbs export plan --source database \
+  --host pg-main --database order_db --schema public \
+  --sql "SELECT order_id,created_at,status FROM orders WHERE created_at < '2026-09-19'" \
+  --cursor-columns created_at,order_id \
+  --cursor-dialect postgresql \
+  --batch-size 1000
+```
+
+`mbs export run` 会在第一次数据请求前创建任务日志、原子断点和 NDJSON 中间文件，并把路径输出到 stderr。成功批次先持久化，再从中间文件流式生成临时 XLSX；正常关闭和行数校验后才发布最终文件。暂时性错误默认指数退避重试三次，权限、SQL、参数等确定性错误不重试，所有重试和分页循环都有明确上限。
+
+中断后必须显式选择继续或重新全量执行；重新执行会保留旧任务证据：
+
+```bash
+mbs export run --plan <planId> --task <taskId> --resume
+mbs export run --plan <planId> --task <taskId> --restart
+```
+
+完整批量任务规范见 [skills/references/bulk-task.md](skills/references/bulk-task.md)，导出命令细节见 [skills/references/export/SKILL.md](skills/references/export/SKILL.md)。
 
 ---
 

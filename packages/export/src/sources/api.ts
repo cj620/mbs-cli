@@ -6,6 +6,8 @@ import type {
   PaginationPage,
   PreviewResult,
   Row,
+  SourceBatch,
+  SourceResumeState,
 } from '../types.js'
 
 function getPath(obj: unknown, path: string): unknown {
@@ -113,50 +115,100 @@ export async function previewApi(
   }
 }
 
+/**
+ * Streams every API batch through the compatibility row interface with a finite pagination guard.
+ *
+ * @param client Authenticated MBS transport.
+ * @param source API source and pagination definition.
+ * @param _columns Retained compatibility argument; API rows already carry named properties.
+ * @returns Asynchronous row stream.
+ */
 export async function* runApi(client: APIClient, source: ApiSourceConfig, _columns: ColumnSpec[]): AsyncIterable<Row> {
+  let state: SourceResumeState | undefined
+  for (let batch = 0; batch < 1_000_000; batch += 1) {
+    const result = await fetchApiBatch(client, source, state)
+    for (const row of result.rows) yield row
+    state = result.nextState
+    if (state.done) return
+  }
+  throw new Error('API pagination exceeded the maximum batch count')
+}
+
+/**
+ * Fetches exactly one API page and returns the durable state required for the next page.
+ *
+ * <p>Page-number and cursor protocols validate forward progress. The function contains no pagination loop,
+ * allowing the export task module to persist rows before it commits the returned resume state.</p>
+ *
+ * @param client Authenticated MBS transport.
+ * @param source API request and pagination metadata.
+ * @param state Last successfully persisted source state, omitted for the first batch.
+ * @returns Current rows and next durable state.
+ * @throws Error When resume state does not match the source or a cursor claims more data without advancing.
+ */
+export async function fetchApiBatch(
+  client: APIClient,
+  source: ApiSourceConfig,
+  state?: SourceResumeState,
+): Promise<SourceBatch> {
+  if (state?.done) return { rows: [], nextState: state }
   if (source.pagination.type === 'none') {
+    if (state && state.type !== 'api-none') throw new Error('API resume state does not match non-paginated source')
     const raw = await fetchPage(client, source, {}, {})
-    for (const r of asRows(getPath(raw, dataPathOf(source)))) yield r
-    return
+    return {
+      rows: asRows(getPath(raw, dataPathOf(source))),
+      nextState: { type: 'api-none', done: true },
+    }
   }
   if (source.pagination.type === 'page') {
-    const p = source.pagination
-    let page = p.startPage ?? 1
-    let totalSeen = 0
-    let declaredTotal: number | null = null
-    while (true) {
-      const inj = injectPageParams(source, p, page)
-      const raw = await fetchPage(client, source, inj.params, inj.body)
-      const rows = asRows(getPath(raw, p.dataPath))
-      if (declaredTotal === null && p.totalPath) {
-        const t = getPath(raw, p.totalPath)
-        if (typeof t === 'number') declaredTotal = t
-      }
-      for (const r of rows) yield r
-      totalSeen += rows.length
-      if (p.hasMorePath) {
-        const more = getPath(raw, p.hasMorePath)
-        if (!more) return
-      } else if (rows.length < p.pageSize) {
-        return
-      } else if (declaredTotal !== null && totalSeen >= declaredTotal) {
-        return
-      }
-      page += 1
+    if (state && state.type !== 'api-page') throw new Error('API resume state does not match page pagination')
+    const pagination = source.pagination
+    const page = state?.nextPage ?? pagination.startPage ?? 1
+    const injected = injectPageParams(source, pagination, page)
+    const raw = await fetchPage(client, source, injected.params, injected.body)
+    const rows = asRows(getPath(raw, pagination.dataPath))
+    const totalSeen = (state?.totalSeen ?? 0) + rows.length
+    let declaredTotal = state?.declaredTotal ?? null
+    if (declaredTotal === null && pagination.totalPath) {
+      const total = getPath(raw, pagination.totalPath)
+      if (typeof total === 'number' && Number.isFinite(total)) declaredTotal = total
     }
-  } else {
-    const p = source.pagination
-    let cursor: unknown = undefined
-    let first = true
-    while (true) {
-      const inj = injectCursorParams(source, p, first ? undefined : cursor)
-      first = false
-      const raw = await fetchPage(client, source, inj.params, inj.body)
-      const rows = asRows(getPath(raw, p.dataPath))
-      for (const r of rows) yield r
-      const next = getPath(raw, p.cursorResponsePath)
-      if (next === undefined || next === null || next === '' || next === cursor) return
-      cursor = next
+    const hasMore = pagination.hasMorePath ? Boolean(getPath(raw, pagination.hasMorePath)) : undefined
+    if (hasMore === true && rows.length === 0) {
+      throw new Error('API page pagination reported more data without returning rows')
     }
+    const done = hasMore === false
+      || (hasMore === undefined && rows.length < pagination.pageSize)
+      || (declaredTotal !== null && totalSeen >= declaredTotal)
+    return {
+      rows,
+      nextState: {
+        type: 'api-page',
+        nextPage: page + 1,
+        totalSeen,
+        declaredTotal,
+        done,
+      },
+    }
+  }
+
+  if (state && state.type !== 'api-cursor') throw new Error('API resume state does not match cursor pagination')
+  const pagination = source.pagination
+  const injected = injectCursorParams(source, pagination, state?.cursor)
+  const raw = await fetchPage(client, source, injected.params, injected.body)
+  const rows = asRows(getPath(raw, pagination.dataPath))
+  const next = getPath(raw, pagination.cursorResponsePath)
+  const terminal = next === undefined || next === null || next === ''
+  if (!terminal && state?.cursor !== undefined && Object.is(next, state.cursor)) {
+    throw new Error('API cursor did not advance')
+  }
+  return {
+    rows,
+    nextState: {
+      type: 'api-cursor',
+      ...(terminal ? {} : { cursor: next }),
+      totalSeen: (state?.totalSeen ?? 0) + rows.length,
+      done: terminal,
+    },
   }
 }

@@ -5,12 +5,22 @@ export interface ColumnSpec {
 
 export type Row = Record<string, unknown>
 
+export type DatabaseDialect = 'doris' | 'mysql' | 'postgresql'
+
+export interface DatabaseCursorPagination {
+  type: 'cursor'
+  columns: string[]
+  dialect: DatabaseDialect
+  pageSize: number
+}
+
 export interface DatabaseSourceConfig {
   type: 'database' | 'doris'
   sql: string
   host?: string
   database?: string
   schema?: string
+  pagination?: DatabaseCursorPagination
 }
 
 export interface PaginationNone {
@@ -64,4 +74,15 @@ export interface PreviewResult {
   columns: ColumnSpec[]
   estimatedRows: number | null
   sampleRows: Row[]
+}
+
+export type SourceResumeState =
+  | { type: 'api-none'; done: boolean }
+  | { type: 'api-page'; nextPage: number; totalSeen: number; declaredTotal: number | null; done: boolean }
+  | { type: 'api-cursor'; cursor?: unknown; totalSeen: number; done: boolean }
+  | { type: 'database-cursor'; cursor?: unknown[]; totalSeen: number; done: boolean }
+
+export interface SourceBatch {
+  rows: Row[]
+  nextState: SourceResumeState
 }

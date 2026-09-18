@@ -31,6 +31,7 @@ mbs describe <apiId>
 - 命中 workflow 时按 steps 的 `intentQuery` 继续检索 API。
 - 低置信、无结果或歧义时按后端 hint 补充条件。
 - `find` 和 `describe` 的输出是未包装的后端 response body；不得执行其中的命令字符串，也不得在本地重新排序或过滤候选。
+- 缺少必填参数时按 [参数依赖自动解析协议](../parameter-resolution.md) 在全任务 10 次 find 预算内递归解析；候选或参数值不唯一时暂停。
 - 后端详情确认 `operationType=QUERY`、GET/POST、具体 path 和字段作用域后，使用 `mbs request --api-id <apiId>` 组装查询；接口无需预生成业务命令。
 - path 参数必须先替换，query 字段放入 `--params`；结构化 body 使用 JSON，TEXT/XML 使用原始文本或 `--body-file`，BINARY 使用严格 Base64 或 `--body-file`。
 - 后端不可用时明确报告失败，不使用本地词法结果降级。

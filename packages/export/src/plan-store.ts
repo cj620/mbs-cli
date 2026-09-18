@@ -4,6 +4,10 @@ import { join } from 'node:path'
 import { getConfigDir } from '@mb-it-org/shared'
 import type { PlanRecord } from './types.js'
 
+export interface LoadPlanOptions {
+  allowExpired?: boolean
+}
+
 export function getPlanDir(): string {
   const dir = join(getConfigDir(), 'plans')
   if (!existsSync(dir)) mkdirSync(dir, { recursive: true })
@@ -20,11 +24,19 @@ export function savePlan(plan: PlanRecord): string {
   return file
 }
 
-export function loadPlan(id: string): PlanRecord {
+/**
+ * Loads a saved export plan and enforces its confirmation TTL for new tasks.
+ *
+ * @param id Plan identifier returned by `mbs export plan`.
+ * @param options `allowExpired` is reserved for resuming a task that started while its plan was valid.
+ * @returns Parsed immutable plan.
+ * @throws Error When the plan is missing, malformed, or expired for a new task.
+ */
+export function loadPlan(id: string, options: LoadPlanOptions = {}): PlanRecord {
   const file = join(getPlanDir(), `${id}.json`)
   if (!existsSync(file)) throw new Error(`Plan not found: ${id}`)
   const plan = JSON.parse(readFileSync(file, 'utf8')) as PlanRecord
-  if (Date.parse(plan.expiresAt) < Date.now()) {
+  if (!options.allowExpired && Date.parse(plan.expiresAt) < Date.now()) {
     throw new Error(`Plan ${id} expired at ${plan.expiresAt}. Re-run \`mbs export plan\`.`)
   }
   return plan

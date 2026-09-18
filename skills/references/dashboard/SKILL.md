@@ -28,7 +28,7 @@ description: Use for cross-border e-commerce data analysis, visualization, one-o
 1. 阅读 [domain.md](domain.md)，使用跨境电商铺货领域术语描述问题。
 2. 定位正式业务命令；跨域聚合或数据库分析时阅读 `../database/SKILL.md`，先执行 `my-tables`，再确认表和字段。
 3. 写下指标、维度、粒度、时间范围和过滤条件。禁止猜测字段、枚举、ID 或指标口径。
-4. 数据量大、需要聚合或需要反复试算时，按 [python-service.md](python-service.md) 将计算交给本地 Python，只把压缩结果交回 Agent。
+4. 数据量大、需要聚合或需要反复试算时，先读取[长时间批量任务执行协议](../bulk-task.md)，完成带游标、日志、断点和有界重试的可恢复脚本，再按 [python-service.md](python-service.md) 将计算交给本地 Python，只把压缩结果交回 Agent。
 5. 按 [analysis.md](analysis.md) 校验数据质量、总分一致性、异常值和结论证据。
 6. 仅页面模式阅读 [visualization.md](visualization.md)，复制 `assets/commerce-dashboard/` 到用户指定的输出目录，再按业务修改副本。禁止原地修改内置模板。
 7. 页面使用 `data.js` 中的稳定数据契约。长期看板可实现 `window.loadMbsDashboardData(filters)` 异步加载，复用本机 `mbs serve`。
