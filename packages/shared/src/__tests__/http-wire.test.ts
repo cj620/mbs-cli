@@ -7,8 +7,9 @@ import {
 } from 'node:http'
 import type { AddressInfo } from 'node:net'
 import { describe, expect, it, vi } from 'vitest'
-import { NotAuthenticatedError } from '../errors.js'
-import { APIClient } from '../http.js'
+import { serializeBackendBody } from '../base-command.js'
+import { MBSError, NotAuthenticatedError } from '../errors.js'
+import { APIClient, MAX_STREAM_ERROR_BODY_BYTES } from '../http.js'
 import { fetchCurrentUser } from '../auth/session-login.js'
 
 /** Mutable observations and response policy for one authenticated wire scenario. */
@@ -35,6 +36,12 @@ interface SlowDripScenario {
   receivedCookie?: string
 }
 
+/** Request count recorded while a streamed authentication failure is retried. */
+interface StreamAuthenticationScenario {
+  /** Number of HTTP requests received by the synthetic endpoint. */
+  requestCount: number
+}
+
 const syntheticAuthUser = {
   userId: 'wire-user',
   displayName: 'Wire Test User',
@@ -42,6 +49,72 @@ const syntheticAuthUser = {
   companyName: 'Test Company',
   department: 'Operations',
   position: 'Analyst',
+}
+
+const syntheticStreamErrorBody = {
+  code: 422,
+  data: null,
+  msg: 'synthetic query rejection',
+}
+
+/**
+ * Returns one deterministic JSON failure for a streaming POST without exposing
+ * any real endpoint, query, credential, or business response.
+ *
+ * @param _request Incoming loopback request; its content is intentionally ignored.
+ * @param response Outgoing synthetic HTTP error response owned by this handler.
+ */
+function handleStreamErrorRequest(
+  _request: IncomingMessage,
+  response: ServerResponse,
+): void {
+  response.writeHead(422, { 'Content-Type': 'application/json' })
+  response.end(JSON.stringify(syntheticStreamErrorBody))
+}
+
+/**
+ * Returns a deterministic plain-text gateway failure for streamed error passthrough testing.
+ *
+ * @param _request Incoming loopback request; its content is intentionally ignored.
+ * @param response Outgoing synthetic HTTP error response owned by this handler.
+ */
+function handleStreamTextErrorRequest(
+  _request: IncomingMessage,
+  response: ServerResponse,
+): void {
+  response.writeHead(502, { 'Content-Type': 'text/plain; charset=utf-8' })
+  response.end('synthetic upstream unavailable')
+}
+
+/**
+ * Returns an HTTP 401 JSON body and records each request so the one-retry invariant is observable.
+ *
+ * @param scenario Mutable request counter owned by the current test.
+ * @param _request Incoming loopback request; its content is intentionally ignored.
+ * @param response Outgoing synthetic authentication rejection.
+ */
+function handleStreamAuthenticationErrorRequest(
+  scenario: StreamAuthenticationScenario,
+  _request: IncomingMessage,
+  response: ServerResponse,
+): void {
+  scenario.requestCount += 1
+  response.writeHead(401, { 'Content-Type': 'application/json' })
+  response.end(JSON.stringify({ code: 401, data: null, msg: 'synthetic authentication required' }))
+}
+
+/**
+ * Returns a body one byte beyond the shared buffering limit to verify bounded failure and stream disposal.
+ *
+ * @param _request Incoming loopback request; its content is intentionally ignored.
+ * @param response Outgoing oversized synthetic response.
+ */
+function handleOversizedStreamErrorRequest(
+  _request: IncomingMessage,
+  response: ServerResponse,
+): void {
+  response.writeHead(500, { 'Content-Type': 'text/plain; charset=utf-8' })
+  response.end('x'.repeat(MAX_STREAM_ERROR_BODY_BYTES + 1))
 }
 
 /**
@@ -241,6 +314,111 @@ describe('APIClient wire authentication', () => {
       expect(scenario.receivedHeaders[1]).toMatchObject({
         authorization: 'Bearer synthetic-memory-access-token',
         cookie: 'SESSION=refreshed-session',
+      })
+    } finally {
+      await closeLoopbackServer(server)
+    }
+  })
+})
+
+describe('APIClient wire streaming errors', () => {
+  /**
+   * Reproduces the database-query failure with Axios' real Node adapter and
+   * requires the retained backend body to be JSON-serializable rather than an
+   * IncomingMessage containing a circular Socket graph.
+   */
+  it('materializes a non-2xx streaming JSON response before retaining it', async () => {
+    const server = createServer(handleStreamErrorRequest)
+    const baseUrl = await listenOnLoopback(server)
+    const client = new APIClient(baseUrl, 'SESSION=synthetic-session', vi.fn())
+
+    try {
+      const error: unknown = await client
+        .postStream('/query', { sql: 'SELECT synthetic_column FROM synthetic_table LIMIT 1' })
+        .catch((cause: unknown) => cause)
+
+      expect(error).toBeInstanceOf(MBSError)
+      if (!(error instanceof MBSError)) throw new Error('Expected a classified API failure')
+
+      expect(() => serializeBackendBody(error.backendResponse?.body)).not.toThrow()
+      expect(error.backendResponse).toEqual({
+        body: syntheticStreamErrorBody,
+        statusCode: 422,
+      })
+    } finally {
+      await closeLoopbackServer(server)
+    }
+  })
+
+  /** Verifies non-JSON streamed failures retain their exact text instead of a transport object. */
+  it('retains a non-2xx streaming text response as text', async () => {
+    const server = createServer(handleStreamTextErrorRequest)
+    const baseUrl = await listenOnLoopback(server)
+    const client = new APIClient(baseUrl, 'SESSION=synthetic-session', vi.fn())
+
+    try {
+      const error: unknown = await client
+        .postStream('/query', { sql: 'SELECT synthetic_column FROM synthetic_table LIMIT 1' })
+        .catch((cause: unknown) => cause)
+
+      expect(error).toBeInstanceOf(MBSError)
+      if (!(error instanceof MBSError)) throw new Error('Expected a classified API failure')
+      expect(error.backendResponse).toEqual({
+        body: 'synthetic upstream unavailable',
+        statusCode: 502,
+      })
+    } finally {
+      await closeLoopbackServer(server)
+    }
+  })
+
+  /**
+   * Verifies streamed HTTP 401 responses are materialized before control flow and still trigger exactly one
+   * credential refresh and one retry before the final backend body is retained.
+   */
+  it('refreshes once and retains the final streaming HTTP 401 body', async () => {
+    const scenario: StreamAuthenticationScenario = { requestCount: 0 }
+    const server = createServer(handleStreamAuthenticationErrorRequest.bind(undefined, scenario))
+    const baseUrl = await listenOnLoopback(server)
+    const refreshAuthentication = vi.fn(async () => ({
+      cookie: 'SESSION=synthetic-refreshed-session',
+      accessToken: 'synthetic-refreshed-access-token',
+    }))
+    const client = new APIClient(baseUrl, 'SESSION=synthetic-session', refreshAuthentication)
+
+    try {
+      const error: unknown = await client
+        .postStream('/query', { sql: 'SELECT synthetic_column FROM synthetic_table LIMIT 1' })
+        .catch((cause: unknown) => cause)
+
+      expect(error).toBeInstanceOf(NotAuthenticatedError)
+      if (!(error instanceof NotAuthenticatedError)) throw new Error('Expected an authentication failure')
+      expect(error.backendResponse).toEqual({
+        body: { code: 401, data: null, msg: 'synthetic authentication required' },
+        statusCode: 401,
+      })
+      expect(refreshAuthentication).toHaveBeenCalledTimes(1)
+      expect(scenario.requestCount).toBe(2)
+    } finally {
+      await closeLoopbackServer(server)
+    }
+  })
+
+  /** Verifies an oversized streamed error is destroyed and replaced with a safe local failure. */
+  it('rejects a streaming error body that exceeds the buffering limit', async () => {
+    const server = createServer(handleOversizedStreamErrorRequest)
+    const baseUrl = await listenOnLoopback(server)
+    const client = new APIClient(baseUrl, 'SESSION=synthetic-session', vi.fn())
+
+    try {
+      const error: unknown = await client
+        .postStream('/query', { sql: 'SELECT synthetic_column FROM synthetic_table LIMIT 1' })
+        .catch((cause: unknown) => cause)
+
+      expect(error).toBeInstanceOf(MBSError)
+      expect(error).toMatchObject({
+        message: 'Backend error response is too large',
+        backendResponse: undefined,
       })
     } finally {
       await closeLoopbackServer(server)

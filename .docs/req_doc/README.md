@@ -23,6 +23,7 @@
 
 | 任务文件夹 | 类型 | 核心技术点 / 修复根因 | 状态 | 生产上线/修复时间 | 关联文档路径 |
 | :--- | :--- | :--- | :--- | :--- | :--- |
+| `20260918-[BUG]修复流式HTTP错误响应序列化` | BUG / L3 | `postStream` 的非 2xx body 是含 Socket 的 `IncomingMessage`；共享 HTTP seam 有界读取并恢复 JSON/文本后再分类，保持一次认证刷新与成功 NDJSON 直通 | ✅ 已完成 / 本机已 link：327 条测试、14 包构建、pack dry-run、版本/help/Skill/依赖目标核验通过；未执行真实链路或 npm 发布 | 不适用 | [`./20260918-[BUG]修复流式HTTP错误响应序列化/`](./20260918-[BUG]修复流式HTTP错误响应序列化/) |
 | `20260918-[RELEASE]发布1.1.6维护版本` | RELEASE / L3 | 发布参数依赖自动解析、明确数据库目标直达查询、可恢复批量查询与流式 Excel 导出；初次更新 `maintenance-1`，后续按用户明确授权提升 `latest` | ✅ 已完成 / 已发布：323 项测试、14 包构建、两次分支 CI、Release、dist-tag、默认通道隔离安装与官方包/Skill 核验通过；`maintenance-1=latest=1.1.6` | 2026-09-18 | [`./20260918-[RELEASE]发布1.1.6维护版本/`](./20260918-[RELEASE]发布1.1.6维护版本/) |
 | `20260908-[RELEASE]发布1.1.5维护版本` | RELEASE / SECURITY | 发布业务 500 不再误触发认证刷新；仅更新 npm `maintenance-1`，保持 `latest` 不变 | ✅ 已完成 / 已发布：306 项测试、14 包构建、两次分支 CI、Release、dist-tag 与官方包/Skill 核验通过 | 2026-09-08 | [`./20260908-[RELEASE]发布1.1.5维护版本/`](./20260908-[RELEASE]发布1.1.5维护版本/) |
 | `20260908-[RELEASE]发布1.1.4维护版本` | RELEASE / SECURITY / BREAKING CONTRACT | 发布远端响应统一透传与长期 Token 会话续期修复；仅更新 npm `maintenance-1`，保持 `latest` 不变 | ✅ 已完成 / 已发布：305 项测试、14 包构建、两次分支 CI、Release、dist-tag 与官方包/Skill 核验通过 | 2026-09-08 | [`./20260908-[RELEASE]发布1.1.4维护版本/`](./20260908-[RELEASE]发布1.1.4维护版本/) |

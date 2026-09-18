@@ -4,7 +4,7 @@
  */
 // packages/skill-shared/src/http.ts
 import axios, { type AxiosInstance, type AxiosRequestConfig, type AxiosResponse } from "axios";
-import type { Readable } from "node:stream";
+import { Readable } from "node:stream";
 import { NotAuthenticatedError, PermissionError, MBSError } from "./errors.js";
 import type { BackendResponseSnapshot } from "./errors.js";
 import type { RequestContentHeaders } from "./request-body.js";
@@ -56,6 +56,103 @@ const API_CODE_HANDLERS: Record<number, (response: BackendResponseSnapshot) => E
   401: (response) => new NotAuthenticatedError(response),
 };
 
+/** Maximum buffered size for a non-success streaming response body. */
+export const MAX_STREAM_ERROR_BODY_BYTES = 1_000_000;
+
+/**
+ * Throws the stable classified error for one HTTP response after its body is safe to retain.
+ *
+ * <p>The body remains unchanged after parsing and is used only for final response passthrough. HTTP status
+ * controls authentication and permission behavior without adding a CLI response envelope.</p>
+ *
+ * @param message Axios transport message used only by the local API error fallback.
+ * @param statusCode Upstream HTTP status used for authentication and permission classification.
+ * @param body Parsed JSON or text body retained for the command output boundary.
+ * @throws NotAuthenticatedError for HTTP 401 responses.
+ * @throws PermissionError for HTTP 403 responses.
+ * @throws MBSError for every other non-success HTTP response.
+ */
+function throwClassifiedHttpError(
+  message: string,
+  statusCode: number,
+  body: unknown,
+): never {
+  const backendResponse: BackendResponseSnapshot = { body, statusCode };
+  if (statusCode === 401) throw new NotAuthenticatedError(backendResponse);
+  if (statusCode === 403) throw new PermissionError(backendResponse);
+  throw new MBSError(message, "api", "", backendResponse);
+}
+
+/**
+ * Reads a failed streaming response into bounded memory so network objects never cross the HTTP seam.
+ *
+ * <p>The caller owns the response stream. Normal completion consumes it fully; an oversized body is destroyed
+ * immediately. Successful database NDJSON responses do not use this function and remain streaming.</p>
+ *
+ * @param stream Non-success Axios response stream from the Node HTTP adapter.
+ * @returns UTF-8 response text, including an empty string for an empty body.
+ * @throws MBSError when the response exceeds {@link MAX_STREAM_ERROR_BODY_BYTES}.
+ * @throws Error when the underlying response stream fails while being read.
+ */
+async function readStreamErrorBody(stream: Readable): Promise<string> {
+  const chunks: Buffer[] = [];
+  let totalBytes = 0;
+
+  for await (const chunk of stream) {
+    const buffer = Buffer.isBuffer(chunk) ? chunk : Buffer.from(String(chunk));
+    totalBytes += buffer.length;
+    if (totalBytes > MAX_STREAM_ERROR_BODY_BYTES) {
+      stream.destroy();
+      throw new MBSError(
+        "Backend error response is too large",
+        "api",
+        `The response exceeded ${MAX_STREAM_ERROR_BODY_BYTES} bytes`,
+      );
+    }
+    chunks.push(buffer);
+  }
+
+  return Buffer.concat(chunks).toString("utf8");
+}
+
+/**
+ * Restores the same JSON-or-text body shape used by ordinary Axios responses.
+ *
+ * @param text Fully consumed UTF-8 response text.
+ * @param contentType Upstream Content-Type header; JSON media types opt into parsing.
+ * @returns Parsed JSON when valid, otherwise the exact response text.
+ */
+function parseStreamErrorBody(text: string, contentType: string): unknown {
+  if (!contentType.toLowerCase().includes("json")) return text;
+  try {
+    const parsed: unknown = JSON.parse(text);
+    return parsed;
+  } catch {
+    return text;
+  }
+}
+
+/**
+ * Consumes and classifies a non-success streaming response before it reaches command output.
+ *
+ * @param message Axios transport message used by the generic API classification.
+ * @param statusCode Upstream HTTP status.
+ * @param stream Node response stream owned by this failure path.
+ * @param contentType Upstream media type used only to distinguish JSON from text.
+ * @returns A promise that always rejects through a classified error.
+ * @throws Error when reading fails, the body is oversized, or classification emits the final error.
+ */
+async function rejectStreamedHttpResponse(
+  message: string,
+  statusCode: number,
+  stream: Readable,
+  contentType: string,
+): Promise<never> {
+  const text = await readStreamErrorBody(stream);
+  const body = parseStreamErrorBody(text, contentType);
+  return throwClassifiedHttpError(message, statusCode, body);
+}
+
 /**
  * Validates successful HTTP responses while retaining the complete body for business failures.
  *
@@ -92,23 +189,30 @@ function validateApiResponse(response: AxiosResponse<unknown>): AxiosResponse<un
  * Converts an Axios HTTP rejection into a classified error that retains the authoritative response body.
  *
  * @param error Unknown rejection received by the response interceptor.
- * @returns This function never returns; the return type documents interceptor control flow.
+ * <p>Axios exposes non-success bodies as Node streams when a caller requested {@code responseType=stream}.
+ * Those bodies are consumed and normalized before classification so Socket graphs never reach JSON output.</p>
+ *
+ * @returns Either throws synchronously for ordinary responses or returns a promise that rejects after a streamed
+ * response body has been consumed.
  * @throws NotAuthenticatedError for HTTP 401 so the existing one-time refresh path remains active.
  * @throws PermissionError for HTTP 403.
  * @throws MBSError for other HTTP responses.
  * @throws unknown The original rejection when Axios did not receive an HTTP response.
  */
-function rejectApiResponse(error: unknown): never {
+function rejectApiResponse(error: unknown): never | Promise<never> {
   if (!axios.isAxiosError<unknown>(error) || !error.response) throw error;
 
-  const backendResponse: BackendResponseSnapshot = {
-    body: error.response.data,
-    statusCode: error.response.status,
-  };
-  if (error.response.status === 401) throw new NotAuthenticatedError(backendResponse);
-  if (error.response.status === 403) throw new PermissionError(backendResponse);
+  if (error.response.data instanceof Readable) {
+    const contentType = String(error.response.headers["content-type"] ?? "");
+    return rejectStreamedHttpResponse(
+      error.message,
+      error.response.status,
+      error.response.data,
+      contentType,
+    );
+  }
 
-  throw new MBSError(error.message, "api", "", backendResponse);
+  return throwClassifiedHttpError(error.message, error.response.status, error.response.data);
 }
 
 /**

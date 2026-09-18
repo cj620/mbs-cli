@@ -3,7 +3,7 @@
 | 记忆键 | 主题 | 当前结论 | 适用范围 | 当前来源 | 状态 | 主题文档 | 最后核验 |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | `AUTH-CREDENTIAL-BOUNDARY` | MBS 认证凭据边界 | `MBS_KEY` 永不接触；npm `maintenance-1=1.1.5` 只允许 HTTP 401 或业务 401/601 触发一次刷新，普通业务 500 保持 API 错误且不改写登录材料 | CLI 登录、刷新、认证缓存、Agent Skill、业务一次性重试、Docker 报表服务 | `20260908-[RELEASE]发布1.1.5维护版本` / DEC-003 至 DEC-008 | CLI 已发布并完成官方源核验；服务端发布与目标运行态待验收 | [`./topics/MBS认证凭据边界.md`](./topics/MBS认证凭据边界.md) | 2026-09-08 / `913e6b2` / npm 1.1.5 |
-| `CLI-RESPONSE-PASSTHROUGH` | CLI 后端响应透传 | npm `maintenance-1=1.1.5` 保留实际后端 body；普通业务 500 为 `MBSError`、退出码 1，不再进入认证刷新或重试 | `packages/shared`、`packages/cli`、业务查询命令、serve 与公共输出文档 | `20260908-[RELEASE]发布1.1.5维护版本` | 已发布并完成官方源核验；远程 ERP 运行态与下游未完成验收 | [`./topics/CLI后端响应透传.md`](./topics/CLI后端响应透传.md) | 2026-09-08 / `913e6b2` / npm 1.1.5 |
+| `CLI-RESPONSE-PASSTHROUGH` | CLI 后端响应透传 | npm `1.1.5` 已保留实际后端 body；当前 `1.1.6` 工作区进一步将流式非 2xx 响应有界物化为 JSON/文本，避免序列化 `IncomingMessage` / `Socket` | `packages/shared`、`packages/cli`、业务查询命令、serve 与公共输出文档 | `20260918-[BUG]修复流式HTTP错误响应序列化` | 本机已 link 并通过 V3；流式修复尚未发布，真实后端未验收 | [`./topics/CLI后端响应透传.md`](./topics/CLI后端响应透传.md) | 2026-09-18 / `114adb8 + 当前工作区` / 本机 link 1.1.6 |
 | `DATABASE-BULK-EXPORT` | 批量查询与可恢复导出 | npm `maintenance-1=1.1.6` 为 database/API 导出增加显式键集游标、日志先行、原子断点、resume/restart、有界指数退避和 staging→流式 XLSX | `packages/export`、database/export/dashboard Skill | `20260918-[RELEASE]发布1.1.6维护版本` / DEC-011 | 已发布并完成官方包核验；真实大批量链路待验收 | [`./topics/批量查询与可恢复导出.md`](./topics/批量查询与可恢复导出.md) | 2026-09-18 / `6f61f78` / npm 1.1.6 |
 | `API-REQUEST-BODY-ENCODING` | 接口请求体编码 | npm `maintenance-1=1.0.4` 已由 `mbs request --api-id` 读取后端详情并统一编码七种 body 模式，manifest 生成与 serve 复用；官方源安装包核验通过 | `packages/shared`、`packages/cli`、生成器、Skill | `20260825-[RELEASE]发布1.0.4维护版本` | 已发布并完成官方源核验 | [`./topics/接口请求体编码.md`](./topics/接口请求体编码.md) | 2026-08-25 / `689e82e` / npm 1.0.4 |
 | `CLI-PUBLIC-COMPATIBILITY` | CLI 公开命令兼容性 | npm `0.1.58` 的五个业务命令已由独立兼容插件在本地恢复，命令 ID、flags、帮助和只读请求契约验证通过；旧 serve 路由不在本轮范围 | `packages/cli`、`packages/legacy` | `20260810-[BUG]恢复已发布CLI旧命令` | 本地已验证/待发布 | [`./topics/CLI公开命令兼容性.md`](./topics/CLI公开命令兼容性.md) | 2026-08-10 / `5b5c255` + 当前工作区 |
@@ -28,6 +28,7 @@
 - 参数依赖自动解析已随 npm `1.1.6` 发布并通过官方包 Skill 冒烟，但仍是 Agent Skill 协议而非 CLI 持久编排器；尚未使用真实店铺列表与销售接口验证深链、暂停恢复和召回质量。
 - 明确 SQL/物理表直达数据库已随 npm `1.1.6` 发布并通过官方包 Skill 冒烟；尚未使用真实登录态验证 `my-tables → show-create-table/query`。
 - 可恢复批量导出已随 npm `1.1.6` 发布并通过官方包游标/恢复帮助与 Skill 验证；尚未使用真实大批量数据验证断点恢复、外部数据库方言和长时间稳定性。
+- 流式非 2xx 响应序列化修复已通过 327 条测试、14 包构建和本机 link 验证，但尚未使用真实登录态复验用户原始数据库错误链路，也尚未推送或发布 npm。
 
 ## 重大决策
 
