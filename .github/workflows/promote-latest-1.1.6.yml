@@ -41,7 +41,20 @@ jobs:
           test "$published_version" = "\"$version\""
           test "$maintenance_version" = "\"$version\""
 
-          npm dist-tag add "${package}@${version}" latest
+          current_latest=$(npm view "${package}@latest" version --json --prefer-online)
+          if [ "$current_latest" != "\"$version\"" ]; then
+            npm dist-tag add "${package}@${version}" latest
+          fi
 
-          latest_version=$(npm view "${package}@latest" version --json --prefer-online)
-          test "$latest_version" = "\"$version\""
+          for delay in 0 2 4; do
+            if [ "$delay" -gt 0 ]; then
+              sleep "$delay"
+            fi
+            latest_version=$(npm view "${package}@latest" version --json --prefer-online)
+            if [ "$latest_version" = "\"$version\"" ]; then
+              exit 0
+            fi
+          done
+
+          echo "npm latest did not converge to $version after three checks"
+          exit 1
