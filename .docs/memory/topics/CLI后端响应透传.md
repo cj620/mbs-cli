@@ -4,10 +4,10 @@
 
 - **记忆键**：`CLI-RESPONSE-PASSTHROUGH`
 - **负责模块**：`packages/shared`、业务命令调用方、CLI 公共文档
-- **当前状态**：透传契约已随 npm `1.1.5` 生效；流式非 2xx body 序列化修复已在 `1.1.6` 工作区完成并 link 本机，尚未发布
-- **最后核验时间**：2026-09-18
-- **最后核验基线**：`1.0.0@114adb8e8f2668aed9ab14b930d1167867282aab + 当前工作区` / 327 项测试 + 14 包构建 + 本机 link 核验
-- **权威来源**：[`20260918-[BUG]修复流式HTTP错误响应序列化`](../../req_doc/20260918-[BUG]修复流式HTTP错误响应序列化/)
+- **当前状态**：透传契约及流式非 2xx body 序列化修复已随 npm `1.1.7` 发布并进入维护与默认通道
+- **最后核验时间**：2026-09-21
+- **最后核验基线**：`maintenance-1-v1.1.7@ad8f5b9` / Release `35569596413` / 官方源与本机安装回归
+- **权威来源**：[`20260921-[RELEASE]发布1.1.7维护版本`](../../req_doc/20260921-[RELEASE]发布1.1.7维护版本/)
 
 ## 当前事实
 
@@ -17,10 +17,10 @@
 - `find` 只校验请求并设置超时，远端候选 body 作为不透明值返回；`describe` 命令使用原始详情获取 seam，而 `request --api-id` 继续使用内部详情元数据校验器。
 - `serve` manifest/project/proxy 路由直接发送远端 body，并在错误快照可用时保留上游 HTTP 状态；本地路由、启动信息与无响应失败保留自身结构。
 - npm `maintenance-1=1.1.5` 已移除业务 `code=500` 的历史认证映射；500 保持普通 `MBSError`、原 body 和退出码 1，不交换凭据或重试。
+- npm `maintenance-1=latest=1.1.7` 已将 `postStream` 非 2xx 响应有界物化为 JSON 或文本，避免 `IncomingMessage` / `Socket` 进入输出；成功 NDJSON 仍逐行直通。
 
 ## 待生效变更
 
-- `database query` 等 `postStream` 调用在非 2xx 时先有界读取响应流，再按 JSON 或文本保留真实后端 body，避免 `IncomingMessage` / `Socket` 被 JSON 序列化；成功 NDJSON 仍逐行直通。该修复仅在当前工作区和本机 npm link 生效，尚未发布。
 - `find`、`describe`、`serve` 扩展已发布，但仍未完成真实后端联调和下游迁移验证。
 
 ## 演进关系
@@ -30,7 +30,7 @@
 | 项目初始统一 envelope 契约 | 部分替代 | `20260827-[FEATURE]透传后端响应内容` | `MBSCommand.output()` 业务响应及其后端错误 | npm maintenance-1 1.0.5 | 已生效；其他本地输出契约不变 |
 | `find`/`describe`/`serve` 独立包装契约 | 替代 | `20260908-[FEATURE]统一透传远端响应内容` | 直接暴露远端 body 的命令与 serve 路由 | npm maintenance-1 1.1.4 | 已发布并完成官方源核验；真实后端未联调 |
 | 业务 500 历史认证映射 | 修正 | `20260908-[BUG]修复业务500认证误判并定位SESSION丢失` | shared HTTP 错误分类、业务重试与退出码 | npm maintenance-1 1.1.5 | 已发布并完成官方源核验；远程 ERP 运行态待验收 |
-| 流式错误 body 保留网络对象 | 修正 | `20260918-[BUG]修复流式HTTP错误响应序列化` | shared `postStream` 非 2xx 错误读取、分类与输出 | 当前工作区和本机 link | 本机已验证；真实后端与 npm 发布未执行 |
+| 流式错误 body 保留网络对象 | 修正 | `20260918-[BUG]修复流式HTTP错误响应序列化` | shared `postStream` 非 2xx 错误读取、分类与输出 | npm 1.1.7 / maintenance-1 与 latest | 已发布并完成官方包、本机安装回归；真实后端待复验 |
 
 ## 当前强制约束
 
@@ -54,4 +54,5 @@
 - [`20260908-[FEATURE]统一透传远端响应内容`](../../req_doc/20260908-[FEATURE]统一透传远端响应内容/)
 - [`20260908-[BUG]修复业务500认证误判并定位SESSION丢失`](../../req_doc/20260908-[BUG]修复业务500认证误判并定位SESSION丢失/)
 - [`20260918-[BUG]修复流式HTTP错误响应序列化`](../../req_doc/20260918-[BUG]修复流式HTTP错误响应序列化/)
+- [`20260921-[RELEASE]发布1.1.7维护版本`](../../req_doc/20260921-[RELEASE]发布1.1.7维护版本/)
 - [`20260812-[FEATURE]新增公共只读请求命令`](../../req_doc/20260812-[FEATURE]新增公共只读请求命令/)
