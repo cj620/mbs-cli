@@ -36,7 +36,7 @@ Agent 的非交互执行通道不得直接运行未指定模式的 `mbs login`�
 
 ### 动态只读接口请求
 
-`find → describe` 确认一个 `operationType=QUERY` 的接口后，即使没有预生成业务命令，也可使用公开 `request` 命令。命令会自动添加 `/gateway/cli`，path 只填写详情返回的接口路径：
+`find → describe` 确认一个 `operationType=QUERY` 或 `operationType=COMPUTE` 的接口后，即使没有预生成业务命令，也可使用公开 `request` 命令。命令会自动添加 `/gateway/cli`，path 只填写详情返回的接口路径：
 
 ```bash
 mbs request GET /v1/orders --params '{"status":"open"}'

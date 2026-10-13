@@ -5,6 +5,7 @@ import test from 'node:test'
 
 const repoRoot = join(import.meta.dirname, '..', '..')
 
+/** Verifies the generated domain protocol accepts both read-only types and retains backend discovery. */
 test('generated domain skill stays thin and routes through backend find and describe', () => {
   const skill = readFileSync(join(repoRoot, 'skills', 'references', 'pim', 'SKILL.md'), 'utf8')
   const lines = skill.split(/\r?\n/)
@@ -15,13 +16,14 @@ test('generated domain skill stays thin and routes through backend find and desc
   assert.match(skill, /mbs describe <apiId>/)
   assert.match(skill, /未包装的后端 response body/)
   assert.doesNotMatch(skill, /detailCommand/)
-  assert.match(skill, /operationType=QUERY.*mbs request/)
+  assert.match(skill, /operationType=QUERY.*COMPUTE.*mbs request/)
   assert.match(skill, /接口无需预生成业务命令/)
   assert.match(skill, /后端不可用时明确报告失败/)
   assert.doesNotMatch(skill, /\| 意图 \| 命令 \| 必填参数 \|/)
   assert.ok(lines.length < 40, `expected a thin domain skill, received ${lines.length} lines`)
 })
 
+/** Verifies the main protocol accepts QUERY/COMPUTE while retaining remote discovery and passthrough. */
 test('main skill enforces unified backend discovery without local interface or table indexes', () => {
   const skill = readFileSync(join(repoRoot, 'skills', 'SKILL.md'), 'utf8')
 
@@ -33,7 +35,7 @@ test('main skill enforces unified backend discovery without local interface or t
   assert.match(skill, /database show-create-table/)
   assert.match(skill, /本地表索引/)
   assert.match(skill, /mbs describe <apiId>/)
-  assert.match(skill, /operationType=QUERY.*mbs request/)
+  assert.match(skill, /operationType=QUERY.*COMPUTE.*mbs request/)
   assert.match(skill, /不要求预生成业务命令|不是动态接口执行前提/)
   assert.match(skill, /直接输出后端 response body/)
   assert.doesNotMatch(skill, /执行其 `detailCommand`/)

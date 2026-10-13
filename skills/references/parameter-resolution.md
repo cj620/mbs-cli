@@ -70,7 +70,7 @@ else:
 - 需要“查询并返回该参数值”的目的；
 - 已确认的业务域或后端建议 domain；没有确认时不自行添加 domain。
 
-来源 API 也必须执行 `mbs describe`，确认它是 `operationType=QUERY` 且 method 为 GET 或查询类 POST。如果来源 API 自己缺少必填参数，递归应用本协议；如果 `dependencyPath` 中已存在相同 API 与参数组合，判定为循环依赖并暂停，不再召回或请求。
+来源 API 也必须执行 `mbs describe`，确认它是 `operationType=QUERY` 或 `operationType=COMPUTE` 且 method 为 GET 或查询类 POST。如果来源 API 自己缺少必填参数，递归应用本协议；如果 `dependencyPath` 中已存在相同 API 与参数组合，判定为循环依赖并暂停，不再召回或请求。
 
 ### 4. 执行来源查询并从列表中选值
 

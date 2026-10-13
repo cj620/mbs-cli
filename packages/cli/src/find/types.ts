@@ -59,7 +59,8 @@ export interface ApiDetailData {
   description?: string
   method?: string
   path?: string
-  operationType: 'QUERY'
+  /** Backend read-only operation: query or calculation/statistics; preserved without rewriting. */
+  operationType: 'QUERY' | 'COMPUTE'
   /** Authoritative interface-level request body mode. */
   requestBodyMode: RequestBodyMode
   /** Main Content-Type without parameters or multipart boundary. */

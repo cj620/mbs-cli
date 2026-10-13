@@ -4,11 +4,11 @@ import { describeApi, fetchApiDetail, normalizeApiDetailResponse } from '../find
 import { RecallUnavailableError } from '../find/find-service.js'
 
 describe('backend API detail', () => {
-  /** Verifies the command-facing detail seam preserves the complete remote body by identity. */
-  it('fetches the exact remote detail body without normalization', async () => {
+  /** Verifies QUERY/COMPUTE command-facing details preserve the complete remote body by identity. */
+  it.each(['QUERY', 'COMPUTE'])('fetches the exact %s detail body without normalization', async (operationType) => {
     const body = {
       code: 200,
-      data: { id: 7, operationType: 'QUERY', extra: { owner: 'backend' } },
+      data: { id: 7, operationType, extra: { owner: 'backend' } },
       msg: 'ok',
     }
 
@@ -16,9 +16,10 @@ describe('backend API detail', () => {
   })
 
   /**
-   * Verifies the complete backend field tree is preserved while non-execution metadata is omitted.
+   * Verifies both read-only types preserve their identity, field tree and body encoding metadata,
+   * while non-execution metadata is omitted before the API-ID request consumer receives the detail.
    */
-  it('normalizes a wrapped approved query definition', () => {
+  it.each(['QUERY', 'COMPUTE'])('normalizes a wrapped approved %s definition', (operationType) => {
     const detail = normalizeApiDetailResponse({ data: {
       id: 7,
       name: 'order-list',
@@ -27,7 +28,7 @@ describe('backend API detail', () => {
       description: '查询订单',
       method: 'POST',
       path: '/orders/list',
-      operationType: 'QUERY',
+      operationType,
       requestBodyMode: 'MULTIPART',
       requestMediaType: 'multipart/form-data',
       createBy: 'sensitive-user',
@@ -53,6 +54,7 @@ describe('backend API detail', () => {
     } })
 
     expect(detail.command).toBe('mbs oms order-list')
+    expect(detail.operationType).toBe(operationType)
     expect(detail.version).toBe('v1')
     expect(detail.requestBodyMode).toBe('MULTIPART')
     expect(detail.requestMediaType).toBe('multipart/form-data')
@@ -88,9 +90,9 @@ describe('backend API detail', () => {
   })
 
   /**
-   * Verifies non-query and malformed definitions cannot enter the agent execution flow.
+   * Verifies unsupported types and malformed definitions cannot enter the agent execution flow.
    */
-  it('rejects non-query and malformed detail responses', () => {
+  it('rejects unsupported and malformed detail responses', () => {
     expect(() => normalizeApiDetailResponse({
       data: { id: 7, name: 'write', domain: 'oms', operationType: 'UPDATE' },
     })).toThrow('invalid')
@@ -100,6 +102,30 @@ describe('backend API detail', () => {
     expect(() => normalizeApiDetailResponse({
       data: { id: 7, name: 'order-list\u0000unsafe', domain: 'oms', operationType: 'QUERY' },
     })).toThrow('name')
+  })
+
+  /** Verifies writes, OTHER, unknown, absent and empty operation types fail before request encoding. */
+  it.each(['CREATE', 'UPDATE', 'DELETE', 'OTHER', 'UNKNOWN', '', null, undefined])(
+    'rejects unsupported operation type %s',
+    (operationType) => {
+      expect(() => normalizeApiDetailResponse({
+        data: { id: 7, name: 'order-list', domain: 'oms', operationType },
+      })).toThrow('invalid')
+    },
+  )
+
+  /** Verifies the API-ID request seam can load COMPUTE metadata without converting it to QUERY. */
+  it('loads a COMPUTE definition through the bounded backend detail path', async () => {
+    await expect(describeApi(7, async () => ({ data: {
+      id: 7,
+      name: 'sales-total',
+      domain: 'oms',
+      operationType: 'COMPUTE',
+      method: 'POST',
+      path: '/orders/total',
+      request: {},
+      response: [],
+    } }))).resolves.toMatchObject({ operationType: 'COMPUTE', method: 'POST', path: '/orders/total' })
   })
 
   /**

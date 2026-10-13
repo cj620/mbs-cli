@@ -83,6 +83,9 @@ export async function describeApi(
 /**
  * Validates and minimizes the backend interface-detail envelope.
  *
+ * <p>Only QUERY and COMPUTE are accepted as read-only operations. Their original operation type
+ * is preserved for the API-ID request consumer; field and request-body validation remain unchanged.</p>
+ *
  * @param raw Untrusted HTTP response body, optionally wrapped in a `data` envelope.
  * @returns Interface identity, optional proven business command, and complete validated field trees.
  * @throws Error when required identity, read-only state, or field structures are invalid.
@@ -90,7 +93,8 @@ export async function describeApi(
 export function normalizeApiDetailResponse(raw: unknown): ApiDetailData {
   const root = asRecord(raw)
   const detail = hasApiIdentity(root) ? root : asRecord(root.data)
-  if (!hasApiIdentity(detail) || detail.operationType !== 'QUERY') {
+  const operationType = detail.operationType
+  if (!hasApiIdentity(detail) || (operationType !== 'QUERY' && operationType !== 'COMPUTE')) {
     throw new Error('remote API detail response is invalid')
   }
   const name = cleanBoundedText('name', detail.name, 255)
@@ -114,7 +118,7 @@ export function normalizeApiDetailResponse(raw: unknown): ApiDetailData {
     ...(typeof detail.description === 'string' ? { description: detail.description } : {}),
     ...(typeof detail.method === 'string' ? { method: detail.method } : {}),
     ...(typeof detail.path === 'string' ? { path: detail.path } : {}),
-    operationType: 'QUERY',
+    operationType,
     requestBodyMode,
     ...optionalBoundedText('requestMediaType', detail.requestMediaType, 255),
     ...optionalBoundedText('requestCharset', detail.requestCharset, 32),

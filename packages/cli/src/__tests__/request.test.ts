@@ -39,15 +39,15 @@ describe('public authenticated request command', () => {
       })
   })
 
-  /** Verifies authoritative urlencoded metadata produces bytes and Content-Type instead of JSON. */
-  it('encodes an API-ID form request from backend metadata', async () => {
+  /** Verifies both read-only types use authoritative form encoding and preserve the POST boundary. */
+  it.each(['QUERY', 'COMPUTE'] as const)('encodes an API-ID %s form request from backend metadata', async (operationType) => {
     const request = await createMetadataReadOnlyRequest({
       id: 8,
       name: 'employee-list',
       domain: 'hr',
       method: 'POST',
       path: '/hr/personal/getAll',
-      operationType: 'QUERY',
+      operationType,
       requestBodyMode: 'FORM_URLENCODED',
       requestMediaType: 'application/x-www-form-urlencoded',
       request: {
@@ -115,6 +115,21 @@ describe('public authenticated request command', () => {
   it('rejects unsupported HTTP methods and GET bodies', () => {
     expect(() => createReadOnlyRequest('DELETE', '/v1/orders')).toThrow('GET or POST')
     expect(() => createReadOnlyRequest('GET', '/v1/orders', '{}')).toThrow('GET request must not include a body')
+  })
+
+  /** Verifies accepting COMPUTE never admits write methods from authoritative API-ID metadata. */
+  it.each(['PUT', 'PATCH', 'DELETE'])('rejects COMPUTE metadata with method %s', async (method) => {
+    await expect(createMetadataReadOnlyRequest({
+      id: 7,
+      name: 'sales-total',
+      domain: 'oms',
+      operationType: 'COMPUTE',
+      method,
+      path: '/orders/total',
+      requestBodyMode: 'NONE',
+      request: {},
+      response: [],
+    }, undefined, undefined)).rejects.toThrow('read-only method')
   })
 
   /** Verifies JSON flags fail closed on invalid structure or excessive input size. */
