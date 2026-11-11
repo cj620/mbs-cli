@@ -10,12 +10,12 @@
 | `AUTH-DEV-PROXY` | 本地开发认证代理 | 本地代理方案已完整回滚，`apiUrl` 仍为服务器根地址；业务与语义召回经 `/gateway/cli`。npm `1.1.3` 已将 CLI 旧商城扫码入口替换为认证中心入口 | `packages/shared`、`packages/cli`、`packages/doris` | `20260907-[RELEASE]发布1.1.3维护版本`、DEC-007 | 已发布 CLI 基线；配套认证中心待发布 | [`./topics/本地开发认证代理.md`](./topics/本地开发认证代理.md) | 2026-09-07 / `bed3567` / npm `1.1.3` |
 | `CLI-GATEWAY-ROUTING` | CLI 网关路由 | 正式业务命令、公共 request 及 find/describe 统一以 `<apiUrl>/gateway/cli` 为上游基础前缀；13 条 manifest 路径已移除重复 `/gateway` | `packages/shared`、`packages/cli`、生成业务包、manifest | `20260814-[RELEASE]发布1.0.3维护版本` | 已随 maintenance-1 1.0.3 发布并核验 | [`./topics/CLI网关路由.md`](./topics/CLI网关路由.md) | 2026-08-14 / `ee9c017` / `maintenance-1-v1.0.3` |
 | `UNIFIED-SEMANTIC-DISCOVERY` | 统一语义发现 | 明确只读 SQL 或物理表由 `my-tables` 确认后直达数据库，目标未知才 find；首次 find 不预判 domain，参数依赖在 10 次共享预算内递归解析并在歧义或超预算前暂停 | `packages/cli`、`packages/doris`、Skill | `20260918-[RELEASE]发布1.1.6维护版本` / DEC-009、DEC-010 | 已发布并完成官方包核验；真实参数依赖和数据库链路待验收 | [`./topics/统一语义发现.md`](./topics/统一语义发现.md) | 2026-09-18 / `6f61f78` / npm 1.1.6 |
-| `INTERFACE-SEMANTIC-DISCOVERY` | 接口语义发现 | name/domain 只作展示；详情按 ID 获取；动态 QUERY 接口通过受限 `mbs request GET|POST <path>` 执行，不依赖预生成命令 | `packages/cli`、Skill 生成与安装 | `20260812-[FEATURE]新增公共只读请求命令` | 已随 maintenance-1 1.0.2 发布 | [`./topics/接口语义发现.md`](./topics/接口语义发现.md) | 2026-08-12 / `8d2c3bb` / npm 1.0.2 |
-| `RELEASE-LINE-1X` | 1.0.0 长期维护分支 | `origin/1.0.0` 独立于 master；npm `maintenance-1=latest=1.1.7` 已发布 | 全仓库、`packages/cli`、CI | `20260921-[RELEASE]发布1.1.7维护版本` | 已发布并完成两个通道、默认安装和本机升级核验 | [`./topics/1.0.0长期维护分支.md`](./topics/1.0.0长期维护分支.md) | 2026-09-21 / `ad8f5b9` / npm 1.1.7 |
+| `INTERFACE-SEMANTIC-DISCOVERY` | 接口语义发现 | name/domain 只作展示；详情按 ID 获取；动态 QUERY/COMPUTE 接口通过受限 `mbs request --api-id` 执行，不依赖预生成命令 | `packages/cli`、Skill 生成与安装 | `20261111-[RELEASE]发布1.1.8维护版本` / DEC-001 | 已随 npm 1.1.8 发布并完成目标链路验收 | [`./topics/接口语义发现.md`](./topics/接口语义发现.md) | 2026-11-11 / `2b854cd` / npm 1.1.8 |
+| `RELEASE-LINE-1X` | 1.0.0 长期维护分支 | `origin/1.0.0` 独立于 master；npm `maintenance-1=latest=1.1.8` 已发布 | 全仓库、`packages/cli`、CI | `20261111-[RELEASE]发布1.1.8维护版本` | 已发布并完成两个通道、默认安装、本机升级和 COMPUTE 回归核验 | [`./topics/1.0.0长期维护分支.md`](./topics/1.0.0长期维护分支.md) | 2026-11-11 / `2b854cd` / npm 1.1.8 |
 
 ## 当前技术债
 
-- 本地待生效：`INTERFACE-SEMANTIC-DISCOVERY` 的 Skill/详情解析已扩展 QUERY/COMPUTE，342 项测试与 14 包构建通过；[当前任务](../req_doc/20261013-[BUG]修复Skill接受COMPUTE/需求描述.md)尚未提交/发布或安装到个人 Skill，已发布 npm 基线保持。
+- 已生效：`INTERFACE-SEMANTIC-DISCOVERY` 的 Skill/详情解析已扩展 QUERY/COMPUTE，并随 npm 1.1.8 发布到 `maintenance-1` 与 `latest`；本机安装、Skill 刷新及 API 4 COMPUTE 脱敏链路验收通过。
 
 - npm `1.0.4` 的七种请求体编码已通过本地 V3 与官方源安装核验，但尚未使用真实登录态、真实上传文件或目标网关业务接口联调。
 - npm `1.0.5` 的后端响应透传已通过官方源隔离安装的人工最小 mock，但尚未使用真实登录态、目标网关错误响应或既有下游脚本验收。
